@@ -1,0 +1,20 @@
+package com.vio.io.protocols.vanilla.response;
+
+import com.vio.io.protocols.response.IResponse;
+
+import java.util.List;
+
+/**
+ * Created by IntelliJ IDEA.
+ * User: nikelin
+ * Date: Jun 6, 2010
+ * Time: 2:54:19 AM
+ * To change this template use File | Settings | File Templates.
+ */
+public interface IApiResponse extends IResponse {
+
+    public List<IApiResponse> getResponses();
+
+    public void addResponse( IApiResponse response );
+
+}

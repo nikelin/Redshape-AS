@@ -1,0 +1,21 @@
+ Length   Method    Size  Cmpr    Date    Time   CRC-32   Name
+--------  ------  ------- ---- ---------- ----- --------  ----
+       0  Stored        0   0% 2010-06-07 02:09 00000000  META-INF/
+     126  Defl:N      103  18% 2010-06-07 02:09 183c5ac0  META-INF/MANIFEST.MF
+       0  Stored        0   0% 2010-06-07 02:09 00000000  com/
+       0  Stored        0   0% 2010-06-07 02:09 00000000  com/vio/
+       0  Stored        0   0% 2010-06-07 02:09 00000000  com/vio/remoting/
+       0  Stored        0   0% 2010-06-07 02:09 00000000  com/vio/remoting/annotations/
+       0  Stored        0   0% 2010-06-07 02:09 00000000  com/vio/remoting/interfaces/
+     354  Defl:N      227  36% 2010-06-07 02:09 0f1934e0  com/vio/remoting/annotations/RemoteService.class
+     267  Defl:N      182  32% 2010-06-07 02:09 d38e63d6  com/vio/remoting/interfaces/EchoInterface.class
+     321  Defl:N      212  34% 2010-06-07 02:09 113008f5  com/vio/remoting/interfaces/ChatInterface.class
+     620  Defl:N      302  51% 2010-06-07 02:09 80f40ee9  com/vio/remoting/interfaces/UsersInterface.class
+    1775  Defl:N      897  50% 2010-06-07 02:09 5edfbb9a  com/vio/Main.class
+       0  Stored        0   0% 2010-06-07 02:09 00000000  META-INF/maven/
+       0  Stored        0   0% 2010-06-07 02:09 00000000  META-INF/maven/com.vio/
+       0  Stored        0   0% 2010-06-07 02:09 00000000  META-INF/maven/com.vio/remoting/
+    1658  Defl:N      534  68% 2010-05-04 16:53 58eb2a0e  META-INF/maven/com.vio/remoting/pom.xml
+     101  Defl:N      101   0% 2010-06-07 02:09 7b6e7d4a  META-INF/maven/com.vio/remoting/pom.properties
+--------          -------  ---                            -------
+    5222             2558  51%                            17 files

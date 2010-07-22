@@ -1,0 +1,6 @@
+/**
+* This file must be placed in plugin root directory
+* to force it's reloading in runtime.
+*
+* @author nikelin
+*/

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <name>JMS Subsystem</name>
+    <parent>
+        <artifactId>eluvian</artifactId>
+        <groupId>com.redshape</groupId>
+        <version>1.0.0A</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.vio</groupId>
+    <artifactId>jms</artifactId>
+    <packaging>jar</packaging>
+
+    <build>
+        <defaultGoal>package</defaultGoal>
+        <finalName>messaging</finalName>
+        <sourceDirectory>${project.basedir}/main/java</sourceDirectory>
+        <directory>${project.basedir}/../build/libs</directory>
+        <resources>
+          <resource>
+            <directory>${project.basedir}/main/resources</directory>
+            <filtering>false</filtering>
+          </resource>
+        </resources>
+    </build>
+
+</project>

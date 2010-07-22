@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <name>System core library</name>
+    <parent>
+        <artifactId>eluvian</artifactId>
+        <groupId>com.redshape</groupId>
+        <version>1.0.0A</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <version>1.0.0A</version>
+    <groupId>com.vio</groupId>
+    <artifactId>core</artifactId>
+    <packaging>jar</packaging>
+
+    <build>
+        <defaultGoal>package</defaultGoal>
+        <finalName>core</finalName>
+        <sourceDirectory>${project.basedir}/main/java</sourceDirectory>
+        <directory>${project.basedir}/../build/libs</directory>
+        <resources>
+          <resource>
+            <directory>${project.basedir}/main/resources</directory>
+            <filtering>false</filtering>
+          </resource>
+        </resources>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.vio</groupId>
+            <artifactId>jms</artifactId>
+            <version>1.0.0A</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vio</groupId>
+            <artifactId>utils</artifactId>
+            <version>1.0.0A</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vio.remote</groupId>
+            <artifactId>interfaces</artifactId>
+            <version>1.0.0A</version>
+        </dependency>
+
+    </dependencies>
+
+</project>

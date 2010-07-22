@@ -1,0 +1,148 @@
+<?xml version="1.0"?>
+
+<config>
+    <mode>PRODUCTION</mode>
+    <logging>true</logging>
+    <paths>
+        <path name="logs" path="logs" />
+        <path name="plugins" path="vendors" />
+        <path name="locales" path="i18n" />
+        <path name="security" path="security" />
+        <path name="libraries" path="%ROOT%/build/libs:%ROOT%/build"/>
+    </paths>
+    <servers>
+        <sharedSettings>
+            <reconnect>true</reconnect>
+            <reconnectTimes>10</reconnectTimes>
+            <reconnectDelay>30</reconnectDelay>
+
+            <ssl>
+                <port>55234</port>
+                <host>0.0.0.0</host>
+                <enabled>true</enabled>
+                <storeKey>redshape</storeKey>
+                <storeFile>certificates.jks</storeFile>
+                <reconnectTimes>10</reconnectTimes>
+                <reconnectDelay>30</reconnectDelay>
+            </ssl>
+        </sharedSettings>
+        <rmi class="com.vio.server.RMIServer">
+            <status>on</status>
+            <host>localhost</host>
+            <port>55239</port>
+            <services>
+                <service class="com.vio.remoting.interfaces.impl.EchoInterfaceImpl">EchoService</service>
+            </services>
+            <properties>
+                <INTERFACES_PACKAGE>com.vio.remoting.interfaces.impl</INTERFACES_PACKAGE>
+            </properties>
+        </rmi>
+        <api class="com.vio.server.ApiServer">
+            <status>on</status>
+            <host>0.0.0.0</host>
+            <port>55234</port>
+            <policies>
+                <policy class="com.vio.api.security.AuthenticationPolicy" type="ON_REQUEST"/>
+            </policies>
+            <ssl>
+                <port>55234</port>
+                <host>0.0.0.0</host>
+                <enabled>true</enabled>
+                <storeKey>redshape</storeKey>
+                <storeFile>certificates.jks</storeFile>
+            </ssl>
+            <sessions>
+                <lifetime>900</lifetime>
+                <allowPersistentSessions>true</allowPersistentSessions>
+            </sessions>
+
+            <reconnect>false</reconnect>
+        </api>
+        <http class="com.vio.server.HTTPServer">
+             <status>on</status>
+             <host>0.0.0.0</host>
+             <port>81</port>
+        </http>
+        <jms>
+            <status>on</status>
+            <adapter>com.vio.messaging.AMQManager</adapter>
+            <user>system</user>
+            <password>manager</password>
+            <uri>tcp://localhost:61616</uri>
+        </jms>
+        <smtp>
+              <host>94.100.177.1</host>
+              <port>25</port>
+              <user>kobn1@mail.ru</user>
+              <password>qwerty</password>
+        </smtp>
+    </servers>
+    <database>
+        <adapter>com.mysql.jdbc.Driver</adapter>
+        <uri>jdbc:mysql://127.0.0.1:3306/vio</uri>
+        <user>root</user>
+        <password>1</password>
+        <useUTF8>true</useUTF8>
+        <charset>UTF-8</charset>
+        <persistenceUnit>Persister</persistenceUnit>
+        <migrationPolicy>DROP_CREATE</migrationPolicy>
+    </database>
+    <settings>
+        <security>
+            <filter-ip>false</filter-ip>
+        </security>
+        <auth>
+            <recovery_time>7200</recovery_time>
+            <max_fails>5</max_fails>
+        </auth>
+        <user>
+            <presenceIdleLimit>300</presenceIdleLimit>
+        </user>
+        <commands>
+            <package>com.vio.cmd.commands.migrate</package>
+            <package>com.vio.cmd.commands</package>
+        </commands>
+        <defaultLocale>en</defaultLocale>
+    </settings>
+    <migrations package="com.vio.migration.actions">
+        <fixturesPath>fixtures</fixturesPath>
+    </migrations>
+    <features>
+        <package path="com.vio.features.chat"/>
+        <package path="com.vio.features.chat.groups"/>
+        <package path="com.vio.features.auth"/>
+        <package path="com.vio.features.users"/>
+        <package path="com.vio.features.groups"/>
+        <package path="com.vio.features.groups.forms"/>
+        <package path="com.vio.features.fields"/>
+        <package path="com.vio.features.fields.type"/>
+        <package path="com.vio.features.locales"/>
+        <package path="com.vio.features.echo"/>
+        <package path="com.vio.features.messages"/>
+        <package path="com.vio.features.notify"/>
+        <package path="com.vio.features.pages"/>
+        <package path="com.vio.features.payment"/>
+        <package path="com.vio.features.plugins"/>
+        <package path="com.vio.features.menus.element"/>
+        <package path="com.vio.features.resources"/>
+        <package path="com.vio.features.menus"/>
+    </features>
+    <tasks>
+        <fails_limit>3</fails_limit>
+        <afterFailDelay>1200</afterFailDelay>
+    </tasks>
+    <search>
+        <engine>com.vio.search.engines.LuceneEngine</engine>
+        <indexPath>/tmp/search/lucene</indexPath>
+        <defaultMaxResults>100</defaultMaxResults>
+    </search>
+    <plugins>
+        <autoload>false</autoload>
+
+        <includes>
+            <testPlugin version='1.0'>
+                <validateSignature>true</validateSignature>
+            </testPlugin>
+        </includes>
+    </plugins>
+</config>
