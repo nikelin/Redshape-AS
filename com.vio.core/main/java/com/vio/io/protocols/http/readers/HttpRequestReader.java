@@ -3,9 +3,9 @@ package com.vio.io.protocols.http.readers;
 import com.vio.io.protocols.http.hydrators.IHttpRequestHydrator;
 import com.vio.io.protocols.http.request.HttpRequest;
 import com.vio.io.protocols.http.request.IHttpRequest;
-import com.vio.io.protocols.readers.IRequestReader;
-import com.vio.io.protocols.readers.ReaderException;
-import com.vio.io.protocols.sources.input.BufferedInput;
+import com.vio.io.protocols.core.readers.IRequestReader;
+import com.vio.io.protocols.core.readers.ReaderException;
+import com.vio.io.protocols.core.sources.input.BufferedInput;
 import com.vio.io.protocols.vanilla.request.APIRequest;
 import org.apache.log4j.Logger;
 

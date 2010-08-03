@@ -1,8 +1,8 @@
 package com.vio.io.protocols.vanilla.renderers;
 
-import com.vio.io.protocols.response.IResponse;
+import com.vio.io.protocols.core.response.IResponse;
 import com.vio.exceptions.ExceptionWithCode;
-import com.vio.io.protocols.renderers.ResponseRenderer;
+import com.vio.io.protocols.core.renderers.ResponseRenderer;
 import com.vio.render.RendererException;
 import com.vio.render.json.JSONRenderer;
 import org.apache.log4j.Logger;

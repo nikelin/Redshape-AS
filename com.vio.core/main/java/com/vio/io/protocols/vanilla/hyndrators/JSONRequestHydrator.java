@@ -1,8 +1,9 @@
 package com.vio.io.protocols.vanilla.hyndrators;
 
-import com.vio.io.protocols.vanilla.request.InterfaceInvocation;
-import com.vio.io.protocols.request.RequestException;
-import com.vio.io.protocols.request.RequestHeader;
+import com.vio.io.protocols.core.request.RequestException;
+import com.vio.io.protocols.core.request.RequestHeader;
+import com.vio.io.protocols.vanilla.request.APIRequest;
+import com.vio.io.protocols.vanilla.request.IAPIRequest;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
@@ -13,7 +14,7 @@ import java.util.*;
 /**
  * @author nikelin
  */
-public class JSONRequestHydrator implements ApiRequestHydrator {
+public class JSONRequestHydrator implements IApiRequestHydrator {
     private static final Logger log = Logger.getLogger( JSONRequestHydrator.class );
 
     private String data;
@@ -44,18 +45,18 @@ public class JSONRequestHydrator implements ApiRequestHydrator {
         this.jsonObject = (JSONObject) JSONSerializer.toJSON( data.toString() );
     }
 
-    public List<InterfaceInvocation> readBody() {
-        List<InterfaceInvocation> result = new ArrayList<InterfaceInvocation>();
+    public Collection<IAPIRequest> readBody() {
+        Collection<IAPIRequest> result = new HashSet<IAPIRequest>();
 
         if ( this.getObject().containsKey("body") ) {
             Object body = this.getObject().get("body");
 
             try {
                 Object mInvokeResult = this.getClass().getMethod("buildBody", body.getClass() ).invoke( this, body);
-                if ( InterfaceInvocation.class.isInstance(mInvokeResult) ) {
-                    result.add( (InterfaceInvocation) mInvokeResult );
+                if ( IAPIRequest.class.isInstance(mInvokeResult) ) {
+                    result.add( (IAPIRequest) mInvokeResult );
                 } else {
-                    result = (List<InterfaceInvocation>) mInvokeResult;
+                    result = (Collection<IAPIRequest>) mInvokeResult;
                 }
             } catch ( Throwable e ) {
                 log.info( body.getClass().getName() );
@@ -66,8 +67,8 @@ public class JSONRequestHydrator implements ApiRequestHydrator {
         return result;
     }
 
-    public List<InterfaceInvocation> buildBody( JSONArray body ) {
-        List<InterfaceInvocation> result = new ArrayList<InterfaceInvocation>();
+    public List<IAPIRequest> buildBody( JSONArray body ) {
+        List<IAPIRequest> result = new ArrayList<IAPIRequest>();
 
         for ( int item = 0; item < body.size(); item++ ) {
             Object ob = body.get( item );
@@ -80,22 +81,14 @@ public class JSONRequestHydrator implements ApiRequestHydrator {
         return result;
     }
 
-    public InterfaceInvocation buildBody( JSONObject body ) {
-        InterfaceInvocation invoke = new InterfaceInvocation();
+    public IAPIRequest buildBody( JSONObject body ) {
+        APIRequest invoke = new APIRequest();
 
         invoke.setId( body.containsKey("id") ? body.get("id").toString() : null );
-        invoke.setInterfaceId(  body.containsKey("interface") ? (String) body.get("interface") : null );
-        invoke.setAction( body.containsKey("action") ? (String) body.get("action") : null );
+        invoke.setFeature(  body.containsKey("interface") ? (String) body.get("interface") : null );
+        invoke.setAspectName( body.containsKey("action") ? (String) body.get("action") : null );
 
-        if(body.containsKey("waiting"))
-            invoke.setResponce( body.getJSONObject("waiting") );
-        
-        /**
-         * Хук для предотвращения ошибки пустого объекта, который PHP кодирует как пустой массив
-         */
-        if ( body.containsKey("params") && body.get("params").getClass() == JSONObject.class ) {
-            invoke.setParams( this.convertJSONObjectToMap( body.getJSONObject("params") ) );
-        }
+        invoke.setParams( this.convertJSONObjectToMap( body.getJSONObject("params") ) );
 
         return invoke;
     }

@@ -2,7 +2,7 @@ package com.vio.server;
 
 import com.vio.api.dispatchers.IDispatcher;
 import com.vio.io.protocols.core.IProtocol;
-import com.vio.io.protocols.response.IResponse;
+import com.vio.io.protocols.core.response.IResponse;
 import com.vio.config.readers.ConfigReaderException;
 import com.vio.exceptions.ExceptionWithCode;
 import com.vio.persistence.entities.requesters.IRequester;

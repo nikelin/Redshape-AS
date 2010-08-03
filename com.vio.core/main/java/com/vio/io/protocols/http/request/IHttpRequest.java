@@ -1,7 +1,7 @@
 package com.vio.io.protocols.http.request;
 
 import com.vio.io.protocols.http.HttpProtocolVersion;
-import com.vio.io.protocols.request.IRequest;
+import com.vio.io.protocols.core.request.IRequest;
 
 import java.util.Map;
 

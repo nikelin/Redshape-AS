@@ -1,6 +1,6 @@
 package com.vio.io.protocols.http.impl;
 
-import com.vio.io.protocols.Constants;
+import com.vio.api.Constants;
 import com.vio.io.protocols.core.AbstractProtocol;
 import com.vio.io.protocols.core.IProtocolVersion;
 import com.vio.io.protocols.http.HttpProtocolVersion;
@@ -10,7 +10,7 @@ import com.vio.io.protocols.http.readers.HttpRequestReader;
 import com.vio.io.protocols.http.renderers.HttpResponseRenderer;
 import com.vio.io.protocols.http.request.IHttpRequest;
 import com.vio.io.protocols.http.response.IHttpResponse;
-import com.vio.io.protocols.writers.ResponseWriter;
+import com.vio.io.protocols.core.writers.ResponseWriter;
 
 /**
  * Created by IntelliJ IDEA.

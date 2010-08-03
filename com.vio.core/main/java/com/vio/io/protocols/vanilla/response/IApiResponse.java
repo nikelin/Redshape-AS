@@ -1,6 +1,6 @@
 package com.vio.io.protocols.vanilla.response;
 
-import com.vio.io.protocols.response.IResponse;
+import com.vio.io.protocols.core.response.IResponse;
 
 import java.util.List;
 

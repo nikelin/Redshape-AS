@@ -1,11 +1,11 @@
 package com.vio.io.protocols.vanilla.impl;
 
-import com.vio.io.protocols.Constants;
+import com.vio.api.Constants;
 import com.vio.io.protocols.core.AbstractProtocol;
 import com.vio.io.protocols.core.IProtocol;
 import com.vio.io.protocols.core.IProtocolVersion;
-import com.vio.io.protocols.readers.IRequestReader;
-import com.vio.io.protocols.sources.input.BufferedInput;
+import com.vio.io.protocols.core.readers.IRequestReader;
+import com.vio.io.protocols.core.sources.input.BufferedInput;
 import com.vio.io.protocols.vanilla.IVanillaProtocol;
 import com.vio.io.protocols.vanilla.VanillaProtocolVersion;
 import com.vio.io.protocols.vanilla.hyndrators.JSONRequestHydrator;
@@ -13,7 +13,7 @@ import com.vio.io.protocols.vanilla.readers.APIRequestReader;
 import com.vio.io.protocols.vanilla.renderers.JSONResponseRenderer;
 import com.vio.io.protocols.vanilla.request.IAPIRequest;
 import com.vio.io.protocols.vanilla.response.IApiResponse;
-import com.vio.io.protocols.writers.ResponseWriter;
+import com.vio.io.protocols.core.writers.ResponseWriter;
 
 /**
  * Created by IntelliJ IDEA.

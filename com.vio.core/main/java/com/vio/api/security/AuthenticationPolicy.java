@@ -6,7 +6,7 @@ import com.vio.auth.AuthenticatorFactory;
 import com.vio.auth.adapters.AuthenticatorInterface;
 import com.vio.exceptions.ErrorCode;
 import com.vio.exceptions.ExceptionWithCode;
-import com.vio.io.protocols.Constants;
+import com.vio.api.Constants;
 import com.vio.io.protocols.core.VersionRegistryFactory;
 import com.vio.io.protocols.vanilla.VanillaVersionsRegistry;
 import com.vio.io.protocols.vanilla.request.IAPIRequest;

@@ -20,7 +20,7 @@ import java.util.Map;
  * Time: 12:50:47 PM
  * To change this template use File | Settings | File Templates.
  */
-public class HttpDispatcher implements IHttpDispatcher<IRequester> {
+public class HttpDispatcher implements IHttpDispatcher<IRequester, IHttpRequest, IHttpResponse> {
     private IHttpRouter router;
 
     public IHttpRouter getRouter() {

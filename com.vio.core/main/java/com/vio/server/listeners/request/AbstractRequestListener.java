@@ -2,9 +2,9 @@ package com.vio.server.listeners.request;
 
 import com.vio.exceptions.ExceptionWithCode;
 import com.vio.io.protocols.core.IProtocol;
-import com.vio.io.protocols.request.IRequest;
-import com.vio.io.protocols.response.IResponse;
-import com.vio.io.protocols.sources.input.BufferedInput;
+import com.vio.io.protocols.core.request.IRequest;
+import com.vio.io.protocols.core.response.IResponse;
+import com.vio.io.protocols.core.sources.input.BufferedInput;
 import com.vio.io.protocols.vanilla.request.IAPIRequest;
 import com.vio.server.ISocketServer;
 import com.vio.server.ServerException;

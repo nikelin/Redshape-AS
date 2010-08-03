@@ -1,10 +1,10 @@
 package com.vio.io.protocols.vanilla.readers;
 
 import com.vio.io.protocols.vanilla.request.APIRequest;
-import com.vio.io.protocols.vanilla.hyndrators.ApiRequestHydrator;
-import com.vio.io.protocols.readers.IRequestReader;
-import com.vio.io.protocols.readers.ReaderException;
-import com.vio.io.protocols.sources.input.BufferedInput;
+import com.vio.io.protocols.vanilla.hyndrators.IApiRequestHydrator;
+import com.vio.io.protocols.core.readers.IRequestReader;
+import com.vio.io.protocols.core.readers.ReaderException;
+import com.vio.io.protocols.core.sources.input.BufferedInput;
 import com.vio.io.protocols.vanilla.request.IAPIRequest;
 import org.apache.log4j.Logger;
 
@@ -18,13 +18,13 @@ import org.apache.log4j.Logger;
  */
 public class APIRequestReader implements IRequestReader<BufferedInput, IAPIRequest> {
     private static final Logger log = Logger.getLogger( APIRequestReader.class );
-    private ApiRequestHydrator hydrator;
+    private IApiRequestHydrator hydrator;
 
-    public APIRequestReader( ApiRequestHydrator hydrator ) {
+    public APIRequestReader( IApiRequestHydrator hydrator ) {
         this.hydrator = hydrator;
     }
 
-    public ApiRequestHydrator getHydrator() {
+    public IApiRequestHydrator getHydrator() {
         return this.hydrator;
     }
 

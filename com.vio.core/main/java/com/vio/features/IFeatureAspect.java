@@ -1,7 +1,7 @@
 package com.vio.features;
 
 import com.vio.features.validators.IFeatureValidator;
-import com.vio.io.protocols.request.IRequest;
+import com.vio.io.protocols.core.request.IRequest;
 
 import java.util.Collection;
 

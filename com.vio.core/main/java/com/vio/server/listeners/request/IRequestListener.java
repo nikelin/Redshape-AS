@@ -1,6 +1,6 @@
 package com.vio.server.listeners.request;
 
-import com.vio.io.protocols.request.IRequest;
+import com.vio.io.protocols.core.request.IRequest;
 import com.vio.server.IServer;
 import com.vio.server.ISocketServer;
 import com.vio.server.ServerException;

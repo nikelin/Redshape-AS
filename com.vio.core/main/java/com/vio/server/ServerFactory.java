@@ -1,28 +1,30 @@
 package com.vio.server;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- * User: nikelin
- * Date: Aug 2, 2010
- * Time: 2:33:28 PM
- * To change this template use File | Settings | File Templates.
+ * Factory class which responsible for producing
+ * configured IServer implementations instances.
+ *
+ * @author nikelin
+ * @group IO
  */
 public class ServerFactory extends AbstractServerFactory {
 
+    @Override
     public <T extends IServer> T newInstance( Class<T> serverClass, String host, Integer port )
         throws InstantiationException {
         return this.newInstance( serverClass, host, port, false );
     }
 
+    @Override
     public <T extends IServer> T newInstance( Class<T> serverClass, String host, Integer port,
                                               Boolean isSSLEnabled )
         throws InstantiationException {
         return this.newInstance( serverClass, host, port, isSSLEnabled, this.getProperties() );
     }
 
+    @Override
     public <T extends IServer> T newInstance( Class<T> serverClass, String host,
                               Integer port, Boolean isSSLEnabled, Map<String, Object> properties )
         throws InstantiationException {

@@ -1,6 +1,6 @@
 package com.vio.validators.request;
 
-import com.vio.io.protocols.vanilla.request.InterfaceInvocation;
+import com.vio.io.protocols.vanilla.request.IAPIRequest;
 import com.vio.validators.Validator;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class ParametersConstrain implements InvokeValidator {
         return this.messages;
     }
 
-    public boolean validate( InterfaceInvocation invoke ) {
+    public boolean validate( IAPIRequest invoke ) {
         boolean result = true;
         
         Map<String, Object> params = invoke.getParams();

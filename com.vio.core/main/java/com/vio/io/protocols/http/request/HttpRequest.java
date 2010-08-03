@@ -2,10 +2,10 @@ package com.vio.io.protocols.http.request;
 
 import com.vio.io.protocols.http.HttpProtocolVersion;
 import com.vio.io.protocols.http.hydrators.IHttpRequestHydrator;
-import com.vio.io.protocols.hydrators.RequestHydrator;
-import com.vio.io.protocols.request.IRequest;
-import com.vio.io.protocols.request.RequestException;
-import com.vio.io.protocols.request.RequestHeader;
+import com.vio.io.protocols.core.hydrators.RequestHydrator;
+import com.vio.io.protocols.core.request.IRequest;
+import com.vio.io.protocols.core.request.RequestException;
+import com.vio.io.protocols.core.request.RequestHeader;
 import com.vio.server.adapters.socket.client.ISocketAdapter;
 
 import java.util.*;

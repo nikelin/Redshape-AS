@@ -1,6 +1,6 @@
 package com.vio.io.protocols.http.hydrators;
 
-import com.vio.io.protocols.hydrators.RequestHydrator;
+import com.vio.io.protocols.core.hydrators.RequestHydrator;
 import com.vio.io.protocols.http.request.HttpMethod;
 
 import java.util.Map;

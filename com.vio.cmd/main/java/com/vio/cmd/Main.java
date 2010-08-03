@@ -33,6 +33,11 @@ public final class Main extends com.vio.applications.Application {
             this.actualTask = new HelpCommand();
         }
 
+        if ( !this.actualTask.isValid() ) {
+            log.error("Illegal arguments given");
+            this.stop();
+        }
+
         super.start();
 
         try {

@@ -1,8 +1,8 @@
 package com.vio.io.protocols.http.hydrators;
 
 import com.vio.io.protocols.http.request.HttpMethod;
-import com.vio.io.protocols.request.RequestException;
-import com.vio.io.protocols.request.RequestHeader;
+import com.vio.io.protocols.core.request.RequestException;
+import com.vio.io.protocols.core.request.RequestHeader;
 
 import java.util.*;
 

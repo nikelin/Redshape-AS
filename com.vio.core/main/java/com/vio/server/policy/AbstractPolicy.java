@@ -1,7 +1,7 @@
 package com.vio.server.policy;
 
 import com.vio.exceptions.ExceptionWithCode;
-import com.vio.io.protocols.request.IRequest;
+import com.vio.io.protocols.core.request.IRequest;
 import com.vio.server.IServer;
 
 /**

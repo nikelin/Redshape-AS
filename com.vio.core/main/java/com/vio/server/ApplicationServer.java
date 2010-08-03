@@ -2,7 +2,7 @@ package com.vio.server;
 
 import com.vio.api.dispatchers.IDispatcher;
 import com.vio.io.protocols.core.IProtocol;
-import com.vio.io.protocols.response.IResponse;
+import com.vio.io.protocols.core.response.IResponse;
 import com.vio.io.protocols.vanilla.response.ApiResponse;
 import com.vio.io.protocols.vanilla.response.IApiResponse;
 import com.vio.server.listeners.connection.ConnectionsListener;

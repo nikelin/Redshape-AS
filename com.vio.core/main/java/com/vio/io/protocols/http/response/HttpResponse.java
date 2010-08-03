@@ -2,9 +2,9 @@ package com.vio.io.protocols.http.response;
 
 import com.vio.io.protocols.http.HttpProtocolVersion;
 import com.vio.io.protocols.http.request.HttpCode;
-import com.vio.io.protocols.request.RequestHeader;
-import com.vio.io.protocols.response.IResponse;
-import com.vio.io.protocols.response.Response;
+import com.vio.io.protocols.core.request.RequestHeader;
+import com.vio.io.protocols.core.response.IResponse;
+import com.vio.io.protocols.core.response.Response;
 
 import java.util.*;
 

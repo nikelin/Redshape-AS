@@ -14,9 +14,7 @@ import com.vio.server.ServerException;
  * Time: 11:33:17 AM
  * To change this template use File | Settings | File Templates.
  */
-public interface IHttpDispatcher<T extends IFeatureInteractor> extends IDispatcher {
-
-    public void dispatch( T requester, IHttpRequest request, IHttpResponse response ) throws ServerException;
+public interface IHttpDispatcher<T extends IFeatureInteractor, V extends IHttpRequest, Q extends IHttpResponse> extends IDispatcher<T, V, Q> {
 
     public IHttpRouter getRouter();
 

@@ -1,7 +1,7 @@
 package com.vio.server;
 
 import com.vio.config.readers.ConfigReaderException;
-import com.vio.io.protocols.response.Response;
+import com.vio.io.protocols.core.response.Response;
 import com.vio.remoting.annotations.RemoteService;
 import com.vio.remoting.interfaces.RemoteInterface;
 import com.vio.utils.InterfacesFilter;

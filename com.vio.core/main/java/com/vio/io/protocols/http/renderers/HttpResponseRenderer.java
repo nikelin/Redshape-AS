@@ -4,9 +4,9 @@ import com.vio.exceptions.ExceptionWithCode;
 import com.vio.io.protocols.http.request.HttpCode;
 import com.vio.io.protocols.http.response.HttpResponse;
 import com.vio.io.protocols.http.response.IHttpResponse;
-import com.vio.io.protocols.renderers.ResponseRenderer;
-import com.vio.io.protocols.request.RequestHeader;
-import com.vio.io.protocols.response.IResponse;
+import com.vio.io.protocols.core.renderers.ResponseRenderer;
+import com.vio.io.protocols.core.request.RequestHeader;
+import com.vio.io.protocols.core.response.IResponse;
 import com.vio.render.RendererException;
 
 import java.util.Collection;

@@ -3,7 +3,6 @@ package com.vio.server.listeners.request;
 import com.vio.api.dispatchers.vanilla.IVanillaDispatcher;
 import com.vio.io.protocols.vanilla.IVanillaProtocol;
 import com.vio.io.protocols.vanilla.request.IAPIRequest;
-import com.vio.io.protocols.vanilla.request.InterfaceInvocation;
 import com.vio.io.protocols.vanilla.response.IApiResponse;
 import com.vio.server.ISocketServer;
 import com.vio.server.ServerException;
@@ -35,8 +34,8 @@ public class ApiRequestListener extends AbstractRequestListener<ISocketServer<IV
 
         ISocketAdapter socket = request.getSocket();
         log.info("Processing request" );
-        log.info( "Invokes count: " + request.getInvokes().size() );
-        for ( InterfaceInvocation invoke : request.getInvokes() ) {
+        log.info( "Invokes count: " + request.getChildren().size() );
+        for ( IAPIRequest invoke : request.getChildren() ) {
             log.info("Invoke id: " + invoke.getId() );
             log.info("Processing start time: " + new Date( new Date().getTime() ).toLocaleString() );
             long startTime = System.currentTimeMillis();

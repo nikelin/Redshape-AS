@@ -2,15 +2,15 @@ package com.vio.io.protocols.core;
 
 import com.vio.config.readers.ConfigReaderException;
 import com.vio.exceptions.ExceptionWithCode;
-import com.vio.io.protocols.readers.IRequestReader;
-import com.vio.io.protocols.readers.ReaderException;
-import com.vio.io.protocols.request.IRequest;
-import com.vio.io.protocols.response.IResponse;
-import com.vio.io.protocols.sources.input.BufferedInput;
-import com.vio.io.protocols.sources.input.InputStream;
-import com.vio.io.protocols.sources.output.OutputStream;
-import com.vio.io.protocols.writers.ResponseWriter;
-import com.vio.io.protocols.writers.WriterException;
+import com.vio.io.protocols.core.readers.IRequestReader;
+import com.vio.io.protocols.core.readers.ReaderException;
+import com.vio.io.protocols.core.request.IRequest;
+import com.vio.io.protocols.core.response.IResponse;
+import com.vio.io.protocols.core.sources.input.BufferedInput;
+import com.vio.io.protocols.core.sources.input.InputStream;
+import com.vio.io.protocols.core.sources.output.OutputStream;
+import com.vio.io.protocols.core.writers.ResponseWriter;
+import com.vio.io.protocols.core.writers.WriterException;
 import com.vio.utils.Registry;
 
 import java.util.Collection;
