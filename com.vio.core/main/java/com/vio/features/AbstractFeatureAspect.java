@@ -1,7 +1,10 @@
 package com.vio.features;
 
 import com.vio.features.validators.IFeatureValidator;
+import com.vio.io.protocols.request.IRequest;
+import com.vio.persistence.entities.requesters.IRequester;
 
+import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -16,6 +19,33 @@ public abstract class AbstractFeatureAspect<T extends IFeatureInteractor> implem
     private Set<IFeatureValidator> validators = new HashSet();
     private String featureName;
     private String aspectName;
+    public IRequest request;
+
+    public IInteractionResult interact( T requester ) throws InteractionException {
+        try {
+            for ( Method method : this.getClass().getMethods() ) {
+                if ( !method.getName().equals( "interact" ) ) {
+                    continue;
+                }
+
+                Class<?> parameterTypes[] = method.getParameterTypes();
+                if ( parameterTypes.length != 2 ) {
+                    continue;
+                }
+
+                if ( parameterTypes[0].isAssignableFrom( this.getRequest().getClass() )
+                        && parameterTypes[1].isAssignableFrom( requester.getClass() ) ) {
+                    return (InteractionResult) method.invoke( this, this.getRequest(), requester );
+                }
+            }
+
+            return this.processInteraction( requester );
+        } catch ( Throwable e ) {
+            throw new InteractionException();
+        }
+    }
+
+    abstract protected IInteractionResult processInteraction( T requester ) throws InteractionException;
 
     public void setFeatureName( String name ) {
         this.featureName = name;
@@ -76,6 +106,14 @@ public abstract class AbstractFeatureAspect<T extends IFeatureInteractor> implem
 
     public Collection<IFeatureValidator> getValidators() {
         return this.validators;
+    }
+
+    public void setRequest( IRequest request ) {
+        this.request = request;
+    }
+
+    public IRequest getRequest() {
+        return this.request;
     }
 
     public boolean isValid() {

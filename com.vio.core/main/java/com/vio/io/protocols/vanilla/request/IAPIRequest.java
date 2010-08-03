@@ -3,6 +3,7 @@ package com.vio.io.protocols.vanilla.request;
 import com.vio.io.protocols.request.IRequest;
 import com.vio.persistence.entities.requesters.IRequester;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -15,11 +16,11 @@ import java.util.List;
  */
 public interface IAPIRequest extends IRequest {
 
-    public void setBody( List<InterfaceInvocation> body );
+    public void setInvokes( Collection<InterfaceInvocation> body );
 
     public void addInvoke( InterfaceInvocation invoke );
 
-    public List<InterfaceInvocation> getBody();
+    public Collection<InterfaceInvocation> getInvokes();
 
     public IRequester getIdentity();
 

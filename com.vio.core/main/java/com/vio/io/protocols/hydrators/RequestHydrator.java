@@ -5,6 +5,7 @@ import com.vio.io.protocols.readers.ReaderException;
 import com.vio.io.protocols.request.RequestException;
 import com.vio.io.protocols.request.RequestHeader;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -14,6 +15,6 @@ public interface RequestHydrator<T extends IRequest> {
     
     public void parse( String data ) throws RequestException;
 
-    public List<RequestHeader> readHeaders() throws ReaderException;
+    public Collection<RequestHeader> readHeaders() throws ReaderException;
 
 }

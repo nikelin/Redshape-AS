@@ -1,9 +1,7 @@
 package com.vio.server;
 
 import com.vio.exceptions.ExceptionWithCode;
-import com.vio.io.protocols.readers.IRequestReader;
-import com.vio.io.protocols.response.IResponse;
-import com.vio.io.protocols.writers.IResponseWriter;
+import com.vio.io.protocols.core.IProtocol;
 import com.vio.server.policy.IPolicy;
 import com.vio.server.policy.PolicyType;
 
@@ -18,7 +16,7 @@ import java.util.Collection;
  * @package com.vio.server
  * @date May 4, 2010
  */
-public interface IServer<T extends IResponse> {
+public interface IServer {
 
     public void setHost( String host );
 
@@ -70,51 +68,28 @@ public interface IServer<T extends IResponse> {
     public boolean isInitialized();
 
     public void initialize() throws ServerException ;
-
-    /**
-     * Changes reading method for requests on given server
-     * @param reader
-     */
-    public void setReader( IRequestReader reader );
-
-    /**
-     * Return current reading method
-     * @return
-     */
-    public IRequestReader getReader();
-
-    /**
-     * Changes writing method for responses from given server
-     * @param writer
-     */
-    public void setWriter( IResponseWriter writer );
-
-    /**
-     * Returns responses writer for given server
-     * @return
-     */
-    public IResponseWriter getWriter();
-
+    
     /**
      * Get all policies related given type
      * @param type
      * @return
      */
-    public Collection<IPolicy> getPolicies( PolicyType type );
+    public Collection<IPolicy> getPolicies( Class<? extends IProtocol> context, PolicyType type );
 
     /**
      * Add new server policy
      * @param type Category what policy related on
      * @param policy Policy
      */
-    public void addPolicy( PolicyType type, IPolicy policy );
+    public void addPolicy( Class<? extends IProtocol> protocolContext, PolicyType type, IPolicy policy );
 
     /**
      * Activate all policies related to given type for correctness
      * @param type
      * @return
      */
-    public boolean checkPolicy( PolicyType type, Object object ) throws ExceptionWithCode;
+    public boolean checkPolicy( Class<? extends IProtocol> protocolContext, PolicyType type, Object object ) throws ExceptionWithCode;
 
-    public boolean checkPolicy( PolicyType type ) throws ExceptionWithCode;
+    public boolean checkPolicy( Class<? extends IProtocol> protocolContext, PolicyType type ) throws ExceptionWithCode;
+
 }

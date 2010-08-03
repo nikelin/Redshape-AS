@@ -2,7 +2,6 @@ package com.vio.applications.bootstrap.actions;
 
 import com.vio.applications.bootstrap.AbstractBootstrapAction;
 import com.vio.applications.bootstrap.Action;
-import com.vio.daemons.GarbageKillerTask;
 import com.vio.daemons.HeapMonitorTask;
 import com.vio.daemons.PluginsLoaderTask;
 import com.vio.utils.Constants;
@@ -24,7 +23,6 @@ public class MonitorsInit extends AbstractBootstrapAction {
 
     public void process() {
         Registry.getTicker().scheduleAtFixedRate( new HeapMonitorTask(), Constants.TIME_SECOND * 5, HeapMonitorTask.PERIOD );
-        Registry.getTicker().scheduleAtFixedRate( new GarbageKillerTask(), Constants.TIME_SECOND * 5, GarbageKillerTask.PERIOD );
         Registry.getTicker().scheduleAtFixedRate( new PluginsLoaderTask(), Constants.TIME_SECOND * 5, PluginsLoaderTask.PERIOD );
     }
 

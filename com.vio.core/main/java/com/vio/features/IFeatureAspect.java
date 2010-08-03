@@ -1,6 +1,7 @@
 package com.vio.features;
 
 import com.vio.features.validators.IFeatureValidator;
+import com.vio.io.protocols.request.IRequest;
 
 import java.util.Collection;
 
@@ -33,6 +34,10 @@ public interface IFeatureAspect<T extends IFeatureInteractor> {
 
     public Collection<IFeatureValidator> getValidators();
 
-    public boolean isValid(); 
+    public boolean isValid();
+
+    public IRequest getRequest();
+
+    public void setRequest( IRequest request );
 
 }

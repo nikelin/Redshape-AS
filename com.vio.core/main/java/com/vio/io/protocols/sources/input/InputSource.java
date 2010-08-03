@@ -9,4 +9,7 @@ package com.vio.io.protocols.sources.input;
  * @date Apr 1, 2010
  */
 public interface InputSource {
+
+    public java.io.InputStream getRawSource();
+
 }

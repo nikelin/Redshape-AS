@@ -4,9 +4,17 @@ import com.vio.applications.bootstrap.AbstractBootstrapAction;
 import com.vio.applications.bootstrap.Action;
 import com.vio.applications.bootstrap.BootstrapException;
 import com.vio.config.IServerConfig;
-import com.vio.server.IServer;
-import com.vio.server.ISocketServer;
-import com.vio.server.ServerFactory;
+import com.vio.io.protocols.core.IProtocol;
+import com.vio.io.protocols.core.IVersionsRegistry;
+import com.vio.io.protocols.core.VersionRegistryFactory;
+import com.vio.io.protocols.http.HttpProtocolVersion;
+import com.vio.io.protocols.http.HttpVersionsRegistry;
+import com.vio.io.protocols.http.impl.HttpProtocol_11;
+import com.vio.io.protocols.vanilla.VanillaProtocolVersion;
+import com.vio.io.protocols.vanilla.VanillaVersionsRegistry;
+import com.vio.io.protocols.vanilla.impl.VanillaProtocol_10;
+import com.vio.server.*;
+import com.vio.server.ServerFactoryFacade;
 import com.vio.server.policy.IPolicy;
 import com.vio.server.policy.PoliciesFactory;
 import com.vio.server.policy.PolicyType;
@@ -34,6 +42,8 @@ public class ServersInit extends AbstractBootstrapAction {
     public void process() throws BootstrapException {
         try {
             IServerConfig config = Registry.getServerConfig();
+
+            this.initProtocols();
 
             log.info(" Current servers to be initialized: " + config.getServersList() );
             for ( final String serverName : config.getServersList() ) {
@@ -63,9 +73,9 @@ public class ServersInit extends AbstractBootstrapAction {
             return;
         }
 
-        Class<? extends ISocketServer> clazz;
+        Class<? extends IServer> clazz;
         try {
-            clazz = (Class<? extends ISocketServer>) Class.forName( serverClass );
+            clazz = (Class<? extends IServer>) Class.forName( serverClass );
         } catch ( Throwable e ) {
             log.error( e.getMessage(),e );
             throw new Exception( serverClass + " server type for " + serverName + " is not supported by current version of the system.");
@@ -92,13 +102,34 @@ public class ServersInit extends AbstractBootstrapAction {
         int times = 0;
 
         try {
-            IServer server = ServerFactory.getInstance().createInstance( clazz, host, port, isSSLEnabled );
+            IServerFactory factory = ServerFactoryFacade.createFactory(clazz);
 
+            IProtocol protocolImpl = null;
+            if ( ISocketServer.class.isAssignableFrom( clazz ) ) {
+                protocolImpl = this.getProtocolImpl( serverName );
+                if ( protocolImpl == null ) {
+                    throw new InstantiationException();
+                }
+
+                ( (ISocketServerFactory) factory).setProtocol( protocolImpl );
+            }
+
+            IServer server = factory.newInstance( clazz, host, port, isSSLEnabled );
             for ( String policyClass : config.getServerPolicies( serverName ) )  {
-                log.info(config.getServerPolicyType( serverName, policyClass ) );
-                server.addPolicy(
+                Class<? extends IPolicy> policyClazz = (Class<? extends IPolicy>) Class.forName(policyClass);
+                log.info("Policy protocol class: " + config.getServerPolicyProtocol(serverName, policyClazz ) );
+                Class<? extends IProtocol> policyProtocolClazz = (Class<? extends IProtocol>) Class.forName( config.getServerPolicyProtocol(serverName, policyClazz ) );
+
+                if ( protocolImpl == null 
+                        || !protocolImpl.getProtocolVersion().equals( config.getServerPolicyProtocolVersion( serverName, policyClazz ) )
+                            || !policyProtocolClazz.isAssignableFrom( protocolImpl.getClass() ) ) {
+                    continue;
+                }
+
+                factory.addPolicy(
+                    policyProtocolClazz,
                     PolicyType.valueOf( config.getServerPolicyType( serverName, policyClass ) ),
-                    PoliciesFactory.getDefault().createPolicy( (Class<? extends IPolicy>) Class.forName(policyClass), server )
+                    PoliciesFactory.getDefault().createPolicy( policyClazz, server )
                 );
             }
 
@@ -120,6 +151,48 @@ public class ServersInit extends AbstractBootstrapAction {
         } catch ( Throwable e ) {
             log.error( e.getMessage(), e );
         }
+    }
+
+    protected IProtocol getProtocolImpl( String serverName ) throws InstantiationException {
+        try {
+            String protocolProviderClassName = Registry.getServerConfig().getServerProtocolProvider( serverName );
+            if ( protocolProviderClassName == null ) {
+                throw new InstantiationException();
+            }
+
+            log.info("Protocol Provider: " + protocolProviderClassName );
+
+            Class<? extends IVersionsRegistry> protocolProviderClass = (Class<? extends IVersionsRegistry>) Class.forName( protocolProviderClassName );
+            log.info("Provider class: " + protocolProviderClass.getCanonicalName() );
+
+            IVersionsRegistry protocolProvider = VersionRegistryFactory.getInstance(protocolProviderClass);
+            log.info("Versions registry class: " + protocolProvider.getClass().getCanonicalName() );
+            if ( protocolProvider == null ) {
+                throw new InstantiationException();
+            }
+
+            log.info("Version: " + Registry.getServerConfig().getServerProtocolVersion( serverName ) );
+
+            IProtocol protocol = protocolProvider.getByVersion( Registry.getServerConfig().getServerProtocolVersion( serverName ) );
+            if ( protocol == null ) {
+                throw new InstantiationException();
+            }
+            
+            log.info("Protocol class:" + protocol.getClass().getCanonicalName() );
+            return protocol;
+        } catch ( Throwable e ) {
+            log.info( e.getMessage(), e );
+            throw new InstantiationException();
+        }
+    }
+
+    private void initProtocols() throws InstantiationException {
+        log.info("Initialization");
+        VersionRegistryFactory.getInstance(VanillaVersionsRegistry.class)
+                  .addVersion(VanillaProtocolVersion.VERSION_1, new VanillaProtocol_10() );
+
+        VersionRegistryFactory.getInstance(HttpVersionsRegistry.class)
+                  .addVersion(HttpProtocolVersion.HTTP_11, new HttpProtocol_11() );        
     }
 
 }

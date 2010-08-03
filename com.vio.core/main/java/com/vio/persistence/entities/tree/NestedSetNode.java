@@ -62,7 +62,11 @@ abstract public class NestedSetNode<T extends TreeNodeEntity> extends AbstractEn
 		this.entityClass = entityClass;
 		this.fetcher = fetcher;
 	}
-	
+
+    public void setChildren( List<T> children ) {
+        this.children = children;
+    }
+
 	public List<T> getChildren() throws TreeNodeException {
 		return this.getChildren(false);
 	}

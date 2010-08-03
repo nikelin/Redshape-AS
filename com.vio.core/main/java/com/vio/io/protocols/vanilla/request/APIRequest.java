@@ -13,6 +13,8 @@ import com.vio.server.adapters.socket.client.ISocketAdapter;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -24,8 +26,8 @@ public class APIRequest implements IAPIRequest, Renderable {
 
     private IRequester identity;
     private ISocketAdapter socket;
-    private List<RequestHeader> headers = new ArrayList<RequestHeader>();
-    private List<InterfaceInvocation> body = new ArrayList<InterfaceInvocation>();
+    private Collection<RequestHeader> headers = new HashSet<RequestHeader>();
+    private Collection<InterfaceInvocation> body = new ArrayList<InterfaceInvocation>();
 
     public APIRequest() {}
 
@@ -43,7 +45,7 @@ public class APIRequest implements IAPIRequest, Renderable {
 
             hydrator.parse(data);
 
-            List<RequestHeader> headers = hydrator.readHeaders();
+            Collection<RequestHeader> headers = hydrator.readHeaders();
             if ( headers == null ) {
                 throw new RequestFormattingException(ErrorCode.EXCEPTION_MISSED_REQUEST_HEAD );
             }
@@ -61,7 +63,7 @@ public class APIRequest implements IAPIRequest, Renderable {
             if ( !isValidBody(body) ) {
                 throw new RequestProcessingException(ErrorCode.EXCEPTION_WRONG_REQUEST_BODY );
             }
-            request.setBody( body );
+            request.setInvokes( body );
 
             return request;
         } catch ( RequestException e ) {
@@ -74,7 +76,7 @@ public class APIRequest implements IAPIRequest, Renderable {
         }
     }
 
-    public void setHeaders( List<RequestHeader> headers ) {
+    public void setHeaders( Collection<RequestHeader> headers ) {
         this.headers = headers;
     }
 
@@ -88,7 +90,7 @@ public class APIRequest implements IAPIRequest, Renderable {
         return false;
     }
 
-    public List<RequestHeader> getHeaders() {
+    public Collection<RequestHeader> getHeaders() {
         return this.headers;
     }
 
@@ -102,7 +104,7 @@ public class APIRequest implements IAPIRequest, Renderable {
         return null;
     }
 
-    public void setBody( List<InterfaceInvocation> body ) {
+    public void setInvokes( Collection<InterfaceInvocation> body ) {
         this.body = body;
     }
 
@@ -114,7 +116,7 @@ public class APIRequest implements IAPIRequest, Renderable {
         this.body.add( invoke );
     }
 
-    public List<InterfaceInvocation> getBody() {
+    public Collection<InterfaceInvocation> getInvokes() {
         return this.body;
     }
 

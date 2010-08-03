@@ -2,9 +2,7 @@ package com.vio.server;
 
 import com.vio.config.readers.ConfigReaderException;
 import com.vio.exceptions.ExceptionWithCode;
-import com.vio.io.protocols.readers.IRequestReader;
-import com.vio.io.protocols.response.IResponse;
-import com.vio.io.protocols.writers.IResponseWriter;
+import com.vio.io.protocols.core.IProtocol;
 import com.vio.persistence.entities.requesters.IRequester;
 import com.vio.server.policy.IPolicy;
 import com.vio.server.policy.PolicyType;
@@ -20,7 +18,7 @@ import java.util.*;
  * Time: 12:59:31 AM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class AbstractServer<R extends IResponse> implements IServer<R> {
+public abstract class AbstractServer implements IServer {
     private final static Logger log = Logger.getLogger( AbstractServer.class );
 
     /**
@@ -37,32 +35,19 @@ public abstract class AbstractServer<R extends IResponse> implements IServer<R> 
 
     private Boolean sslEnabled;
 
-    private IRequestReader reader;
-
-    private IResponseWriter writer;
-
     private Map<String, Object> properties = new HashMap<String, Object>();
 
     private Map<PolicyType, Collection<IPolicy> > policies = new HashMap<PolicyType, Collection<IPolicy>>();
 
     /**
-    * Состояние запущенности сервера { @see com.vio.server.ApiServer State}
+    * Состояние запущенности сервера { @see com.vio.server.ApplicationServer State}
     */
     private ServerState state = ServerState.DOWN;
 
-    public AbstractServer() {}
-
-    public AbstractServer( String host, Integer port, Boolean isSSLEnabled,
-                                    IResponseWriter writer, IRequestReader reader ) {
+    public AbstractServer( String host, Integer port, Boolean isSSLEnabled ) {
         this.host = host;
         this.port = port;
-        this.writer = writer;
-        this.reader = reader;
         this.sslEnabled = isSSLEnabled;
-    }
-
-    public void initialize() throws ServerException {
-        return;
     }
 
     public void setHost( String host ) {
@@ -87,22 +72,6 @@ public abstract class AbstractServer<R extends IResponse> implements IServer<R> 
 
     public boolean isSSLEnabled() {
         return this.sslEnabled;
-    }
-
-    public IResponseWriter getWriter() {
-        return this.writer;
-    }
-
-    public void setWriter( IResponseWriter writer ) {
-        this.writer = writer;
-    }
-
-    public void setReader( IRequestReader reader ) {
-        this.reader = reader;
-    }
-
-    public IRequestReader getReader() {
-        return this.reader;
     }
 
     protected void changeState( ServerState state ) {
@@ -133,7 +102,7 @@ public abstract class AbstractServer<R extends IResponse> implements IServer<R> 
         this.initialized = state;
     }
 
-    public void addPolicy( PolicyType type, IPolicy policy ) {
+    public void addPolicy( Class<? extends IProtocol> protocolContext, PolicyType type, IPolicy policy ) {
         if ( this.policies.get(type) != null ) {
             this.policies.get(type).add(policy);
             return;
@@ -142,22 +111,22 @@ public abstract class AbstractServer<R extends IResponse> implements IServer<R> 
         this.policies.put( type, Arrays.asList( new IPolicy[] { policy } ) );
     }
 
-    public Collection<IPolicy> getPolicies( PolicyType type ) {
+    public Collection<IPolicy> getPolicies( Class<? extends IProtocol> protocolContext, PolicyType type ) {
         return this.policies.get(type);
     }
 
-    public boolean checkPolicy( PolicyType type  ) throws ExceptionWithCode {
-        return this.checkPolicy( type, null);
+    public boolean checkPolicy( Class<? extends IProtocol> protocolContext, PolicyType type  ) throws ExceptionWithCode {
+        return this.checkPolicy( protocolContext, type, null);
     }
 
-    public boolean checkPolicy( PolicyType type, Object data ) throws ExceptionWithCode {
+    public boolean checkPolicy( Class<? extends IProtocol> protocolContext, PolicyType type, Object data ) throws ExceptionWithCode {
         boolean result = true;
 
-        if ( this.getPolicies(type) == null || this.getPolicies(type).isEmpty() ) {
+        if ( this.getPolicies( protocolContext, type) == null || this.getPolicies(protocolContext, type).isEmpty() ) {
             return true;
         }
 
-        for ( IPolicy policy : this.getPolicies(type) ) {
+        for ( IPolicy policy : this.getPolicies( protocolContext, type) ) {
             policy.resetLastException();
             
             result = policy.applicate(data);

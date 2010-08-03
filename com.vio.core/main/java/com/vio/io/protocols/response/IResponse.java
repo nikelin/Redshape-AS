@@ -1,7 +1,9 @@
 package com.vio.io.protocols.response;
 
+import com.vio.io.protocols.request.RequestHeader;
 import com.vio.render.Renderable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,25 +16,31 @@ import java.util.Set;
  * To change this template use File | Settings | File Templates.
  */
 public interface IResponse extends Renderable {
-    String getId();
+    public String getId();
 
-    Response setId( String id );
+    public Response setId( String id );
 
-    Response addParam( String name, Object value );
+    public Response addParam( String name, Object value );
 
-    boolean hasParam( String name );
+    public boolean hasParam( String name );
 
-    Object getParam( String name);
+    public Object getParam( String name);
 
-    Map<String, Object> getParams();
+    public Map<String, Object> getParams();
 
-    Response addError( Object error );
+    public Collection<RequestHeader> getHeaders();
 
-    Set<Object> getErrors();
+    public void setHeaders( Collection<RequestHeader> headers );
 
-    Response addErrors( List<String> errors );
+    public void addHeader( RequestHeader header );
 
-    Response addErrors( String[] errors );
+    public Response addError( Object error );
 
-    String toString();
+    public Set<Object> getErrors();
+
+    public Response addErrors( List<String> errors );
+
+    public Response addErrors( String[] errors );
+
+    public String toString();
 }

@@ -5,11 +5,13 @@ import com.vio.persistence.entities.Entity;
 import com.vio.persistence.entities.Nullable;
 import com.vio.utils.BaseReflectionUtil;
 import com.vio.utils.ReflectionUtil;
-import com.vio.utils.StringUtils;
-import org.apache.commons.beanutils.PropertyUtils;
+import com.vio.utils.beans.Property;
+import com.vio.utils.beans.PropertyUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.exception.ConstraintViolationException;
 
 import javax.persistence.*;
+import java.beans.IntrospectionException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
@@ -67,7 +69,15 @@ public class Manager {
     public <T extends Entity> T save(T object ) throws ManagerException {
         return this.save( object, false );
     }
-    
+
+    /**
+     * @TODO Optimize
+     * @param object
+     * @param doNestedSave
+     * @param <T>
+     * @return
+     * @throws ManagerException
+     */
     public <T extends Entity> T save( T object, boolean doNestedSave ) throws ManagerException {
         try {
             if ( doNestedSave ) {
@@ -76,7 +86,10 @@ public class Manager {
 
             Manager m = object.getDAO();
             T record = m.find( object );
-            if ( object.equals( record ) ) {
+
+            log.info( "Object class: " + object.getClass().getName() );
+            log.info( record == null ? "Not found" : "Id of object: " + record.getId()  );
+            if ( record != null ) {
                 object.setId( record.getId() );
 
                 this.beginTransaction();
@@ -103,7 +116,14 @@ public class Manager {
             Collection<Entity> nList = list.getClass().newInstance();
             for ( Object item : list ) {
                 if ( Entity.class.isAssignableFrom( item.getClass() ) && item != null ) {
-                    nList.add( this.save( (Entity) item, true ) );
+                    final Entity toSave = (Entity) item;
+                    try {
+                        nList.add( this.save( toSave, true ) );
+                    } catch ( ManagerException e ) {
+                        if ( e.getCause().equals(ConstraintViolationException.class) ) {
+                            nList.add( this.find( toSave ) );
+                        }
+                    }
                 }
             }
 
@@ -116,35 +136,38 @@ public class Manager {
         }
     }
 
-    private boolean isNestedEntity( Class clazz ) {
+    private static boolean isNestedEntity( Class clazz ) {
         return Collection.class.isAssignableFrom( clazz ) ||
             Entity.class.isAssignableFrom( clazz );
     }
 
     private boolean isNulled( Object object ) {
-        return !Nullable.class.isAssignableFrom( object.getClass() ) || !( (Nullable) object ).isNull();
+        return object == null || ( Nullable.class.isAssignableFrom( object.getClass() ) && ( (Nullable) object ).isNull() );
     }
 
     private void _saveNestedUnsavedEntities( Entity object ) throws ManagerException {
-        for ( Field field : object.getClass().getDeclaredFields() ) {
-           try {
-                if ( this.isNestedEntity( field.getType() ) && !Modifier.isStatic( field.getModifiers() ) ) {
-                    Object nested = PropertyUtils.getProperty( object, field.getName() );
+        try {
+            Map<String, Property> properties = PropertyUtils.getInstance().getPropertiesMap( object.getClass() );
+            for ( String propertyName : properties.keySet()  ) {
+               try {
+                    Object nested = properties.get(propertyName).get(object);
 
-                    if ( nested != null && ( this.isNulled(nested) ) ) {
-
+                    if ( isNestedEntity( properties.get(propertyName).getType() ) && !isNulled(nested) ) {
+                        log.info("Field " + propertyName + " value is: " + nested );
                         if ( Collection.class.isAssignableFrom( nested.getClass() ) ) {
                             nested = this._saveNestedUnsavedEntities( (Collection) nested );
                         } else {
                             nested = this.save( (Entity) nested, true );
                         }
 
-                        PropertyUtils.setProperty( object, field.getName(), nested );
+                        properties.get(propertyName).set( object, nested );
                     }
+                } catch ( Throwable e ) {
+                    log.error( e.getMessage(), e );
                 }
-            } catch ( Throwable e ) {
-                log.error( e.getMessage(), e );
             }
+        } catch ( IntrospectionException e ) {
+            throw new ManagerException();
         }
     }
 
@@ -206,7 +229,7 @@ public class Manager {
             Entity object = this.findOneBy(name, value);
             if ( object == null ) {
                 object = this.getEntityClass().newInstance();
-                PropertyUtils.setProperty(object, name, value);
+                PropertyUtils.getInstance().getProperty( object.getClass(), name ).set(object, value);
 
                 object.save();
             }
@@ -451,6 +474,7 @@ public class Manager {
     public String getEntityName() {
         return getEntityName( this.getEntityClass() );
     }
+
 
     public static String getEntityName( Class<? extends Entity> clazz ) {
         javax.persistence.Entity annon = clazz.getAnnotation( javax.persistence.Entity.class );

@@ -1,6 +1,7 @@
 package com.vio.features;
 
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,7 +12,9 @@ import java.util.Collection;
  */
 public interface IFeatureInteractorsGroup<T extends IFeatureInteractor> {
 
-    public Collection<T> getInteractors();
+    public Set<T> getInteractors();
+
+    public void setInteractors( Set<T> interactors );
 
     public void addInteractor( T interactor );
 

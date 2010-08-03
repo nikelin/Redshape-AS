@@ -14,15 +14,15 @@ import java.util.Collection;
  * Time: 12:04:41 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface ResponseRenderer extends Renderer<IResponse> {
+public interface ResponseRenderer<T extends IResponse> extends Renderer<T> {
 
     public Object render( ExceptionWithCode e ) throws RendererException;
 
-    public Object render( IResponse e ) throws RendererException;
+    public Object render( T response ) throws RendererException;
 
-    public byte[] renderBytes( ExceptionWithCode e ) throws RendererException;
+    public byte[] renderBytes( ExceptionWithCode exception ) throws RendererException;
 
-    public byte[] renderBytes( IResponse e ) throws RendererException;
+    public byte[] renderBytes( T response ) throws RendererException;
 
-    public byte[] renderBytes( Collection<? extends IResponse> e ) throws RendererException;
+    public byte[] renderBytes( Collection<? extends T> response ) throws RendererException;
 }

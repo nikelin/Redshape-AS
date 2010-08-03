@@ -1,5 +1,6 @@
 package com.vio.io.protocols.response;
 
+import com.vio.io.protocols.request.RequestHeader;
 import com.vio.io.protocols.vanilla.renderers.JSONResponseRenderer;
 import com.vio.io.protocols.renderers.ResponseRenderer;
 import com.vio.render.RendererException;
@@ -15,6 +16,7 @@ public class Response implements IResponse {
 
     private ResponseRenderer renderer;
     private Map<String, Object> params = new HashMap<String, Object>();
+    private Collection<RequestHeader> headers = new HashSet<RequestHeader>();
     private Set<Object> errors = new HashSet<Object>();
     private String id;
 
@@ -88,6 +90,18 @@ public class Response implements IResponse {
 
     protected ResponseRenderer getRenderer() {
         return this.renderer;
+    }
+
+    public Collection<RequestHeader> getHeaders() {
+        return this.headers;
+    }
+
+    public void addHeader( RequestHeader header ) {
+        this.headers.add(header);
+    }
+
+    public void setHeaders( Collection<RequestHeader> headers ) {
+        this.headers = headers;
     }
 
     @Override

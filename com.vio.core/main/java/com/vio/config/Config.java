@@ -379,4 +379,30 @@ public class Config extends AbstractConfig implements IServerConfig, IApiServerC
     public String getLibrariesPath() throws ConfigReaderException {
         return this.getReader().read("//paths/path[@name='libraries']/@path");
     }
+
+    @Override
+    public boolean isAnonymousRequestsAllowed( Class<?> protocolContext ) throws ConfigReaderException {
+        return Boolean.valueOf( this.getReader().read("//servers/sharedSettings/security/protocols/" + protocolContext.getName() + "/isAnonymousRequestsAllowed") );
+    }
+
+    @Override
+    public String getServerProtocolProvider( String serverName ) throws ConfigReaderException {
+        return this.getReader().read("//servers/" + serverName + "/protocol/providerClass");
+    }
+
+    @Override
+    public String getServerProtocolVersion( String serverName ) throws ConfigReaderException {
+        return this.getReader().read("//servers/" + serverName + "/protocol/version");
+    }
+
+    @Override
+    public String getServerPolicyProtocol( String serverName, Class<?> policyClass ) throws ConfigReaderException {
+        return this.getReader().read("//servers/" + serverName + "/policies/policy[@class='" + policyClass.getCanonicalName() + "']/protocolClass");
+    }
+
+    @Override
+    public String getServerPolicyProtocolVersion( String serverName, Class<?> policyClass ) throws ConfigReaderException {
+        return this.getReader().read("//servers/" + serverName + "/policies[@class='" + policyClass.getCanonicalName() + "']/protocolVersion");
+    }
+
 }

@@ -1,19 +1,16 @@
 package com.vio.server;
 
-import com.vio.api.dispatchers.Dispatcher;
+import com.vio.api.dispatchers.IDispatcher;
 import com.vio.exceptions.ExceptionWithCode;
-import com.vio.io.protocols.vanilla.response.IApiResponse;
-import com.vio.io.protocols.hydrators.RequestHydrator;
-import com.vio.io.protocols.renderers.ResponseRenderer;
-import com.vio.io.protocols.readers.IRequestReader;
+import com.vio.io.protocols.core.IProtocol;
+import com.vio.io.protocols.response.IResponse;
 import com.vio.io.protocols.sources.output.BufferedOutput;
-import com.vio.io.protocols.writers.IResponseWriter;
 import com.vio.exceptions.ErrorCode;
 import com.vio.server.adapters.socket.client.ISocketAdapter;
 import com.vio.server.adapters.socket.server.IServerSocketAdapter;
 import com.vio.server.adapters.socket.SocketAdapterFactory;
-import com.vio.server.listeners.IConnectionListener;
-import com.vio.server.listeners.IRequestListener;
+import com.vio.server.listeners.connection.IConnectionListener;
+import com.vio.server.listeners.request.IRequestListener;
 import com.vio.server.listeners.IRequestsProcessor;
 import com.vio.server.policy.IPolicy;
 import com.vio.server.policy.PolicyType;
@@ -31,18 +28,12 @@ import java.util.*;
  * @package com.vio.server
  * @date Apr 14, 2010
  */
-public abstract class AbstractSocketServer<T extends RequestHydrator,
-                                     V extends ResponseRenderer,
-                                     R extends IApiResponse>
-                extends AbstractServer<R> implements ISocketServer<T, V, R> {
-    final private static Logger log = Logger.getLogger( ApiServer.class );
+public abstract class AbstractSocketServer<T extends IProtocol, D extends IDispatcher, R extends IResponse>
+                extends AbstractServer implements ISocketServer<T, D, R> {
+    final private static Logger log = Logger.getLogger( ApplicationServer.class );
 
     public static int EXPIRATION_TIME = Constants.TIME_SECOND * 1000;
     public static int CONNECTION_KEEP_ALIVE = Constants.TIME_SECOND * 25;
-
-    private V responseRenderer;
-
-    private T requestHydrator;
 
     /**
      * Объект адаптера для работы с запросами поступающими на сокет
@@ -51,12 +42,13 @@ public abstract class AbstractSocketServer<T extends RequestHydrator,
      */
     private IServerSocketAdapter socket;
 
+    private T protocol;
 
     /**
      * Основной контроллер запросов; выполняет предобработку после которой
      * передаёт выполнение конкретному, связанному с текущим запросом, контроллеру
      */
-    private Dispatcher dispatcher;
+    private D dispatcher;
 
     private IRequestListener requestListener;
 
@@ -74,15 +66,11 @@ public abstract class AbstractSocketServer<T extends RequestHydrator,
             String host,
             Integer port,
             Boolean isSSLEnabled,
-            IResponseWriter writer,
-            IRequestReader reader,
-            T hydrator,
-            V renderer ) throws ServerException
+            T protocol ) throws ServerException
     {
-        super( host, port, isSSLEnabled, writer, reader );
+        super( host, port, isSSLEnabled );
 
-        this.requestHydrator = hydrator;
-        this.responseRenderer = renderer;
+        this.protocol = protocol;
     }
 
     @Override
@@ -119,7 +107,7 @@ public abstract class AbstractSocketServer<T extends RequestHydrator,
 
                 this.setLocalSocket(socket);
 
-                if ( this.checkPolicy( PolicyType.ON_CONNECTION ) ) {
+                if ( this.checkPolicy( this.getProtocol().getClass(), PolicyType.ON_CONNECTION ) ) {
                     this.getConnectionListener().onConnection(socket);
                 } else {
                     this.refuseConnection(socket);
@@ -130,24 +118,9 @@ public abstract class AbstractSocketServer<T extends RequestHydrator,
         }
     }
 
-    public void setRequestHydrator( T hydrator ) {
-        this.requestHydrator = hydrator;
-    }
-
-    public T getRequestHydrator() {
-        return this.requestHydrator;
-    }
-
-    public void setResponseRenderer( V renderer ) {
-        this.responseRenderer = renderer;
-    }
-
-    public V getResponseRenderer() {
-        return this.responseRenderer;
-    }
-
     public void setConnectionListener( IConnectionListener listener ) {
         this.connectionListener = listener;
+        listener.setServer(this);
     }
 
     public IConnectionListener getConnectionListener() {
@@ -156,6 +129,7 @@ public abstract class AbstractSocketServer<T extends RequestHydrator,
 
     public void setRequestListener( IRequestListener listener ) {
         this.requestListener = listener;
+        listener.setContext(this);
     }
 
     public IRequestListener getRequestListener() {
@@ -226,17 +200,17 @@ public abstract class AbstractSocketServer<T extends RequestHydrator,
         this.changeState( ServerState.DOWN );
     }
 
-    public Dispatcher getDispatcher() {
+    public D getDispatcher() {
     	return this.dispatcher;
     }
 
-    public void setDispatcher( Dispatcher dispatcher ) {
+    public void setDispatcher( D dispatcher ) {
     	this.dispatcher = dispatcher;
     }
 
     public void writeResponse( ISocketAdapter socket, R response ) throws ServerException {
         try {
-            this.getWriter().writeResponse( new BufferedOutput( socket.getOutputStream() ), response );
+            this.getProtocol().writeResponse( new BufferedOutput( socket.getOutputStream() ), response );
         } catch ( Throwable e ) {
             throw new ServerException( ErrorCode.EXCEPTION_INTERNAL );
         }
@@ -244,7 +218,7 @@ public abstract class AbstractSocketServer<T extends RequestHydrator,
 
     public void writeResponse( ISocketAdapter socket, ExceptionWithCode exception ) {
         try {
-            this.getWriter().writeResponse( new BufferedOutput(socket.getOutputStream()), exception );
+            this.getProtocol().writeResponse( new BufferedOutput(socket.getOutputStream()), exception );
         } catch ( Throwable e ) {
             log.info( e.getMessage(), e );
             log.info("Cannot write exception!");
@@ -253,7 +227,7 @@ public abstract class AbstractSocketServer<T extends RequestHydrator,
 
     public void writeResponse( ISocketAdapter socket, Collection<R> response ) throws ServerException {
         try {
-            this.getWriter().writeResponse( new BufferedOutput( socket.getOutputStream() ), response );
+            this.getProtocol().writeResponse( new BufferedOutput( socket.getOutputStream() ), response );
         } catch ( Throwable e ) {
             log.info( e.getMessage(), e );
             throw new ServerException( ErrorCode.EXCEPTION_INTERNAL );
@@ -266,7 +240,7 @@ public abstract class AbstractSocketServer<T extends RequestHydrator,
 
     public void refuseConnection( ISocketAdapter socket ) throws ServerException {
         try {
-            this.getWriter().writeResponse( new BufferedOutput( socket.getOutputStream() ), new ServerException( ErrorCode.EXCEPTION_RECONNECT ) );
+            this.getProtocol().writeResponse( new BufferedOutput( socket.getOutputStream() ), new ServerException( ErrorCode.EXCEPTION_RECONNECT ) );
 
             socket.close();
         } catch ( Throwable e ) {
@@ -288,6 +262,14 @@ public abstract class AbstractSocketServer<T extends RequestHydrator,
 
     public void setRequestListener( Class<? extends IRequestListener> listener ) {
         this.requestsListener = listener;
+    }
+
+    public void setProtocol( T protocol ) {
+        this.protocol = protocol;
+    }
+
+    public T getProtocol() {
+        return this.protocol;
     }
 
 }

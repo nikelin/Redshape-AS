@@ -12,7 +12,7 @@ import java.util.*;
 /**
  * @Refactoring Move to render
  */
-public class JSONResponseRenderer extends JSONRenderer<IResponse> implements ResponseRenderer {
+public class JSONResponseRenderer extends JSONRenderer<IResponse> implements ResponseRenderer<IResponse> {
     private static final Logger log = Logger.getLogger( JSONResponseRenderer.class );
 
     public String render( ExceptionWithCode e ) {

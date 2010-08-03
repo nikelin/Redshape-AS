@@ -24,7 +24,7 @@ import java.util.*;
  * @package com.vio.server
  * @date May 4, 2010
  */
-public class RMIServer extends AbstractServer<Response> {
+public class RMIServer extends AbstractServer {
     public static final Logger log = Logger.getLogger( RMIServer.class );
     public static final String DEFAULT_INTERFACES_PACKAGE = "com.vio.remoting.interfaces.impl";
 
@@ -76,10 +76,11 @@ public class RMIServer extends AbstractServer<Response> {
     }
 
     public RMIServer( String host, Integer port ) {
-        super();
+        this(host, port, false);
+    }
 
-        this.host = host;
-        this.port = port;
+    public RMIServer( String host, Integer port, Boolean isSSLEnabled ) {
+        super( host,port, isSSLEnabled );
     }
 
     public void setHost( String host ) {

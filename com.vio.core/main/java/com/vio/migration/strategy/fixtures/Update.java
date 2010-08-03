@@ -3,7 +3,9 @@ package com.vio.migration.strategy.fixtures;
 import com.vio.migration.MigrationException;
 import com.vio.migration.strategy.MigrationStrategy;
 import com.vio.persistence.entities.Entity;
+import com.vio.persistence.managers.ManagerException;
 import org.apache.log4j.Logger;
+import org.hibernate.exception.ConstraintViolationException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,8 +20,14 @@ public class Update implements MigrationStrategy<Iterable<Entity>> {
     public void execute( Iterable<Entity> objects, int from, int to ) throws MigrationException {
         try {
             for ( Entity entity : objects ) {
-               log.info("Saving entity " + entity.getClass().getName() + "...");
-               entity.getDAO().save(entity, true);
+               try {
+                   log.info("Saving entity " + entity.getClass().getName() + "...");
+                   entity.getDAO().save(entity, true);
+               } catch ( ManagerException e ) {
+                   if ( e.getCause().getClass().equals( ConstraintViolationException.class ) ) {
+                        log.error("Duplicate entry... Ignoring.");
+                   }
+               }
             }
         } catch ( Throwable e ) {
             log.error( e.getMessage(), e );

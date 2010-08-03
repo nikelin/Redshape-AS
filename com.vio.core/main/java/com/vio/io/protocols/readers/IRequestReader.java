@@ -1,6 +1,6 @@
 package com.vio.io.protocols.readers;
 
-import com.vio.io.protocols.vanilla.request.APIRequest;
+import com.vio.io.protocols.request.IRequest;
 import com.vio.io.protocols.sources.input.InputSource;
 
 /**
@@ -11,8 +11,8 @@ import com.vio.io.protocols.sources.input.InputSource;
  * @package com.vio.api.io.readers
  * @date Apr 1, 2010
  */
-public interface IRequestReader<T extends InputSource> extends IReader<T, APIRequest> {
+public interface IRequestReader<T extends InputSource, V extends IRequest> extends IReader<T, V> {
 
-    public APIRequest readRequest( T source) throws ReaderException;
+    public V readRequest( T source) throws ReaderException;
 
 }

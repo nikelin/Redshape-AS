@@ -1,5 +1,7 @@
 package com.vio.features.annotations;
 
+import com.vio.io.protocols.core.IProtocol;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

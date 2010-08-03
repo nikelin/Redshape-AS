@@ -1,8 +1,6 @@
 package com.vio.io.protocols.sources.input;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 /**
  * WebCam Project
@@ -13,22 +11,28 @@ import java.io.InputStreamReader;
  * @date Apr 1, 2010
  */
 public class BufferedInput implements InputStream {
-    private BufferedReader source;
+    private BufferedReader reader;
+    private java.io.InputStream source;
 
     public BufferedInput( java.io.InputStream source ) {
-        this.source = new BufferedReader( new InputStreamReader( source )  );
+        this.source = source;
+        this.reader = new BufferedReader( new InputStreamReader( source )  );
     }
 
     public String readLine() throws IOException {
-        return this.source.readLine();
+        return this.reader.readLine();
     }
 
     public int read() throws IOException {
-        return this.source.read();
+        return this.reader.read();
     }
 
     public void close() throws IOException {
-        this.source.close();
+        this.reader.close();
+    }
+
+    public java.io.InputStream getRawSource() {
+        return this.source;
     }
 
 }

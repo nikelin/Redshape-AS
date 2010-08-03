@@ -6,7 +6,7 @@
     <name>Eluvian Project</name>
     <version>1.0.0A</version>
     <modules>
-        <module>com.vio.app</module>
+        <module>eluvian.app</module>
         <module>com.vio.core</module>
         <module>com.vio.jms</module>
         <module>com.vio.scheduler</module>
