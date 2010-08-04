@@ -3,8 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.redshape</groupId>
     <artifactId>eluvian</artifactId>
-    <name>Redshaper Application Server</name>
+    <name>Redshaper AS</name>
     <version>1.0.0A</version>
+    
     <modules>
         <module>com.vio.core</module>
         <module>com.vio.jms</module>
@@ -17,7 +18,7 @@
 
     <properties>
         <hibernate-core-version>3.5.1-Final</hibernate-core-version>
-        <project-basedir>{$basedir}</project-basedir>
+        <project-build-path>/home/nikelin/workspace/vio/api/build</project-build-path>
     </properties>
 
     <repositories>
@@ -50,15 +51,17 @@
             </properties>
         </profile>
     </profiles>
+
     <developers>
         <developer>
             <id>1</id>
             <name>Cyril A. Karpenko</name>
-            <email>lord1990@gmail.com</email>
+            <email>nikelin@redshape.ru</email>
             <url>http://nikelin.livejournal.com</url>
             <timezone>UTF+03:00</timezone>
         </developer>
     </developers>
+    
     <organization>
         <name>RedShape</name>
         <url>http://redshape.ru</url>
@@ -76,6 +79,24 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                  <execution>
+                    <id>copy-dependencies</id>
+                    <phase>package</phase>
+                    <goals>
+                      <goal>copy-dependencies</goal>
+                    </goals>
+                    <configuration>
+                        <outputDirectory>${project-build-path}/libs</outputDirectory>
+                        <useRepositoryLayout>${groupId}.${artifactId}.${extension}</useRepositoryLayout>
+                    </configuration>
+                  </execution>
+                </executions>
+              </plugin>
         </plugins>
     </build>
 

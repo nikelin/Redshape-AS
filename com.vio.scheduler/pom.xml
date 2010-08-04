@@ -35,26 +35,6 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                  <skip>true</skip>
-                </configuration>
-                <executions>
-                  <execution>
-                    <id>surefire-it</id>
-                    <phase>integration-test</phase>
-                    <goals>
-                      <goal>test</goal>
-                    </goals>
-                    <configuration>
-                      <skip>false</skip>
-                    </configuration>
-                  </execution>
-                </executions>
-              </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3</version>
                 <executions>
@@ -66,28 +46,23 @@
                     </execution>
                 </executions>
                 <configuration>
-                  <archive>
-                    <manifestFile>${basedir}/main/resources/META-INF/MANIFEST.MF</manifestFile>
-                  </archive>
+                    <forceCreation>true</forceCreation>
+                    <outputDirectory>${project-build-path}</outputDirectory>
+                    <archive>
+                        <index>true</index>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>com.vio.Main</mainClass>
+                            <classpathPrefix>libs/</classpathPrefix>
+                            <customClasspathLayout>$${artifact.groupId}.$${artifact.artifactId}.$${artifact.extension}</customClasspathLayout>
+                        </manifest>
+                    </archive>
                 </configuration>
-              </plugin>
+            </plugin>
         </plugins>
         <extensions>
         </extensions>
-   </build>
-
-    <repositories>
-        <repository>
-            <id>maven-repo</id>
-            <name>Maven Central Repository</name>
-            <url>http://repo1.maven.org/maven2</url>
-        </repository>
-        <repository>
-            <id>java-net-repository</id>
-            <name>Java.net Repository</name>
-            <url>http://download.java.net/maven/2</url>
-        </repository>
-    </repositories>
+    </build>
 
     <dependencies>
         <dependency>

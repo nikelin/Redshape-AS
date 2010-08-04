@@ -18,7 +18,7 @@
 
     <build>
         <defaultGoal>package</defaultGoal>
-        <finalName>cmd</finalName>
+        <finalName>runner</finalName>
         <directory>${project.basedir}/../build</directory>
         <sourceDirectory>${project.basedir}/main/java</sourceDirectory>
 
@@ -36,11 +36,19 @@
                     </execution>
                 </executions>
                 <configuration>
-                  <archive>
-                    <manifestFile>${project.basedir}/main/resources/META-INF/MANIFEST.MF</manifestFile>
-                  </archive>
+                    <forceCreation>true</forceCreation>
+                    <outputDirectory>${project-build-path}</outputDirectory>
+                    <archive>
+                        <index>true</index>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>com.vio.Main</mainClass>
+                            <classpathPrefix>libs/</classpathPrefix>
+                            <customClasspathLayout>$${artifact.groupId}.$${artifact.artifactId}.$${artifact.extension}</customClasspathLayout>
+                        </manifest>
+                    </archive>
                 </configuration>
-            </plugin>
+              </plugin>
           </plugins>
     </build>
 

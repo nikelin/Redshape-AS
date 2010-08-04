@@ -16,7 +16,7 @@
 
     <build>
         <defaultGoal>package</defaultGoal>
-        <finalName>messaging</finalName>
+        <finalName>jms</finalName>
         <sourceDirectory>${project.basedir}/main/java</sourceDirectory>
         <directory>${project.basedir}/../build/libs</directory>
         <resources>
