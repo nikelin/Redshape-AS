@@ -8,7 +8,7 @@
         <path name="plugins" path="vendors" />
         <path name="locales" path="i18n" />
         <path name="security" path="security" />
-        <path name="libraries" path="%ROOT%/build/libs:%ROOT%/build"/>
+        <path name="libraries" path="/home/nikelin/workspace/vio/api/build/libs:/home/nikelin/workspace/vio/api/build"/>
     </paths>
     <servers>
         <sharedSettings>
@@ -20,11 +20,22 @@
                 <port>55234</port>
                 <host>0.0.0.0</host>
                 <enabled>true</enabled>
-                <storeKey>redshape</storeKey>
+                <storeKey>cambalanet</storeKey>
                 <storeFile>certificates.jks</storeFile>
                 <reconnectTimes>10</reconnectTimes>
                 <reconnectDelay>30</reconnectDelay>
             </ssl>
+
+            <security>
+                <protocols>
+                    <VanillaProtocol>
+                        <isAnonymousRequestsAllowed>false</isAnonymousRequestsAllowed>
+                    </VanillaProtocol>
+                    <HttpProtocol>
+                        <isAnonymousRequestsAllowed>true</isAnonymousRequestsAllowed>
+                    </HttpProtocol>
+                </protocols>
+            </security>
         </sharedSettings>
         <rmi class="com.vio.server.RMIServer">
             <status>on</status>
@@ -37,18 +48,22 @@
                 <INTERFACES_PACKAGE>com.vio.remoting.interfaces.impl</INTERFACES_PACKAGE>
             </properties>
         </rmi>
-        <api class="com.vio.server.ApiServer">
+        <api class="com.vio.server.ApplicationServer">
             <status>on</status>
             <host>0.0.0.0</host>
             <port>55234</port>
             <policies>
-                <policy class="com.vio.api.security.AuthenticationPolicy" type="ON_REQUEST"/>
+                <policy class="com.vio.api.security.AuthenticationPolicy"
+                        type="ON_REQUEST">
+                    <protocolClass>com.vio.io.protocols.vanilla.IVanillaProtocol</protocolClass>
+                    <protocolVersion>VERSION_1</protocolVersion>
+                </policy>
             </policies>
             <ssl>
                 <port>55234</port>
                 <host>0.0.0.0</host>
                 <enabled>true</enabled>
-                <storeKey>redshape</storeKey>
+                <storeKey>cambalanet</storeKey>
                 <storeFile>certificates.jks</storeFile>
             </ssl>
             <sessions>
@@ -56,12 +71,22 @@
                 <allowPersistentSessions>true</allowPersistentSessions>
             </sessions>
 
+            <protocol>
+                <version>VERSION_1</version>
+                <providerClass>com.vio.io.protocols.vanilla.VanillaVersionsRegistry</providerClass>
+            </protocol>
+
             <reconnect>false</reconnect>
         </api>
-        <http class="com.vio.server.HTTPServer">
+        <http class="com.vio.server.ApplicationServer">
              <status>on</status>
              <host>0.0.0.0</host>
              <port>81</port>
+
+            <protocol>
+                <version>HTTP/1.1</version>
+                <providerClass>com.vio.io.protocols.http.HttpVersionsRegistry</providerClass>
+            </protocol>
         </http>
         <jms>
             <status>on</status>

@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+
+<config>
+    <paths>
+        <path name="logs" path="resources/logs" />
+        <path name="plugins" path="vendors/plugins" />
+        <path name="locales" path="resources/i18n" />
+        <path name="security" path="resources/security" />
+    </paths>
+    <server>
+        <mode>DEVELOPMENT</mode>
+        <host>localhost</host>
+        <port>55233</port>
+        <ssl>
+            <port>55233</port>
+            <host>localhost</host>
+            <enabled>true</enabled>
+            <storeKey>sda2dqwdqw23r23rf23</storeKey>
+            <storeFile>resources/security/cacerts.jsk</storeFile>
+        </ssl>
+        <sessions>
+            <lifetime>900</lifetime>
+            <allowPersistentSessions>true</allowPersistentSessions>
+        </sessions>
+    </server>
+
+    <applications package="com.vio.api.interfaces">
+        <auth class="AuthInterface">
+            <action name="login">
+                <params>
+                    <param name="email">
+                        <validators>
+                            <NotEmpty/>
+                        </validators>
+                    </param>
+                    <param name="password">
+                        <validators>
+                            <NotEmpty/>
+                        </validators>
+                    </param>
+                </params>
+                <permissions>
+                    <permission name="PERMISSION_CREATE_USER_SESSION" value="true"/>
+                </permissions>
+            </action>
+            <action name="register">
+                <params>
+                    <param name="email">
+                        <validators>
+                            <NotEmpty/>
+                        </validators>
+                    </param>
+                    <param name="password">
+                        <validators>
+                            <NotEmpty/>
+                        </validators>
+                    </param>
+                </params>
+                <permissions>
+                    <permission name="PERMISSION_REGISTER_USER" value="true"/>
+                </permissions>
+            </action>
+        </auth>
+    </applications>
+</config>
