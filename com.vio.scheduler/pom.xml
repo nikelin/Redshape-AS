@@ -91,6 +91,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>quartz</groupId>
+            <artifactId>quartz</artifactId>
+            <version>1.5.2</version>
+        </dependency>
+        
+        <dependency>
             <groupId>com.vio</groupId>
             <artifactId>core</artifactId>
             <version>1.0.0A</version>

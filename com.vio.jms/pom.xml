@@ -10,7 +10,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.vio</groupId>
+    <groupId>com.redshape</groupId>
     <artifactId>jms</artifactId>
     <packaging>jar</packaging>
 
@@ -26,5 +26,13 @@
           </resource>
         </resources>
     </build>
+    
+    <dependencies>
+        <dependency>
+          <groupId>org.apache.activemq</groupId>
+          <artifactId>activemq-core</artifactId>
+          <version>5.3.1</version>
+       </dependency>
+    </dependencies>
 
 </project>

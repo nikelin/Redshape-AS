@@ -7,10 +7,11 @@
         <groupId>com.redshape</groupId>
         <version>1.0.0A</version>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
 
     <name>Commands runner</name>
-    <groupId>com.vio</groupId>
+    <groupId>com.redshape</groupId>
     <artifactId>cmd</artifactId>
     <version>1.0.0A</version>
     <packaging>jar</packaging>
@@ -45,8 +46,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.vio</groupId>
-            <artifactId>app</artifactId>
+            <groupId>com.redshape</groupId>
+            <artifactId>core</artifactId>
             <version>1.0.0A</version>
         </dependency>
     </dependencies>

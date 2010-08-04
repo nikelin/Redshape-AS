@@ -1,7 +1,6 @@
 package com.vio.validators.request;
 
-import com.vio.io.protocols.vanilla.request.InterfaceInvocation;
-
+import com.vio.io.protocols.vanilla.request.IAPIRequest;
 import java.util.List;
 
 /**
@@ -11,6 +10,6 @@ public interface InvokeValidator {
 
     public List<String> getMessages();
 
-    public boolean validate( InterfaceInvocation request );
+    public boolean validate( IAPIRequest request );
 
 }

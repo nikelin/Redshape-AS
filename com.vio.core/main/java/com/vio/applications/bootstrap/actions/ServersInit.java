@@ -3,6 +3,7 @@ package com.vio.applications.bootstrap.actions;
 import com.vio.applications.bootstrap.AbstractBootstrapAction;
 import com.vio.applications.bootstrap.Action;
 import com.vio.applications.bootstrap.BootstrapException;
+import com.vio.config.IApiServerConfig;
 import com.vio.config.IServerConfig;
 import com.vio.io.protocols.core.IProtocol;
 import com.vio.io.protocols.core.IVersionsRegistry;
@@ -66,7 +67,7 @@ public class ServersInit extends AbstractBootstrapAction {
     }
 
     private void initServerInstance( String serverName ) throws Throwable {
-        final IServerConfig config = Registry.getServerConfig();
+        final IApiServerConfig config = Registry.getApiServerConfig();
 
         String serverClass = config.getServerClass(serverName);
         if ( serverClass == null || serverClass.isEmpty() ) {
@@ -133,21 +134,8 @@ public class ServersInit extends AbstractBootstrapAction {
                 );
             }
 
-            boolean success = false;
-            do {
-                try {
-                    log.info("Starting " + serverName + " server...");
-                    server.startListen();
-                    log.info("Server " + serverName + " has been successfully started!");
-                    success = true;
-                } catch ( Throwable e ) {
-                    times++;
-
-                    try {
-                        Thread.sleep( reconnectionDelay * Constants.TIME_SECOND );
-                    } catch ( InterruptedException ie ) {}
-                }
-            } while( !success && isReconnectEnabled && times < reconnectionLimit );
+            log.info("Starting " + serverName + " server...");
+            server.startListen();
         } catch ( Throwable e ) {
             log.error( e.getMessage(), e );
         }
@@ -155,7 +143,9 @@ public class ServersInit extends AbstractBootstrapAction {
 
     protected IProtocol getProtocolImpl( String serverName ) throws InstantiationException {
         try {
-            String protocolProviderClassName = Registry.getServerConfig().getServerProtocolProvider( serverName );
+            final IApiServerConfig config = Registry.getApiServerConfig();
+
+            String protocolProviderClassName = config.getServerProtocolProvider( serverName );
             if ( protocolProviderClassName == null ) {
                 throw new InstantiationException();
             }
@@ -171,9 +161,9 @@ public class ServersInit extends AbstractBootstrapAction {
                 throw new InstantiationException();
             }
 
-            log.info("Version: " + Registry.getServerConfig().getServerProtocolVersion( serverName ) );
+            log.info("Version: " + config.getServerProtocolVersion( serverName ) );
 
-            IProtocol protocol = protocolProvider.getByVersion( Registry.getServerConfig().getServerProtocolVersion( serverName ) );
+            IProtocol protocol = protocolProvider.getByVersion( config.getServerProtocolVersion( serverName ) );
             if ( protocol == null ) {
                 throw new InstantiationException();
             }

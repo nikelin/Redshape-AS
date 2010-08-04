@@ -3,16 +3,16 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.redshape</groupId>
     <artifactId>eluvian</artifactId>
-    <name>Eluvian Project</name>
+    <name>Redshaper Application Server</name>
     <version>1.0.0A</version>
     <modules>
-        <module>eluvian.app</module>
         <module>com.vio.core</module>
         <module>com.vio.jms</module>
         <module>com.vio.scheduler</module>
         <module>com.vio.utils</module>
         <module>com.vio.cmd</module>
     </modules>
+    
     <packaging>pom</packaging>
 
     <properties>
@@ -63,12 +63,9 @@
         <name>RedShape</name>
         <url>http://redshape.ru</url>
     </organization>
+
     <build>
-        <defaultGoal>compile</defaultGoal>
-        <finalName>bootstrap</finalName>
-        <outputDirectory>build</outputDirectory>
         <plugins>
-  
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -79,167 +76,15 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
-            
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                  <skip>true</skip>
-                </configuration>
-                <executions>
-                  <execution>
-                    <id>surefire-it</id>
-                    <phase>integration-test</phase>
-                    <goals>
-                      <goal>test</goal>
-                    </goals>
-                    <configuration>
-                      <skip>false</skip>
-                    </configuration>
-                  </execution>
-                </executions>
-              </plugin>
-
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-assembly-plugin</artifactId>
-              <version>2.2-beta-5</version>
-              <configuration>
-                  <outputDirectory>assemblies</outputDirectory>
-                  <finalName>libs</finalName>
-                  <appendAssemblyId>false</appendAssemblyId>
-                  <descriptorRefs>
-                      <descriptorRef>jar-with-dependencies</descriptorRef>
-                  </descriptorRefs>
-              </configuration>
-            </plugin>            
         </plugins>
-   </build>
+    </build>
+
    <dependencies>
-	<dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava-collections</artifactId>
-            <version>r03</version>
-        </dependency>
-       
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.7</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.4.2</version>
-        </dependency>
-        
-	<dependency>
-            <groupId>xalan</groupId>
-            <artifactId>xalan</artifactId>
-            <version>2.7.1</version>
-        </dependency>
-        
-	<dependency>
-          <groupId>quartz</groupId>
-          <artifactId>quartz</artifactId>
-          <version>1.5.2</version>
-        </dependency>
-        
-	<dependency>
-          <groupId>org.apache.activemq</groupId>
-          <artifactId>activemq-core</artifactId>
-          <version>5.3.1</version>
-        </dependency>
-       
-	<dependency>
-		<groupId>net.sf.json-lib</groupId>
-		<artifactId>json-lib</artifactId>
-		<version>2.3</version>
-		<classifier>jdk15</classifier>
-	</dependency>
-       
-	 <dependency>
-            <groupId>xmlbeans</groupId>
-            <artifactId>xmlbeans</artifactId>
-            <version>2.3.0</version>
-        </dependency>
-        
-	<dependency>
-            <groupId>com.thoughtworks.xstream</groupId>
-            <artifactId>xstream</artifactId>
-            <version>1.2.2</version>
-        </dependency>
-        
 	<dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.14</version>
         </dependency>
-        
-	<dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>${hibernate-core-version}</version>
-        </dependency>
-        
-	<dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-c3p0</artifactId>
-            <version>${hibernate-core-version}</version>
-        </dependency>
-        
-	<dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>${hibernate-core-version}</version>
-        </dependency>
-        
-	<dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-annotations</artifactId>
-            <version>${hibernate-core-version}</version>
-        </dependency>
-        
-	<dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.9</version>
-        </dependency>
-       
-	<dependency>
-            <groupId>javassist</groupId>
-            <artifactId>javassist</artifactId>
-            <version>3.3</version>
-        </dependency>
-
-       <dependency>
-           <artifactId>lucene-core</artifactId>
-           <groupId>org.apache.lucene</groupId>
-           <version>3.0.2</version>
-       </dependency>
-
-        <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-            <version>1.4.1</version>
-        </dependency>
-
-       <dependency>
-           <groupId>net.sf.ehcache</groupId>
-           <artifactId>ehcache-core</artifactId>
-           <version>2.1.0</version>
-       </dependency>
-
-       <dependency>
-           <groupId>org.apache.hadoop</groupId>
-           <artifactId>hadoop-core</artifactId>
-           <version>0.20.2</version>
-       </dependency>
     </dependencies>
-    
-    <dependencyManagement>
-        <dependencies>
-        </dependencies>
-    </dependencyManagement>
 </project>
 

@@ -35,4 +35,14 @@ public interface IApiServerConfig extends IServerConfig {
     public List<String> getCommandsPackages() throws ConfigReaderException;
 
     public List<String> getFeaturesPackages() throws ConfigReaderException;
+
+    public boolean isAnonymousRequestsAllowed( Class<?> protocolContext ) throws ConfigReaderException;
+
+    public String getServerProtocolProvider( String serverName ) throws ConfigReaderException;
+
+    public String getServerProtocolVersion( String serverName ) throws ConfigReaderException;
+
+    public String getServerPolicyProtocol( String serverName, Class<?> policyClass ) throws ConfigReaderException;
+    
+    public String getServerPolicyProtocolVersion( String serverName, Class<?> policyClass ) throws ConfigReaderException;
 }

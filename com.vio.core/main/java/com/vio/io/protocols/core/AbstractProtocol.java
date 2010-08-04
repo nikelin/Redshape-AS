@@ -63,7 +63,7 @@ public abstract class AbstractProtocol<T extends IRequest, V extends IResponse> 
     }
 
     public boolean isAnonymousAllowed() throws ConfigReaderException {
-        return Registry.getServerConfig().isAnonymousRequestsAllowed( this.getClass() );
+        return Registry.getApiServerConfig().isAnonymousRequestsAllowed( this.getClass() );
     }
 
     public boolean isSupported( IProtocolVersion version ) {
