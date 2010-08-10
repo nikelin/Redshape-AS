@@ -7,10 +7,6 @@ import com.vio.config.readers.ConfigReaderException;
 import com.vio.exceptions.ExceptionWithCode;
 import com.vio.persistence.entities.requesters.IRequester;
 import com.vio.server.adapters.socket.client.ISocketAdapter;
-import com.vio.server.listeners.connection.IConnectionListener;
-import com.vio.server.listeners.request.IRequestListener;
-import com.vio.server.listeners.IRequestsProcessor;
-
 import java.util.Collection;
 
 /**
@@ -28,16 +24,6 @@ public interface ISocketServer<T extends IProtocol, D extends IDispatcher, R ext
 
     public boolean isConnectionExpired( IRequester user ) throws ConfigReaderException;
 
-    public void setConnectionListener( IConnectionListener listener );
-
-    public IConnectionListener getConnectionListener();
-
-    public void setRequestListener( Class<? extends IRequestListener> listener );
-
-    public void setRequestsProcessor( IRequestsProcessor processor );
-
-    public IRequestsProcessor getRequestsProcessor();
-
     public D getDispatcher();
 
     public ISocketAdapter getLocalSocket();
@@ -46,10 +32,9 @@ public interface ISocketServer<T extends IProtocol, D extends IDispatcher, R ext
 
     public void closeLocalSocket();
 
-    public IRequestListener createRequestListener( ) throws ServerException;
-
     public void refuseConnection( ISocketAdapter socket ) throws ServerException;
 
+    @Deprecated
     public R createResponseObject() throws ServerException;
 
     public void writeResponse( ISocketAdapter socket, R response ) throws ServerException;

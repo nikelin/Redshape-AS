@@ -1,5 +1,7 @@
 package com.vio.tasks;
 
+import com.vio.persistence.entities.IEntity;
+
 /**
  * WebCam Project
  *
@@ -8,13 +10,9 @@ package com.vio.tasks;
  * @package com.vio.tasks
  * @date May 3, 2010
  */
-public interface IPersistentTask extends ITask {
+public interface IPersistentTask extends ITask, IEntity {
     public static Integer DEFAULT_EXECUTION_DELAY = ITask.DEFAULT_EXECUTION_DELAY;
     public static Integer DEFAULT_MAX_EXECUTION_DELAY = ITask.DEFAULT_MAX_EXECUTION_DELAY;
-        
-    public void remove() throws Throwable;
-
-    public void save() throws Throwable;
 
     public Integer getExecutionFails();    
 

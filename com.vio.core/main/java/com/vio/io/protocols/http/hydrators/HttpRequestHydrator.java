@@ -5,6 +5,7 @@ import com.vio.io.protocols.core.request.RequestException;
 import com.vio.io.protocols.core.request.RequestHeader;
 
 import java.util.*;
+import org.apache.log4j.Logger;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,11 +15,14 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class HttpRequestHydrator implements IHttpRequestHydrator {
+    private static final Logger log = Logger.getLogger( HttpRequestHydrator.class );
     private String[] protocolInfo;
     private String[] headers;
     private String body;
 
+    @Override
     public void parse( String data ) throws RequestException {
+        log.info(data);
         int headersEnd = data.indexOf("\n\n");
 
         this.headers = data.substring( 0, headersEnd - data.length() ).split("\n");
@@ -31,6 +35,7 @@ public class HttpRequestHydrator implements IHttpRequestHydrator {
         this.body = data.substring( headersEnd );
     }
 
+    @Override
     public Map<String, String> readParams() {
         Map<String, String> result = new HashMap<String, String>();
         result.putAll( this.processQS( this.readUri() ) );
@@ -56,6 +61,7 @@ public class HttpRequestHydrator implements IHttpRequestHydrator {
         return result;
     }
 
+    @Override
     public Collection<RequestHeader> readHeaders() {
         Set<RequestHeader> result = new HashSet<RequestHeader>();
         for ( String headerItem : headers ) {
@@ -70,18 +76,22 @@ public class HttpRequestHydrator implements IHttpRequestHydrator {
         return result;
     }
 
+    @Override
     public String readUri() {
         return this.protocolInfo[1];
     }
 
+    @Override
     public String readBody() {
         return this.body;
     }
 
+    @Override
     public String readProtocolVersion() {
         return this.protocolInfo[this.protocolInfo.length - 1];
     }
 
+    @Override
     public String readMethod() {
         return this.protocolInfo[0];
     }

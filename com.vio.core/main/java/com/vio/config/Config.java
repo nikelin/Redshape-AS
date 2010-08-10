@@ -405,4 +405,14 @@ public class Config extends AbstractConfig implements IServerConfig, IApiServerC
         return this.getReader().read("//servers/" + serverName + "/policies[@class='" + policyClass.getCanonicalName() + "']/protocolVersion");
     }
 
+    @Override
+    public String getServerProtocolClientsProcessor( String serverName, Class<?> protocolContext ) throws ConfigReaderException {
+        return this.getReader().read("//servers/" + serverName + "/protocol/clientsProcessor");
+    }
+
+    @Override
+    public String getServerProtocolRequestsProcessor( String serverName, Class<?> protocolContext ) throws ConfigReaderException {
+        return this.getReader().read("//servers/" + serverName + "/protocol/requestsProcessor");
+    }
+
 }

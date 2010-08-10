@@ -1,13 +1,6 @@
 package com.vio.io.protocols.http;
 
 import com.vio.io.protocols.core.AbstractVersionsRegistry;
-import com.vio.io.protocols.core.IProtocol;
-import com.vio.io.protocols.core.IProtocolVersion;
-import com.vio.io.protocols.core.IVersionsRegistry;
-import org.apache.commons.collections.map.MultiKeyMap;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,6 +11,7 @@ import java.util.Map;
  */
 public class HttpVersionsRegistry extends AbstractVersionsRegistry<IHttpProtocol, HttpProtocolVersion> {
 
+    @Override
     public boolean isSupports( HttpProtocolVersion version ) {
         try {
             return this.getByVersion(version) != null;
@@ -26,10 +20,12 @@ public class HttpVersionsRegistry extends AbstractVersionsRegistry<IHttpProtocol
         }
     }
 
+    @Override
     public HttpProtocolVersion getLastVersion() {
         return HttpProtocolVersion.LAST_VERSION;
     }
 
+    @Override
     public HttpProtocolVersion getVersion( String name ) {
         return HttpProtocolVersion.valueOf(name);
     }

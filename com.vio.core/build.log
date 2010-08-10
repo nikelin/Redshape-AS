@@ -1,0 +1,119 @@
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Redshaper Framework
+[INFO]    task-segment: [package]
+[INFO] ------------------------------------------------------------------------
+[INFO] [resources:resources {execution: default-resources}]
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] Copying 0 resource
+[WARNING] While downloading xmlbeans:xmlbeans:2.3.0
+  This artifact has been relocated to org.apache.xmlbeans:xmlbeans:2.3.0.
+
+
+[INFO] [compiler:compile {execution: default-compile}]
+[INFO] Nothing to compile - all classes are up to date
+[INFO] [resources:testResources {execution: default-testResources}]
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /archives/work/projects/redshape/server/com.vio.core/src/test/resources
+[INFO] [compiler:testCompile {execution: default-testCompile}]
+[INFO] No sources to compile
+[INFO] [surefire:test {execution: default-test}]
+[INFO] Surefire report directory: /archives/work/projects/redshape/server/com.vio.core/../build/libs/surefire-reports
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+There are no tests to run.
+
+Results :
+
+Tests run: 0, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] [jar:jar {execution: default-jar}]
+[INFO] Building jar: /archives/work/projects/redshape/server/com.vio.core/../build/libs/core-1.0.0A.jar
+[INFO] [dependency:copy-dependencies {execution: copy-dependencies}]
+[INFO] ant-1.6.5.jar already exists in destination.
+[INFO] antlr-2.7.6.jar already exists in destination.
+[INFO] aopalliance-1.0.jar already exists in destination.
+[INFO] asm-3.1.jar already exists in destination.
+[INFO] c3p0-0.9.1.jar already exists in destination.
+[INFO] cglib-2.2.jar already exists in destination.
+[INFO] guava-annotations-r03.jar already exists in destination.
+[INFO] guava-base-r03.jar already exists in destination.
+[INFO] guava-collections-r03.jar already exists in destination.
+[INFO] guava-primitives-r03.jar already exists in destination.
+[INFO] jms-1.0.0A.jar already exists in destination.
+[INFO] remoting-1.0.0A.jar already exists in destination.
+[INFO] utils-1.0.0A.jar already exists in destination.
+[INFO] xstream-1.2.2.jar already exists in destination.
+[INFO] commons-beanutils-1.8.0.jar already exists in destination.
+[INFO] commons-cli-1.2.jar already exists in destination.
+[INFO] commons-codec-1.3.jar already exists in destination.
+[INFO] commons-collections-3.2.1.jar already exists in destination.
+[INFO] commons-el-1.0.jar already exists in destination.
+[INFO] commons-httpclient-3.0.1.jar already exists in destination.
+[INFO] commons-lang-2.4.jar already exists in destination.
+[INFO] commons-logging-1.1.1.jar already exists in destination.
+[INFO] commons-logging-api-1.1.jar already exists in destination.
+[INFO] commons-net-2.0.jar already exists in destination.
+[INFO] dom4j-1.6.1.jar already exists in destination.
+[INFO] hsqldb-1.8.0.10.jar already exists in destination.
+[INFO] javassist-3.3.jar already exists in destination.
+[INFO] activation-1.1.jar already exists in destination.
+[INFO] mail-1.4.1.jar already exists in destination.
+[INFO] jta-1.1.jar already exists in destination.
+[INFO] junit-4.7.jar already exists in destination.
+[INFO] log4j-1.2.14.jar already exists in destination.
+[INFO] mysql-connector-java-5.1.9.jar already exists in destination.
+[INFO] jets3t-0.7.1.jar already exists in destination.
+[INFO] ehcache-core-2.1.0.jar already exists in destination.
+[INFO] ezmorph-1.0.6.jar already exists in destination.
+[INFO] json-lib-2.3-jdk15.jar already exists in destination.
+[INFO] kfs-0.3.jar already exists in destination.
+[INFO] activeio-core-3.1.2.jar already exists in destination.
+[INFO] activemq-core-5.3.1.jar already exists in destination.
+[INFO] kahadb-5.3.1.jar already exists in destination.
+[INFO] activemq-protobuf-1.0.jar already exists in destination.
+[INFO] geronimo-j2ee-management_1.0_spec-1.0.jar already exists in destination.
+[INFO] geronimo-j2ee-management_1.1_spec-1.0.1.jar already exists in destination.
+[INFO] geronimo-jms_1.1_spec-1.1.1.jar already exists in destination.
+[INFO] hadoop-core-0.20.2.jar already exists in destination.
+[INFO] lucene-core-3.0.2.jar already exists in destination.
+[INFO] xmlbeans-2.3.0.jar already exists in destination.
+[INFO] core-3.1.1.jar already exists in destination.
+[INFO] hibernate-annotations-3.5.1-Final.jar already exists in destination.
+[INFO] hibernate-c3p0-3.5.1-Final.jar already exists in destination.
+[INFO] hibernate-commons-annotations-3.2.0.Final.jar already exists in destination.
+[INFO] hibernate-core-3.5.1-Final.jar already exists in destination.
+[INFO] hibernate-entitymanager-3.5.1-Final.jar already exists in destination.
+[INFO] hibernate-jpa-2.0-api-1.0.0.Final.jar already exists in destination.
+[INFO] jetty-6.1.14.jar already exists in destination.
+[INFO] jetty-util-6.1.14.jar already exists in destination.
+[INFO] jsp-2.1-6.1.14.jar already exists in destination.
+[INFO] jsp-api-2.1-6.1.14.jar already exists in destination.
+[INFO] servlet-api-2.5-6.1.14.jar already exists in destination.
+[INFO] org.osgi.core-4.1.0.jar already exists in destination.
+[INFO] slf4j-api-1.4.2.jar already exists in destination.
+[INFO] slf4j-log4j12-1.4.2.jar already exists in destination.
+[INFO] spring-beans-2.5.6.jar already exists in destination.
+[INFO] spring-context-2.5.6.jar already exists in destination.
+[INFO] spring-core-2.5.6.jar already exists in destination.
+[INFO] spring-osgi-core-1.2.1.jar already exists in destination.
+[INFO] spring-osgi-io-1.2.1.jar already exists in destination.
+[INFO] oro-2.0.8.jar already exists in destination.
+[INFO] quartz-1.5.2.jar already exists in destination.
+[INFO] stax-api-1.0.1.jar already exists in destination.
+[INFO] jasper-compiler-5.5.12.jar already exists in destination.
+[INFO] jasper-runtime-5.5.12.jar already exists in destination.
+[INFO] serializer-2.7.1.jar already exists in destination.
+[INFO] xalan-2.7.1.jar already exists in destination.
+[INFO] xml-apis-1.3.04.jar already exists in destination.
+[INFO] xmlenc-0.52.jar already exists in destination.
+[INFO] xpp3_min-1.1.3.4.O.jar already exists in destination.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESSFUL
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 12 seconds
+[INFO] Finished at: Thu Aug 05 14:50:49 MSD 2010
+[INFO] Final Memory: 23M/43M
+[INFO] ------------------------------------------------------------------------

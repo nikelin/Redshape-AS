@@ -16,10 +16,10 @@ import com.vio.io.protocols.vanilla.VanillaVersionsRegistry;
 import com.vio.io.protocols.vanilla.impl.VanillaProtocol_10;
 import com.vio.server.*;
 import com.vio.server.ServerFactoryFacade;
+import com.vio.server.processors.connection.IClientsProcessor;
 import com.vio.server.policy.IPolicy;
 import com.vio.server.policy.PoliciesFactory;
 import com.vio.server.policy.PolicyType;
-import com.vio.utils.Constants;
 import com.vio.utils.Registry;
 
 import org.apache.log4j.*;
@@ -40,6 +40,7 @@ public class ServersInit extends AbstractBootstrapAction {
         this.markCritical();
     }
 
+    @Override
     public void process() throws BootstrapException {
         try {
             IServerConfig config = Registry.getServerConfig();
@@ -118,7 +119,6 @@ public class ServersInit extends AbstractBootstrapAction {
             IServer server = factory.newInstance( clazz, host, port, isSSLEnabled );
             for ( String policyClass : config.getServerPolicies( serverName ) )  {
                 Class<? extends IPolicy> policyClazz = (Class<? extends IPolicy>) Class.forName(policyClass);
-                log.info("Policy protocol class: " + config.getServerPolicyProtocol(serverName, policyClazz ) );
                 Class<? extends IProtocol> policyProtocolClazz = (Class<? extends IProtocol>) Class.forName( config.getServerPolicyProtocol(serverName, policyClazz ) );
 
                 if ( protocolImpl == null 
@@ -150,25 +150,22 @@ public class ServersInit extends AbstractBootstrapAction {
                 throw new InstantiationException();
             }
 
-            log.info("Protocol Provider: " + protocolProviderClassName );
-
             Class<? extends IVersionsRegistry> protocolProviderClass = (Class<? extends IVersionsRegistry>) Class.forName( protocolProviderClassName );
-            log.info("Provider class: " + protocolProviderClass.getCanonicalName() );
-
+            
             IVersionsRegistry protocolProvider = VersionRegistryFactory.getInstance(protocolProviderClass);
-            log.info("Versions registry class: " + protocolProvider.getClass().getCanonicalName() );
             if ( protocolProvider == null ) {
                 throw new InstantiationException();
             }
-
-            log.info("Version: " + config.getServerProtocolVersion( serverName ) );
 
             IProtocol protocol = protocolProvider.getByVersion( config.getServerProtocolVersion( serverName ) );
             if ( protocol == null ) {
                 throw new InstantiationException();
             }
+
+            Class<? extends IClientsProcessor> processorClass = (Class<? extends IClientsProcessor>)Class.forName( config.getServerProtocolClientsProcessor( serverName, protocol.getClass() ) );
+            protocol.setClientsProcessor( processorClass.newInstance() );
+            protocol.setRequestsProcessor( Class.forName( config.getServerProtocolRequestsProcessor( serverName, protocol.getClass() ) ) );
             
-            log.info("Protocol class:" + protocol.getClass().getCanonicalName() );
             return protocol;
         } catch ( Throwable e ) {
             log.info( e.getMessage(), e );

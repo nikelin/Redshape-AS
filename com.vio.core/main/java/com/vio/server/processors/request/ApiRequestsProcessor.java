@@ -1,4 +1,4 @@
-package com.vio.server.listeners.request;
+package com.vio.server.processors.request;
 
 import com.vio.api.dispatchers.vanilla.IVanillaDispatcher;
 import com.vio.io.protocols.vanilla.IVanillaProtocol;
@@ -7,7 +7,6 @@ import com.vio.io.protocols.vanilla.response.IApiResponse;
 import com.vio.server.ISocketServer;
 import com.vio.server.ServerException;
 import com.vio.server.adapters.socket.client.ISocketAdapter;
-import com.vio.server.listeners.IRequestsProcessor;
 import org.apache.log4j.Logger;
 
 import java.util.Date;
@@ -19,18 +18,24 @@ import java.util.Date;
  * Time: 3:38:54 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ApiRequestListener extends AbstractRequestListener<ISocketServer<IVanillaProtocol<IAPIRequest, IApiResponse>, IVanillaDispatcher, IApiResponse>, IApiResponse, IAPIRequest, ISocketAdapter> implements IRequestsProcessor<IAPIRequest> {
-    private static final Logger log = Logger.getLogger( ApiRequestListener.class);
+public class ApiRequestsProcessor
+        extends AbstractRequestsProcessor<
+                    ISocketServer<
+                        IVanillaProtocol<IAPIRequest, IApiResponse, ?>,
+                        IVanillaDispatcher,
+                        IApiResponse
+                    >, IApiResponse, IAPIRequest, ISocketAdapter> {
+    
+    private static final Logger log = Logger.getLogger( ApiRequestsProcessor.class);
 
     @Override
     public void onRequest( IAPIRequest request ) throws ServerException {
         if ( !this.authenticateRequest(request) ) {
             log.info("Failed authentication");
-            this.markInvalid();
-            return;
+            throw new ServerException();
         }
 
-        IApiResponse response = this.getContext().createResponseObject();
+        IApiResponse response = this.getServerContext().createResponseObject();
 
         ISocketAdapter socket = request.getSocket();
         log.info("Processing request" );
@@ -39,18 +44,18 @@ public class ApiRequestListener extends AbstractRequestListener<ISocketServer<IV
             log.info("Invoke id: " + invoke.getId() );
             log.info("Processing start time: " + new Date( new Date().getTime() ).toLocaleString() );
             long startTime = System.currentTimeMillis();
-            IApiResponse currentResponse = this.getContext().createResponseObject();
+            IApiResponse currentResponse = this.getServerContext().createResponseObject();
             currentResponse.setId( invoke.getId() );
 
             try {
-                this.getContext().getDispatcher().dispatch(
-                							request.getIdentity(),
-                							invoke,
-                							currentResponse );
+                this.getServerContext().getDispatcher().dispatch(
+                                                        request.getIdentity(),
+                                                        invoke,
+                                                        currentResponse );
 
                 if ( request.isAsync() ) {
                     log.info("Sending response to client in async mode...");
-                    this.getContext().writeResponse( socket, currentResponse );
+                    this.getServerContext().writeResponse( socket, currentResponse );
                 } else {
                     response.addResponse( currentResponse );
                 }
@@ -58,14 +63,14 @@ public class ApiRequestListener extends AbstractRequestListener<ISocketServer<IV
                 log.info("Processing time: " + ( System.currentTimeMillis() - startTime ) );
             } catch ( ServerException e ) {
                 log.error( e.getMessage(), e );
-                this.getContext().writeResponse( socket, e );
+                this.getServerContext().writeResponse( socket, e );
             }
         }
 
         if ( !request.isAsync() ) {
             log.info("Sending response in synchoronized mode...");
             log.info( socket.getClass() );
-            this.getContext().writeResponse( socket, response.getResponses() );
+            this.getServerContext().writeResponse( socket, response.getResponses() );
         }
     }
 

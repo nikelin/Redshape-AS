@@ -1,6 +1,6 @@
 package com.vio.io.protocols.vanilla.readers;
 
-import com.vio.io.protocols.vanilla.request.APIRequest;
+import com.vio.io.protocols.vanilla.request.InterfaceInvoke;
 import com.vio.io.protocols.vanilla.hyndrators.IApiRequestHydrator;
 import com.vio.io.protocols.core.readers.IRequestReader;
 import com.vio.io.protocols.core.readers.ReaderException;
@@ -28,11 +28,12 @@ public class APIRequestReader implements IRequestReader<BufferedInput, IAPIReque
         return this.hydrator;
     }
 
+    @Override
     public IAPIRequest readRequest( BufferedInput source ) throws ReaderException {
         try {
             String data = source.readLine();
             if ( data != null && !data.isEmpty() ) {
-                return APIRequest.buildRequest( data, this.getHydrator() );
+                return InterfaceInvoke.buildRequest( data, this.getHydrator() );
             }
 
             return null;

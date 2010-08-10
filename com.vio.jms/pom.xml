@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <name>JMS Subsystem</name>
     <parent>
-        <artifactId>eluvian</artifactId>
+        <artifactId>as</artifactId>
         <groupId>com.redshape</groupId>
         <version>1.0.0A</version>
     </parent>

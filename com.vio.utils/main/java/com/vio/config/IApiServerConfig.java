@@ -45,4 +45,8 @@ public interface IApiServerConfig extends IServerConfig {
     public String getServerPolicyProtocol( String serverName, Class<?> policyClass ) throws ConfigReaderException;
     
     public String getServerPolicyProtocolVersion( String serverName, Class<?> policyClass ) throws ConfigReaderException;
+
+    public String getServerProtocolClientsProcessor( String serverName, Class<?> protocolContext ) throws ConfigReaderException;
+
+    public String getServerProtocolRequestsProcessor( String serverName, Class<?> protocolContext ) throws ConfigReaderException;
 }

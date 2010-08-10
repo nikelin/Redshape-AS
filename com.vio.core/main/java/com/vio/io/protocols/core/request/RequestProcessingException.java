@@ -12,7 +12,7 @@ import com.vio.exceptions.ErrorCode;
 public class RequestProcessingException extends RequestException {
 
     public RequestProcessingException() {
-        super( ErrorCode.EXCEPTION_INTERNAL );
+        super( ErrorCode.EXCEPTION_REQUEST_PROCESSING_ERROR );
     }
 
     public RequestProcessingException( ErrorCode code ) {

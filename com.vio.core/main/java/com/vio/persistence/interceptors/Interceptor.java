@@ -1,6 +1,6 @@
 package com.vio.persistence.interceptors;
 
-import com.vio.persistence.entities.Entity;
+import com.vio.persistence.entities.IEntity;
 import com.vio.persistence.managers.ManagerException;
 
 import org.hibernate.EmptyInterceptor;
@@ -23,18 +23,18 @@ public class Interceptor extends EmptyInterceptor {
 
     public Boolean isTransient( Object entity ) {
         try {
-            return this.isTransient( (Entity) entity);
+            return this.isTransient( (IEntity) entity);
         } catch ( Throwable e ) {
             return true;
         }
     }
 
-    public Boolean isTransient( Entity entity ) throws ManagerException {
+    public Boolean isTransient( IEntity entity ) throws ManagerException {
         if ( entity.getId() != null ) {
             return false;
         }
 
-        Entity record = entity.getDAO().find( entity );
+        IEntity record = entity.getDAO().find( entity );
         if ( !entity.equals(record) ) {
             return true;
         }

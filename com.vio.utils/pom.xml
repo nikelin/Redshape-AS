@@ -5,7 +5,7 @@
     <name>Core Utilities</name>
 
     <parent>
-        <artifactId>eluvian</artifactId>
+        <artifactId>as</artifactId>
         <groupId>com.redshape</groupId>
         <version>1.0.0A</version>
     </parent>

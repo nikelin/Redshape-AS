@@ -1,4 +1,4 @@
-package com.vio.server.listeners.request;
+package com.vio.server.processors.request;
 
 import com.vio.api.dispatchers.http.IHttpDispatcher;
 import com.vio.io.protocols.http.IHttpProtocol;
@@ -18,18 +18,28 @@ import java.util.Date;
  * Time: 8:21:41 PM
  * To change this template use File | Settings | File Templates.
  */
-public class HttpRequestListener extends AbstractRequestListener<ISocketServer<IHttpProtocol<IHttpRequest, IHttpResponse>, IHttpDispatcher, IHttpResponse>, IHttpResponse, IHttpRequest, ISocketAdapter> {
-    private static final Logger log = Logger.getLogger( HttpRequestListener.class );
+public class HttpRequestsListener
+        extends AbstractRequestsProcessor<
+                    ISocketServer<
+                        IHttpProtocol<
+                            IHttpRequest,
+                            IHttpResponse,
+                            ?
+                        >,
+                        IHttpDispatcher,
+                        IHttpResponse
+                    >, IHttpResponse, IHttpRequest, ISocketAdapter> {
+    private static final Logger log = Logger.getLogger( HttpRequestsListener.class );
 
+    @Override
     public void onRequest( IHttpRequest request ) throws ServerException {
         try {
             if ( !this.authenticateRequest(request) ) {
                 log.info("Failed authentication");
-                this.markInvalid();
-                return;
+                throw new ServerException();
             }
 
-            IHttpResponse response = this.getContext().createResponseObject();
+            IHttpResponse response = this.getServerContext().createResponseObject();
 
             ISocketAdapter socket = request.getSocket();
             log.info("Processing request" );
@@ -38,15 +48,15 @@ public class HttpRequestListener extends AbstractRequestListener<ISocketServer<I
             long startTime = System.currentTimeMillis();
 
             try {
-                this.getContext().getDispatcher().dispatch( null, request, response );
+                this.getServerContext().getDispatcher().dispatch( null, request, response );
 
                 log.info("Sending response to client...");
-                this.getContext().writeResponse( socket, response );
+                this.getServerContext().writeResponse( socket, response );
 
                 log.info("Processing time: " + ( System.currentTimeMillis() - startTime ) );
             } catch ( ServerException e ) {
                 log.error( e.getMessage(), e );
-                this.getContext().writeResponse( socket, e );
+                this.getServerContext().writeResponse( socket, e );
             }
 
 

@@ -2,7 +2,7 @@ package com.vio.io.protocols.vanilla.hyndrators;
 
 import com.vio.io.protocols.core.request.RequestException;
 import com.vio.io.protocols.core.request.RequestHeader;
-import com.vio.io.protocols.vanilla.request.APIRequest;
+import com.vio.io.protocols.vanilla.request.InterfaceInvoke;
 import com.vio.io.protocols.vanilla.request.IAPIRequest;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -27,6 +27,7 @@ public class JSONRequestHydrator implements IApiRequestHydrator {
         this.parse(data);
     }
 
+    @Override
     public List<RequestHeader> readHeaders() {
         if ( !this.getObject().containsKey("headers") ) {
             return null;
@@ -41,10 +42,12 @@ public class JSONRequestHydrator implements IApiRequestHydrator {
         return headers;
     }
 
+    @Override
     public void parse( String data ) {
         this.jsonObject = (JSONObject) JSONSerializer.toJSON( data.toString() );
     }
 
+    @Override
     public Collection<IAPIRequest> readBody() {
         Collection<IAPIRequest> result = new HashSet<IAPIRequest>();
 
@@ -82,13 +85,15 @@ public class JSONRequestHydrator implements IApiRequestHydrator {
     }
 
     public IAPIRequest buildBody( JSONObject body ) {
-        APIRequest invoke = new APIRequest();
+        InterfaceInvoke invoke = new InterfaceInvoke();
 
         invoke.setId( body.containsKey("id") ? body.get("id").toString() : null );
         invoke.setFeature(  body.containsKey("interface") ? (String) body.get("interface") : null );
         invoke.setAspectName( body.containsKey("action") ? (String) body.get("action") : null );
 
-        invoke.setParams( this.convertJSONObjectToMap( body.getJSONObject("params") ) );
+        if ( body.containsKey("params") && body.get("params").getClass() == JSONObject.class ) {
+            invoke.setParams( this.convertJSONObjectToMap( body.getJSONObject("params") ) );
+        }
 
         return invoke;
     }

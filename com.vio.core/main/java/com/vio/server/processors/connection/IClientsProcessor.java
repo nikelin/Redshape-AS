@@ -1,11 +1,8 @@
-package com.vio.server.listeners.connection;
+package com.vio.server.processors.connection;
 
-import com.vio.server.IServer;
 import com.vio.server.ISocketServer;
 import com.vio.server.ServerException;
 import com.vio.server.adapters.socket.client.ISocketAdapter;
-
-import java.net.Socket;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,9 +11,9 @@ import java.net.Socket;
  * Time: 3:03:44 AM
  * To change this template use File | Settings | File Templates.
  */
-public interface IConnectionListener {
+public interface IClientsProcessor {
 
-    public void setServer( ISocketServer server );
+    public void setContext( ISocketServer server );
 
     public boolean onConnection( ISocketAdapter connection ) throws ServerException;    
 }

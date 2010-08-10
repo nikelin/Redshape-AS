@@ -5,8 +5,7 @@ import com.vio.auth.AuthResult;
 import com.vio.auth.AuthenticatorFactory;
 import com.vio.auth.adapters.AuthenticatorInterface;
 import com.vio.exceptions.ErrorCode;
-import com.vio.exceptions.ExceptionWithCode;
-import com.vio.api.Constants;
+import com.vio.io.protocols.core.Constants;
 import com.vio.io.protocols.core.VersionRegistryFactory;
 import com.vio.io.protocols.vanilla.VanillaVersionsRegistry;
 import com.vio.io.protocols.vanilla.request.IAPIRequest;
@@ -16,7 +15,6 @@ import com.vio.server.ISocketServer;
 import com.vio.server.ServerException;
 import com.vio.server.adapters.socket.client.ISocketAdapter;
 import com.vio.server.policy.AbstractPolicy;
-import com.vio.server.policy.IPolicy;
 import com.vio.utils.Registry;
 import org.apache.log4j.Logger;
 
@@ -34,6 +32,7 @@ public class AuthenticationPolicy extends AbstractPolicy<IAPIRequest, ISocketSer
 
     private ISocketServer server;
 
+    @Override
     public boolean applicate( IAPIRequest request ) {
         try {
             boolean checkResult = false;

@@ -1,5 +1,6 @@
 package com.vio.persistence.entities;
 
+import com.vio.persistence.managers.IManager;
 import com.vio.persistence.managers.Manager;
 import com.vio.persistence.managers.ManagerException;
 import com.vio.search.ISearchable;
@@ -10,13 +11,13 @@ import com.vio.search.ISearchable;
  *
  * @author nikelin
  */
-public interface Entity extends ISearchable {
+public interface IEntity extends ISearchable {
 
     public Integer getId();
 
     public void setId( Integer id );
 
-    public Manager getDAO() throws ManagerException;
+    public IManager getDAO() throws ManagerException;
 
     public void save() throws ManagerException;
 
@@ -24,10 +25,6 @@ public interface Entity extends ISearchable {
 
     public boolean isExists() throws ManagerException;
 
-    public void setEntityLockVersion( Integer version );
-
     public Integer getEntityLockVersion();
-
-    public boolean inSameVersion( Entity object );
 
 }

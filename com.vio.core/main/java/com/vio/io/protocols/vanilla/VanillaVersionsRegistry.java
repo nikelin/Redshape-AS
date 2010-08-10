@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 public class VanillaVersionsRegistry extends AbstractVersionsRegistry<IVanillaProtocol, VanillaProtocolVersion> {
     private static final Logger log = Logger.getLogger( VanillaVersionsRegistry.class );
 
+    @Override
     public boolean isSupports( VanillaProtocolVersion version ) {
         try {
             return this.getByVersion(version) != null;
@@ -23,14 +24,13 @@ public class VanillaVersionsRegistry extends AbstractVersionsRegistry<IVanillaPr
         }
     }
 
+    @Override
     public VanillaProtocolVersion getLastVersion() {
         return VanillaProtocolVersion.LAST_VERSION;
     }
 
+    @Override
     public VanillaProtocolVersion getVersion( String name ) {
-        log.info( name );
-        log.info( VanillaProtocolVersion.valueOf(name) );
-        
         return VanillaProtocolVersion.valueOf(name);
     }
 

@@ -1,6 +1,6 @@
 package com.vio.search.collectors;
 
-import com.vio.persistence.entities.Entity;
+import com.vio.persistence.entities.IEntity;
 import com.vio.persistence.managers.ManagerException;
 import com.vio.persistence.managers.ManagersFactory;
 import com.vio.search.ISearchable;
@@ -18,7 +18,7 @@ import java.util.Set;
  * Time: 4:06:49 PM
  * To change this template use File | Settings | File Templates.
  */
-@Collector( entityType = Entity.class )
+@Collector( entityType = IEntity.class )
 public class HibernateCollector implements IResultsCollector {
     private Set<CollectedItem> collected = new HashSet<CollectedItem>();
 
@@ -31,7 +31,7 @@ public class HibernateCollector implements IResultsCollector {
             Collection<T> results = new HashSet();
     
             for ( CollectedItem item : this.collected ) {
-                results.add( (T) ManagersFactory.getDefault().getForEntity( item.getSearchable() ).find( Integer.valueOf( item.getId() ) ) );
+                results.add( (T) ManagersFactory.getDefault().getForEntity( (Class<? extends IEntity>) item.getSearchable() ).find( Integer.valueOf( item.getId() ) ) );
             }
 
             return results;

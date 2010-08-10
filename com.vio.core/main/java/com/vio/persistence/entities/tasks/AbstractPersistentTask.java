@@ -9,7 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
 
-import com.vio.persistence.entities.Entity;
+import com.vio.persistence.entities.IEntity;
 
 /**
  * WebCam Project
@@ -20,7 +20,7 @@ import com.vio.persistence.entities.Entity;
  * @date Apr 5, 2010
  */
 @MappedSuperclass
-public abstract class AbstractPersistentTask<T extends Entity> extends AbstractEntity<T> implements IPersistentTask {
+public abstract class AbstractPersistentTask<T extends IEntity> extends AbstractEntity<T> implements IPersistentTask {
 
     @Basic
     @Column( name = "time" )

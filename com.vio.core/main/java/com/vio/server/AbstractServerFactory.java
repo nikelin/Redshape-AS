@@ -45,18 +45,22 @@ public abstract class AbstractServerFactory implements IServerFactory {
         }
     }
 
+    @Override
     public void addPolicy( Class<? extends IProtocol> protocolContext, PolicyType type, IPolicy policy ) {
         this.policies.put( protocolContext, type, policy );
     }
 
+    @Override
     public MultiKeyMap getPolicies() {
         return this.policies;
     }
 
+    @Override
     public void setProperties( Map<String, Object> properties ) {
         this.properties = properties;
     }
 
+    @Override
     public Map<String, Object> getProperties() {
         return this.properties;
     }

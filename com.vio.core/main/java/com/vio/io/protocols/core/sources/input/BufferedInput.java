@@ -23,6 +23,7 @@ public class BufferedInput implements InputStream {
         return this.reader.readLine();
     }
 
+    @Override
     public int read() throws IOException {
         return this.reader.read();
     }

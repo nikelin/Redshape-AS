@@ -21,8 +21,8 @@ import java.util.Map;
 /**
  * @author nikelin
  */
-public class APIRequest implements IAPIRequest {
-    private static Logger log = Logger.getLogger( APIRequest.class );
+public class InterfaceInvoke implements IAPIRequest {
+    private static Logger log = Logger.getLogger( InterfaceInvoke.class );
     protected static IApiRequestHydrator defaultHydrator = new JSONRequestHydrator();
 
     private String id;
@@ -132,16 +132,16 @@ public class APIRequest implements IAPIRequest {
         this.params = params;
     }
 
-    public static APIRequest buildRequest(String data) throws Throwable {
+    public static InterfaceInvoke buildRequest(String data) throws Throwable {
         return buildRequest( data, defaultHydrator);
     }
 
     /**
      * @TODO refactoring needs (constructors extraction) 
      */
-    public static APIRequest buildRequest( String data, IApiRequestHydrator hydrator) throws RequestException {
+    public static InterfaceInvoke buildRequest( String data, IApiRequestHydrator hydrator) throws RequestException {
         try {
-            APIRequest request = new APIRequest();
+            InterfaceInvoke request = new InterfaceInvoke();
             log.info("Input request: " + data );
 
             hydrator.parse(data);
@@ -260,7 +260,7 @@ public class APIRequest implements IAPIRequest {
         return this.hasHeader("async") && (Boolean) this.getHeader("async").getValue();
     }
 
-    protected static boolean isValidHeaders( APIRequest request ) {
+    protected static boolean isValidHeaders( InterfaceInvoke request ) {
         return request.hasHeader("api_key");
     }
 

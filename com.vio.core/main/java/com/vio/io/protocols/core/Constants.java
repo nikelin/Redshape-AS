@@ -1,4 +1,4 @@
-package com.vio.api;
+package com.vio.io.protocols.core;
 
 /**
  * Created by IntelliJ IDEA.

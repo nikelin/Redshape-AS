@@ -1,8 +1,9 @@
 package com.vio.io.protocols.http.impl;
 
-import com.vio.api.Constants;
+import com.vio.io.protocols.core.Constants;
 import com.vio.io.protocols.core.AbstractProtocol;
 import com.vio.io.protocols.core.IProtocolVersion;
+import com.vio.io.protocols.core.sources.input.BufferedInput;
 import com.vio.io.protocols.http.HttpProtocolVersion;
 import com.vio.io.protocols.http.IHttpProtocol;
 import com.vio.io.protocols.http.hydrators.HttpRequestHydrator;
@@ -19,8 +20,8 @@ import com.vio.io.protocols.core.writers.ResponseWriter;
  * Time: 7:14:07 PM
  * To change this template use File | Settings | File Templates.
  */
-public class HttpProtocol_11 extends AbstractProtocol<IHttpRequest, IHttpResponse>
-                                     implements IHttpProtocol<IHttpRequest, IHttpResponse> {
+public class HttpProtocol_11 extends AbstractProtocol<IHttpRequest, IHttpResponse, BufferedInput>
+                                     implements IHttpProtocol<IHttpRequest, IHttpResponse, BufferedInput> {
 
     public HttpProtocol_11() {
         super();
@@ -29,10 +30,12 @@ public class HttpProtocol_11 extends AbstractProtocol<IHttpRequest, IHttpRespons
         this.setWriter( new ResponseWriter( new HttpResponseRenderer() ) );
     }
 
+    @Override
     public IProtocolVersion getProtocolVersion() {
         return HttpProtocolVersion.HTTP_11;
     }
 
+    @Override
     public String getConstant( Constants id ) {
         switch ( id ) {
             case API_KEY_HEADER:

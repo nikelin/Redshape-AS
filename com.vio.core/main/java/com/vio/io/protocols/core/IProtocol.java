@@ -2,13 +2,17 @@ package com.vio.io.protocols.core;
 
 import com.vio.config.readers.ConfigReaderException;
 import com.vio.exceptions.ExceptionWithCode;
-import com.vio.api.Constants;
+import com.vio.io.protocols.core.Constants;
+import com.vio.io.protocols.core.readers.IRequestReader;
 import com.vio.io.protocols.core.readers.ReaderException;
 import com.vio.io.protocols.core.request.IRequest;
 import com.vio.io.protocols.core.response.IResponse;
-import com.vio.io.protocols.core.sources.input.InputStream;
+import com.vio.io.protocols.core.sources.input.BufferedInput;
 import com.vio.io.protocols.core.sources.output.OutputStream;
+import com.vio.io.protocols.core.writers.IResponseWriter;
 import com.vio.io.protocols.core.writers.WriterException;
+import com.vio.server.processors.request.IRequestsProcessor;
+import com.vio.server.processors.connection.IClientsProcessor;
 
 import java.util.Collection;
 
@@ -19,7 +23,23 @@ import java.util.Collection;
  * Time: 4:11:22 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface IProtocol<T extends IRequest, V extends IResponse> {
+public interface IProtocol<T extends IRequest, V extends IResponse, I extends BufferedInput> {
+
+    public void setReader( IRequestReader<I, T> reader );
+
+    public IRequestReader<I, T> getReader();
+
+    public void setWriter( IResponseWriter writer );
+
+    public IResponseWriter getWriter();
+
+    public void setRequestsProcessor( Class<? extends IRequestsProcessor<?, T>> processorClass );
+
+    public IRequestsProcessor<?, T> createRequestsProcessor() throws ProtocolException;
+
+    public void setClientsProcessor( IClientsProcessor processor );
+
+    public IClientsProcessor getClientsProcessor();
 
     public void writeResponse( OutputStream stream, V response) throws WriterException;
 
@@ -27,7 +47,7 @@ public interface IProtocol<T extends IRequest, V extends IResponse> {
 
     public void writeResponse( OutputStream stream, ExceptionWithCode exception ) throws WriterException;
 
-    public T readRequest( InputStream stream ) throws ReaderException;
+    public T readRequest( I stream ) throws ReaderException;
 
     public boolean isAnonymousAllowed() throws ConfigReaderException;
 

@@ -1,7 +1,7 @@
 package com.vio.persistence.managers;
 
 import com.vio.persistence.Provider;
-import com.vio.persistence.entities.Entity;
+import com.vio.persistence.entities.IEntity;
 import com.vio.persistence.entities.Nullable;
 import com.vio.utils.BaseReflectionUtil;
 import com.vio.utils.ReflectionUtil;
@@ -12,21 +12,20 @@ import org.hibernate.exception.ConstraintViolationException;
 
 import javax.persistence.*;
 import java.beans.IntrospectionException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.*;
 
-public class Manager {
-    private Class<? extends Entity> entityClass;
+public class Manager implements IManager {
+    private Class<? extends IEntity> entityClass;
     
     private static final Logger log = Logger.getLogger( com.vio.persistence.managers.Manager.class );
     private ReflectionUtil reflection = new BaseReflectionUtil();
 
-    public <T extends Entity> Manager( Class<T> entityClass ) {
+    public <T extends IEntity> Manager( Class<T> entityClass ) {
         this.entityClass = entityClass;
     }
 
-    public <T extends Entity> T createNew() throws ManagerException, IllegalAccessException, InstantiationException {
+    @Override
+    public <T extends IEntity> T createNew() throws ManagerException, IllegalAccessException, InstantiationException {
         T object = (T) this.entityClass.newInstance();
 
         this.save(object);
@@ -66,7 +65,8 @@ public class Manager {
         }
     }
 
-    public <T extends Entity> T save(T object ) throws ManagerException {
+    @Override
+    public <T extends IEntity> T save(T object ) throws ManagerException {
         return this.save( object, false );
     }
 
@@ -78,13 +78,14 @@ public class Manager {
      * @return
      * @throws ManagerException
      */
-    public <T extends Entity> T save( T object, boolean doNestedSave ) throws ManagerException {
+    @Override
+    public <T extends IEntity> T save( T object, boolean doNestedSave ) throws ManagerException {
         try {
             if ( doNestedSave ) {
                 this._saveNestedUnsavedEntities( object );
             }
 
-            Manager m = object.getDAO();
+            IManager m = object.getDAO();
             T record = m.find( object );
 
             log.info( "Object class: " + object.getClass().getName() );
@@ -111,12 +112,12 @@ public class Manager {
     }
 
 
-    private Collection _saveNestedUnsavedEntities( Collection<Entity> list ) throws ManagerException {
+    private Collection _saveNestedUnsavedEntities( Collection<IEntity> list ) throws ManagerException {
         try {
-            Collection<Entity> nList = list.getClass().newInstance();
+            Collection<IEntity> nList = list.getClass().newInstance();
             for ( Object item : list ) {
-                if ( Entity.class.isAssignableFrom( item.getClass() ) && item != null ) {
-                    final Entity toSave = (Entity) item;
+                if ( IEntity.class.isAssignableFrom( item.getClass() ) && item != null ) {
+                    final IEntity toSave = (IEntity) item;
                     try {
                         nList.add( this.save( toSave, true ) );
                     } catch ( ManagerException e ) {
@@ -138,14 +139,14 @@ public class Manager {
 
     private static boolean isNestedEntity( Class clazz ) {
         return Collection.class.isAssignableFrom( clazz ) ||
-            Entity.class.isAssignableFrom( clazz );
+            IEntity.class.isAssignableFrom( clazz );
     }
 
     private boolean isNulled( Object object ) {
         return object == null || ( Nullable.class.isAssignableFrom( object.getClass() ) && ( (Nullable) object ).isNull() );
     }
 
-    private void _saveNestedUnsavedEntities( Entity object ) throws ManagerException {
+    private void _saveNestedUnsavedEntities( IEntity object ) throws ManagerException {
         try {
             Map<String, Property> properties = PropertyUtils.getInstance().getPropertiesMap( object.getClass() );
             for ( String propertyName : properties.keySet()  ) {
@@ -157,7 +158,7 @@ public class Manager {
                         if ( Collection.class.isAssignableFrom( nested.getClass() ) ) {
                             nested = this._saveNestedUnsavedEntities( (Collection) nested );
                         } else {
-                            nested = this.save( (Entity) nested, true );
+                            nested = this.save( (IEntity) nested, true );
                         }
 
                         properties.get(propertyName).set( object, nested );
@@ -171,8 +172,9 @@ public class Manager {
         }
     }
 
+    @Override
     @Deprecated
-    public <T extends Entity> T update( T record ) throws ManagerException {
+    public <T extends IEntity> T update( T record ) throws ManagerException {
         try {
             return this.getManager().merge(record);
         } catch ( Throwable e ) {
@@ -181,6 +183,7 @@ public class Manager {
         }
     }
 
+    @Override
     public void removeAll() throws ManagerException {
         try {
             this.getManager().createNativeQuery( "truncate " + this.getEntityClass().getAnnotation(javax.persistence.Entity.class).name() ).executeUpdate();
@@ -189,7 +192,8 @@ public class Manager {
         }
     }
 
-    public void remove( Entity object ) throws ManagerException {
+    @Override
+    public void remove( IEntity object ) throws ManagerException {
         try {
             this.beginTransaction();
             this.getManager().remove( object );
@@ -199,12 +203,13 @@ public class Manager {
         }
     }
 
-    public <T extends Entity> T find( T object ) throws ManagerException {
+    @Override
+    public <T extends IEntity> T find( T object ) throws ManagerException {
        return object.getId() != null ? (T) this.find( object.getId() )
                                             : null;
     }
-
-    public <T extends Entity> T find( Integer id ) throws ManagerException {
+    @Override
+    public <T extends IEntity> T find( Integer id ) throws ManagerException {
         try {
             return (T) this.getManager().find( this.getEntityClass(), id );
         } catch ( Throwable e ) {
@@ -212,11 +217,13 @@ public class Manager {
         }
     }
 
-    public Class<? extends Entity> getEntityClass() {
+    @Override
+    public Class<? extends IEntity> getEntityClass() {
         return this.entityClass;
     }
 
-    public <T extends Entity> List<T> findBy( String name, Object value ) throws ManagerException {
+    @Override
+    public <T extends IEntity> List<T> findBy( String name, Object value ) throws ManagerException {
         try {
             return (List<T>) this.executeQuery( this.buildMatchesQuery( new String[] { name }, new Object[] { value }, new String[] { "=" } ) );
         } catch ( Throwable e ) {
@@ -224,9 +231,10 @@ public class Manager {
         }
     }
 
-    public Entity getOrCreateBy( String name, Object value ) throws ManagerException {
+    @Override
+    public IEntity getOrCreateBy( String name, Object value ) throws ManagerException {
         try {
-            Entity object = this.findOneBy(name, value);
+            IEntity object = this.findOneBy(name, value);
             if ( object == null ) {
                 object = this.getEntityClass().newInstance();
                 PropertyUtils.getInstance().getProperty( object.getClass(), name ).set(object, value);
@@ -240,7 +248,8 @@ public class Manager {
         }
     }
 
-    public boolean isExists( Entity object ) throws ManagerException {
+    @Override
+    public boolean isExists( IEntity object ) throws ManagerException {
         try {
             return null != this.find( object.getId() );
         } catch ( Throwable e ) {
@@ -248,7 +257,8 @@ public class Manager {
         }
     }
 
-    public <T extends Entity> T findOneBy( String name, Object value ) throws ManagerException {
+    @Override
+    public <T extends IEntity> T findOneBy( String name, Object value ) throws ManagerException {
         try {
             List<T> result = this.getManager()
                                  .createQuery("from " + this.getEntityName() + " r where " + name + " = :value ")
@@ -266,19 +276,23 @@ public class Manager {
         }
     }
 
-    public List<? extends Entity> findAll() throws ManagerException {
+    @Override
+    public List<? extends IEntity> findAll() throws ManagerException {
         return this.getManager().createQuery("select t from " + this.getEntityName() + " t" ).getResultList();
     }
 
-    public List<? extends Entity> whereIn( List<Integer> ids ) throws ManagerException {
+    @Override
+    public List<? extends IEntity> whereIn( List<Integer> ids ) throws ManagerException {
         return this.whereIn( ids.toArray( new Integer[ids.size()] ) );
     }
 
-    public List<? extends Entity> whereIn( Set<Integer> ids ) throws ManagerException {
+    @Override
+    public List<? extends IEntity> whereIn( Set<Integer> ids ) throws ManagerException {
         return this.whereIn( ids.toArray( new Integer[ids.size()]));
     }
 
-    public List<? extends Entity> whereIn( Integer[] ids ) throws ManagerException {
+    @Override
+    public List<? extends IEntity> whereIn( Integer[] ids ) throws ManagerException {
         /**
          * @TODO необходимо получать имя идентификатора для конкретной сущности, ибо
          * он может быть различным
@@ -288,7 +302,8 @@ public class Manager {
 
     
 
-    public List<? extends Entity> whereIn( String name, Integer[] ids ) throws ManagerException {
+    @Override
+    public List<? extends IEntity> whereIn( String name, Integer[] ids ) throws ManagerException {
         return this.getManager().createQuery("from " + this.getEntityName() + " where " + name + " in (:ids)")
                                     .setParameter("ids", ids )
                                         .getResultList();
@@ -296,42 +311,49 @@ public class Manager {
 
     }
 
+    @Override
     public List<Integer> getIdsBy( String name, Object value ) throws ManagerException {
         return this.getManager().createQuery(
             this.buildMatchesQuery(new String[] {name}, new Object[] {value}, new String[] {"="}, new String[] { "id" } )
         ).getResultList();
     }
 
+    @Override
     public List<Integer> getIds( Integer count ) throws ManagerException {
         return this.getIds(0, count);
     }
 
+    @Override
     public List<Integer> getIds( Integer from, Integer count ) throws ManagerException {
         return this.getManager().createQuery(
             this.buildMatchesQuery( new String[] {}, new Object[] {}, new String[] {}, new String[] { "id" }, from, count )
         ).getResultList();
     }
 
+    @Override
     @Deprecated
-    public <T extends Entity> List<T> findMatches( Map<String, Object> constrain ) throws ManagerException {
+    public <T extends IEntity> List<T> findMatches( Map<String, Object> constrain ) throws ManagerException {
         String[] operators = new String[ constrain.size() ];
         Arrays.fill( operators, "=" );
         
         return this.findMatches( constrain, operators  );
     }
 
+    @Override
     @Deprecated
-    public <T extends Entity> List<T> findMatches( Map<String, Object> constrain, String[] operators ) throws ManagerException {
+    public <T extends IEntity> List<T> findMatches( Map<String, Object> constrain, String[] operators ) throws ManagerException {
         return this.findMatches( constrain.keySet().toArray( new String[constrain.size()]), constrain.values().toArray( new Object[constrain.size()]), operators );
     }
 
+    @Override
     @Deprecated
-    public <T extends Entity> List<T> findMatches( String[] names, Object[] values ) throws ManagerException {
+    public <T extends IEntity> List<T> findMatches( String[] names, Object[] values ) throws ManagerException {
         return this.findMatches( names, values, this.getDefaultOperators(values.length));
     }
 
+    @Override
     @Deprecated
-    public <T extends Entity> List<T> findMatches( String[] names, Object[] values, String[] operators ) throws ManagerException {
+    public <T extends IEntity> List<T> findMatches( String[] names, Object[] values, String[] operators ) throws ManagerException {
         try {
             return (List<T>) this.getManager().createQuery( this.buildMatchesQuery( names, values, operators ) ).getResultList();
         } catch ( Throwable e ) {
@@ -346,18 +368,21 @@ public class Manager {
         return operators;
     }
 
+    @Override
     @Deprecated
-    public <T extends Entity> T findOneMatched( String[] names, Object[] values ) throws ManagerException {
+    public <T extends IEntity> T findOneMatched( String[] names, Object[] values ) throws ManagerException {
         return this.<T>findOneMatched( names, values, this.getDefaultOperators(values.length) );
     }
 
+    @Override
     @Deprecated
-    public <T extends Entity> T findOneMatched( String[] names, Object[] values, String[] operators ) throws ManagerException {
+    public <T extends IEntity> T findOneMatched( String[] names, Object[] values, String[] operators ) throws ManagerException {
         return this.<T>findOneMatched( names, values, operators, new String[] {} );
     }
 
+    @Override
     @Deprecated
-    public <T extends Entity> T findOneMatched( String[] names, Object[] values, String[] operators, String[] select ) throws ManagerException {
+    public <T extends IEntity> T findOneMatched( String[] names, Object[] values, String[] operators, String[] select ) throws ManagerException {
         try {
             T result;
             try {
@@ -467,16 +492,17 @@ public class Manager {
        return q;
     }
 
-    public static String getEntityName( Entity entity ) {
+    public static String getEntityName( IEntity entity ) {
         return getEntityName( entity.getClass() );
     }
 
+    @Override
     public String getEntityName() {
         return getEntityName( this.getEntityClass() );
     }
 
 
-    public static String getEntityName( Class<? extends Entity> clazz ) {
+    public static String getEntityName( Class<? extends IEntity> clazz ) {
         javax.persistence.Entity annon = clazz.getAnnotation( javax.persistence.Entity.class );
         if ( annon != null ) {
             String result = annon.name();
@@ -489,11 +515,11 @@ public class Manager {
         return clazz.getCanonicalName();
     }
 
-    protected <T extends Entity> boolean isTargetEntity( T object ) {
+    protected <T extends IEntity> boolean isTargetEntity( T object ) {
         return this.isTargetEntity( object.getClass() );
     }
 
-    protected <T extends Entity> boolean isTargetEntity( Class<T> object ) {
+    protected <T extends IEntity> boolean isTargetEntity( Class<T> object ) {
         return this.getEntityClass().equals( object );
     }
 

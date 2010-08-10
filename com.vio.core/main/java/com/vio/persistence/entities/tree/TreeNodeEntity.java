@@ -1,6 +1,6 @@
 package com.vio.persistence.entities.tree;
 
-import com.vio.persistence.entities.Entity;
+import com.vio.persistence.entities.IEntity;
 import com.vio.struct.TreeNode;
 
 /**
@@ -10,5 +10,5 @@ import com.vio.struct.TreeNode;
  * Time: 1:31:47 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface TreeNodeEntity<T> extends TreeNode<T>, Entity {
+public interface TreeNodeEntity<T> extends TreeNode<T>, IEntity {
 }

@@ -2,7 +2,7 @@ package com.vio.migration.strategy.fixtures;
 
 import com.vio.migration.MigrationException;
 import com.vio.migration.strategy.MigrationStrategy;
-import com.vio.persistence.entities.Entity;
+import com.vio.persistence.entities.IEntity;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,11 +11,11 @@ import com.vio.persistence.entities.Entity;
  * Time: 3:38:07 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Rollback implements MigrationStrategy<Iterable<Entity>> {
+public class Rollback implements MigrationStrategy<Iterable<IEntity>> {
 
-    public void execute( Iterable<Entity> objects, int from, int to) throws MigrationException {
+    public void execute( Iterable<IEntity> objects, int from, int to) throws MigrationException {
         try {
-            for ( Entity entity : objects ) {
+            for ( IEntity entity : objects ) {
                 if ( entity.getDAO().isExists( entity ) ) {
                     entity.getDAO().remove( entity );
                 }

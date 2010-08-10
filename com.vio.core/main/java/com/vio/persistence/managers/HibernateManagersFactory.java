@@ -3,7 +3,7 @@ package com.vio.persistence.managers;
 import com.vio.config.IDatabaseConfig;
 import com.vio.config.readers.ConfigReaderException;
 import com.vio.persistence.ProviderException;
-import com.vio.persistence.entities.Entity;
+import com.vio.persistence.entities.IEntity;
 import com.vio.utils.Registry;
 import org.apache.log4j.Logger;
 
@@ -23,9 +23,9 @@ import java.util.Map;
 public class HibernateManagersFactory extends ManagersFactory {
     private static final Logger log = Logger.getLogger( HibernateManagersFactory.class );
 
-    public Manager forEntity( Class<? extends Entity> entity ) throws InstantiationException {
+    public IManager forEntity( Class<? extends IEntity> entity ) throws InstantiationException {
         try {
-            for ( Manager m : this.getManagers() ) {
+            for ( IManager m : this.getManagers() ) {
                 if ( m.getEntityClass().isAssignableFrom( entity.getClass() ) ) {
                     return m;
                 }

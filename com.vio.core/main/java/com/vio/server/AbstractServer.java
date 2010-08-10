@@ -50,26 +50,32 @@ public abstract class AbstractServer implements IServer {
         this.sslEnabled = isSSLEnabled;
     }
 
+    @Override
     public void setHost( String host ) {
         this.host = host;
     }
 
+    @Override
     public String getHost() {
         return this.host;
     }
 
+    @Override
     public void setPort( Integer port ) {
         this.port = port;
     }
 
+    @Override
     public Integer getPort() {
         return this.port;
     }
 
+    @Override
     public void enableSSL( boolean bool ) throws ServerException {
         this.sslEnabled = bool;
     }
 
+    @Override
     public boolean isSSLEnabled() {
         return this.sslEnabled;
     }
@@ -78,6 +84,7 @@ public abstract class AbstractServer implements IServer {
         this.state = state;
     }
 
+    @Override
     public boolean isRunning() {
         return this.state.equals( ServerState.RUNNING );
     }
@@ -86,6 +93,7 @@ public abstract class AbstractServer implements IServer {
         return new Date().getTime() - user.getLastAccessTime() >= ( Registry.getServerConfig() ).getSessionLifeTime();
     }
 
+    @Override
     public void setProperty( String name, Object value ) {
         this.properties.put( name, value );
     }
@@ -94,6 +102,7 @@ public abstract class AbstractServer implements IServer {
         return this.properties.get(name);
     }
 
+    @Override
     public boolean isInitialized() {
         return this.initialized == true;
     }
@@ -102,6 +111,7 @@ public abstract class AbstractServer implements IServer {
         this.initialized = state;
     }
 
+    @Override
     public void addPolicy( Class<? extends IProtocol> protocolContext, PolicyType type, IPolicy policy ) {
         if ( this.policies.get(type) != null ) {
             this.policies.get(type).add(policy);
@@ -115,10 +125,12 @@ public abstract class AbstractServer implements IServer {
         return this.policies.get(type);
     }
 
+    @Override
     public boolean checkPolicy( Class<? extends IProtocol> protocolContext, PolicyType type  ) throws ExceptionWithCode {
         return this.checkPolicy( protocolContext, type, null);
     }
 
+    @Override
     public boolean checkPolicy( Class<? extends IProtocol> protocolContext, PolicyType type, Object data ) throws ExceptionWithCode {
         boolean result = true;
 

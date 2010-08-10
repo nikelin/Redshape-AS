@@ -2,7 +2,7 @@ package com.vio.persistence.managers;
 
 import com.vio.config.readers.ConfigReaderException;
 import com.vio.persistence.ProviderException;
-import com.vio.persistence.entities.Entity;
+import com.vio.persistence.entities.IEntity;
 
 import javax.persistence.EntityManagerFactory;
 import java.sql.SQLException;
@@ -16,9 +16,9 @@ import java.sql.SQLException;
  */
 public interface IManagersFactory {
 
-    public Manager getForEntity( Entity entity ) throws ManagerException;
+    public IManager getForEntity( IEntity entity ) throws ManagerException;
 
-    public Manager getForEntity( Class entity ) throws ManagerException;
+    public IManager getForEntity( Class<? extends IEntity> entity ) throws ManagerException;
 
     public EntityManagerFactory getEJBFactory() throws ConfigReaderException, SQLException, ProviderException;
                                        

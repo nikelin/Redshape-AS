@@ -64,7 +64,8 @@ public class SSLServerSocketAdapter extends ServerSocketAdapter {
         // literal here completely defeats that purpose.
         char[] password = config.getSSLStoreKey().toCharArray( );
 
-        ks.load( new FileInputStream( Registry.getResourcesLoader().loadFile( config.getPath("security") + "/" + config.getSSLStoreFile() ) ), password);
+        log.info( Registry.getResourcesDirectory() + "/security/" + config.getSSLStoreFile() );
+        ks.load( new FileInputStream( Registry.getResourcesDirectory() + "/security/" + config.getSSLStoreFile() ), password);
         kmf.init(ks, password);
 
         //

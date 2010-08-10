@@ -2,7 +2,7 @@ package com.vio.migration.strategy.fixtures;
 
 import com.vio.migration.MigrationException;
 import com.vio.migration.strategy.MigrationStrategy;
-import com.vio.persistence.entities.Entity;
+import com.vio.persistence.entities.IEntity;
 import com.vio.persistence.managers.ManagerException;
 import org.apache.log4j.Logger;
 import org.hibernate.exception.ConstraintViolationException;
@@ -14,12 +14,12 @@ import org.hibernate.exception.ConstraintViolationException;
  * Time: 3:38:01 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Update implements MigrationStrategy<Iterable<Entity>> {
+public class Update implements MigrationStrategy<Iterable<IEntity>> {
     private static final Logger log = Logger.getLogger( Update.class );
 
-    public void execute( Iterable<Entity> objects, int from, int to ) throws MigrationException {
+    public void execute( Iterable<IEntity> objects, int from, int to ) throws MigrationException {
         try {
-            for ( Entity entity : objects ) {
+            for ( IEntity entity : objects ) {
                try {
                    log.info("Saving entity " + entity.getClass().getName() + "...");
                    entity.getDAO().save(entity, true);

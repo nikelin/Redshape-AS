@@ -9,9 +9,6 @@ import com.vio.exceptions.ErrorCode;
 import com.vio.server.adapters.socket.client.ISocketAdapter;
 import com.vio.server.adapters.socket.server.IServerSocketAdapter;
 import com.vio.server.adapters.socket.SocketAdapterFactory;
-import com.vio.server.listeners.connection.IConnectionListener;
-import com.vio.server.listeners.request.IRequestListener;
-import com.vio.server.listeners.IRequestsProcessor;
 import com.vio.server.policy.IPolicy;
 import com.vio.server.policy.PolicyType;
 import com.vio.utils.Constants;
@@ -50,15 +47,7 @@ public abstract class AbstractSocketServer<T extends IProtocol, D extends IDispa
      */
     private D dispatcher;
 
-    private IRequestListener requestListener;
-
-    private IRequestsProcessor requestsProcessor;
-
-    private IConnectionListener connectionListener;
-
     private Map<ThreadGroup, ISocketAdapter> connections = new HashMap<ThreadGroup, ISocketAdapter>();
-
-    private Class<? extends IRequestListener> requestsListener;
 
     private Map<Class<? extends IPolicy>, ? extends IPolicy> policies = new HashMap();
 
@@ -84,6 +73,7 @@ public abstract class AbstractSocketServer<T extends IProtocol, D extends IDispa
         return this.socket;
     }
 
+    @Override
     public void startListen() throws ServerException, IOException {
         if ( !this.isInitialized() ) {
             this.initialize();
@@ -101,16 +91,18 @@ public abstract class AbstractSocketServer<T extends IProtocol, D extends IDispa
     }
 
     private void _startListen() throws ServerException {
+        /** @TODO **/
+        this.getProtocol().getClientsProcessor().setContext(this);
         for ( ; ;  ) {
             try {
-                ISocketAdapter socket = this.getSocketAdapter().accept();
+                ISocketAdapter clientSocket = this.getSocketAdapter().accept();
 
-                this.setLocalSocket(socket);
+                this.setLocalSocket(clientSocket);
 
                 if ( this.checkPolicy( this.getProtocol().getClass(), PolicyType.ON_CONNECTION ) ) {
-                    this.getConnectionListener().onConnection(socket);
+                    this.getProtocol().getClientsProcessor().onConnection(clientSocket);
                 } else {
-                    this.refuseConnection(socket);
+                    this.refuseConnection(clientSocket);
                 }
             } catch ( Throwable e ) {
                 log.error( e.getMessage(), e );
@@ -118,32 +110,7 @@ public abstract class AbstractSocketServer<T extends IProtocol, D extends IDispa
         }
     }
 
-    public void setConnectionListener( IConnectionListener listener ) {
-        this.connectionListener = listener;
-        listener.setServer(this);
-    }
-
-    public IConnectionListener getConnectionListener() {
-        return this.connectionListener;
-    }
-
-    public void setRequestListener( IRequestListener listener ) {
-        this.requestListener = listener;
-        listener.setContext(this);
-    }
-
-    public IRequestListener getRequestListener() {
-        return this.requestListener;
-    }
-
-    public void setRequestsProcessor( IRequestsProcessor processor ) {
-        this.requestsProcessor = processor;
-    }
-
-    public IRequestsProcessor getRequestsProcessor() {
-        return this.requestsProcessor;
-    }
-
+    @Override
     public ISocketAdapter getLocalSocket() {
         ISocketAdapter adapter = this.connections.get( Thread.currentThread().getThreadGroup() );
         if ( adapter != null ) {
@@ -158,10 +125,12 @@ public abstract class AbstractSocketServer<T extends IProtocol, D extends IDispa
         return adapter;
     }
 
+    @Override
     public void setLocalSocket( ISocketAdapter socket ) {
         this.connections.put( Thread.currentThread().getThreadGroup(), socket );
     }
 
+    @Override
     public void closeLocalSocket() {
         this.connections.remove( Thread.currentThread() );
     }
@@ -189,6 +158,7 @@ public abstract class AbstractSocketServer<T extends IProtocol, D extends IDispa
         }
     }
 
+    @Override
     public void shutdown() {
         try {
             this.getSocketAdapter().close();
@@ -200,14 +170,17 @@ public abstract class AbstractSocketServer<T extends IProtocol, D extends IDispa
         this.changeState( ServerState.DOWN );
     }
 
+    @Override
     public D getDispatcher() {
     	return this.dispatcher;
     }
 
+    @Override
     public void setDispatcher( D dispatcher ) {
     	this.dispatcher = dispatcher;
     }
 
+    @Override
     public void writeResponse( ISocketAdapter socket, R response ) throws ServerException {
         try {
             this.getProtocol().writeResponse( new BufferedOutput( socket.getOutputStream() ), response );
@@ -216,6 +189,7 @@ public abstract class AbstractSocketServer<T extends IProtocol, D extends IDispa
         }
     }
 
+    @Override
     public void writeResponse( ISocketAdapter socket, ExceptionWithCode exception ) {
         try {
             this.getProtocol().writeResponse( new BufferedOutput(socket.getOutputStream()), exception );
@@ -225,6 +199,7 @@ public abstract class AbstractSocketServer<T extends IProtocol, D extends IDispa
         }
     }
 
+    @Override
     public void writeResponse( ISocketAdapter socket, Collection<R> response ) throws ServerException {
         try {
             this.getProtocol().writeResponse( new BufferedOutput( socket.getOutputStream() ), response );
@@ -238,6 +213,7 @@ public abstract class AbstractSocketServer<T extends IProtocol, D extends IDispa
         this.refuseConnection( this.getLocalSocket() );
     }
 
+    @Override
     public void refuseConnection( ISocketAdapter socket ) throws ServerException {
         try {
             this.getProtocol().writeResponse( new BufferedOutput( socket.getOutputStream() ), new ServerException( ErrorCode.EXCEPTION_RECONNECT ) );
@@ -249,27 +225,13 @@ public abstract class AbstractSocketServer<T extends IProtocol, D extends IDispa
         }
     }
 
-    public IRequestListener createRequestListener(  ) throws ServerException {
-        try {
-            IRequestListener listener = this.requestsListener.newInstance();
-            listener.setContext( this );
-
-            return listener;
-        } catch ( Throwable e ) {
-            throw new ServerException();
-        }
-    }
-
-    public void setRequestListener( Class<? extends IRequestListener> listener ) {
-        this.requestsListener = listener;
-    }
-
+    @Override
     public void setProtocol( T protocol ) {
         this.protocol = protocol;
     }
 
+    @Override
     public T getProtocol() {
         return this.protocol;
     }
-
 }

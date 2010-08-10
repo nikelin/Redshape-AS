@@ -6,7 +6,9 @@ import com.vio.io.protocols.http.request.IHttpRequest;
 import com.vio.io.protocols.core.readers.IRequestReader;
 import com.vio.io.protocols.core.readers.ReaderException;
 import com.vio.io.protocols.core.sources.input.BufferedInput;
-import com.vio.io.protocols.vanilla.request.APIRequest;
+import java.io.DataInputStream;
+import java.io.EOFException;
+import java.io.IOException;
 import org.apache.log4j.Logger;
 
 /**
@@ -28,14 +30,31 @@ public class HttpRequestReader implements IRequestReader<BufferedInput, IHttpReq
         return this.hydrator;
     }
 
+    @Override
     public IHttpRequest readRequest( BufferedInput source ) throws ReaderException {
         try {
-            String data = source.readLine();
-            if ( data != null && !data.isEmpty() ) {
-                return HttpRequest.buildRequest( data, this.getHydrator() );
+            DataInputStream stream = new DataInputStream( source.getRawSource() );
+            StringBuilder dataBuff = new StringBuilder();
+            do {
+                try {
+                    dataBuff.append( stream.readUTF() );
+                } catch ( EOFException e ) {
+                    break;
+                } catch ( IOException e ) {
+                    log.error( e.getMessage(), e );
+                    throw new ReaderException();
+                }
+            } while ( true );
+
+            log.info("Incoming request: " + dataBuff.toString() );
+
+            if ( dataBuff.length() != 0 ) {
+                return HttpRequest.buildRequest( dataBuff.toString(), this.getHydrator() );
             }
 
             return null;
+        } catch ( ReaderException e ) {
+            throw e;
         } catch (Throwable e ) {
             log.info( e.getMessage(), e );
             throw new ReaderException();

@@ -1,10 +1,9 @@
 package com.vio.persistence.entities.tree.rule;
 
-import com.vio.persistence.entities.Entity;
+import com.vio.persistence.entities.IEntity;
 import com.vio.persistence.entities.tree.InheritanceRule;
 import com.vio.persistence.managers.ManagerException;
 
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.MappedSuperclass;
 
 /**
@@ -14,7 +13,7 @@ import javax.persistence.MappedSuperclass;
  * @param <T> Наследующая сущность
  */
 @MappedSuperclass
-abstract public class ExcludeRule<V extends Entity, T extends Entity> extends InheritanceRule<V, T> {
+abstract public class ExcludeRule<V extends IEntity, T extends IEntity> extends InheritanceRule<V, T> {
 
     @Override
     public boolean isSatisfied( V entity ) throws ManagerException {

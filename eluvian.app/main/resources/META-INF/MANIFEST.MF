@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Archiver-Version: Plexus Archiver
-Created-By: Apache Maven
-Built-By: nikelin <nikelin@redshape.ru>
-Build-Jdk: 1.6.0_6
-Class-Path: libs/libs.jar libs/core.jar libs/messaging.jar libs/remoting.jar  libs/utils.jar ./
-Main-Class: com.vio.Main

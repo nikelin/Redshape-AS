@@ -1,9 +1,7 @@
 package com.vio.persistence.managers;
 
-import com.vio.persistence.entities.Entity;
 import com.vio.persistence.entities.IMultilingual;
 import com.vio.persistence.entities.Locale;
-import org.hibernate.Criteria;
 
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;

@@ -6,7 +6,6 @@ import com.vio.io.protocols.http.response.HttpResponse;
 import com.vio.io.protocols.http.response.IHttpResponse;
 import com.vio.io.protocols.core.renderers.ResponseRenderer;
 import com.vio.io.protocols.core.request.RequestHeader;
-import com.vio.io.protocols.core.response.IResponse;
 import com.vio.render.RendererException;
 
 import java.util.Collection;
@@ -20,26 +19,32 @@ import java.util.Collection;
  */
 public class HttpResponseRenderer implements ResponseRenderer<IHttpResponse> {
 
+    @Override
     public Object render( ExceptionWithCode e ) throws RendererException {
         throw new RendererException();
     }
 
+    @Override
     public Object render( Collection<? extends IHttpResponse> e ) throws RendererException {
         throw new RendererException();
     }
 
+    @Override
     public Object render( IHttpResponse response ) throws RendererException {
          return this.renderSingle(response);
     }
 
+    @Override
     public byte[] renderBytes( ExceptionWithCode e ) throws RendererException {
         throw new RendererException();
     }
 
+    @Override
     public byte[] renderBytes( IHttpResponse response ) throws RendererException {
         return this.renderSingle( response ).getBytes();
     }
 
+    @Override
     public byte[] renderBytes( Collection<? extends IHttpResponse> responses ) throws RendererException {
         throw new RendererException();
     }

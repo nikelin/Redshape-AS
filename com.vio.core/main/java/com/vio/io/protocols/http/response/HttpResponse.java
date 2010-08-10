@@ -26,54 +26,67 @@ public class HttpResponse extends Response implements IHttpResponse {
 
     private Map<String, String> parameters = new HashMap<String, String>();
 
+    @Override
     public void setBody( String body ) {
         this.body = body;
     }
 
+    @Override
     public String getBody() {
         return this.body;
     }
 
+    @Override
     public void setCode( HttpCode code ) {
         this.code = code;
     }
 
+    @Override
     public HttpCode getCode() {
         return this.code;
     }
 
+    @Override
     public HttpProtocolVersion getProtocolVersion() {
         return this.version;
     }
 
+    @Override
     public void setProtocolVersion( HttpProtocolVersion version ) {
         this.version = version;
     }
 
+    @Override
     public void setParameter( String name, String value ) {
         this.parameters.put(name, value);
     }
 
+    @Override
     public void setParameters( Map<String, String> parameters ) {
         this.parameters = parameters;
     }
 
+    @Override
     public String getParameter( String name ) {
         return this.parameters.get(name);
     }
 
+    @Override
     public Map<String, String> getParameters() {
         return this.parameters;
     }
 
+    @Override
     public void setHeaders( Collection<RequestHeader> headers ) {
         this.headers = headers;
     }
 
+    @Override
     public Collection<RequestHeader> getHeaders() {
         return this.headers;
     }
 
+    @Override
     public void addHeader( RequestHeader header ) {
         this.headers.add(header);
     }

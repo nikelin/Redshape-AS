@@ -1,5 +1,6 @@
 package com.vio.persistence.entities;
 
+import com.vio.persistence.managers.IManager;
 import com.vio.persistence.managers.Manager;
 import com.vio.persistence.managers.ManagerException;
 import com.vio.persistence.managers.ManagersFactory;
@@ -16,7 +17,7 @@ import org.apache.log4j.*;
  */
 @MappedSuperclass
 @PersistenceContext( type = PersistenceContextType.EXTENDED )
-public abstract class AbstractEntity<T extends Entity> implements Entity {
+public abstract class AbstractEntity<T extends IEntity> implements IEntity {
     private static final Logger log = Logger.getLogger( AbstractEntity.class );
 
     @Id @GeneratedValue( strategy = GenerationType.AUTO )
@@ -42,7 +43,7 @@ public abstract class AbstractEntity<T extends Entity> implements Entity {
         this.id = id;
     }
 
-    public Manager getDAO() throws ManagerException {
+    public IManager getDAO() throws ManagerException {
         return ManagersFactory.getDefault().getForEntity(this);
     }
 
@@ -76,11 +77,11 @@ public abstract class AbstractEntity<T extends Entity> implements Entity {
         }
     }
 
-    public boolean equals( Entity e ) {
+    public boolean equals( IEntity e ) {
         return this.getId() != null && e.getId() != null && this.getId().equals( e.getId() );
     }
 
-    public boolean inSameVersion( Entity e ) {
+    public boolean inSameVersion( IEntity e ) {
         return e.getEntityLockVersion() != 0 && this.getEntityLockVersion().equals( e.getEntityLockVersion() );
     }
 

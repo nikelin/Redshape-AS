@@ -9,7 +9,7 @@ import java.util.Set;
  * that has locale-dependent fields which can be represented
  * in other locales
  */
-public interface IMultilingual<T extends IMultilingual> extends Entity {
+public interface IMultilingual<T extends IMultilingual> extends IEntity {
 
     /**
      * Check for translations of current entity to given locale

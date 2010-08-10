@@ -1,10 +1,8 @@
 package com.vio.io.protocols.vanilla.impl;
 
-import com.vio.api.Constants;
+import com.vio.io.protocols.core.Constants;
 import com.vio.io.protocols.core.AbstractProtocol;
-import com.vio.io.protocols.core.IProtocol;
 import com.vio.io.protocols.core.IProtocolVersion;
-import com.vio.io.protocols.core.readers.IRequestReader;
 import com.vio.io.protocols.core.sources.input.BufferedInput;
 import com.vio.io.protocols.vanilla.IVanillaProtocol;
 import com.vio.io.protocols.vanilla.VanillaProtocolVersion;
@@ -22,7 +20,7 @@ import com.vio.io.protocols.core.writers.ResponseWriter;
  * Time: 7:57:42 PM
  * To change this template use File | Settings | File Templates.
  */
-public class VanillaProtocol_10 extends AbstractProtocol<IAPIRequest, IApiResponse> implements IVanillaProtocol<IAPIRequest, IApiResponse> {
+public class VanillaProtocol_10 extends AbstractProtocol<IAPIRequest, IApiResponse, BufferedInput> implements IVanillaProtocol<IAPIRequest, IApiResponse, BufferedInput> {
 
     public VanillaProtocol_10() {
         super();
@@ -31,10 +29,12 @@ public class VanillaProtocol_10 extends AbstractProtocol<IAPIRequest, IApiRespon
         this.setWriter( new ResponseWriter( new JSONResponseRenderer() ) );
     }
 
+    @Override
     public IProtocolVersion getProtocolVersion() {
         return VanillaProtocolVersion.VERSION_1;
     }
 
+    @Override
     public String getConstant( Constants id ) {
         switch( id ) {
             case API_KEY_HEADER:

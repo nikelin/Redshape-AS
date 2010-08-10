@@ -3,9 +3,8 @@ package com.vio.persistence.entities.tree;
 import javax.persistence.*;
 
 import com.vio.persistence.entities.AbstractEntity;
-import com.vio.persistence.entities.Entity;
+import com.vio.persistence.entities.IEntity;
 import com.vio.persistence.managers.ManagerException;
-import com.vio.utils.PackageLoader;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -17,7 +16,7 @@ import java.util.Set;
  * @param <T> Сущность наследник
  */
 @MappedSuperclass
-abstract public class InheritanceRule<V extends Entity, T extends Entity> extends AbstractEntity<InheritanceRule> {
+abstract public class InheritanceRule<V extends IEntity, T extends IEntity> extends AbstractEntity<InheritanceRule> {
 
     @OneToMany
     private Set<V> subjects = new HashSet<V>();

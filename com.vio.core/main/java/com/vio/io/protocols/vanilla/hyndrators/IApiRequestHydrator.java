@@ -16,8 +16,6 @@ import java.util.Collection;
  */
 public interface IApiRequestHydrator extends RequestHydrator {
 
-    public Collection<RequestHeader> readHeaders() throws ReaderException;
-
     public Collection<IAPIRequest> readBody() throws ReaderException;
 
 }

@@ -6,7 +6,7 @@ import com.vio.io.protocols.core.response.IResponse;
 import com.vio.server.ServerException;
 
 /**
- * Entity responsible on dispatching incoming requests
+ * IEntity responsible on dispatching incoming requests
  * to one of the available features (@see com.vio.features )
  *
  * Process given request and write results in a view of items

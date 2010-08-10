@@ -5,11 +5,6 @@ import com.vio.io.protocols.core.IProtocol;
 import com.vio.io.protocols.core.response.IResponse;
 import com.vio.io.protocols.vanilla.response.ApiResponse;
 import com.vio.io.protocols.vanilla.response.IApiResponse;
-import com.vio.server.listeners.connection.ConnectionsListener;
-import com.vio.server.listeners.connection.IConnectionListener;
-import com.vio.server.listeners.request.IRequestListener;
-import com.vio.server.listeners.IRequestsProcessor;
-import com.vio.server.listeners.request.ApiRequestListener;
 import org.apache.log4j.Logger;
 
 /**
@@ -34,6 +29,7 @@ public class ApplicationServer extends AbstractSocketServer<IProtocol, IDispatch
        super( host, port, isSSLEnabled, protocol );
     }
 
+    @Override
     public IApiResponse createResponseObject() throws ServerException {
         try {
             return DEFAULT_RESPONSE_OBJECT.newInstance();
@@ -42,6 +38,7 @@ public class ApplicationServer extends AbstractSocketServer<IProtocol, IDispatch
         }
     }
 
+    @Override
     public boolean isPropertySupports( String name ) {
         return false;
     }
