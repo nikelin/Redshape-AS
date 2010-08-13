@@ -1,6 +1,6 @@
 package com.vio.migration.components;
 
-import com.vio.render.Renderable;
+import com.vio.render.IRenderable;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -14,7 +14,7 @@ import java.util.Set;
  * @package com.vio.migration.components
  * @date Apr 6, 2010
  */
-public class FieldType implements Renderable {
+public class FieldType implements IRenderable {
     private FieldTypes type;
     private Integer length;
     private Integer decimalLength;

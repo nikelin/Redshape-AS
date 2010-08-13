@@ -1,7 +1,7 @@
 package com.vio.auth.adapters;
 
 import com.vio.auth.AuthResult;
-import com.vio.auth.Identity;
+import com.vio.auth.IIdentity;
 import com.vio.auth.storage.AuthStorage;
 
 import java.util.Map;
@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Интерфейс для аутентификаторов системы
  */
-public interface AuthenticatorInterface<T extends Identity> {
+public interface AuthenticatorInterface<T extends IIdentity> {
 
     public boolean isAuthExpired( T identity );
     /**

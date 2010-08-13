@@ -2,8 +2,7 @@ package com.vio.io.protocols.vanilla.hyndrators;
 
 import com.vio.io.protocols.core.hydrators.RequestHydrator;
 import com.vio.io.protocols.core.readers.ReaderException;
-import com.vio.io.protocols.core.request.RequestHeader;
-import com.vio.io.protocols.vanilla.request.IAPIRequest;
+import com.vio.io.protocols.vanilla.request.IApiRequest;
 
 import java.util.Collection;
 
@@ -16,6 +15,6 @@ import java.util.Collection;
  */
 public interface IApiRequestHydrator extends RequestHydrator {
 
-    public Collection<IAPIRequest> readBody() throws ReaderException;
+    public Collection<IApiRequest> readBody() throws ReaderException;
 
 }

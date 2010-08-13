@@ -1,6 +1,6 @@
 package com.vio.plugins;
 
-import com.vio.render.Renderable;
+import com.vio.render.IRenderable;
 
 /**
  * Created by IntelliJ IDEA.
@@ -9,7 +9,7 @@ import com.vio.render.Renderable;
  * Time: 4:25:57 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class Plugin implements Renderable {
+public abstract class Plugin implements IRenderable {
     private String systemId;
     private PluginInfo info;
 

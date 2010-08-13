@@ -1,6 +1,6 @@
 package com.vio.migration.components;
 
-import com.vio.render.Renderable;
+import com.vio.render.IRenderable;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,7 +13,7 @@ import java.util.Set;
  * @package com.vio.migration.components
  * @date Apr 6, 2010
  */
-public class Index implements Renderable {
+public class Index implements IRenderable {
     private String name;
     private IndexType type;
     private Set<String> fields = new HashSet<String>();

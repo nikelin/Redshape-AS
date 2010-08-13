@@ -1,6 +1,6 @@
 package com.vio.auth.storage;
 
-import com.vio.auth.Identity;
+import com.vio.auth.IIdentity;
 
 import java.util.Map;
 
@@ -11,7 +11,7 @@ import java.util.Map;
  * Time: 6:16:37 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface AuthStorage<T extends Identity> {
+public interface AuthStorage<T extends IIdentity> {
 
     /**
      * Сохранить сущность identity в хранилище с идентификатором id

@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  * Time: 12:06:13 PM
  * To change this template use File | Settings | File Templates.
  */
-abstract public class JSONRenderer<T extends Renderable> implements Renderer<T> {
+abstract public class JSONRenderer<T extends IRenderable> implements Renderer<T> {
 	private final static char EOL_CHAR = '\n';
     private final static char ESCAPE_CHAR = '"';
     private final static Logger log = Logger.getLogger( JSONRenderer.class );
@@ -74,8 +74,8 @@ abstract public class JSONRenderer<T extends Renderable> implements Renderer<T> 
         return this.renderValue( result );
     }
 
-    @Handler( type = Renderable.class )
-    public String renderValue( Renderable value ) throws RendererException {
+    @Handler( type = IRenderable.class )
+    public String renderValue( IRenderable value ) throws RendererException {
         try {
             log.info( value.getClass().getCanonicalName() );
             Renderer r = RenderersFactory.getDefault().forEntity(value);

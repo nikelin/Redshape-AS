@@ -1,7 +1,7 @@
 package com.vio.server;
 
 import com.vio.api.dispatchers.IDispatcher;
-import com.vio.api.dispatchers.vanilla.VanillaDispatcher;
+import com.vio.api.dispatchers.vanilla.InterfaceInvocationsDispatcher;
 import com.vio.io.protocols.core.IProtocol;
 import com.vio.io.protocols.core.VersionRegistryFactory;
 import com.vio.io.protocols.vanilla.VanillaVersionsRegistry;
@@ -16,7 +16,7 @@ public class SocketServerFactory extends AbstractServerFactory implements ISocke
     /**
      * Default requests dispatcher for each new server instance
      */
-    public static final IDispatcher DEFAULT_DISPATCHER = new VanillaDispatcher();
+    public static final IDispatcher DEFAULT_DISPATCHER = new InterfaceInvocationsDispatcher();
 
     public static IProtocol DEFAULT_PROTOCOL;
     static {
@@ -27,18 +27,14 @@ public class SocketServerFactory extends AbstractServerFactory implements ISocke
         }
     }
 
-    private IDispatcher dispatcher;
-
     private IProtocol protocol;
 
     public SocketServerFactory() {
-        this( DEFAULT_DISPATCHER, new HashMap() );
+        this( new HashMap() );
     }
 
-    public SocketServerFactory( IDispatcher dispatcher, Map<String, Object> properties ) {
+    public SocketServerFactory( Map<String, Object> properties ) {
         super(properties);
-
-        this.dispatcher = dispatcher;
     }
 
     @Override
@@ -63,20 +59,11 @@ public class SocketServerFactory extends AbstractServerFactory implements ISocke
     public <T extends ISocketServer> T newInstance( Class<T> serverClass, String host,
                                 Integer port, Boolean isSSLEnabled, Map<String, Object> properties, IProtocol protocol )
         throws InstantiationException {
-        return this.newInstance( serverClass, host, port, isSSLEnabled, properties, protocol, this.getDispatcher() );
-    }
-
-    @Override
-    public <T extends ISocketServer> T newInstance( Class<T> serverClass, String host, Integer port, Boolean isSSLEnabled,
-                                                    Map<String, Object> properties, IProtocol protocol,
-                                                    IDispatcher dispatcher  )
-        throws InstantiationException {
         try {
             T server = serverClass.newInstance();
             server.setHost(host);
             server.setPort(port);
             server.enableSSL(isSSLEnabled);
-            server.setDispatcher( dispatcher );
             server.setProtocol( protocol );
 
             this.bindPolicies( server, this.getPolicies() );
@@ -86,16 +73,6 @@ public class SocketServerFactory extends AbstractServerFactory implements ISocke
         } catch ( Throwable e ) {
             throw new InstantiationException();
         }
-    }
-
-    @Override
-    public IDispatcher getDispatcher() {
-        return this.dispatcher;
-    }
-
-    @Override
-    public void setDispatcher( IDispatcher dispatcher ) {
-        this.dispatcher = dispatcher;
     }
 
     @Override

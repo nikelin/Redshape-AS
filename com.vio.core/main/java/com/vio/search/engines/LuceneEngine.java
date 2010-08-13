@@ -4,9 +4,9 @@ import com.vio.config.readers.ConfigReaderException;
 import com.vio.search.*;
 import com.vio.search.collectors.CollectorsFactory;
 import com.vio.search.collectors.IResultsCollector;
-import com.vio.search.query.Index;
-import com.vio.search.query.IndexBuilder;
-import com.vio.search.query.IndexField;
+import com.vio.search.index.IIndex;
+import com.vio.search.index.IIndexField;
+import com.vio.search.index.builders.IndexBuilder;
 import com.vio.search.query.terms.ISearchTerm;
 import com.vio.search.query.transformers.LuceneQueryTransformer;
 import com.vio.search.query.transformers.TransformersFactory;
@@ -43,7 +43,7 @@ public class LuceneEngine implements ISearchEngine {
 
     public void save( ISearchable searchable ) throws EngineException {
         try {
-            Index index = IndexBuilder.newBuilder().getIndex( searchable.getClass() );
+            IIndex index = IndexBuilder.newBuilder().getIndex( searchable.getClass() );
 
             IndexWriter writer = this.createIndexWriter( index );
             writer.addDocument(  this.createDocument( searchable, index ) );
@@ -56,7 +56,7 @@ public class LuceneEngine implements ISearchEngine {
 
     public void remove( ISearchable searchable ) throws EngineException {
         try {
-            Index index = IndexBuilder.newBuilder().getIndex( searchable.getClass() );
+            IIndex index = IndexBuilder.newBuilder().getIndex( searchable.getClass() );
 
             IndexReader reader = IndexReader.open( this.openDirectory( this.getIndexDirectoryPath(index) ) );
             reader.deleteDocuments( new Term("searchable_entity", this.createDocumentId(searchable) ) );
@@ -70,7 +70,7 @@ public class LuceneEngine implements ISearchEngine {
         try {
             IResultsCollector collector = CollectorsFactory.getDefault().getCollector( searchable );
 
-            Index index = IndexBuilder.newBuilder().getIndex( searchable );
+            IIndex index = IndexBuilder.newBuilder().getIndex( searchable );
 
             IndexSearcher searcher = new IndexSearcher( this.openDirectory( index ) );
             Query searchQuery =  TransformersFactory.getDefault().createTransformer(LuceneQueryTransformer.class).transform( query );
@@ -107,7 +107,7 @@ public class LuceneEngine implements ISearchEngine {
         return (Class<? extends ISearchable>) Class.forName( docId.split("_")[0] );
     }
 
-    protected IndexWriter createIndexWriter( Index index ) throws EngineException {
+    protected IndexWriter createIndexWriter( IIndex index ) throws EngineException {
         try {
             Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_CURRENT);
 
@@ -121,7 +121,7 @@ public class LuceneEngine implements ISearchEngine {
         }
     }
 
-    protected Directory openDirectory( Index index ) throws ConfigReaderException, IOException {
+    protected Directory openDirectory( IIndex index ) throws ConfigReaderException, IOException {
         return this.openDirectory( this.getIndexDirectoryPath(index) );
     }
 
@@ -133,16 +133,16 @@ public class LuceneEngine implements ISearchEngine {
         return FSDirectory.open( file );
     }
 
-    protected String getIndexDirectoryPath( Index index ) throws ConfigReaderException, IOException {
+    protected String getIndexDirectoryPath( IIndex index ) throws ConfigReaderException, IOException {
         return Registry.getApiServerConfig().getSearchIndexPath() + "/" + index.getName();
     }
 
-    private Document createDocument( ISearchable searchable, Index index ) throws EngineException {
+    private Document createDocument( ISearchable searchable, IIndex index ) throws EngineException {
         try {
             Document doc = new Document();
             doc.add( new Field( "searchable_entity", this.createDocumentId(searchable), Field.Store.YES, Field.Index.NO ) );
 
-            for ( IndexField field : index.getFields() ) {
+            for ( IIndexField field : index.getFields() ) {
                 Object fieldValue = field.getClass().getField( field.getName() );
 
                 Field docField = null;
@@ -165,7 +165,7 @@ public class LuceneEngine implements ISearchEngine {
         }
     }
 
-    protected Field processBinaryField( IndexField field, Object value ) throws EngineException {
+    protected Field processBinaryField( IIndexField field, Object value ) throws EngineException {
         return new Field(
             field.getName(),
             this.serializeBytes( field, value ),
@@ -173,7 +173,7 @@ public class LuceneEngine implements ISearchEngine {
         );
     }
 
-    protected Field processField( IndexField field, Object value ) throws EngineException {
+    protected Field processField( IIndexField field, Object value ) throws EngineException {
         return new Field(
             field.getName(),
             this.serialize( field, value ),
@@ -182,7 +182,7 @@ public class LuceneEngine implements ISearchEngine {
         );
     }
 
-    protected byte[] serializeBytes( IndexField field, Object value ) throws EngineException {
+    protected byte[] serializeBytes( IIndexField field, Object value ) throws EngineException {
         try {
             ISerializer serializer = Search.getSerializer( field.getSerializer() );
             if ( serializer != null ) {
@@ -205,7 +205,7 @@ public class LuceneEngine implements ISearchEngine {
         }
     }
 
-    protected String serialize( IndexField field, Object value ) throws EngineException {
+    protected String serialize( IIndexField field, Object value ) throws EngineException {
         try {
             return field.getSerializer() == null ? String.valueOf( value ) : Search.getSerializer( field.getSerializer() ).serializeString(value);
         } catch ( Throwable e ) {

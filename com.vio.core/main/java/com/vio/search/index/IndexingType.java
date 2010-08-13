@@ -1,4 +1,4 @@
-package com.vio.search.query;
+package com.vio.search.index;
 
 /**
  * Created by IntelliJ IDEA.

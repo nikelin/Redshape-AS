@@ -20,7 +20,7 @@ public class AuthenticatorFactory {
 	private final static Logger log = Logger.getLogger( AuthenticatorFactory.class );
     private final static AuthenticatorFactory instance = new AuthenticatorFactory();
 
-    private Map<Class<? extends Identity>, AuthenticatorInterface<? extends Identity>> adapters = new HashMap<Class<? extends Identity>, AuthenticatorInterface<? extends Identity>>();
+    private Map<Class<? extends IIdentity>, AuthenticatorInterface<? extends IIdentity>> adapters = new HashMap<Class<? extends IIdentity>, AuthenticatorInterface<? extends IIdentity>>();
 
     public static AuthenticatorFactory getInstance() {
         return instance;
@@ -30,7 +30,7 @@ public class AuthenticatorFactory {
         this.initialize();
     }
 
-    public <T extends Identity> AuthenticatorInterface<T> getAdapter( Class<T> clazz ) {
+    public <T extends IIdentity> AuthenticatorInterface<T> getAdapter( Class<T> clazz ) {
         AuthenticatorInterface<T> adapter = (AuthenticatorInterface<T>) this.adapters.get(clazz);
         if ( adapter != null ) {
         	return adapter;
@@ -39,11 +39,11 @@ public class AuthenticatorFactory {
         return null;
     }
 
-    public Map<Class<? extends Identity>, AuthenticatorInterface<? extends Identity>> getAdapters() {
+    public Map<Class<? extends IIdentity>, AuthenticatorInterface<? extends IIdentity>> getAdapters() {
         return this.adapters;
     }
 
-    public void setAdapter( Class<? extends Identity> clazz, AuthenticatorInterface<? extends Identity> adapter ) {
+    public void setAdapter( Class<? extends IIdentity> clazz, AuthenticatorInterface<? extends IIdentity> adapter ) {
         this.adapters.put( clazz, adapter );
     }
 

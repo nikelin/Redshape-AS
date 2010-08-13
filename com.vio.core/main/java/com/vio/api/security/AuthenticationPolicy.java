@@ -8,7 +8,7 @@ import com.vio.exceptions.ErrorCode;
 import com.vio.io.protocols.core.Constants;
 import com.vio.io.protocols.core.VersionRegistryFactory;
 import com.vio.io.protocols.vanilla.VanillaVersionsRegistry;
-import com.vio.io.protocols.vanilla.request.IAPIRequest;
+import com.vio.io.protocols.vanilla.request.IApiRequest;
 import com.vio.persistence.entities.IPAddress;
 import com.vio.persistence.entities.requesters.IRequester;
 import com.vio.server.ISocketServer;
@@ -27,13 +27,13 @@ import java.util.Date;
  * Time: 3:37:10 PM
  * To change this template use File | Settings | File Templates.
  */
-public class AuthenticationPolicy extends AbstractPolicy<IAPIRequest, ISocketServer> {
+public class AuthenticationPolicy extends AbstractPolicy<IApiRequest, ISocketServer> {
     private final static Logger log = Logger.getLogger( AuthenticationPolicy.class );
 
     private ISocketServer server;
 
     @Override
-    public boolean applicate( IAPIRequest request ) {
+    public boolean applicate( IApiRequest request ) {
         try {
             boolean checkResult = false;
 

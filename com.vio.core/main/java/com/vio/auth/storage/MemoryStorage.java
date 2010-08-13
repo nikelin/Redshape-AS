@@ -1,6 +1,6 @@
 package com.vio.auth.storage;
 
-import com.vio.auth.Identity;
+import com.vio.auth.IIdentity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +10,7 @@ import java.util.Map;
  *
  * @author nikelin
  */
-public class MemoryStorage<T extends Identity> implements AuthStorage<T> {
+public class MemoryStorage<T extends IIdentity> implements AuthStorage<T> {
     private long lifeTime;
     private Map<Object, T> store = new HashMap<Object, T>();
 

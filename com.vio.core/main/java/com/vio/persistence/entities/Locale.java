@@ -1,6 +1,6 @@
 package com.vio.persistence.entities;
 
-import com.vio.render.Renderable;
+import com.vio.render.IRenderable;
 
 import javax.persistence.*;
 
@@ -12,7 +12,7 @@ import javax.persistence.*;
  * To change this template use File | Settings | File Templates.
  */
 @javax.persistence.Entity( name = "locales" )
-public class Locale extends AbstractEntity<Locale> implements Renderable {
+public class Locale extends AbstractEntity<Locale> implements IRenderable {
     @Basic
     private String abbr;
 

@@ -4,6 +4,7 @@ import com.vio.api.dispatchers.http.IHttpDispatcher;
 import com.vio.io.protocols.http.IHttpProtocol;
 import com.vio.io.protocols.http.request.IHttpRequest;
 import com.vio.io.protocols.http.response.IHttpResponse;
+import com.vio.io.protocols.core.request.RequestType;
 import com.vio.server.ISocketServer;
 import com.vio.server.ServerException;
 import com.vio.server.adapters.socket.client.ISocketAdapter;
@@ -23,10 +24,10 @@ public class HttpRequestsListener
                     ISocketServer<
                         IHttpProtocol<
                             IHttpRequest,
+                            IHttpDispatcher,
                             IHttpResponse,
                             ?
                         >,
-                        IHttpDispatcher,
                         IHttpResponse
                     >, IHttpResponse, IHttpRequest, ISocketAdapter> {
     private static final Logger log = Logger.getLogger( HttpRequestsListener.class );
@@ -40,6 +41,7 @@ public class HttpRequestsListener
             }
 
             IHttpResponse response = this.getServerContext().createResponseObject();
+            IHttpProtocol protocol = this.getServerContext().getProtocol();
 
             ISocketAdapter socket = request.getSocket();
             log.info("Processing request" );
@@ -48,7 +50,7 @@ public class HttpRequestsListener
             long startTime = System.currentTimeMillis();
 
             try {
-                this.getServerContext().getDispatcher().dispatch( null, request, response );
+                protocol.getRequestDispatcher(RequestType.INTERFACE_INVOKE).dispatch( null, request, response );
 
                 log.info("Sending response to client...");
                 this.getServerContext().writeResponse( socket, response );

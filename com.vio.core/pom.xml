@@ -29,6 +29,8 @@
           </resource>
         </resources>
 
+        <testSourceDirectory>${project.basedir}/unit/java</testSourceDirectory>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -39,6 +41,28 @@
                     <source>1.6</source>
                     <target>1.6</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                  <reportsDirectory>${project.basedir}/build</reportsDirectory>
+                  <skip>false</skip>
+                  <enableAssertions>true</enableAssertions>
+                  <printSummary>true</printSummary>
+                </configuration>
+                <executions>
+                  <execution>
+                    <id>surefire-it</id>
+                    <phase>integration-test</phase>
+                    <goals>
+                      <goal>test</goal>
+                    </goals>
+                    <configuration>
+                      <skip>false</skip>
+                    </configuration>
+                  </execution>
+                </executions>
             </plugin>
        </plugins>
     </build>

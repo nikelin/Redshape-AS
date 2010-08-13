@@ -1,11 +1,8 @@
 package com.vio.io.protocols.vanilla.request;
 
+import com.vio.io.protocols.core.request.*;
 import com.vio.io.protocols.vanilla.hyndrators.IApiRequestHydrator;
 import com.vio.io.protocols.vanilla.hyndrators.JSONRequestHydrator;
-import com.vio.io.protocols.core.request.RequestException;
-import com.vio.io.protocols.core.request.RequestFormattingException;
-import com.vio.io.protocols.core.request.RequestHeader;
-import com.vio.io.protocols.core.request.RequestProcessingException;
 import com.vio.exceptions.ErrorCode;
 import com.vio.persistence.entities.requesters.IRequester;
 import com.vio.server.adapters.socket.client.ISocketAdapter;
@@ -21,21 +18,22 @@ import java.util.Map;
 /**
  * @author nikelin
  */
-public class InterfaceInvoke implements IAPIRequest {
-    private static Logger log = Logger.getLogger( InterfaceInvoke.class );
+public class ApiRequest implements IApiRequest {
+    private static Logger log = Logger.getLogger( ApiRequest.class );
     protected static IApiRequestHydrator defaultHydrator = new JSONRequestHydrator();
 
     private String id;
     private String interfaceId;
-    private String action;
+    private String actionId;
     private boolean is_valid;
+    private RequestType type;
     private Map<String, Object> params = new HashMap<String, Object>();
     private Map<String, Object> response = new HashMap<String, Object>();
     private IRequester identity;
     private ISocketAdapter socket;
-    private IAPIRequest parent;
+    private IApiRequest parent;
     private Collection<RequestHeader> headers = new HashSet<RequestHeader>();
-    private Collection<IAPIRequest> childs = new ArrayList<IAPIRequest>();
+    private Collection<IApiRequest> children = new ArrayList<IApiRequest>();
 
     @Override
     public void setId( String id ) {
@@ -48,32 +46,42 @@ public class InterfaceInvoke implements IAPIRequest {
     }
 
     @Override
-    public void setParent( IAPIRequest request ) {
+    public RequestType getType() {
+        return this.type;
+    }
+
+    @Override
+    public void setType( RequestType type ) {
+        this.type = type;
+    }
+
+    @Override
+    public void setParent( IApiRequest request ) {
         this.parent = request;
     }
 
     @Override
-    public IAPIRequest getParent() {
+    public IApiRequest getParent() {
         return this.parent;
     }
 
     @Override
     public void setAspectName( String action ) {
-        this.action = action;
+        this.actionId = action;
     }
 
     @Override
     public String getAspectName() {
-        return this.action;
+        return this.actionId;
     }
 
     @Override
-    public void setFeature( String interfaceId ) {
+    public void setFeatureName( String interfaceId ) {
         this.interfaceId = interfaceId;
     }
 
     @Override
-    public String getFeature() {
+    public String getFeatureName() {
         return this.interfaceId;
     }
 
@@ -132,16 +140,16 @@ public class InterfaceInvoke implements IAPIRequest {
         this.params = params;
     }
 
-    public static InterfaceInvoke buildRequest(String data) throws Throwable {
+    public static ApiRequest buildRequest(String data) throws Throwable {
         return buildRequest( data, defaultHydrator);
     }
 
     /**
      * @TODO refactoring needs (constructors extraction) 
      */
-    public static InterfaceInvoke buildRequest( String data, IApiRequestHydrator hydrator) throws RequestException {
+    public static ApiRequest buildRequest( String data, IApiRequestHydrator hydrator) throws RequestException {
         try {
-            InterfaceInvoke request = new InterfaceInvoke();
+            ApiRequest request = new ApiRequest();
             log.info("Input request: " + data );
 
             hydrator.parse(data);
@@ -156,14 +164,14 @@ public class InterfaceInvoke implements IAPIRequest {
                 throw new RequestProcessingException(ErrorCode.EXCEPTION_WRONG_REQUEST_HEADERS );
             }
 
-            Collection<IAPIRequest> body = hydrator.readBody();
+            Collection<IApiRequest> body = hydrator.readBody();
             if ( body == null ) {
                 throw new RequestFormattingException(ErrorCode.EXCEPTION_MISSED_REQUEST_BODY );
             }
 
             boolean isValidBody = true;
-            for ( IAPIRequest invoke : body ) {
-                if ( invoke.getFeature() == null || invoke.getFeature().isEmpty() ) {
+            for ( IApiRequest invoke : body ) {
+                if ( invoke.getFeatureName() == null || invoke.getFeatureName().isEmpty() ) {
                     isValidBody = false;
                     break;
                 }
@@ -221,8 +229,8 @@ public class InterfaceInvoke implements IAPIRequest {
     }
 
     @Override
-    public void setChildren( Collection<IAPIRequest> body ) {
-        this.childs = body;
+    public void setChildren( Collection<IApiRequest> body ) {
+        this.children = body;
     }
 
     @Override
@@ -231,18 +239,18 @@ public class InterfaceInvoke implements IAPIRequest {
     }
 
     @Override
-    public void addChild( IAPIRequest invoke ) {
-        this.childs.add( invoke );
+    public void addChild( IApiRequest invoke ) {
+        this.children.add( invoke );
     }
 
     @Override
-    public Collection<IAPIRequest> getChildren() {
-        return this.childs;
+    public Collection<IApiRequest> getChildren() {
+        return this.children;
     }
 
     @Override
     public boolean hasChilds() {
-        return !this.childs.isEmpty();
+        return !this.children.isEmpty();
     }
 
     @Override
@@ -260,7 +268,7 @@ public class InterfaceInvoke implements IAPIRequest {
         return this.hasHeader("async") && (Boolean) this.getHeader("async").getValue();
     }
 
-    protected static boolean isValidHeaders( InterfaceInvoke request ) {
+    protected static boolean isValidHeaders( ApiRequest request ) {
         return request.hasHeader("api_key");
     }
 

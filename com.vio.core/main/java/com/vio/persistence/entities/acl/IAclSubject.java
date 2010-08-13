@@ -10,17 +10,4 @@ import java.util.Collection;
  * To change this template use File | Settings | File Templates.
  */
 public interface IAclSubject {
-
-    /**
-     * Check ability of current subject process any actions under given permission
-     * 
-     * @param object
-     * @param permission
-     * @return
-     * @throws AclException
-     */
-    public boolean canAccess( IAclObject object, AclPermission permission ) throws AclException;
-
-    public Collection<AclPermission> getAllPermissions( IAclObject object ) throws AclException;
-    
 }

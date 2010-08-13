@@ -1,5 +1,6 @@
 package com.vio.io.protocols.core;
 
+import com.vio.api.dispatchers.IDispatcher;
 import com.vio.config.readers.ConfigReaderException;
 import com.vio.exceptions.ExceptionWithCode;
 import com.vio.io.protocols.core.readers.IRequestReader;
@@ -11,11 +12,14 @@ import com.vio.io.protocols.core.sources.input.InputStream;
 import com.vio.io.protocols.core.sources.output.OutputStream;
 import com.vio.io.protocols.core.writers.IResponseWriter;
 import com.vio.io.protocols.core.writers.WriterException;
+import com.vio.io.protocols.core.request.RequestType;
 import com.vio.server.processors.request.IRequestsProcessor;
 import com.vio.server.processors.connection.IClientsProcessor;
 import com.vio.utils.Registry;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,11 +28,18 @@ import java.util.Collection;
  * Time: 8:07:02 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class AbstractProtocol<T extends IRequest, V extends IResponse, I extends BufferedInput> implements IProtocol<T, V, I> {
+public abstract class AbstractProtocol<
+                                        T extends IRequest,
+                                        D extends IDispatcher,
+                                        V extends IResponse,
+                                        I extends BufferedInput
+                                    >
+                    implements IProtocol<T, D, V, I> {
     private IRequestReader<I, T> reader;
     private IResponseWriter writer;
     private IClientsProcessor clientsProcessor;
     private Class<? extends IRequestsProcessor<?, T>> requestsProcessor;
+    private Map<RequestType, D> dispatchers = new HashMap();
 
     @Override
     public void setReader( IRequestReader<I, T> reader ) {
@@ -105,5 +116,15 @@ public abstract class AbstractProtocol<T extends IRequest, V extends IResponse, 
     @Override
     public IClientsProcessor getClientsProcessor() {
         return this.clientsProcessor;
+    }
+
+    @Override
+    public D getRequestDispatcher( RequestType type ) {
+        return this.dispatchers.get(type);
+    }
+
+    @Override
+    public void setRequestsDispatcher( RequestType type, D dispatcher ) {
+        this.dispatchers.put( type, dispatcher );
     }
 }

@@ -1,8 +1,8 @@
 package com.vio.auth.annotations;
 
-import com.vio.auth.Identity;
+import com.vio.auth.IIdentity;
 
 public @interface TargetIdentity {
 	
-	Class<? extends Identity> identity();
+	Class<? extends IIdentity> identity();
 }

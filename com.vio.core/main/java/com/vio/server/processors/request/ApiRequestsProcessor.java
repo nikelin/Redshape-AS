@@ -1,8 +1,9 @@
 package com.vio.server.processors.request;
 
 import com.vio.api.dispatchers.vanilla.IVanillaDispatcher;
+import com.vio.io.protocols.core.request.RequestType;
 import com.vio.io.protocols.vanilla.IVanillaProtocol;
-import com.vio.io.protocols.vanilla.request.IAPIRequest;
+import com.vio.io.protocols.vanilla.request.IApiRequest;
 import com.vio.io.protocols.vanilla.response.IApiResponse;
 import com.vio.server.ISocketServer;
 import com.vio.server.ServerException;
@@ -21,15 +22,14 @@ import java.util.Date;
 public class ApiRequestsProcessor
         extends AbstractRequestsProcessor<
                     ISocketServer<
-                        IVanillaProtocol<IAPIRequest, IApiResponse, ?>,
-                        IVanillaDispatcher,
+                        IVanillaProtocol<IApiRequest, IVanillaDispatcher, IApiResponse, ?>,
                         IApiResponse
-                    >, IApiResponse, IAPIRequest, ISocketAdapter> {
+                    >, IApiResponse, IApiRequest, ISocketAdapter> {
     
     private static final Logger log = Logger.getLogger( ApiRequestsProcessor.class);
 
     @Override
-    public void onRequest( IAPIRequest request ) throws ServerException {
+    public void onRequest( IApiRequest request ) throws ServerException {
         if ( !this.authenticateRequest(request) ) {
             log.info("Failed authentication");
             throw new ServerException();
@@ -37,10 +37,11 @@ public class ApiRequestsProcessor
 
         IApiResponse response = this.getServerContext().createResponseObject();
 
+        IVanillaProtocol protocol = this.getServerContext().getProtocol();
         ISocketAdapter socket = request.getSocket();
         log.info("Processing request" );
         log.info( "Invokes count: " + request.getChildren().size() );
-        for ( IAPIRequest invoke : request.getChildren() ) {
+        for ( IApiRequest invoke : request.getChildren() ) {
             log.info("Invoke id: " + invoke.getId() );
             log.info("Processing start time: " + new Date( new Date().getTime() ).toLocaleString() );
             long startTime = System.currentTimeMillis();
@@ -48,10 +49,14 @@ public class ApiRequestsProcessor
             currentResponse.setId( invoke.getId() );
 
             try {
-                this.getServerContext().getDispatcher().dispatch(
-                                                        request.getIdentity(),
-                                                        invoke,
-                                                        currentResponse );
+                IVanillaDispatcher dispatcher = (IVanillaDispatcher) protocol.getRequestDispatcher( request.getType() != null ? request.getType() : RequestType.INTERFACE_INVOKE);
+                log.info( "Request type: " + request.getType() );
+                log.info( "Request dispatcher: " + dispatcher.getClass().getCanonicalName() );
+                dispatcher.dispatch(
+                    request.getIdentity(),
+                    invoke,
+                    currentResponse
+                );
 
                 if ( request.isAsync() ) {
                     log.info("Sending response to client in async mode...");
@@ -64,6 +69,9 @@ public class ApiRequestsProcessor
             } catch ( ServerException e ) {
                 log.error( e.getMessage(), e );
                 this.getServerContext().writeResponse( socket, e );
+            } catch ( Throwable e ) {
+                log.error( e.getMessage(), e );
+                break;
             }
         }
 

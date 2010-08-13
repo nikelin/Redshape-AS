@@ -5,7 +5,7 @@ package com.vio.auth;
  *
  * @author nikelin
  */
-public class AuthResult<T extends Identity> {
+public class AuthResult<T extends IIdentity> {
     /**
      * Перечисление возможным статусов аутентификации
      */

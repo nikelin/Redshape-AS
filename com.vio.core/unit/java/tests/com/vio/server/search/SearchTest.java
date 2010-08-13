@@ -2,7 +2,7 @@ package tests.com.vio.server.search;
 
 import com.vio.search.Search;
 import org.junit.*;
-import tests.mocks.socket.SearchableMock;
+import tests.com.vio.server.search.mock.SearchableMock;
 
 /**
  * Created by IntelliJ IDEA.

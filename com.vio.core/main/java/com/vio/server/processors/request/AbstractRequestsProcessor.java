@@ -1,15 +1,11 @@
 package com.vio.server.processors.request;
 
-import com.vio.exceptions.ExceptionWithCode;
 import com.vio.io.protocols.core.IProtocol;
 import com.vio.io.protocols.core.request.IRequest;
 import com.vio.io.protocols.core.response.IResponse;
-import com.vio.io.protocols.core.sources.input.BufferedInput;
-import com.vio.io.protocols.vanilla.request.IAPIRequest;
 import com.vio.server.ISocketServer;
 import com.vio.server.ServerException;
 import com.vio.server.adapters.socket.client.ISocketAdapter;
-import com.vio.server.policy.PolicyType;
 import org.apache.log4j.Logger;
 
 /**
@@ -19,7 +15,12 @@ import org.apache.log4j.Logger;
  * Time: 12:49:47 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class AbstractRequestsProcessor<T extends ISocketServer<? extends IProtocol<G, Q, ?>, ?, Q>, Q extends IResponse, G extends IRequest, V extends ISocketAdapter> implements IRequestsProcessor<T, G> {
+public abstract class AbstractRequestsProcessor<
+                                T extends ISocketServer<? extends IProtocol<G, ?, Q, ?>, Q>,
+                                Q extends IResponse,
+                                G extends IRequest,
+                                V extends ISocketAdapter>
+                implements IRequestsProcessor<T, G> {
     private static final Logger log = Logger.getLogger( AbstractRequestsProcessor.class );
     
 

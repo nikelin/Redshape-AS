@@ -9,7 +9,7 @@ import com.vio.features.IFeatureInteractor;
  * Time: 6:06:19 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface Identity<T> extends IFeatureInteractor<T> {
+public interface IIdentity<T> extends IFeatureInteractor<T> {
 
     public Long getLastAccessTime();
 

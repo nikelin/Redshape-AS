@@ -1,9 +1,9 @@
 package com.vio.search.collectors;
 
 import com.vio.search.*;
-import com.vio.search.query.Index;
-import com.vio.search.query.IndexBuilder;
-import com.vio.search.query.IndexField;
+import com.vio.search.index.IIndex;
+import com.vio.search.index.IIndexField;
+import com.vio.search.index.builders.IndexBuilder;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.lucene.document.Field;
 
@@ -32,11 +32,11 @@ public class StandardCollector implements IResultsCollector {
             for ( CollectedItem item : collected ) {
                 Class<T> searchableClass = (Class<T>) item.getSearchable();
 
-                Index index = IndexBuilder.newBuilder().getIndex(searchableClass);
+                IIndex index = IndexBuilder.newBuilder().getIndex(searchableClass);
                 ISearchable searchable = searchableClass.newInstance();
 
                 for ( Field field : item.getFields() ) {
-                    IndexField indexField = index.getField( field.name() );
+                    IIndexField indexField = index.getField( field.name() );
                     if ( indexField == null ) {
                         throw new ProcessingException();
                     }

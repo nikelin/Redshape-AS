@@ -3,20 +3,25 @@ package com.vio.api.dispatchers.vanilla;
 import com.vio.api.ApiException;
 import com.vio.features.*;
 import com.vio.exceptions.ErrorCode;
-import com.vio.io.protocols.vanilla.request.IAPIRequest;
+import com.vio.io.protocols.vanilla.request.IApiRequest;
+import com.vio.io.protocols.core.request.RequestType;
 import com.vio.io.protocols.vanilla.response.IApiResponse;
 import com.vio.persistence.entities.requesters.IRequester;
 import com.vio.server.ServerException;
 
 import org.apache.log4j.*;
 
-public class VanillaDispatcher implements IVanillaDispatcher<IRequester, IAPIRequest, IApiResponse> {
-	private static final Logger log = Logger.getLogger( VanillaDispatcher.class );
-	
-	public void dispatch( IRequester requester, IAPIRequest invoke, IApiResponse response ) throws ServerException {
+public class InterfaceInvocationsDispatcher implements IVanillaDispatcher<IRequester, IApiRequest, IApiResponse> {
+	private static final Logger log = Logger.getLogger( InterfaceInvocationsDispatcher.class );
+
+    public RequestType getDispatchingType() {
+        return RequestType.INTERFACE_INVOKE;
+    }
+
+	public void dispatch( IRequester requester, IApiRequest invoke, IApiResponse response ) throws ServerException {
         try {
-            log.info("Calling action " + invoke.getAspectName() + " of " + invoke.getFeature() + " interface...");
-            IFeatureAspect featureAspect = FeaturesRegistry.getDefault().getFeatureAspect( invoke.getFeature(), invoke.getAspectName() );
+            log.info("Calling action " + invoke.getAspectName() + " of " + invoke.getFeatureName() + " interface...");
+            IFeatureAspect featureAspect = FeaturesRegistry.getDefault().getFeatureAspect( invoke.getFeatureName(), invoke.getAspectName() );
             if ( featureAspect == null ) {
                 throw new ApiException( ErrorCode.EXCEPTION_REQUEST_METHOD_NOT_EXISTS );
             }

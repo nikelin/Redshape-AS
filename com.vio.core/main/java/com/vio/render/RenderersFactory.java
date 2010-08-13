@@ -13,8 +13,8 @@ public abstract class RenderersFactory {
     private static RenderersFactory defaultInstance = new JSONRenderersFactory();
     private static Map< Class<? extends RenderersFactory>, RenderersFactory > factories =
                                                                 new HashMap< Class<? extends RenderersFactory>, RenderersFactory>();
-    private Map< Class<? extends Renderable>, Class<? extends Renderer> > entities =
-                                                                new HashMap< Class<? extends Renderable>, Class<? extends Renderer>>();
+    private Map< Class<? extends IRenderable>, Class<? extends Renderer> > entities =
+                                                                new HashMap< Class<? extends IRenderable>, Class<? extends Renderer>>();
     
     private Map<Class<? extends Renderer>, Renderer> renderers = new HashMap<Class<? extends Renderer>, Renderer>();
 
@@ -70,22 +70,22 @@ public abstract class RenderersFactory {
         this.renderers.put( rendererClazz, renderer );
     }
 
-    public Renderer forEntity( Renderable object ) throws RendererException {
+    public Renderer forEntity( IRenderable object ) throws RendererException {
         return this.forEntity( object.getClass() );
     }
 
-	public Renderer forEntity( Class<? extends Renderable> object ) throws RendererException {
+	public Renderer forEntity( Class<? extends IRenderable> object ) throws RendererException {
         return this.getRenderer( this.getForEntity(object) );
 	}
 
-    protected Class<? extends Renderer> getForEntity( Class<? extends Renderable> object ) throws RendererException{
+    protected Class<? extends Renderer> getForEntity( Class<? extends IRenderable> object ) throws RendererException{
         try {
             Class<? extends Renderer> rendererClass = this.entities.get(object);
             if ( rendererClass != null ) {
                 return rendererClass;
             }
 
-            for( Class<? extends Renderable> clazz : this.entities.keySet() ) {
+            for( Class<? extends IRenderable> clazz : this.entities.keySet() ) {
                 if ( clazz.isAssignableFrom( object ) ) {
                     rendererClass = this.entities.get( clazz );
                     break;

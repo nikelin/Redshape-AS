@@ -1,14 +1,19 @@
 package com.vio.io.protocols.vanilla.request;
 
 import com.vio.io.protocols.core.request.IRequest;
+import com.vio.io.protocols.core.request.RequestType;
 import com.vio.persistence.entities.requesters.IRequester;
-import com.vio.render.Renderable;
+import com.vio.render.IRenderable;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public interface IAPIRequest extends IRequest, Renderable {
+public interface IApiRequest extends IRequest, IRenderable {
+
+    public RequestType getType();
+
+    public void setType( RequestType type );
 
     public void setId( String id );
 
@@ -20,9 +25,9 @@ public interface IAPIRequest extends IRequest, Renderable {
      * 
      * @return
      */
-    public IAPIRequest getParent();
+    public IApiRequest getParent();
 
-    public void setParent( IAPIRequest request );
+    public void setParent( IApiRequest request );
 
     /**
      * Get action of current response
@@ -32,9 +37,9 @@ public interface IAPIRequest extends IRequest, Renderable {
 
     public void setAspectName( String aspectName );
 
-    public void setFeature( String featureName );
+    public void setFeatureName( String featureName );
 
-    public String getFeature();
+    public String getFeatureName();
 
     public Object getParam( String name );
 
@@ -46,11 +51,11 @@ public interface IAPIRequest extends IRequest, Renderable {
 
     public boolean hasChilds();
 
-    public void setChildren( Collection<IAPIRequest> body );
+    public void setChildren( Collection<IApiRequest> body );
 
-    public void addChild( IAPIRequest invoke );
+    public void addChild( IApiRequest invoke );
 
-    public Collection<IAPIRequest> getChildren();
+    public Collection<IApiRequest> getChildren();
 
     public IRequester getIdentity();
 

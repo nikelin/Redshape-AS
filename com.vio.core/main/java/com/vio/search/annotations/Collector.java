@@ -2,6 +2,9 @@ package com.vio.search.annotations;
 
 import com.vio.search.ISearchable;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 /**
  * Created by IntelliJ IDEA.
  * User: nikelin
@@ -9,6 +12,7 @@ import com.vio.search.ISearchable;
  * Time: 4:08:12 PM
  * To change this template use File | Settings | File Templates.
  */
+@Retention( RetentionPolicy.RUNTIME )
 public @interface Collector {
 
     Class<? extends ISearchable> entityType();

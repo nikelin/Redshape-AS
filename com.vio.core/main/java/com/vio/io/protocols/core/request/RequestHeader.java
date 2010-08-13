@@ -1,6 +1,6 @@
 package com.vio.io.protocols.core.request;
 
-import com.vio.render.Renderable;
+import com.vio.render.IRenderable;
 
 /**
  * Created by IntelliJ IDEA.
@@ -9,7 +9,7 @@ import com.vio.render.Renderable;
  * Time: 7:46:40 PM
  * To change this template use File | Settings | File Templates.
  */
-public class RequestHeader implements Renderable {
+public class RequestHeader implements IRenderable {
     private String name;
     private Object value;
 

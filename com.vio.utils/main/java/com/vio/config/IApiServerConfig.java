@@ -49,4 +49,6 @@ public interface IApiServerConfig extends IServerConfig {
     public String getServerProtocolClientsProcessor( String serverName, Class<?> protocolContext ) throws ConfigReaderException;
 
     public String getServerProtocolRequestsProcessor( String serverName, Class<?> protocolContext ) throws ConfigReaderException;
+
+    public List<String> getNotificationsPackages() throws ConfigReaderException;
 }

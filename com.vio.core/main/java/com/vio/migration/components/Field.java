@@ -1,6 +1,6 @@
 package com.vio.migration.components;
 
-import com.vio.render.Renderable;
+import com.vio.render.IRenderable;
 
 import java.util.*;
 
@@ -12,7 +12,7 @@ import java.util.*;
  * @package com.vio.migration.components
  * @date Apr 6, 2010
  */
-public class Field implements Renderable {
+public class Field implements IRenderable {
     private String name;
     private FieldType type;
     private Set<FieldOption> options = new HashSet<FieldOption>();

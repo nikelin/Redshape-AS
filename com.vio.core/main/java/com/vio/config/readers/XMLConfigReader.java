@@ -123,4 +123,23 @@ public class XMLConfigReader extends AbstractReader {
         }
     }
 
+    public Map<String, String> readMap( String keyPath, String valuePath ) throws ConfigReaderException {
+        this.initialize();
+
+        Map<String, String> result = new HashMap();
+
+        List<String> keys = this.readList(keyPath);
+        List<String> values = this.readList( valuePath );
+
+        if ( values.size() != keys.size() ) {
+            throw new ConfigReaderException("Count of keys not equals to count of values");
+        }
+
+        for ( int i = 0; i < keys.size(); i++ ) {
+            result.put( keys.get(i), values.get(i) );
+        }
+
+        return result;
+    }
+
 }

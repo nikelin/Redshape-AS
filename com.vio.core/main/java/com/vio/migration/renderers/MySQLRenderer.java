@@ -1,6 +1,6 @@
 package com.vio.migration.renderers;
 
-import com.vio.render.Renderable;
+import com.vio.render.IRenderable;
 import com.vio.render.Renderer;
 import com.vio.render.RendererException;
 
@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  * @package com.vio.migration.renderers
  * @date Apr 6, 2010
  */
-public abstract class MySQLRenderer<T extends Renderable> implements Renderer<T> {
+public abstract class MySQLRenderer<T extends IRenderable> implements Renderer<T> {
     private static final char ESCAPE_CHAR = '`';
     private final static Pattern NON_ESCAPABLE = Pattern.compile("[`() ,]");
 

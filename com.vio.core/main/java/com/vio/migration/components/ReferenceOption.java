@@ -1,6 +1,6 @@
 package com.vio.migration.components;
 
-import com.vio.render.Renderable;
+import com.vio.render.IRenderable;
 
 /**
  * WebCam Project
@@ -10,7 +10,7 @@ import com.vio.render.Renderable;
  * @package com.vio.migration.components
  * @date Apr 6, 2010
  */
-public enum ReferenceOption implements Renderable {
+public enum ReferenceOption implements IRenderable {
     RESTRICT,
     CASCADE,
     NO_ACTION,

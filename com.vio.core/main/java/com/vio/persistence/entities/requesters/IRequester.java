@@ -1,6 +1,6 @@
 package com.vio.persistence.entities.requesters;
 
-import com.vio.auth.Identity;
+import com.vio.auth.IIdentity;
 import com.vio.persistence.entities.IEntity;
 import com.vio.persistence.entities.IAddress;
 import com.vio.persistence.entities.IPAddress;
@@ -15,7 +15,7 @@ import java.util.Set;
  * @package com.vio.persistence.entities
  * @date Apr 17, 2010
  */
-public interface IRequester<T> extends Identity<T>, IEntity {
+public interface IRequester<T> extends IIdentity<T>, IEntity {
 
     public void setApiKey( String key );
 

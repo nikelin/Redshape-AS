@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
  *
  * @author nikelin
  */
-public class ApplicationServer extends AbstractSocketServer<IProtocol, IDispatcher, IResponse> {
+public class ApplicationServer extends AbstractSocketServer<IProtocol, IResponse> {
     private static final Logger log = Logger.getLogger( ApplicationServer.class );
 
     public final static Class<? extends IApiResponse> DEFAULT_RESPONSE_OBJECT = ApiResponse.class;

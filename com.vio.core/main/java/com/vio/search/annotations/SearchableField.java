@@ -1,6 +1,6 @@
 package com.vio.search.annotations;
 
-import com.vio.search.query.IndexingType;
+import com.vio.search.index.IndexingType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

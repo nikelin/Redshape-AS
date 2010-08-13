@@ -1,6 +1,6 @@
 package com.vio.migration.components;
 
-import com.vio.render.Renderable;
+import com.vio.render.IRenderable;
 
 import java.util.*;
 
@@ -12,7 +12,7 @@ import java.util.*;
  * @package com.vio.migration.components
  * @date Apr 6, 2010
  */
-public class Table implements Renderable {
+public class Table implements IRenderable {
     private boolean isTemporary;
     private String name;
     private Set<Field> fields = new HashSet<Field>();

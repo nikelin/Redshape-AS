@@ -25,8 +25,8 @@ import java.util.*;
  * @package com.vio.server
  * @date Apr 14, 2010
  */
-public abstract class AbstractSocketServer<T extends IProtocol, D extends IDispatcher, R extends IResponse>
-                extends AbstractServer implements ISocketServer<T, D, R> {
+public abstract class AbstractSocketServer<T extends IProtocol, R extends IResponse>
+                extends AbstractServer implements ISocketServer<T, R> {
     final private static Logger log = Logger.getLogger( ApplicationServer.class );
 
     public static int EXPIRATION_TIME = Constants.TIME_SECOND * 1000;
@@ -40,12 +40,6 @@ public abstract class AbstractSocketServer<T extends IProtocol, D extends IDispa
     private IServerSocketAdapter socket;
 
     private T protocol;
-
-    /**
-     * Основной контроллер запросов; выполняет предобработку после которой
-     * передаёт выполнение конкретному, связанному с текущим запросом, контроллеру
-     */
-    private D dispatcher;
 
     private Map<ThreadGroup, ISocketAdapter> connections = new HashMap<ThreadGroup, ISocketAdapter>();
 
@@ -168,16 +162,6 @@ public abstract class AbstractSocketServer<T extends IProtocol, D extends IDispa
         }
 
         this.changeState( ServerState.DOWN );
-    }
-
-    @Override
-    public D getDispatcher() {
-    	return this.dispatcher;
-    }
-
-    @Override
-    public void setDispatcher( D dispatcher ) {
-    	this.dispatcher = dispatcher;
     }
 
     @Override

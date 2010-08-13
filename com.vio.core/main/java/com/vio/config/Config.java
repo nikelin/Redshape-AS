@@ -415,4 +415,21 @@ public class Config extends AbstractConfig implements IServerConfig, IApiServerC
         return this.getReader().read("//servers/" + serverName + "/protocol/requestsProcessor");
     }
 
+    @Override
+    public List<String> getTransportersClasses() throws ConfigReaderException {
+        return this.getReader().readList("//transporters/transport[@class]");
+    }
+
+    @Override
+    public Map<String, String> getTransporterProperties( String transportClass ) throws ConfigReaderException {
+        String basePath = "//transporters/transport[@class='"+transportClass+"']/config/*";
+
+        return this.getReader().readMap( basePath + "[@name]", basePath + "[@value]" );
+    }
+
+    @Override
+    public List<String> getNotificationsPackages() throws ConfigReaderException {
+        return this.getReader().readList("//notifications/package");
+    }
+
 }

@@ -2,8 +2,9 @@ package com.vio.io.protocols.vanilla.hyndrators;
 
 import com.vio.io.protocols.core.request.RequestException;
 import com.vio.io.protocols.core.request.RequestHeader;
-import com.vio.io.protocols.vanilla.request.InterfaceInvoke;
-import com.vio.io.protocols.vanilla.request.IAPIRequest;
+import com.vio.io.protocols.core.request.RequestType;
+import com.vio.io.protocols.vanilla.request.ApiRequest;
+import com.vio.io.protocols.vanilla.request.IApiRequest;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
@@ -18,6 +19,7 @@ public class JSONRequestHydrator implements IApiRequestHydrator {
     private static final Logger log = Logger.getLogger( JSONRequestHydrator.class );
 
     private String data;
+    private JSONObject jsonObject;    
 
     public JSONRequestHydrator() {}
 
@@ -48,18 +50,18 @@ public class JSONRequestHydrator implements IApiRequestHydrator {
     }
 
     @Override
-    public Collection<IAPIRequest> readBody() {
-        Collection<IAPIRequest> result = new HashSet<IAPIRequest>();
+    public Collection<IApiRequest> readBody() {
+        Collection<IApiRequest> result = new HashSet<IApiRequest>();
 
         if ( this.getObject().containsKey("body") ) {
             Object body = this.getObject().get("body");
 
             try {
                 Object mInvokeResult = this.getClass().getMethod("buildBody", body.getClass() ).invoke( this, body);
-                if ( IAPIRequest.class.isInstance(mInvokeResult) ) {
-                    result.add( (IAPIRequest) mInvokeResult );
+                if ( IApiRequest.class.isInstance(mInvokeResult) ) {
+                    result.add( (IApiRequest) mInvokeResult );
                 } else {
-                    result = (Collection<IAPIRequest>) mInvokeResult;
+                    result = (Collection<IApiRequest>) mInvokeResult;
                 }
             } catch ( Throwable e ) {
                 log.info( body.getClass().getName() );
@@ -70,8 +72,8 @@ public class JSONRequestHydrator implements IApiRequestHydrator {
         return result;
     }
 
-    public List<IAPIRequest> buildBody( JSONArray body ) {
-        List<IAPIRequest> result = new ArrayList<IAPIRequest>();
+    public List<IApiRequest> buildBody( JSONArray body ) {
+        List<IApiRequest> result = new ArrayList<IApiRequest>();
 
         for ( int item = 0; item < body.size(); item++ ) {
             Object ob = body.get( item );
@@ -84,11 +86,12 @@ public class JSONRequestHydrator implements IApiRequestHydrator {
         return result;
     }
 
-    public IAPIRequest buildBody( JSONObject body ) {
-        InterfaceInvoke invoke = new InterfaceInvoke();
+    public IApiRequest buildBody( JSONObject body ) {
+        ApiRequest invoke = new ApiRequest();
 
         invoke.setId( body.containsKey("id") ? body.get("id").toString() : null );
-        invoke.setFeature(  body.containsKey("interface") ? (String) body.get("interface") : null );
+        invoke.setType( body.containsKey("type") ? RequestType.valueOf( body.get("type").toString() ) : RequestType.INTERFACE_INVOKE );
+        invoke.setFeatureName(  body.containsKey("interface") ? (String) body.get("interface") : null );
         invoke.setAspectName( body.containsKey("action") ? (String) body.get("action") : null );
 
         if ( body.containsKey("params") && body.get("params").getClass() == JSONObject.class ) {
@@ -131,7 +134,5 @@ public class JSONRequestHydrator implements IApiRequestHydrator {
 
         return result;
     }
-
-    private JSONObject jsonObject;
 }
 

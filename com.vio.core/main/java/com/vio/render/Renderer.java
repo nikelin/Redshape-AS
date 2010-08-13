@@ -1,7 +1,6 @@
 package com.vio.render;
 
 import java.util.Collection;
-import java.util.Map;
 
 /**
  * WebCam Project
@@ -11,7 +10,7 @@ import java.util.Map;
  * @package com.vio.render
  * @date Mar 16, 2010
  */
-public interface Renderer<T extends Renderable> {
+public interface Renderer<T extends IRenderable> {
     
     public Object render( T renderable ) throws RendererException;
 

@@ -1,6 +1,6 @@
 package com.vio.migration.components;
 
-import com.vio.render.Renderable;
+import com.vio.render.IRenderable;
 
 /**
  * WebCam Project
@@ -10,7 +10,7 @@ import com.vio.render.Renderable;
  * @package com.vio.migration.components
  * @date Apr 6, 2010
  */
-public class FieldOption implements Renderable {
+public class FieldOption implements IRenderable {
     private FieldOptions option;
     private String value;
 

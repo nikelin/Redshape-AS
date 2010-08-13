@@ -1,6 +1,5 @@
 package com.vio.exceptions;
 
-import com.vio.render.Renderable;
 import org.apache.log4j.Logger;
 
 /**

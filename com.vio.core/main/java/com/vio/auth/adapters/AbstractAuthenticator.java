@@ -1,6 +1,6 @@
 package com.vio.auth.adapters;
 
-import com.vio.auth.Identity;
+import com.vio.auth.IIdentity;
 import com.vio.auth.storage.AuthStorage;
 import com.vio.auth.storage.MemoryStorage;
 import com.vio.utils.Constants;
@@ -14,7 +14,7 @@ import java.util.Map;
  * Time: 6:16:54 PM
  * To change this template use File | Settings | File Templates.
  */
-abstract public class AbstractAuthenticator<T extends Identity> implements AuthenticatorInterface<T> {
+abstract public class AbstractAuthenticator<T extends IIdentity> implements AuthenticatorInterface<T> {
     public static final int defaultSessionDuration = Constants.TIME_HOUR;
     private static final Class<? extends AuthStorage> defaultStorage = MemoryStorage.class;
 

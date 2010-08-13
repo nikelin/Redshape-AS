@@ -3,6 +3,7 @@ package com.vio.config;
 import com.vio.config.readers.ConfigReaderException;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -90,5 +91,9 @@ public interface IServerConfig extends IConfig {
     public List<String> getRemoteServicesList( String serverName ) throws ConfigReaderException;
 
     public String getLibrariesPath() throws ConfigReaderException;
+
+    public List<String> getTransportersClasses() throws ConfigReaderException;
+
+    public Map<String, String> getTransporterProperties( String transportClass ) throws ConfigReaderException;
     
 }

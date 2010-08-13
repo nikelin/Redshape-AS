@@ -18,18 +18,8 @@ public interface ISocketServerFactory extends IServerFactory {
         Integer port, Boolean isSSLEnabled, Map<String, Object> properties, IProtocol protocol
     ) throws InstantiationException;
 
-    public <T extends ISocketServer> T newInstance(
-        Class<T> clazz, String host, Integer port,
-        Boolean isSSLEnabled, Map<String, Object> properties,
-        IProtocol protocol, IDispatcher dispatcher
-    ) throws InstantiationException;
-
     public void setProtocol( IProtocol protocol );
 
     public IProtocol getProtocol();
-
-    public void setDispatcher( IDispatcher dispatcher );
-
-    public IDispatcher getDispatcher();
 
 }

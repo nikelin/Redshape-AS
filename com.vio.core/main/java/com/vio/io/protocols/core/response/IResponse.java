@@ -1,7 +1,7 @@
 package com.vio.io.protocols.core.response;
 
 import com.vio.io.protocols.core.request.RequestHeader;
-import com.vio.render.Renderable;
+import com.vio.render.IRenderable;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.Set;
  * Time: 2:53:08 AM
  * To change this template use File | Settings | File Templates.
  */
-public interface IResponse extends Renderable {
+public interface IResponse extends IRenderable {
     public String getId();
 
     public Response setId( String id );

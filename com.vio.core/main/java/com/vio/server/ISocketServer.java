@@ -17,14 +17,10 @@ import java.util.Collection;
  * @package com.vio.server
  * @date Apr 14, 2010
  */
-public interface ISocketServer<T extends IProtocol, D extends IDispatcher, R extends IResponse>
+public interface ISocketServer<T extends IProtocol, R extends IResponse>
                  extends IServer {
 
-    public void setDispatcher( D dispatcher );
-
     public boolean isConnectionExpired( IRequester user ) throws ConfigReaderException;
-
-    public D getDispatcher();
 
     public ISocketAdapter getLocalSocket();
 
