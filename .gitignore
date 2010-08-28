@@ -4,6 +4,15 @@
 .project
 nbproject
 build
+interpolated-pom.xml
+*.jar
+*.iws
+*.log
+*/*.log
+logs/*
+logs
+*.class
+*.ipr
 apidocs
 *.iml
 assemblies

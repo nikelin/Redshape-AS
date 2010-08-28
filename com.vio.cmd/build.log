@@ -46,7 +46,7 @@
 [INFO] dom4j-1.6.1.jar already exists in destination.
 [INFO] hsqldb-1.8.0.10.jar already exists in destination.
 [INFO] javassist-3.3.jar already exists in destination.
-[INFO] activation-1.1.jar already exists in destination.
+[INFO] activation-1.1.1.jar already exists in destination.
 [INFO] mail-1.4.1.jar already exists in destination.
 [INFO] jta-1.1.jar already exists in destination.
 [INFO] junit-4.7.jar already exists in destination.
@@ -88,7 +88,6 @@
 [INFO] spring-osgi-core-1.2.1.jar already exists in destination.
 [INFO] spring-osgi-io-1.2.1.jar already exists in destination.
 [INFO] oro-2.0.8.jar already exists in destination.
-[INFO] quartz-1.5.2.jar already exists in destination.
 [INFO] stax-api-1.0.1.jar already exists in destination.
 [INFO] jasper-compiler-5.5.12.jar already exists in destination.
 [INFO] jasper-runtime-5.5.12.jar already exists in destination.
@@ -102,7 +101,7 @@
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESSFUL
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time: 16 seconds
-[INFO] Finished at: Thu Aug 05 14:51:06 MSD 2010
-[INFO] Final Memory: 23M/43M
+[INFO] Total time: 22 seconds
+[INFO] Finished at: Sat Aug 28 19:09:20 MSD 2010
+[INFO] Final Memory: 22M/54M
 [INFO] ------------------------------------------------------------------------
