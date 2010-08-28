@@ -110,6 +110,7 @@ public abstract class Application implements IApplication, ISingletonApplication
         try {
             Registry.setConfig( this.createConfig() );
         } catch ( Throwable e ) {
+            log.error( e.getMessage(), e );
             throw new ApplicationException();
         }
 
