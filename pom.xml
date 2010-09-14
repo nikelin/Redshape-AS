@@ -7,11 +7,12 @@
     <version>1.0.0A</version>
     
     <modules>
-        <module>com.vio.core</module>
-        <module>com.vio.jms</module>
-        <module>com.vio.scheduler</module>
-        <module>com.vio.utils</module>
-        <module>com.vio.cmd</module>
+        <module>com.redshape.core</module>
+        <module>com.redshape.jms</module>
+        <module>com.redshape.scheduler</module>
+        <module>com.redshape.utils</module>
+        <module>com.redshape.cmd</module>
+        <module>com.redshape.remoting</module>
     </modules>
     
     <packaging>pom</packaging>

@@ -4,7 +4,7 @@
     <name>Documentation generator for server API</name>
     <version>1.0A</version>
     <description>This plugin may be used to generate documentation for WebCam Server API</description>
-    <mainClass>com.vio.vendors.apiDocsGenerator.Main</mainClass>
+    <mainClass>com.redshape.vendors.apiDocsGenerator.Main</mainClass>
 
     <authors>
        <com.vio.plugins.PluginAuthor>

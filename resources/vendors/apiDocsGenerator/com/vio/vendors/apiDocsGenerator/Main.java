@@ -1,12 +1,11 @@
-package com.vio.vendors.apiDocsGenerator;
+package com.redshape.vendors.apiDocsGenerator;
 
-import com.vio.api.ActionInterface;
-import com.vio.api.InterfacesRegistry;
-import com.vio.api.annotations.*;
-import com.vio.plugins.Plugin;
-import com.vio.plugins.PluginInfo;
+import com.redshape.api.ActionInterface;
+import com.redshape.api.InterfacesRegistry;
+import com.redshape.plugins.Plugin;
+import com.redshape.plugins.PluginInfo;
 
-import com.vio.utils.ResourcesLoader;
+import com.redshape.utils.ResourcesLoader;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -56,7 +55,7 @@ public class Main extends Plugin {
     }
 
     protected ResourcesLoader getLoader() {
-        return com.vio.Main.getResourcesLoader();
+        return com.redshape.Main.getResourcesLoader();
     }
 
     protected static DocumentBuilder getBuilder() {
@@ -182,7 +181,7 @@ public class Main extends Plugin {
         try {
             if ( properties == null ) {
                 properties = new Properties();
-                properties.load( new FileReader( com.vio.Main.getResourcesLoader().loadFile("config.properties") ) );
+                properties.load( new FileReader( com.redshape.Main.getResourcesLoader().loadFile("config.properties") ) );
             }
 
             return properties;

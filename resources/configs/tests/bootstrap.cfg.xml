@@ -27,7 +27,7 @@
         </sessions>
         <logging>true</logging>
         <jms>
-            <adapter>com.vio.messaging.AMQManager</adapter>
+            <adapter>com.redshape.messaging.AMQManager</adapter>
             <user>system</user>
             <password>manager</password>
             <uri>tcp://localhost:61616</uri>
@@ -45,7 +45,7 @@
         <useUTF8>true</useUTF8>
         <charset>UTF-8</charset>
     </database>
-    <applications package="com.vio.api.interfaces"/>
+    <applications package="com.redshape.api.interfaces"/>
     <plugins>
         <autoload>false</autoload>
 

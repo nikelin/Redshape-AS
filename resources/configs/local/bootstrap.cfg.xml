@@ -24,7 +24,7 @@
         </sessions>
     </server>
 
-    <applications package="com.vio.api.interfaces">
+    <applications package="com.redshape.api.interfaces">
         <auth class="AuthInterface">
             <action name="login">
                 <params>
