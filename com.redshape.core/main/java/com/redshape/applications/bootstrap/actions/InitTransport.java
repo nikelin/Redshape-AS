@@ -25,8 +25,11 @@ public class InitTransport extends AbstractBootstrapAction {
     @Override
     public void process() throws BootstrapException {
         try {
-            for ( IConfig transportConfigNode : Registry.getConfig().get("settings").get("transports").childs() ) {
-                this.initializeTransporter( transportConfigNode.attribute("class") );
+            IConfig transportsListNode = Registry.getConfig().get("settings").get("transports");
+            if ( !transportsListNode.isNull() && transportsListNode.hasChilds() ) {
+                for ( IConfig transportConfigNode : transportsListNode.childs() ) {
+                    this.initializeTransporter( transportConfigNode.attribute("class") );
+                }
             }
         } catch ( ConfigException e ) {
             log.error("Cannot read data from config!", e );

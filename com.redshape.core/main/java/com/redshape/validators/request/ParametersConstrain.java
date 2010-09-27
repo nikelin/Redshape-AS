@@ -1,7 +1,7 @@
 package com.redshape.validators.request;
 
 import com.redshape.io.protocols.vanilla.request.IApiRequest;
-import com.redshape.validators.Validator;
+import com.redshape.validators.IValidator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,9 +15,9 @@ import java.util.Map;
 public class ParametersConstrain implements InvokeValidator {
 
     List<String> messages = new ArrayList<String>();
-    Map<String, Validator[] > validators = new HashMap<String, Validator[]>();
+    Map<String, IValidator[] > validators = new HashMap<String, IValidator[]>();
 
-    public ParametersConstrain addConstrain( String parameter, Validator... validators ) {
+    public ParametersConstrain addConstrain( String parameter, IValidator... validators ) {
         this.validators.put( parameter, validators );
         return this;
     }
@@ -35,7 +35,7 @@ public class ParametersConstrain implements InvokeValidator {
                 this.messages.add( String.format( "Parameter `%s` is required but not present!", key ) );
                 result = false;
             } else {
-                for ( Validator v : this.validators.get(key) ) {
+                for ( IValidator v : this.validators.get(key) ) {
                     if ( !v.isValid( params.get(key) ) ) {
                         this.messages.add( String.format("Invalid value for `%s` parameter.", key ) );
                         result = false;

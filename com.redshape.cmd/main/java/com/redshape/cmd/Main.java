@@ -1,7 +1,10 @@
 package com.redshape.cmd;
 
+import com.redshape.applications.Application;
 import com.redshape.applications.ApplicationException;
 import com.redshape.applications.bootstrap.Bootstrap;
+import com.redshape.applications.bootstrap.IBootstrap;
+import com.redshape.applications.bootstrap.IBootstrapAction;
 import com.redshape.applications.bootstrap.actions.DatabaseInit;
 import com.redshape.cmd.commands.HelpCommand;
 import com.redshape.commands.CommandsFactory;
@@ -22,7 +25,7 @@ public final class Main extends com.redshape.applications.Application {
     private static final Logger log = Logger.getLogger( Main.class );
     private ICommand actualTask;
 
-    public Main( String[] args, Bootstrap boot ) throws ApplicationException {
+    public Main( String[] args, IBootstrap boot ) throws ApplicationException {
         super( Main.class, args, boot);
 
         this.processCommands();
@@ -38,10 +41,15 @@ public final class Main extends com.redshape.applications.Application {
             this.stop();
         }
 
+        for ( IBootstrapAction action : this.actualTask.getBootstrapRequirements() ) {
+            this.getBootstrap().addAction( action );
+        }
+
         super.start();
 
         try {
             this.processTask(this.actualTask);
+            Application.exit();
         } catch ( ExecutionException e ) {
             log.error("Task execution exception!", e );
         }
@@ -108,11 +116,8 @@ public final class Main extends com.redshape.applications.Application {
        }
 
        public static void main( String[] args ) {
-           Bootstrap boot = new Bootstrap();
-           boot.clearActionPackages();
-           boot.clearActions();
-
-           boot.addAction( new DatabaseInit() );
+           IBootstrap boot = new Bootstrap();
+           boot.clear();
 
            try {
                Main main = new Main( args, boot );

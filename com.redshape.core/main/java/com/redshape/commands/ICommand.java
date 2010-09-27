@@ -1,5 +1,8 @@
 package com.redshape.commands;
 
+import com.redshape.applications.bootstrap.IBootstrapAction;
+
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -24,5 +27,7 @@ public interface ICommand {
     public String[] getImportant();
 
     public boolean isValid();
+
+    public Collection<? extends IBootstrapAction> getBootstrapRequirements();
 
 }

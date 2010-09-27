@@ -1,11 +1,14 @@
 package com.redshape.persistence.entities.acl;
 
+import com.redshape.acl.IAclManager;
+
 /**
  * Created by IntelliJ IDEA.
  * User: nikelin
- * Date: Aug 6, 2010
- * Time: 6:36:36 PM
+ * Date: Sep 21, 2010
+ * Time: 7:22:39 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface IAclSubject {
+public interface IEntitiesAclManager extends IAclManager {
+    
 }

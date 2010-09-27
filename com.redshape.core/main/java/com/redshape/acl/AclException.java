@@ -1,4 +1,4 @@
-package com.redshape.persistence.entities.acl;
+package com.redshape.acl;
 
 /**
  * Created by IntelliJ IDEA.

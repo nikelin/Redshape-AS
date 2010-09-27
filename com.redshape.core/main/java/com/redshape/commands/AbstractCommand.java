@@ -1,9 +1,9 @@
 package com.redshape.commands;
 
+import com.redshape.applications.bootstrap.IBootstrapAction;
 import com.redshape.migration.MigrationManager;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,6 +15,7 @@ import java.util.Map;
 public abstract class AbstractCommand implements ICommand {
     private Map<String, String> properties = new HashMap<String, String>();
     private MigrationManager manager;
+    private Set<IBootstrapAction> bootstrapActions = new HashSet(); 
 
     public Map<String, String> getProperties() {
         return this.properties;
@@ -46,6 +47,14 @@ public abstract class AbstractCommand implements ICommand {
         }
 
         return true;
+    }
+
+    public Collection<? extends IBootstrapAction> getBootstrapRequirements() {
+        return this.bootstrapActions;
+    }
+
+    protected void addRequiredAction( IBootstrapAction action ) {
+        this.bootstrapActions.add(action);
     }
     
     public String[] getImportant() {

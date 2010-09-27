@@ -26,12 +26,7 @@ public class InterfaceInvocationsDispatcher implements IVanillaDispatcher<IReque
                 throw new ApiException( ErrorCode.EXCEPTION_REQUEST_METHOD_NOT_EXISTS );
             }
 
-            /**
-             * Check for interactor ability to request current feature aspect
-             *
-             * @FIXME: пока что отключил
-             */
-            if ( false && !requester.canInteract( featureAspect ) ) {
+            if ( !requester.canInteract( featureAspect ) ) {
                 throw new ApiException( ErrorCode.EXCEPTION_ACCESS_DENIED );
             }
 

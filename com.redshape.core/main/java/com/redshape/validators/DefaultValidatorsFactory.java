@@ -9,9 +9,9 @@ package com.redshape.validators;
  */
 public class DefaultValidatorsFactory extends ValidatorsFactory {
 
-    public Validator forEntity( Class<?> entity ) throws InstantiationException {
+    public IValidator forEntity( Class<?> entity ) throws InstantiationException {
         try {
-            return  (Validator) this.getClass().getMethod("forEntity", entity ).invoke( this, entity );
+            return  (IValidator) this.getClass().getMethod("forEntity", entity ).invoke( this, entity );
         } catch ( Throwable e ) {
             throw new InstantiationException("Method to create validator for given entity is not exists.");
         }

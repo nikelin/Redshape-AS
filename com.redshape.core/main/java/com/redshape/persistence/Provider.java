@@ -2,6 +2,7 @@ package com.redshape.persistence;
 
 import com.redshape.config.ConfigException;
 import com.redshape.persistence.managers.IManagersFactory;
+import com.redshape.persistence.managers.ManagerException;
 import com.redshape.persistence.managers.ManagersFactory;
 import org.apache.log4j.Logger;
 
@@ -15,13 +16,14 @@ public final class Provider {
     private static EntityManagerFactory ejbFactory;
     private static EntityManager ejbManager;
 
-    public static EntityManagerFactory buildManagersFactory() throws ConfigException, SQLException, ProviderException {
-        return managersFactory.getEJBFactory();
+    protected static EntityManagerFactory buildManagersFactory( boolean rebuildSchema ) throws ConfigException, SQLException, ProviderException {
+        return managersFactory.getEJBFactory( rebuildSchema );
     }
 
     public static EntityManager createManager() throws ConfigException, SQLException, ProviderException {
         return getEJBFactory().createEntityManager();
     }
+
 
     public static EntityManager getManager() throws ConfigException, SQLException, ProviderException {
         if ( ejbManager == null || !ejbManager.isOpen() ) {
@@ -40,8 +42,12 @@ public final class Provider {
     }
 
     public static EntityManagerFactory getEJBFactory() throws ConfigException, SQLException, ProviderException {
+        return getEJBFactory( false );
+    }
+
+    public static EntityManagerFactory getEJBFactory( boolean rebuildSchema ) throws ConfigException, SQLException, ProviderException {
         if (null == ejbFactory) {
-            ejbFactory = buildManagersFactory();
+            ejbFactory = buildManagersFactory(rebuildSchema);
         }
 
         return ejbFactory;

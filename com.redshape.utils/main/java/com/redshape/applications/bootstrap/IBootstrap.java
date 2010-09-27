@@ -20,6 +20,8 @@ public interface IBootstrap {
     public void clearActions();
 
     public void clearActionPackages();
+
+    public void clear();
  
     public void removeAction( Object id );
 

@@ -13,8 +13,8 @@ import java.util.Map;
 abstract public class ValidatorsFactory {
     private static ValidatorsFactory defaultInstance = new DefaultValidatorsFactory();
     private static Map<Class<? extends ValidatorsFactory>, ValidatorsFactory> factories = new HashMap<Class<? extends ValidatorsFactory>, ValidatorsFactory>();
-    private Map<Class<? extends Validator>, Validator> validators = new HashMap<Class<? extends Validator>, Validator>();
-    private Map<Class<?>, Validator> entities = new HashMap<Class<?>, Validator>();
+    private Map<Class<? extends IValidator>, IValidator> validators = new HashMap<Class<? extends IValidator>, IValidator>();
+    private Map<Class<?>, IValidator> entities = new HashMap<Class<?>, IValidator>();
 
     public static ValidatorsFactory getDefault() {
         return defaultInstance;
@@ -33,8 +33,8 @@ abstract public class ValidatorsFactory {
         return instance;
     }
 
-    public Validator getForEntity( Class<?> entity ) throws InstantiationException {
-        Validator v = this.entities.get(entity);
+    public IValidator getForEntity( Class<?> entity ) throws InstantiationException {
+        IValidator v = this.entities.get(entity);
         if ( v != null ) {
             return v;
         }
@@ -46,11 +46,11 @@ abstract public class ValidatorsFactory {
         return v;
     }
 
-    abstract protected Validator forEntity( Class<?> entity ) throws InstantiationException;
+    abstract protected IValidator forEntity( Class<?> entity ) throws InstantiationException;
 
-    public Validator getValidator( Class<? extends Validator> clazz ) {
+    public IValidator getValidator( Class<? extends IValidator> clazz ) {
         try {
-            Validator v = this.validators.get(clazz);
+            IValidator v = this.validators.get(clazz);
             if ( v != null ) {
                 return v;
             }

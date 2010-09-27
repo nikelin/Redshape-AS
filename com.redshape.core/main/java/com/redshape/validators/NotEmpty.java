@@ -7,7 +7,7 @@ import java.util.Set;
 /**
  * @author nikelin
  */
-public class NotEmpty implements Validator {
+public class NotEmpty implements IValidator {
 
     public boolean isValid( String object ) {
         return !object.isEmpty();

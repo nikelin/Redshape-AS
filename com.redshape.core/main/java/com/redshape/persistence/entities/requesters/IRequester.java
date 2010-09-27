@@ -15,15 +15,15 @@ import java.util.Set;
  * @package com.vio.persistence.entities
  * @date Apr 17, 2010
  */
-public interface IRequester<T> extends IIdentity<T>, IEntity {
+public interface IRequester<T, V extends IAddress> extends IIdentity<T>, IEntity {
 
     public void setApiKey( String key );
 
     public String getApiKey();
 
-    public void setAddress( IPAddress address );
+    public void setAddress( V address );
 
-    public IAddress getAddress();
+    public V getAddress();
 
     public Set<? extends IRequesterProperty> getProperties();
 

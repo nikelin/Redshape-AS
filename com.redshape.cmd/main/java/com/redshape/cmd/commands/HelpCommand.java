@@ -7,6 +7,8 @@ import com.redshape.commands.annotations.Command;
 import com.redshape.utils.StringUtils;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,30 +29,52 @@ public class HelpCommand extends AbstractCommand {
     public void process() {
         StringBuffer buffer = new StringBuffer();
         buffer.append( StringUtils.repeat("\n", 5 ) );
-        buffer.append("VIO Database Migration")
+        buffer.append("VIO Runner")
               .append("\n");
-        buffer.append("Tasks:\n");
+        buffer.append("Available tasks:\n");
         buffer.append( StringUtils.repeat("-", 10) )
               .append("\n");
 
+        Set<String> modules = new HashSet();
+
         Collection<Command> commands = CommandsFactory.getDefault().getTasks();
         for( Command command : commands) {
-            buffer.append( command.name() )
-                  .append( ": ")
-                  .append( command.helpMessage() );
+            modules.add( command.module() );
+        }
 
-            try {
-                ICommand commandInstance = CommandsFactory.getDefault().createTask( command.module(), command.name() );
-                for ( String property : commandInstance.getSupported() ) {
-                    buffer.append( "-" )
-                          .append( property )
-                          .append( " " );
+        for ( String module : modules ) {
+            buffer.append("Module ")
+                  .append( module )
+                  .append( ":" )
+                  .append( "\n" );
+            
+            for ( Command command : commands ) {
+                if ( !command.module().equals( module ) ) {
+                    continue;    
                 }
 
-                buffer.append( "\n" );
-            } catch ( InstantiationException e ) {
-                buffer.append( " [ERROR] unavailable command!" );
+                buffer.append( command.name() )
+                      .append( ": ")
+                      .append( command.helpMessage() );
+
+                try {
+                    ICommand commandInstance = CommandsFactory.getDefault().createTask( command.module(), command.name() );
+                    for ( String property : commandInstance.getSupported() ) {
+                        buffer.append( "-" )
+                              .append( property )
+                              .append( " " );
+                    }
+
+                    buffer.append( "\n" );
+                } catch ( InstantiationException e ) {
+                    buffer.append( " [ERROR] unavailable command!" );
+                }
             }
+
+            buffer.append("-------------")
+                  .append("To run target task enter its' path in the next way:\n")
+                  .append(" [module-name] [task-name] -[arg1]=[arg1-value]...")
+                  .append("\n\n\n");
         }
 
         buffer.append("Total commands: ")

@@ -12,14 +12,13 @@
         <module>com.redshape.scheduler</module>
         <module>com.redshape.utils</module>
         <module>com.redshape.cmd</module>
-        <module>com.redshape.remoting</module>
     </modules>
     
     <packaging>pom</packaging>
 
     <properties>
         <hibernate-core-version>3.5.1-Final</hibernate-core-version>
-        <project-build-path>/home/nikelin/workspace/vio/api/build</project-build-path>
+        <project-build-path>/archives/workspace/vio/api/build</project-build-path>
     </properties>
 
     <repositories>

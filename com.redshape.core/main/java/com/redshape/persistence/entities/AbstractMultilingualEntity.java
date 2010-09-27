@@ -18,7 +18,7 @@ import java.util.Set;
  */
 @MappedSuperclass
 public abstract class AbstractMultilingualEntity<T extends IMultilingual> extends AbstractEntity<T>
-                                                                   implements IMultilingual<T> {
+                                                                          implements IMultilingual<T> {
     @ManyToOne
     private Locale locale;
 

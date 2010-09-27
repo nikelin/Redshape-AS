@@ -258,7 +258,7 @@ public abstract class Application implements IApplication, ISingletonApplication
             this.boot.init();
         } catch ( Throwable e ) {
             e.printStackTrace();
-            throw new ApplicationException("Startup error!");
+            stop();
         }
     }
 

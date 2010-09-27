@@ -19,7 +19,7 @@
     <build>
         <defaultGoal>package</defaultGoal>
         <finalName>runner</finalName>
-        <directory>${project.basedir}/../build</directory>
+        <directory>${project-build-path}</directory>
         <sourceDirectory>${project.basedir}/main/java</sourceDirectory>
 
         <plugins>
@@ -42,7 +42,7 @@
                         <index>true</index>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>com.redshape.Main</mainClass>
+                            <mainClass>com.redshape.cmd.Main</mainClass>
                             <classpathPrefix>libs/</classpathPrefix>
                             <customClasspathLayout>$${artifact.groupId}.$${artifact.artifactId}.$${artifact.extension}</customClasspathLayout>
                         </manifest>

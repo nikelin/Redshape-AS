@@ -86,6 +86,7 @@ public abstract class AbstractSocketServer<T extends IProtocol, R extends IRespo
     private void _startListen() throws ServerException {
         /** @TODO **/
         this.getProtocol().getClientsProcessor().setContext(this);
+        
         for ( ; ;  ) {
             try {
                 ISocketAdapter clientSocket = this.getSocketAdapter().accept();

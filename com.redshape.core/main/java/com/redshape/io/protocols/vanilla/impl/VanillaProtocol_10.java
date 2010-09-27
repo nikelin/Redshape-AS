@@ -12,6 +12,7 @@ import com.redshape.io.protocols.vanilla.renderers.JSONResponseRenderer;
 import com.redshape.io.protocols.vanilla.request.IApiRequest;
 import com.redshape.io.protocols.vanilla.response.IApiResponse;
 import com.redshape.io.protocols.core.writers.ResponseWriter;
+import com.redshape.server.processors.request.ApiRequestsProcessor;
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,6 +28,7 @@ public class VanillaProtocol_10 extends AbstractVanillaProtocol<IApiRequest, IVa
 
         this.setReader( new APIRequestReader( new JSONRequestHydrator() ) );
         this.setWriter( new ResponseWriter( new JSONResponseRenderer() ) );
+        this.setRequestsProcessor( ApiRequestsProcessor.class );
     }
 
     @Override

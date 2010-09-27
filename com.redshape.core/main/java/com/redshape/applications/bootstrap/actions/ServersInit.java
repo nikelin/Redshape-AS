@@ -22,6 +22,8 @@ import com.redshape.utils.Registry;
 
 import org.apache.log4j.*;
 
+import java.util.Arrays;
+
 /**
  * Created by IntelliJ IDEA.
  * User: nikelin
@@ -43,7 +45,7 @@ public class ServersInit extends AbstractBootstrapAction {
         try {
             this.initProtocols();
 
-            log.info(" Current servers to be initialized: " + Registry.getConfig().get("servers").names() );
+            log.info(" Current servers to be initialized: " + Arrays.asList( Registry.getConfig().get("servers").names() ) );
             for ( final IConfig serverConfigNode : Registry.getConfig().get("servers").childs() ) {
                 Thread thread = new Thread( serverConfigNode.name() + " server initializing thread") {
                     @Override
@@ -91,12 +93,6 @@ public class ServersInit extends AbstractBootstrapAction {
         }
         log.info( "Does SSL enabled? " + ( isSSLEnabled ? "yes" : "no" ) );
 
-        final Integer reconnectionDelay = Integer.valueOf( serverConfigNode.get("reconnectDelay").value() );
-        final Integer reconnectionLimit = Integer.valueOf( serverConfigNode.get("reconnectLimit").value() );
-        final Boolean isReconnectEnabled = Boolean.valueOf( serverConfigNode.get("reconnect").value() );
-
-        int times = 0;
-
         try {
             IServerFactory factory = ServerFactoryFacade.createFactory(clazz);
 
@@ -109,6 +105,8 @@ public class ServersInit extends AbstractBootstrapAction {
 
                 ( (ISocketServerFactory) factory).setProtocol( protocolImpl );
             }
+
+            log.info("Protocol applied to " + factory.getClass().getCanonicalName() + " factory is: " + protocolImpl.getClass().getCanonicalName() );
 
             IServer server = factory.newInstance( clazz, host, port, isSSLEnabled );
             for ( IConfig policyConfigNode : serverConfigNode.get("policies").childs() )  {
@@ -132,6 +130,7 @@ public class ServersInit extends AbstractBootstrapAction {
             server.startListen();
         } catch ( Throwable e ) {
             log.error( e.getMessage(), e );
+            throw new BootstrapException();
         }
     }
 

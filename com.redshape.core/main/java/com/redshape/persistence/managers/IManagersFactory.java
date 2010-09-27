@@ -21,6 +21,8 @@ public interface IManagersFactory {
     public IManager getForEntity( Class<? extends IEntity> entity ) throws ManagerException;
 
     public EntityManagerFactory getEJBFactory() throws ConfigException, SQLException, ProviderException;
+
+    public EntityManagerFactory getEJBFactory( boolean rebuildSchema ) throws ConfigException, SQLException, ProviderException;
                                        
     public <T extends Manager> T getManager( Class<T> clazz );
 

@@ -17,6 +17,7 @@ import com.redshape.io.protocols.core.request.RequestType;
 import com.redshape.server.processors.request.IRequestsProcessor;
 import com.redshape.server.processors.connection.IClientsProcessor;
 import com.redshape.utils.Registry;
+import org.apache.log4j.Logger;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -36,6 +37,8 @@ public abstract class AbstractProtocol<
                                         I extends BufferedInput
                                     >
                     implements IProtocol<T, D, V, I> {
+    private static final Logger log = Logger.getLogger( AbstractProtocol.class );
+
     private IRequestReader<I, T> reader;
     private IResponseWriter writer;
     private IClientsProcessor clientsProcessor;
@@ -111,6 +114,7 @@ public abstract class AbstractProtocol<
         try {
             return this.requestsProcessor.newInstance();
         } catch ( Throwable e ) {
+            log.error( e.getMessage(), e );
             throw new ProtocolException();
         }
     }

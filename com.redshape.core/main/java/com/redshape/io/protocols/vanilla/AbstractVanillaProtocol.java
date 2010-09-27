@@ -4,10 +4,14 @@ import com.redshape.api.dispatchers.vanilla.IVanillaDispatcher;
 import com.redshape.api.dispatchers.vanilla.InterfaceInvocationsDispatcher;
 import com.redshape.api.dispatchers.vanilla.MethodInvocationsDispatcher;
 import com.redshape.io.protocols.core.AbstractProtocol;
+import com.redshape.io.protocols.core.request.IRequest;
 import com.redshape.io.protocols.core.request.RequestType;
 import com.redshape.io.protocols.core.sources.input.BufferedInput;
 import com.redshape.io.protocols.vanilla.request.IApiRequest;
 import com.redshape.io.protocols.vanilla.response.IApiResponse;
+import com.redshape.server.processors.connection.ClientsProcessor;
+import com.redshape.server.processors.request.ApiRequestsProcessor;
+import com.redshape.server.processors.request.IRequestsProcessor;
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,6 +32,10 @@ public abstract class AbstractVanillaProtocol<T extends IApiRequest,
     }
 
     protected void initializeDispatchers() {
+        /**
+         * @TODO: to not forget fix this fucking shit
+         */
+        this.setClientsProcessor( new ClientsProcessor() );
         this.setRequestsDispatcher( RequestType.INTERFACE_INVOKE, (D) new InterfaceInvocationsDispatcher() );
         this.setRequestsDispatcher( RequestType.METHOD_INVOKE, (D) new MethodInvocationsDispatcher() );
     }

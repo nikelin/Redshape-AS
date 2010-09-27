@@ -18,7 +18,8 @@ public abstract class AbstractMigrateCommand extends AbstractCommand {
 
     public AbstractMigrateCommand( MigrationManager manager ) {
         this.setManager(manager);
-        this.correctBootstrap();
+
+        this.addRequiredAction( new DatabaseInit() );
     }
 
     public void setManager( MigrationManager manager ) {
@@ -27,13 +28,6 @@ public abstract class AbstractMigrateCommand extends AbstractCommand {
 
     public MigrationManager getManager() {
         return this.manager;
-    }
-
-    protected void correctBootstrap() {
-        IBootstrap boot = Registry.getApplication().getBootstrap();
-        boot.clearActionPackages();
-
-        boot.addAction( new DatabaseInit() );
     }
 
 }

@@ -6,6 +6,8 @@ import com.redshape.persistence.ProviderException;
 import com.redshape.persistence.entities.IEntity;
 import com.redshape.utils.Registry;
 import org.apache.log4j.Logger;
+import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.tool.hbm2ddl.SchemaExport;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -52,6 +54,17 @@ public class HibernateManagersFactory extends ManagersFactory {
     }
 
     public EntityManagerFactory getEJBFactory() throws ConfigException, SQLException, ProviderException {
-       return Persistence.createEntityManagerFactory( Registry.getConfig().get("database").get("persistenceUnit").value(), this.createConfigObject() );
+        return this.getEJBFactory(false);
+    }
+
+    public EntityManagerFactory getEJBFactory( boolean rebuildSchema ) throws ConfigException, SQLException, ProviderException {
+        Map<String, Object> configMap = this.createConfigObject();
+        configMap.put("hibernate.hbm2ddl.auto", rebuildSchema ? "create-drop" : "update");
+
+        for ( String prop : configMap.keySet() ) {
+            log.info("Hibernate EJB connector property: " + prop + "=" + configMap.get(prop) );            
+        }
+
+        return Persistence.createEntityManagerFactory( Registry.getConfig().get("database").get("persistenceUnit").value(), configMap );
     }
 }

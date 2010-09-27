@@ -70,12 +70,6 @@
     <dependencies>
         <dependency>
             <groupId>com.redshape</groupId>
-            <artifactId>remoting</artifactId>
-            <version>1.0.0A</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.redshape</groupId>
             <artifactId>jms</artifactId>
             <version>1.0.0A</version>
         </dependency>
@@ -184,7 +178,8 @@
        </dependency>
 
        <dependency>
-           <groupId>org.apache.hadoop</groupId>
+           <groupId>org.apache.hadoop
+           </groupId>
            <artifactId>hadoop-core</artifactId>
            <version>0.20.2</version>
        </dependency>

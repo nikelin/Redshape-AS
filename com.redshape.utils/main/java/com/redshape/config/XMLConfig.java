@@ -23,7 +23,7 @@ import java.util.Vector;
  */
 public class XMLConfig implements IConfig {
     private static final Logger log = Logger.getLogger( XMLConfig.class );
-    public static String BOOTSTRAP_CONFIG_PATH = "config/common/bootstrap.cfg.xml";
+    public static String BOOTSTRAP_CONFIG_PATH = "configs/common/bootstrap.cfg.xml";
 
     private Element node;
     private IConfigCacheProvider cacheProvider;
@@ -56,6 +56,14 @@ public class XMLConfig implements IConfig {
         return this._value( this.node );
     }
 
+    public boolean isNull() {
+        return this.node == null;
+    }
+
+    public boolean hasChilds() {
+        return this.node.hasChildNodes();
+    }
+
     public String[] names() {
         if ( !this.node.hasChildNodes() ) {
             return new String[] {};
@@ -77,7 +85,7 @@ public class XMLConfig implements IConfig {
     }
 
     public <T extends IConfig> T[] childs() {
-        if ( !this.node.hasChildNodes() ) {
+        if ( !this.hasChilds() ) {
             return (T[]) new XMLConfig[] {};
         }
 

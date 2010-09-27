@@ -1,4 +1,4 @@
-package com.redshape.persistence.entities.acl;
+package com.redshape.acl;
 
 import java.util.Set;
 
@@ -9,7 +9,7 @@ import java.util.Set;
  * Time: 6:06:06 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface IAclSubjectPermission<T extends IAclSubject, V extends IAclObject> {
+public interface IAclSubjectPermission<P extends IAclPermission, T extends IAclSubject, V extends IAclObject> {
 
     public void setSubject( T subject );
 
@@ -19,9 +19,12 @@ public interface IAclSubjectPermission<T extends IAclSubject, V extends IAclObje
 
     public V getObject();
 
-    public Set<AclPermission> getPermissions();
+    public void setPermission( P permission );
 
-    public void addPermission( AclPermission permission );
+    public P getPermission();
 
-    public void removePermission( AclPermission permission );
+    public void markDenied();
+
+    public void markAllowed();
+
 }

@@ -22,6 +22,7 @@ public class Bootstrap implements IBootstrap {
     private List<IBootstrapAction> actions = new ArrayList<IBootstrapAction>();
     private Map<Object, Boolean> actionsStatus = new HashMap<Object, Boolean>();
     private Set<String> packages = new HashSet<String>();
+    private boolean inited;
 
     public Bootstrap() {
         this.addActionsPackage( defaultActionsPackage );   
@@ -31,16 +32,16 @@ public class Bootstrap implements IBootstrap {
         return this.actions;
     }
 
-    public void removeAction( Object id ) {
+    synchronized public void removeAction( Object id ) {
         this.actions.remove(id);
     }
 
-    public void addAction( IBootstrapAction action ) {
+    synchronized public void addAction( IBootstrapAction action ) {
         action.setBootstrap( this );
         this.actions.add(action);
     }
 
-    public void removeActionsPackage( String packagePath ) {
+    synchronized public void removeActionsPackage( String packagePath ) {
         this.packages.remove(packagePath);
     }
 
@@ -49,10 +50,15 @@ public class Bootstrap implements IBootstrap {
     }
 
     public void clearActions() {
-        this.actions.clear();;
+        this.actions.clear();
     }
 
-    public void addActionsPackage( String packagePath ) {
+    public void clear() {
+        this.clearActions();
+        this.clearActionPackages();
+    }
+
+    synchronized public void addActionsPackage( String packagePath ) {
         this.packages.add(packagePath);
     }
     
@@ -75,7 +81,13 @@ public class Bootstrap implements IBootstrap {
     }
 
     @Override
-    public void init() throws BootstrapException {
+    synchronized public void init() throws BootstrapException {
+        if ( this.inited ) {
+            return;
+        } else {
+            this.inited = true;
+        }
+
         try {
             this.loadPackages();
         } catch ( PackageLoaderException e ) {
@@ -138,7 +150,7 @@ public class Bootstrap implements IBootstrap {
         return this.actionsStatus.containsKey(id);
     }
 
-    public void _runAction( IBootstrapAction action ) throws BootstrapException {
+    protected void _runAction( IBootstrapAction action ) throws BootstrapException {
         action.process();
         action.markProcessed();
     }
