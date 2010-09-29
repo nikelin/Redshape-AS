@@ -7,6 +7,7 @@ import com.redshape.io.protocols.core.request.RequestType;
 import com.redshape.io.protocols.core.sources.input.BufferedInput;
 import com.redshape.io.protocols.http.request.IHttpRequest;
 import com.redshape.io.protocols.http.response.IHttpResponse;
+import com.redshape.server.processors.request.HttpRequestsProcessor;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,7 +21,7 @@ public abstract class AbstractHttpProtocol<
                         D extends IHttpDispatcher,
                         R extends IHttpResponse,
                         I extends BufferedInput>
-        extends AbstractProtocol<T, D, R, I>
+        extends AbstractProtocol<IHttpRequest, T, IHttpDispatcher, D, R, I>
         implements IHttpProtocol<T, D, R, I> {
 
     public AbstractHttpProtocol( Class<? extends IHttpProtocol> protocol ) {
@@ -28,7 +29,8 @@ public abstract class AbstractHttpProtocol<
     }
 
     protected void initializeDispatchers() {
-        this.setRequestsDispatcher(RequestType.INTERFACE_INVOKE, (D) new HttpDispatcher() );
+        this.setRequestsProcessor( HttpRequestsProcessor.class );
+        this.setRequestsDispatcher(RequestType.INTERFACE_INVOKE, new HttpDispatcher() );
     }
 
 }

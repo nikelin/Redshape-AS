@@ -13,10 +13,14 @@ import com.redshape.utils.Registry;
  * @package com.vio.migration.renderers.engine
  * @date Apr 6, 2010
  */
-public class MySQLRenderersFactory extends RenderersFactory {
+public class MySQLRenderersFactory extends AbstractRenderersFactory {
 
-    protected Class<? extends Renderer>[] getRenderersClasses() throws PackageLoaderException {
-        return Registry.getPackagesLoader().getClasses( "com.redshape.migration.renderers.mysql", new InterfacesFilter( new Class[] { Renderer.class }, new Class[] { TargetEntity.class }  ) );
+    public MySQLRenderersFactory() {
+        super( MySQLRenderersFactory.class );
+    }
+
+    public String getFactoryId() {
+        return "mysql";
     }
 
 }

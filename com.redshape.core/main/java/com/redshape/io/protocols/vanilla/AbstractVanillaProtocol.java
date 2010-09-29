@@ -9,6 +9,7 @@ import com.redshape.io.protocols.core.request.RequestType;
 import com.redshape.io.protocols.core.sources.input.BufferedInput;
 import com.redshape.io.protocols.vanilla.request.IApiRequest;
 import com.redshape.io.protocols.vanilla.response.IApiResponse;
+import com.redshape.server.ISocketServer;
 import com.redshape.server.processors.connection.ClientsProcessor;
 import com.redshape.server.processors.request.ApiRequestsProcessor;
 import com.redshape.server.processors.request.IRequestsProcessor;
@@ -24,7 +25,7 @@ public abstract class AbstractVanillaProtocol<T extends IApiRequest,
                                               D extends IVanillaDispatcher,
                                               R extends IApiResponse,
                                               I extends  BufferedInput>
-                        extends AbstractProtocol<T, D, R, I>
+                        extends AbstractProtocol<IApiRequest, T, IVanillaDispatcher, D, R, I>
                         implements IVanillaProtocol<T, D, R, I> {
 
     public AbstractVanillaProtocol( Class<? extends IVanillaProtocol> self ) {
@@ -36,8 +37,9 @@ public abstract class AbstractVanillaProtocol<T extends IApiRequest,
          * @TODO: to not forget fix this fucking shit
          */
         this.setClientsProcessor( new ClientsProcessor() );
-        this.setRequestsDispatcher( RequestType.INTERFACE_INVOKE, (D) new InterfaceInvocationsDispatcher() );
-        this.setRequestsDispatcher( RequestType.METHOD_INVOKE, (D) new MethodInvocationsDispatcher() );
+        this.setRequestsProcessor( ApiRequestsProcessor.class );
+        this.setRequestsDispatcher( RequestType.INTERFACE_INVOKE, new InterfaceInvocationsDispatcher() );
+        this.setRequestsDispatcher( RequestType.METHOD_INVOKE, new MethodInvocationsDispatcher() );
     }
 
 }

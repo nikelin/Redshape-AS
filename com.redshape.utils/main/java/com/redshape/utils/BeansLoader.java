@@ -10,6 +10,7 @@ import com.redshape.utils.helpers.XMLHelper;
 import org.w3c.dom.Document;
 
 import java.io.*;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -57,7 +58,7 @@ public class BeansLoader implements ObjectsLoader {
     public Iterable loadObjects( File file ) throws ObjectsLoaderException {
         try {
             XStream loader = this.getLoader();
-            loader.addImplicitCollection( List.class, "beans");
+            loader.addImplicitCollection( Collection.class, "beans");
 
             return (Iterable) loader.fromXML( new FileReader(file) );
         } catch ( Throwable e ) {

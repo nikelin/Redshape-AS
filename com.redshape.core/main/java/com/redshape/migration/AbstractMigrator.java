@@ -7,7 +7,7 @@ import com.redshape.migration.renderers.mysql.CreateTableRenderer;
 import com.redshape.migration.renderers.mysql.DropTableRenderer;
 import com.redshape.persistence.Provider;
 import com.redshape.persistence.ProviderException;
-import com.redshape.render.RenderersFactory;
+import com.redshape.render.AbstractRenderersFactory;
 import org.apache.log4j.Logger;
 
 import java.sql.Connection;
@@ -46,7 +46,7 @@ public abstract class AbstractMigrator implements Migrator {
 
     protected void create( Table table ) throws MigrationException, SQLException {
         try {
-            String query = RenderersFactory.getFactory(MySQLRenderersFactory.class)
+            String query = AbstractRenderersFactory.getFactory(MySQLRenderersFactory.class)
                                 .getRenderer(CreateTableRenderer.class )
                                 .render(table)
                                 .toString();
@@ -89,7 +89,7 @@ public abstract class AbstractMigrator implements Migrator {
 
     protected void remove( Table table ) throws MigrationException {
         try {
-            String query = RenderersFactory.getFactory(MySQLRenderersFactory.class)
+            String query = AbstractRenderersFactory.getFactory(MySQLRenderersFactory.class)
                                    .getRenderer(DropTableRenderer.class)
                                    .render( table )
                                    .toString();

@@ -1,7 +1,9 @@
 package com.redshape.features;
 
+import com.redshape.exceptions.ExceptionWithCode;
 import com.redshape.features.validators.IFeatureValidator;
 import com.redshape.io.protocols.core.request.IRequest;
+import org.apache.log4j.Logger;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -14,6 +16,8 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public abstract class AbstractFeatureAspect<T extends IFeatureInteractor> implements IFeatureAspect<T> {
+    private static final Logger log = Logger.getLogger( AbstractFeatureAspect.class );
+
     private Map<String, Object> attributes = new HashMap();
     private Set<IFeatureValidator> validators = new HashSet();
     private String featureName;
@@ -39,7 +43,11 @@ public abstract class AbstractFeatureAspect<T extends IFeatureInteractor> implem
             }
 
             return this.processInteraction( requester );
+        } catch ( ExceptionWithCode e ) {
+            log.error( e.getMessage(), e );
+            throw new InteractionException(e);
         } catch ( Throwable e ) {
+            log.error(e.getMessage(), e);
             throw new InteractionException();
         }
     }

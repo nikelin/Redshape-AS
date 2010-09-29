@@ -31,19 +31,21 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public abstract class AbstractProtocol<
-                                        T extends IRequest,
-                                        D extends IDispatcher,
+                                        Z extends IRequest,
+                                        T extends Z,
+                                        Q extends IDispatcher,
+                                        D extends Q,
                                         V extends IResponse,
                                         I extends BufferedInput
                                     >
-                    implements IProtocol<T, D, V, I> {
+                    implements IProtocol<Z, T, Q, D, V, I> {
     private static final Logger log = Logger.getLogger( AbstractProtocol.class );
 
     private IRequestReader<I, T> reader;
     private IResponseWriter writer;
     private IClientsProcessor clientsProcessor;
-    private Class<? extends IRequestsProcessor<?, T>> requestsProcessor;
-    private Map<RequestType, D> dispatchers = new HashMap();
+    private Class<? extends IRequestsProcessor<?, Z>> requestsProcessor;
+    private Map<RequestType, Q> dispatchers = new HashMap();
 
     @Override
     public void setReader( IRequestReader<I, T> reader ) {
@@ -105,12 +107,12 @@ public abstract class AbstractProtocol<
     }
 
     @Override
-    public void setRequestsProcessor( Class<? extends IRequestsProcessor<?, T>> processor ) {
+    public void setRequestsProcessor( Class<? extends IRequestsProcessor<?, Z>> processor ) {
         this.requestsProcessor = processor;
     }
 
     @Override
-    public IRequestsProcessor<?, T> createRequestsProcessor() throws ProtocolException {
+    public IRequestsProcessor<?, Z> createRequestsProcessor() throws ProtocolException {
         try {
             return this.requestsProcessor.newInstance();
         } catch ( Throwable e ) {
@@ -130,12 +132,12 @@ public abstract class AbstractProtocol<
     }
 
     @Override
-    public D getRequestDispatcher( RequestType type ) {
+    public Q getRequestDispatcher( RequestType type ) {
         return this.dispatchers.get(type);
     }
 
     @Override
-    public void setRequestsDispatcher( RequestType type, D dispatcher ) {
+    public void setRequestsDispatcher( RequestType type, Q dispatcher ) {
         this.dispatchers.put( type, dispatcher );
     }
 }

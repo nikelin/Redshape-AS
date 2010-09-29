@@ -4,7 +4,7 @@ import com.redshape.applications.bootstrap.AbstractBootstrapAction;
 import com.redshape.applications.bootstrap.BootstrapException;
 import com.redshape.config.IConfig;
 import com.redshape.features.FeaturesRegistry;
-import com.redshape.render.RenderersFactory;
+import com.redshape.render.AbstractRenderersFactory;
 import com.redshape.utils.Registry;
 import org.apache.log4j.Logger;
 
@@ -30,7 +30,7 @@ public class ApiInit extends AbstractBootstrapAction {
 
             FeaturesRegistry.getDefault().loadPackages();
 
-            RenderersFactory.getDefault();
+            AbstractRenderersFactory.getDefault();
         } catch ( Throwable e ) {
             log.error( e.getMessage(), e );
             throw new BootstrapException("Interfaces registration exception");

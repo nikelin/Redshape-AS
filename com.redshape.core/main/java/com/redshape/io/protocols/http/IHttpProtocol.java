@@ -18,5 +18,5 @@ public interface IHttpProtocol<
                     D extends IHttpDispatcher,
                     V extends IHttpResponse,
                     I extends BufferedInput>
-        extends IProtocol<T, D, V, I> {
+        extends IProtocol<IHttpRequest, T, IHttpDispatcher, D, V, I> {
 }

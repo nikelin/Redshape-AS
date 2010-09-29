@@ -6,15 +6,16 @@ import com.redshape.utils.PackageLoaderException;
 import com.redshape.utils.Registry;
 import org.apache.log4j.Logger;
 
-public class JSONRenderersFactory extends RenderersFactory {
+public class JSONRenderersFactory extends AbstractRenderersFactory {
     private static final Logger log = Logger.getLogger( JSONRenderersFactory.class );
 
     public JSONRenderersFactory() {
-        super();
+        super( JSONRenderersFactory.class );
     }
 
-    protected Class<? extends Renderer>[] getRenderersClasses() throws PackageLoaderException {
-        return Registry.getPackagesLoader().getClasses("com.redshape.render.json.renderers", new InterfacesFilter( new Class[] { Renderer.class }, new Class[] { TargetEntity.class }, true  ) );
+    public String getFactoryId() {
+        return "json";
     }
+
 	
 }

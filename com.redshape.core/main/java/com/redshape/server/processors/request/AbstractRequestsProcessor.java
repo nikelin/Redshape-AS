@@ -6,6 +6,7 @@ import com.redshape.io.protocols.core.response.IResponse;
 import com.redshape.server.ISocketServer;
 import com.redshape.server.ServerException;
 import com.redshape.server.adapters.socket.client.ISocketAdapter;
+import com.redshape.server.policy.PolicyType;
 import org.apache.log4j.Logger;
 
 /**
@@ -16,15 +17,12 @@ import org.apache.log4j.Logger;
  * To change this template use File | Settings | File Templates.
  */
 public abstract class AbstractRequestsProcessor<
-                                T extends ISocketServer<? extends IProtocol<G, ?, Q, ?>, Q>,
+                                T extends ISocketServer<? extends IProtocol<G, ?, ?, ?, Q, ?>, Q>,
                                 Q extends IResponse,
-                                G extends IRequest,
-                                V extends ISocketAdapter>
+                                G extends IRequest>
                 implements IRequestsProcessor<T, G> {
     private static final Logger log = Logger.getLogger( AbstractRequestsProcessor.class );
     
-
-    private V socket;
     private T server;
 
     @Override
@@ -39,14 +37,12 @@ public abstract class AbstractRequestsProcessor<
 
     protected boolean authenticateRequest( G request ) throws ServerException {
         try {
-//            boolean result = false;
-//            if ( this.getServerContext().checkPolicy( this.getServerContext().getProtocol().getClass(), PolicyType.ON_REQUEST, request ) ) {
-//                result = true;
-//            }
-//
-//            return result;
+            boolean result = false;
+            if ( this.getServerContext().checkPolicy( this.getServerContext().getProtocol().getClass(), PolicyType.ON_REQUEST, request ) ) {
+                result = true;
+            }
 
-            return true;
+            return result;
         } catch ( Throwable e ) {
             throw new ServerException();
         }

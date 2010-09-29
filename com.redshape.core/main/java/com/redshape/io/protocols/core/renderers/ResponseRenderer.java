@@ -2,8 +2,8 @@ package com.redshape.io.protocols.core.renderers;
 
 import com.redshape.io.protocols.core.response.IResponse;
 import com.redshape.exceptions.ExceptionWithCode;
+import com.redshape.render.IRenderer;
 import com.redshape.render.RendererException;
-import com.redshape.render.Renderer;
 
 import java.util.Collection;
 
@@ -14,7 +14,7 @@ import java.util.Collection;
  * Time: 12:04:41 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface ResponseRenderer<T extends IResponse> extends Renderer<T> {
+public interface ResponseRenderer<T extends IResponse> extends IRenderer<T> {
 
     public Object render( ExceptionWithCode e ) throws RendererException;
 

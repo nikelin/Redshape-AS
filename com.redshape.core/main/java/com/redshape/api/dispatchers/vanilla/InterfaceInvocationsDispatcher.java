@@ -26,9 +26,9 @@ public class InterfaceInvocationsDispatcher implements IVanillaDispatcher<IReque
                 throw new ApiException( ErrorCode.EXCEPTION_REQUEST_METHOD_NOT_EXISTS );
             }
 
-            if ( !requester.canInteract( featureAspect ) ) {
-                throw new ApiException( ErrorCode.EXCEPTION_ACCESS_DENIED );
-            }
+//            if ( !requester.canInteract( featureAspect ) ) {
+//                throw new ApiException( ErrorCode.EXCEPTION_ACCESS_DENIED );
+//            }
 
             for ( String parameter : invoke.getParams().keySet() ) {
                 featureAspect.setAttribute( parameter, invoke.getParam(parameter) );
@@ -46,6 +46,7 @@ public class InterfaceInvocationsDispatcher implements IVanillaDispatcher<IReque
                     }
                 }
             } catch ( InteractionException e ) {
+                log.error( e.getMessage(), e );
                 response.addError( e );
             }
         } catch ( ApiException e ) {

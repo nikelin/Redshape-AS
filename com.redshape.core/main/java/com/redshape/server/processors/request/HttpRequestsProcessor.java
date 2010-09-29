@@ -19,18 +19,14 @@ import java.util.Date;
  * Time: 8:21:41 PM
  * To change this template use File | Settings | File Templates.
  */
-public class HttpRequestsListener
+public class HttpRequestsProcessor
         extends AbstractRequestsProcessor<
                     ISocketServer<
-                        IHttpProtocol<
-                            IHttpRequest,
-                            IHttpDispatcher,
-                            IHttpResponse,
-                            ?
-                        >,
+                        IHttpProtocol<IHttpRequest, IHttpDispatcher, IHttpResponse, ?>,
                         IHttpResponse
-                    >, IHttpResponse, IHttpRequest, ISocketAdapter> {
-    private static final Logger log = Logger.getLogger( HttpRequestsListener.class );
+                    >, IHttpResponse, IHttpRequest> {
+    
+    private static final Logger log = Logger.getLogger( HttpRequestsProcessor.class );
 
     @Override
     public void onRequest( IHttpRequest request ) throws ServerException {

@@ -5,8 +5,9 @@ import com.redshape.migration.components.FieldOption;
 import com.redshape.migration.components.FieldType;
 import com.redshape.migration.renderers.MySQLRenderer;
 import com.redshape.migration.renderers.engine.MySQLRenderersFactory;
+import com.redshape.render.AbstractRenderersFactory;
+import com.redshape.render.IRenderersFactory;
 import com.redshape.render.RendererException;
-import com.redshape.render.RenderersFactory;
 import com.redshape.render.TargetEntity;
 
 /**
@@ -22,7 +23,7 @@ public class FieldRenderer extends MySQLRenderer<Field> {
 
     public String render( Field field ) throws RendererException {
         try {
-            RenderersFactory factory = RenderersFactory.getFactory(MySQLRenderersFactory.class);
+            IRenderersFactory factory = AbstractRenderersFactory.getFactory(MySQLRenderersFactory.class);
             StringBuilder builder = new StringBuilder();
             builder.append( this.escapeField( field.getName() ) )
                    .append(" ")

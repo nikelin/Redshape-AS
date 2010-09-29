@@ -61,10 +61,6 @@ public class HibernateManagersFactory extends ManagersFactory {
         Map<String, Object> configMap = this.createConfigObject();
         configMap.put("hibernate.hbm2ddl.auto", rebuildSchema ? "create-drop" : "update");
 
-        for ( String prop : configMap.keySet() ) {
-            log.info("Hibernate EJB connector property: " + prop + "=" + configMap.get(prop) );            
-        }
-
         return Persistence.createEntityManagerFactory( Registry.getConfig().get("database").get("persistenceUnit").value(), configMap );
     }
 }

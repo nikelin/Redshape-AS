@@ -2,6 +2,7 @@ package com.redshape.io.protocols.vanilla;
 
 import com.redshape.api.dispatchers.vanilla.IVanillaDispatcher;
 import com.redshape.io.protocols.core.IProtocol;
+import com.redshape.io.protocols.core.request.IRequest;
 import com.redshape.io.protocols.core.sources.input.BufferedInput;
 import com.redshape.io.protocols.vanilla.request.IApiRequest;
 import com.redshape.io.protocols.vanilla.response.IApiResponse;
@@ -18,5 +19,5 @@ public interface IVanillaProtocol<
                         D extends IVanillaDispatcher,
                         V extends IApiResponse,
                         I extends BufferedInput>
-        extends IProtocol<T, D, V, I> {
+        extends IProtocol<IApiRequest, T, IVanillaDispatcher, D, V, I> {
 }

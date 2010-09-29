@@ -1,7 +1,7 @@
 package com.redshape.migration.renderers;
 
 import com.redshape.render.IRenderable;
-import com.redshape.render.Renderer;
+import com.redshape.render.IRenderer;
 import com.redshape.render.RendererException;
 
 import java.util.Collection;
@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  * @package com.vio.migration.renderers
  * @date Apr 6, 2010
  */
-public abstract class MySQLRenderer<T extends IRenderable> implements Renderer<T> {
+public abstract class MySQLRenderer<T extends IRenderable> implements IRenderer<T> {
     private static final char ESCAPE_CHAR = '`';
     private final static Pattern NON_ESCAPABLE = Pattern.compile("[`() ,]");
 

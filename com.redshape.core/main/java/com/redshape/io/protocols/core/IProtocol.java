@@ -25,8 +25,10 @@ import java.util.Collection;
  * To change this template use File | Settings | File Templates.
  */
 public interface IProtocol<
-                T extends IRequest,
-                D extends IDispatcher,
+                Z extends IRequest,
+                T extends Z,
+                Q extends IDispatcher,
+                D extends Q,
                 V extends IResponse,
                 I extends BufferedInput> {
 
@@ -38,9 +40,9 @@ public interface IProtocol<
 
     public IResponseWriter getWriter();
 
-    public void setRequestsProcessor( Class<? extends IRequestsProcessor<?, T>> processorClass );
+    public void setRequestsProcessor( Class<? extends IRequestsProcessor<?, Z>> processorClass );
 
-    public IRequestsProcessor<?, T> createRequestsProcessor() throws ProtocolException;
+    public IRequestsProcessor<?, Z> createRequestsProcessor() throws ProtocolException;
 
     public void setClientsProcessor( IClientsProcessor processor );
 
@@ -60,8 +62,8 @@ public interface IProtocol<
 
     public String getConstant( Constants id );
 
-    public D getRequestDispatcher( RequestType type );
+    public Q getRequestDispatcher( RequestType type );
 
-    public void setRequestsDispatcher( RequestType type, D dispatcher );
+    public void setRequestsDispatcher( RequestType type, Q dispatcher );
 
 }

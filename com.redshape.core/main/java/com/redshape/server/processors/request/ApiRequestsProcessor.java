@@ -24,7 +24,7 @@ public class ApiRequestsProcessor
                     ISocketServer<
                         IVanillaProtocol<IApiRequest, IVanillaDispatcher, IApiResponse, ?>,
                         IApiResponse
-                    >, IApiResponse, IApiRequest, ISocketAdapter> {
+                    >, IApiResponse, IApiRequest> {
     
     private static final Logger log = Logger.getLogger( ApiRequestsProcessor.class);
 
@@ -37,7 +37,7 @@ public class ApiRequestsProcessor
 
         IApiResponse response = this.getServerContext().createResponseObject();
 
-        IVanillaProtocol protocol = this.getServerContext().getProtocol();
+        IVanillaProtocol<?, IVanillaDispatcher, ?, ?> protocol = this.getServerContext().getProtocol();
         ISocketAdapter socket = request.getSocket();
         log.info("Processing request" );
         log.info( "Invokes count: " + request.getChildren().size() );
@@ -49,7 +49,7 @@ public class ApiRequestsProcessor
             currentResponse.setId( invoke.getId() );
 
             try {
-                IVanillaDispatcher dispatcher = (IVanillaDispatcher) protocol.getRequestDispatcher( request.getType() != null ? request.getType() : RequestType.INTERFACE_INVOKE);
+                IVanillaDispatcher dispatcher = protocol.getRequestDispatcher( request.getType() != null ? request.getType() : RequestType.INTERFACE_INVOKE);
                 log.info( "Request type: " + request.getType() );
                 log.info( "Request dispatcher: " + dispatcher.getClass().getCanonicalName() );
                 dispatcher.dispatch(
