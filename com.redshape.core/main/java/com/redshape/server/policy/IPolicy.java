@@ -16,10 +16,6 @@ public interface IPolicy<T, V extends IServer> {
 
     public V getContext();
 
-    public boolean applicate( T subject );
-
-    public ExceptionWithCode getLastException();
-
-    public void resetLastException();
+    public ApplicationResult applicate( T subject );
 
 }

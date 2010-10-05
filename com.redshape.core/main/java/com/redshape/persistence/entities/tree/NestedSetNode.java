@@ -9,8 +9,7 @@ import com.redshape.struct.TreeNodeException;
 import org.apache.log4j.Logger;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author nikelin
@@ -43,10 +42,10 @@ abstract public class NestedSetNode<T extends TreeNodeEntity> extends AbstractEn
     private T parent;
 
     @Transient
-	private List<T> parents = new ArrayList<T>();
+	private Collection<T> parents;
 
     @Transient
-	private List<T> children = new ArrayList<T>();
+	private Collection<T> children;
 
     @Transient
 	private FetcherInterface<T> fetcher;
@@ -61,15 +60,15 @@ abstract public class NestedSetNode<T extends TreeNodeEntity> extends AbstractEn
 		this.fetcher = fetcher;
 	}
 
-    public void setChildren( List<T> children ) {
+    public void setChildren( Collection<T> children ) {
         this.children = children;
     }
 
-	public List<T> getChildren() throws TreeNodeException {
+	public Collection<T> getChildren() throws TreeNodeException {
 		return this.getChildren(false);
 	}
 	
-	public List<T> getChildren( boolean forceReload ) throws TreeNodeException {
+	public Collection<T> getChildren( boolean forceReload ) throws TreeNodeException {
         try {
             if ( this.children == null || forceReload ) {
                 this.children = this.getFetcher().fetchChildren();

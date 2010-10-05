@@ -94,7 +94,6 @@ public class TasksExecutor implements MessageListener {
 
             if ( taskInstance.isCompleted() ) {
                 taskInstance.remove();
-                taskInstance = null;
             }
 
             if ( !this.validateTask( taskInstance ) ) {

@@ -61,7 +61,7 @@ public class XMLConfig implements IConfig {
     }
 
     public boolean hasChilds() {
-        return this.node.hasChildNodes();
+        return !this.isNull() && this.node.hasChildNodes();
     }
 
     public String[] names() {
@@ -105,7 +105,7 @@ public class XMLConfig implements IConfig {
     }
 
     public String[] list( String name ) {
-        if ( !this.node.hasChildNodes() ) {
+        if ( this.node == null || !this.node.hasChildNodes() ) {
             return new String[] {};
         }
 

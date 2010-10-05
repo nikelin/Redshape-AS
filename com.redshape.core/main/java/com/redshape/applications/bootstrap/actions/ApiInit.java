@@ -1,5 +1,6 @@
 package com.redshape.applications.bootstrap.actions;
 
+import com.redshape.api.InvokableEntitiesRegistry;
 import com.redshape.applications.bootstrap.AbstractBootstrapAction;
 import com.redshape.applications.bootstrap.BootstrapException;
 import com.redshape.config.IConfig;

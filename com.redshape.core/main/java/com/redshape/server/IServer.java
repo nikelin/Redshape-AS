@@ -2,6 +2,7 @@ package com.redshape.server;
 
 import com.redshape.exceptions.ExceptionWithCode;
 import com.redshape.io.protocols.core.IProtocol;
+import com.redshape.server.policy.ApplicationResult;
 import com.redshape.server.policy.IPolicy;
 import com.redshape.server.policy.PolicyType;
 
@@ -88,8 +89,8 @@ public interface IServer {
      * @param type
      * @return
      */
-    public boolean checkPolicy( Class<? extends IProtocol> protocolContext, PolicyType type, Object object ) throws ExceptionWithCode;
+    public ApplicationResult checkPolicy( Class<? extends IProtocol> protocolContext, PolicyType type, Object object );
 
-    public boolean checkPolicy( Class<? extends IProtocol> protocolContext, PolicyType type ) throws ExceptionWithCode;
+    public ApplicationResult checkPolicy( Class<? extends IProtocol> protocolContext, PolicyType type );
 
 }

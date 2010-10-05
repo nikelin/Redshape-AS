@@ -26,6 +26,8 @@ public class BufferedOutput implements OutputStream {
     }
 
     public void write( byte[] data ) throws IOException {
+        log.info("Response is: " + new String(data) );
+
         this.source.write(data);
     }
 

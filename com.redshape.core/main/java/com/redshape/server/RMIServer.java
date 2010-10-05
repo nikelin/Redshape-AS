@@ -1,5 +1,6 @@
 package com.redshape.server;
 
+import com.redshape.api.InvokableEntitiesRegistry;
 import com.redshape.io.protocols.core.response.Response;
 import com.redshape.remoting.annotations.RemoteService;
 import com.redshape.remoting.interfaces.RemoteInterface;
@@ -25,7 +26,6 @@ import java.util.*;
  */
 public class RMIServer extends AbstractServer {
     public static final Logger log = Logger.getLogger( RMIServer.class );
-    public static final String DEFAULT_INTERFACES_PACKAGE = "com.redshape.remoting.interfaces.impl";
 
     /**
      * Состояние сервера
@@ -121,44 +121,17 @@ public class RMIServer extends AbstractServer {
             this.initialize();
         }
 
-        String interfacesPackage = (String) this.getProperty( RMIServer.Property.INTERFACES_PACKAGE.name() );
-        if( interfacesPackage == null ) {
-            interfacesPackage = DEFAULT_INTERFACES_PACKAGE;
-        }
-
-        try {
-            for ( Class<? extends Remote> remotingInterface : this.loadInterfaces(interfacesPackage) ) {
-                try {
-                    Remote service = remotingInterface.newInstance();
-                    String serviceName = this.getServiceName(service);
-                    if ( serviceName == null ) {
-                        throw new Exception("Service (" + service.getClass().getCanonicalName() + ") must have specified name!" );
-                    }
-
-                    log.info("Starting service: " + serviceName );
-                    this.registry.rebind( serviceName, service);
-
-                    log.info("Current services list: " + Arrays.asList( this.registry.list() ) );
-                } catch( Throwable e ) {
-                    log.error( e.getMessage(), e );
-                    log.error("Cannot startup service: "  + remotingInterface.getCanonicalName() );
-                }
+        Map<String, RemoteInterface> services = InvokableEntitiesRegistry.getRegistered();
+        for ( String remoteServiceId : services.keySet() ) {
+            try {
+                this.registry.bind( remoteServiceId, services.get( remoteServiceId ) );
+            } catch ( Throwable e ) {
+                log.error( e.getMessage(), e );
+                throw new ServerException();
             }
-        } catch ( Throwable e ) {
-            throw new ServerException();
         }
 
-        this.state = ServerState.RUNNING;
-    }
-
-    protected String getServiceName( Remote service ) {
-        Class<?> parent = service.getClass();
-        RemoteService annon;
-        do {
-            annon = parent.getAnnotation( RemoteService.class );
-        } while ( annon == null && null != ( parent = parent.getSuperclass() ) );
-
-        return annon == null ? null : annon.name();
+        this.changeState( ServerState.RUNNING );
     }
 
     public void shutdown() {
@@ -175,10 +148,6 @@ public class RMIServer extends AbstractServer {
 
     public Object getProperty( String name ) {
         return this.properties.get(name);
-    }
-
-    public Class<? extends Remote>[] loadInterfaces( String pkgName ) throws PackageLoaderException {
-        return Registry.getPackagesLoader().<Remote>getClasses( pkgName, new InterfacesFilter( new Class[] { RemoteInterface.class }, new Class[] { RemoteService.class } ) );
     }
 
     public boolean isPropertySupports( String name ) {

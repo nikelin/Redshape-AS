@@ -9,32 +9,33 @@ import com.redshape.render.IRenderable;
  * Time: 4:25:57 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class Plugin implements IRenderable {
+public abstract class AbstractPlugin implements IPlugin {
     private String systemId;
     private PluginInfo info;
 
-    public Plugin( String systemId, PluginInfo info ) {
+    public AbstractPlugin( String systemId, PluginInfo info ) {
         this.systemId = systemId;
         this.info = info;
     }
 
+    @Override
     public String getSystemId() {
         return this.systemId;
     }
 
+    @Override
     public void setSystemId( String id ) {
         this.systemId = id;
     }
 
+    @Override
     public PluginInfo getInfo() {
         return this.info;
     }
 
+    @Override
     public void setInfo( PluginInfo info ) {
         this.info = info;
     }
 
-    abstract public void init() throws PluginInitException;
-
-    abstract public void unload() throws PluginUnloadException;
 }

@@ -1,9 +1,6 @@
 package com.redshape.features;
 
-import com.redshape.features.validators.IFeatureValidator;
 import com.redshape.io.protocols.core.request.IRequest;
-
-import java.util.Collection;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,14 +27,12 @@ public interface IFeatureAspect<T extends IFeatureInteractor> {
 
     public boolean hasAttribute( String name );
 
-    public void addValidator( IFeatureValidator validator );
-
-    public Collection<IFeatureValidator> getValidators();
-
     public boolean isValid();
 
     public IRequest getRequest();
 
     public void setRequest( IRequest request );
+
+    IInteractionResult createResultObject();
 
 }

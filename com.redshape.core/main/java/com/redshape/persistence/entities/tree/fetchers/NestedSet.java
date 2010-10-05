@@ -10,6 +10,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 public class NestedSet<T extends TreeNodeEntity> implements FetcherInterface<T> {
@@ -23,7 +24,7 @@ public class NestedSet<T extends TreeNodeEntity> implements FetcherInterface<T> 
 		this.node = node;
 	}
 	
-	public List<T> fetchChildren() throws FetcherException {
+	public Collection<T> fetchChildren() throws FetcherException {
         try {
             return ManagersFactory.getDefault()
                                             .getForEntity( this.entityClass )

@@ -17,7 +17,7 @@ public class InteractionResult implements IInteractionResult {
     private boolean is_error;
     private ExceptionWithCode last_exception;
 
-    public void addAttribute( String name, Object value ) {
+    public void setAttribute( String name, Object value ) {
         this.attributes.put(name, value);
     }
 

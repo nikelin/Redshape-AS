@@ -1,5 +1,6 @@
 package com.redshape.applications.bootstrap;
 
+import com.redshape.config.IConfig;
 import com.redshape.utils.InterfacesFilter;
 import com.redshape.utils.PackageLoaderException;
 import com.redshape.utils.Registry;
@@ -17,16 +18,10 @@ import java.util.*;
 public class Bootstrap implements IBootstrap {
     private static final Logger log = Logger.getLogger( Bootstrap.class );
 
-    public static String defaultActionsPackage = "com.redshape.applications.bootstrap.actions";
-
     private List<IBootstrapAction> actions = new ArrayList<IBootstrapAction>();
     private Map<Object, Boolean> actionsStatus = new HashMap<Object, Boolean>();
     private Set<String> packages = new HashSet<String>();
     private boolean inited;
-
-    public Bootstrap() {
-        this.addActionsPackage( defaultActionsPackage );   
-    }
 
     public List<IBootstrapAction> getActions() {
         return this.actions;
@@ -186,14 +181,30 @@ public class Bootstrap implements IBootstrap {
     }
 
     protected void loadPackages() throws PackageLoaderException {
-        for ( String path : this.packages ) {
-            Class<? extends IBootstrapAction>[] actionClasses = Registry.getPackagesLoader()
-                                                                      .<IBootstrapAction>getClasses(
-                                                                            path,
-                                                                            new InterfacesFilter(
-                                                                                new Class[] { IBootstrapAction.class }
-                                                                            )
-                                                                      );
+        try {
+            Set<Class<? extends IBootstrapAction>> actionClasses = new HashSet();
+
+            for ( String path : Registry.getConfig().get("settings").get("bootstrap").get("packages").list("package") ) {
+                actionClasses.addAll(
+                    Arrays.asList(
+                        Registry.getPackagesLoader()
+                            .<IBootstrapAction>getClasses(
+                                path,
+                                new InterfacesFilter(
+                                    new Class[] { IBootstrapAction.class }
+                                )
+                            )
+                    )
+                );
+            }
+
+            IConfig actionClassesNode = Registry.getConfig().get("settings").get("bootstrap").get("classes");
+            if ( actionClassesNode.hasChilds() ) {
+                for( String actionClass : actionClassesNode.list("class") ) {
+                    actionClasses.add( (Class<? extends IBootstrapAction>) Class.forName( actionClass ) );
+                }
+            }
+
             for ( Class<? extends IBootstrapAction> actionClass : actionClasses ) {
                 try {
                     this.addAction( actionClass.newInstance() );
@@ -202,6 +213,9 @@ public class Bootstrap implements IBootstrap {
                     continue;
                 }
             }
+        } catch ( Throwable e ) {
+            log.error( e.getMessage(), e );
+            throw new PackageLoaderException();
         }
     }
 

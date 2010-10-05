@@ -6,6 +6,7 @@ import com.redshape.io.protocols.core.response.IResponse;
 import com.redshape.server.ISocketServer;
 import com.redshape.server.ServerException;
 import com.redshape.server.adapters.socket.client.ISocketAdapter;
+import com.redshape.server.policy.ApplicationResult;
 import com.redshape.server.policy.PolicyType;
 import org.apache.log4j.Logger;
 
@@ -37,12 +38,23 @@ public abstract class AbstractRequestsProcessor<
 
     protected boolean authenticateRequest( G request ) throws ServerException {
         try {
-            boolean result = false;
-            if ( this.getServerContext().checkPolicy( this.getServerContext().getProtocol().getClass(), PolicyType.ON_REQUEST, request ) ) {
-                result = true;
+            ApplicationResult result = this.getServerContext().checkPolicy( this.getServerContext().getProtocol().getClass(), PolicyType.ON_REQUEST, request );
+            if ( !result.isSuccessful() ) {
+                return false;
             }
 
-            return result;
+            if ( result.isVoid() ) {
+                log.error("There is no authentication policy applied to the current server instance. " +
+                        "It is inappropriate situation in a production mode. Client request will be refused...");
+                return false;
+            }
+
+            if ( result.isException() ) {
+                log.error( "Unexpected authentication exception", result.getException() );
+                throw new ServerException();
+            }
+
+            return true;
         } catch ( Throwable e ) {
             throw new ServerException();
         }

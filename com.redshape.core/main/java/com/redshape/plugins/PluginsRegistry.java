@@ -20,15 +20,15 @@ import java.util.*;
 public class PluginsRegistry {
     private static final Logger log = Logger.getLogger( PluginsRegistry.class);
     private static Map<String, String> loadedPaths = new HashMap<String, String>();
-    private static Map<PluginInfo, Plugin> registry = new HashMap<PluginInfo, Plugin>();
+    private static Map<PluginInfo, IPlugin> registry = new HashMap<PluginInfo, IPlugin>();
 
-    public static Plugin load( String path ) throws PluginLoaderException {
+    public static IPlugin load( String path ) throws PluginLoaderException {
         return load( PluginSourcesFactory.getInstance().createSource(path) );
     }
 
-    protected static Plugin load( PluginSource source ) throws PluginLoaderException {
+    protected static IPlugin load( PluginSource source ) throws PluginLoaderException {
         try {
-            Plugin plugin = registry.get(source);
+            IPlugin plugin = registry.get(source);
             if ( plugin != null ) {
                 return plugin;
             }
@@ -71,7 +71,7 @@ public class PluginsRegistry {
         }
     }
 
-    public static void unload( Plugin plugin ){
+    public static void unload( IPlugin plugin ){
         try {
             plugin.unload();
         } catch ( PluginUnloadException e ) {
@@ -92,8 +92,8 @@ public class PluginsRegistry {
         return false;
     }
 
-    public static Plugin getById( String id ) {
-        Plugin result = null;
+    public static IPlugin getById( String id ) {
+        IPlugin result = null;
         for ( PluginInfo info : registry.keySet() ) {
             if ( info.getSystemId().equals(id) ) {
                 result = registry.get(info);
@@ -104,7 +104,7 @@ public class PluginsRegistry {
         return result;
     }
 
-    public static PluginInfo getPluginInfo( Plugin plugin ) {
+    public static PluginInfo getPluginInfo( IPlugin plugin ) {
         PluginInfo result = null;
         for ( PluginInfo info : registry.keySet() ) {
             if ( info.getSystemId().equals( plugin.getSystemId() ) ) {
@@ -116,8 +116,8 @@ public class PluginsRegistry {
         return result;
     }
     
-    public static Plugin[] getPlugins(){
-        return registry.values().toArray( new Plugin[registry.size()] );
+    public static IPlugin[] getPlugins(){
+        return registry.values().toArray( new IPlugin[registry.size()] );
     }
 
     public static String generateSystemId( PluginInfo info ) {

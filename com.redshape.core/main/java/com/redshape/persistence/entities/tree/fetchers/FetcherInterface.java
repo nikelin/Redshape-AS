@@ -1,6 +1,6 @@
 package com.redshape.persistence.entities.tree.fetchers;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,7 +13,7 @@ public interface FetcherInterface<T> {
 
     public T fetchParent() throws FetcherException;
 
-    public List<T> fetchChildren() throws FetcherException;
+    public Collection<T> fetchChildren() throws FetcherException;
 
     public T fetchNode( Integer left, Integer right ) throws FetcherException;
 

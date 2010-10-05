@@ -9,7 +9,9 @@ import com.redshape.io.protocols.vanilla.request.IApiRequest;
 import com.redshape.io.protocols.core.request.RequestType;
 import com.redshape.io.protocols.vanilla.response.IApiResponse;
 import com.redshape.persistence.entities.requesters.IRequester;
+import com.redshape.remoting.interfaces.RemoteInterface;
 import com.redshape.server.ServerException;
+import org.apache.log4j.Logger;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -23,6 +25,7 @@ import java.util.Iterator;
  * To change this template use File | Settings | File Templates.
  */
 public class MethodInvocationsDispatcher implements IVanillaDispatcher<IRequester, IApiRequest, IApiResponse> {
+    private static final Logger log = Logger.getLogger( MethodInvocationsDispatcher.class );
 
     public RequestType getDispatchingType() {
         return RequestType.METHOD_INVOKE;
@@ -40,21 +43,30 @@ public class MethodInvocationsDispatcher implements IVanillaDispatcher<IRequeste
         }
 
         Class<?> invokingMethodPrototype[];
-        try {
-            invokingMethodPrototype = this.buildTypesList( request.getList("types") );
-        } catch ( ClassNotFoundException e ) {
-            response.addError( new RequestProcessingException( ErrorCode.EXCEPTION_WRONG_REQUEST_BODY ) );
-            return;
+        if ( request.getParams().size() != 0 ) {
+            try {
+                invokingMethodPrototype = this.buildTypesList( request.getParams().values() );
+            } catch ( ClassNotFoundException e ) {
+                response.addError( new RequestProcessingException( ErrorCode.EXCEPTION_WRONG_REQUEST_BODY ) );
+                return;
+            }
+        } else {
+            invokingMethodPrototype = new Class[] {};            
         }
 
-        Class<?> hostEntityClass = InvokableEntitiesRegistry.getEntity( request.getFeatureName() );        
+        RemoteInterface hostInterface = InvokableEntitiesRegistry.getEntity( request.getFeatureName() );
+        log.info("Requested interface service: " + hostInterface.getClass().getCanonicalName() );
         try {
-            Method method = hostEntityClass.getMethod( InvokableEntitiesRegistry.getRealMethodName( request.getFeatureName(), request.getAspectName() ), invokingMethodPrototype );
+            Method method = hostInterface.getClass().getMethod(
+                    InvokableEntitiesRegistry.getRealMethodName( request.getFeatureName(), request.getAspectName() ),
+                    invokingMethodPrototype
+            );
+            log.info("Requested service method runner: " + method.getName() );
             if ( method.getAnnotation(RemoteMethod.class) == null ) {
                 throw new RequestProcessingException( ErrorCode.EXCEPTION_REQUEST_METHOD_NOT_EXISTS );
             }
 
-            response.addParam("result", method.invoke( hostEntityClass, request.getList("values") ) );
+            response.addParam("result", method.invoke( hostInterface, request.getParams() ) );
         } catch ( NoSuchMethodException e ) {
             response.addError( new RequestProcessingException( ErrorCode.EXCEPTION_REQUEST_METHOD_NOT_EXISTS ) );
         } catch ( ExceptionWithCode e ) {
@@ -70,7 +82,7 @@ public class MethodInvocationsDispatcher implements IVanillaDispatcher<IRequeste
         Iterator<?> iter = types.iterator();
         int i = 0;
         for ( Object el = iter.next(); iter.hasNext(); el = iter.next(), i++ ) {
-            result[i] = Class.forName( String.valueOf( el ) );
+            result[i] = el.getClass();
         }
 
         return result;

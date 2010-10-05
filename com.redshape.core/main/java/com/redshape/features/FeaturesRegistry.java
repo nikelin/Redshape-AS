@@ -18,9 +18,9 @@ import java.util.Set;
  * Time: 4:22:08 PM
  * To change this template use File | Settings | File Templates.
  */
-public class FeaturesRegistry {
+public class FeaturesRegistry implements IFeaturesRegistry {
     private static final Logger log = Logger.getLogger( FeaturesRegistry.class );
-    private static FeaturesRegistry defaultInstance = new FeaturesRegistry();
+    private static IFeaturesRegistry defaultInstance = new FeaturesRegistry();
 
     /**
      * Packages where features and aspects would be searching in
@@ -32,11 +32,11 @@ public class FeaturesRegistry {
      */
     private Map<Class<? extends IFeatureAspect>, IFeatureAspect> features = new HashMap();
 
-    public static FeaturesRegistry getDefault() {
+    public static IFeaturesRegistry getDefault() {
         return defaultInstance;
     }
 
-    public static void setDefault( FeaturesRegistry instance ) {
+    public static void setDefault( IFeaturesRegistry instance ) {
         defaultInstance = instance;
     }
 
@@ -44,14 +44,22 @@ public class FeaturesRegistry {
         this.loadPackages();
     }
 
+    @Override
     public void addFeatureAspect( IFeatureAspect feature ) {
         this.features.put( feature.getClass(), feature );
     }
 
+    @Override
+    public Class<? extends IFeatureAspect>[] getFeatures() {
+        return this.features.values().toArray( new Class[ this.features.size() ] );
+    }
+
+    @Override
     public <T extends IFeatureAspect> T getFeatureAspect( Class<T> featureClass ) {
         return (T) this.features.get(featureClass);
     }
 
+    @Override
     public <T extends IFeatureAspect> T getFeatureAspect( String featureName, String aspectName ) {
         T result = null;
         for ( Class<? extends IFeatureAspect> aspectClass : this.features.keySet() ) {
@@ -65,6 +73,7 @@ public class FeaturesRegistry {
         return result;
     }
 
+    @Override
     public void addFeaturesPackage( String path ) {
         this.featuresPackages.add(path);
     }
@@ -73,7 +82,7 @@ public class FeaturesRegistry {
         return this.featuresPackages;
     }
 
-    public void loadPackages() {
+    protected void loadPackages() {
         for ( String path : this.getFeaturesPackages() ) {
             try {
                 this.processPackage(path);

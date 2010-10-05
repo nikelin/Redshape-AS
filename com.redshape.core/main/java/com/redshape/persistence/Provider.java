@@ -14,7 +14,6 @@ public final class Provider {
     private static final Logger log = Logger.getLogger( Provider.class );
     private static IManagersFactory managersFactory = ManagersFactory.getDefault();
     private static EntityManagerFactory ejbFactory;
-    private static EntityManager ejbManager;
 
     protected static EntityManagerFactory buildManagersFactory( boolean rebuildSchema ) throws ConfigException, SQLException, ProviderException {
         return managersFactory.getEJBFactory( rebuildSchema );
@@ -22,15 +21,6 @@ public final class Provider {
 
     public static EntityManager createManager() throws ConfigException, SQLException, ProviderException {
         return getEJBFactory().createEntityManager();
-    }
-
-
-    public static EntityManager getManager() throws ConfigException, SQLException, ProviderException {
-        if ( ejbManager == null || !ejbManager.isOpen() ) {
-            ejbManager = createManager();
-        }
-
-        return ejbManager;
     }
 
     public static void setManagersFactory( IManagersFactory factory ) {

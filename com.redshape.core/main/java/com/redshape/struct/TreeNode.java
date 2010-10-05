@@ -1,12 +1,12 @@
 package com.redshape.struct;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface TreeNode<T> {
 	
 	public T getParent() throws TreeNodeException;
 	
-	public List<T> getChildren() throws TreeNodeException;
+	public Collection<T> getChildren() throws TreeNodeException;
 	
 	public void setParent( T parent );
 	

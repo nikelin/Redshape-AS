@@ -1,7 +1,6 @@
 package com.redshape.features;
 
 import com.redshape.exceptions.ExceptionWithCode;
-import com.redshape.features.validators.IFeatureValidator;
 import com.redshape.io.protocols.core.request.IRequest;
 import org.apache.log4j.Logger;
 
@@ -19,7 +18,6 @@ public abstract class AbstractFeatureAspect<T extends IFeatureInteractor> implem
     private static final Logger log = Logger.getLogger( AbstractFeatureAspect.class );
 
     private Map<String, Object> attributes = new HashMap();
-    private Set<IFeatureValidator> validators = new HashSet();
     private String featureName;
     private String aspectName;
     public IRequest request;
@@ -38,7 +36,7 @@ public abstract class AbstractFeatureAspect<T extends IFeatureInteractor> implem
 
                 if ( parameterTypes[0].isAssignableFrom( this.getRequest().getClass() )
                         && parameterTypes[1].isAssignableFrom( requester.getClass() ) ) {
-                    return (InteractionResult) method.invoke( this, this.getRequest(), requester );
+                    return (IInteractionResult) method.invoke( this, this.getRequest(), requester );
                 }
             }
 
@@ -107,14 +105,6 @@ public abstract class AbstractFeatureAspect<T extends IFeatureInteractor> implem
         return this.attributes;
     }
 
-    public void addValidator( IFeatureValidator validator ) {
-        this.validators.add(validator);
-    }
-
-    public Collection<IFeatureValidator> getValidators() {
-        return this.validators;
-    }
-
     public void setRequest( IRequest request ) {
         this.request = request;
     }
@@ -122,14 +112,12 @@ public abstract class AbstractFeatureAspect<T extends IFeatureInteractor> implem
     public IRequest getRequest() {
         return this.request;
     }
+    
+    public IInteractionResult createResultObject() {
+        return new InteractionResult();
+    }
 
     public boolean isValid() {
-        for ( IFeatureValidator validator : this.getValidators() ) {
-            if ( !validator.isValid(this) ) {
-                return false;
-            }
-        }
-
         return true;
     }
 }

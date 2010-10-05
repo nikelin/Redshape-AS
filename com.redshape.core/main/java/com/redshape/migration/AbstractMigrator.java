@@ -41,7 +41,7 @@ public abstract class AbstractMigrator implements Migrator {
     }
 
     private Connection createConnection() throws ProviderException, SQLException, ConfigException {
-        return ( (org.hibernate.ejb.EntityManagerImpl) Provider.getManager() ).getSession().connection();
+        return ( (org.hibernate.ejb.EntityManagerImpl) Provider.createManager() ).getSession().connection();
     }
 
     protected void create( Table table ) throws MigrationException, SQLException {

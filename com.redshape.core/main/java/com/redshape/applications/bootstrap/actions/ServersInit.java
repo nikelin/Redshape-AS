@@ -45,20 +45,19 @@ public class ServersInit extends AbstractBootstrapAction {
         try {
             this.initProtocols();
 
-            log.info(" Current servers to be initialized: " + Arrays.asList( Registry.getConfig().get("servers").names() ) );
-            for ( final IConfig serverConfigNode : Registry.getConfig().get("servers").childs() ) {
-                Thread thread = new Thread( serverConfigNode.name() + " server initializing thread") {
-                    @Override
-                    public void run() {
-                        try {
-                            ServersInit.this.initServerInstance( serverConfigNode );
-                        } catch ( Throwable e ) {
-                            log.error( e.getMessage(), e );
-                        }
+            IConfig serverConfigNodes = Registry.getConfig().get("servers").get("instances");
+            log.info(" Current servers to be initialized: " + Arrays.asList( serverConfigNodes.names() ) );
+            for ( final IConfig serverConfigNode : serverConfigNodes.childs() ) {
+                try {
+                    if ( serverConfigNode.get("status").value().equals("on") ) {
+                        log.info("Starting instance of server: " + serverConfigNode.name() );
+                        this.initServerInstance( serverConfigNode );
+                    } else {
+                        log.info("Server " + serverConfigNode.name() + " is turned off.");
                     }
-                };
-
-                thread.start();
+                } catch ( Throwable e ) {
+                    log.error( e.getMessage(), e );
+                }
             }
         } catch ( Throwable e ) {
             throw new BootstrapException();
@@ -81,7 +80,9 @@ public class ServersInit extends AbstractBootstrapAction {
 
         int port = Integer.valueOf( serverConfigNode.get("port").value() );
         String host = serverConfigNode.get("host").value();
-        boolean isSSLEnabled = Boolean.valueOf( serverConfigNode.get("ssl").get("enabled").value() );
+
+        IConfig sslConfigNode = serverConfigNode.get("ssl");
+        boolean isSSLEnabled = !sslConfigNode.isNull() ? Boolean.parseBoolean( serverConfigNode.get("ssl").get("enabled").value() ) : false;
         if ( isSSLEnabled ) {
             port = Integer.valueOf( serverConfigNode.get("ssl").get("port").value() );
             String sslHost = serverConfigNode.get("ssl").get("host").value();
@@ -109,17 +110,31 @@ public class ServersInit extends AbstractBootstrapAction {
             log.info("Protocol applied to " + factory.getClass().getCanonicalName() + " factory is: " + protocolImpl.getClass().getCanonicalName() );
 
             IServer server = factory.newInstance( clazz, host, port, isSSLEnabled );
+            if ( serverConfigNode.get("policies").hasChilds() ) {
+                log.info( serverConfigNode.get("policies").childs().length + " policies applied to this server instance." );
+            } else {
+                log.info("There is no policies applicable to this server instance");    
+            }
+
             for ( IConfig policyConfigNode : serverConfigNode.get("policies").childs() )  {
+                log.info("Initializing server policy: " + policyConfigNode.get("policyClass").value() );
+                
                 Class<? extends IPolicy> policyClazz = (Class<? extends IPolicy>) Class.forName(policyConfigNode.get("policyClass").value() );
                 Class<? extends IProtocol> policyProtocolClazz = (Class<? extends IProtocol>) Class.forName( policyConfigNode.get("protocolClass").value() );
 
-                if ( protocolImpl == null 
-                        || !protocolImpl.getProtocolVersion().equals( policyConfigNode.get("protocolVersion") )
-                            || !policyProtocolClazz.isAssignableFrom( protocolImpl.getClass() ) ) {
+                if ( !protocolImpl.getProtocolVersion().equals( policyConfigNode.get("protocolVersion").value() ) ) {
+                    log.info("Version of policy protocol version is not compitable with this server instance...");
+                    log.info("Actual protocol version: " + protocolImpl.getProtocolVersion() + "; Policy supports: " + policyConfigNode.get("protocolVersion").value() );
                     continue;
                 }
 
-                factory.addPolicy(
+                if ( !policyProtocolClazz.isAssignableFrom( protocolImpl.getClass() ) ) {
+                    log.info("Policy cannot work with current server protocol...");
+                    continue;
+                }
+
+                log.info("Adding policy " + policyClazz.getCanonicalName() + " to " + server.getClass().getCanonicalName() );
+                server.addPolicy(
                     policyProtocolClazz,
                     PolicyType.valueOf( policyConfigNode.get("policyType").value() ),
                     PoliciesFactory.getDefault().createPolicy( policyClazz, server )

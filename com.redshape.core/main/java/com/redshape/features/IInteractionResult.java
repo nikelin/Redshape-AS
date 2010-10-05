@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public interface IInteractionResult {
 
-    public void addAttribute( String name, Object value );
+    public void setAttribute( String name, Object value );
 
     public Object getAttribute( String name );
 

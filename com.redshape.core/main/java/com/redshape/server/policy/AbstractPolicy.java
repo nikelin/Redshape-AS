@@ -13,7 +13,6 @@ import com.redshape.server.IServer;
  */
 public abstract class AbstractPolicy<T extends IRequest, V extends IServer> implements IPolicy<T, V> {
     private V context;
-    private ExceptionWithCode lastException;
 
     public void setContext( V context ) {
         this.context = context;
@@ -21,18 +20,6 @@ public abstract class AbstractPolicy<T extends IRequest, V extends IServer> impl
 
     public V getContext() {
         return this.context;
-    }
-
-    protected void setLastException( ExceptionWithCode e ) {
-        this.lastException = e;
-    }
-
-    public ExceptionWithCode getLastException() {
-        return this.lastException;
-    }
-
-    public void resetLastException() {
-        this.lastException = null;
     }
 
 }

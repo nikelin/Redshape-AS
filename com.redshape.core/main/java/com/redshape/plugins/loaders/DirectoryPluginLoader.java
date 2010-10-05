@@ -1,6 +1,6 @@
 package com.redshape.plugins.loaders;
 
-import com.redshape.plugins.Plugin;
+import com.redshape.plugins.IPlugin;
 import com.redshape.plugins.PluginInfo;
 
 import com.redshape.plugins.PluginsRegistry;
@@ -16,7 +16,7 @@ import org.apache.log4j.*;
 public class DirectoryPluginLoader implements PluginLoader {    
     private static final Logger log = Logger.getLogger( DirectoryPluginLoader.class );
 
-    public Plugin load( PluginInfo info ) throws PluginLoaderException {
+    public IPlugin load( PluginInfo info ) throws PluginLoaderException {
         log.info("In directory plugin loader...");
 
         try {
@@ -24,7 +24,7 @@ public class DirectoryPluginLoader implements PluginLoader {
 
             info.setSystemId( systemId );
             
-            return  (Plugin) ClassLoader.getSystemClassLoader()
+            return  (IPlugin) ClassLoader.getSystemClassLoader()
                                                 .loadClass( info.getMainClass() )
                                                 .getConstructor( String.class, PluginInfo.class )
                                                 .newInstance( systemId, info );

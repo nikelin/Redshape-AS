@@ -8,6 +8,7 @@ import com.redshape.exceptions.ErrorCode;
 import com.redshape.server.adapters.socket.client.ISocketAdapter;
 import com.redshape.server.adapters.socket.server.IServerSocketAdapter;
 import com.redshape.server.adapters.socket.SocketAdapterFactory;
+import com.redshape.server.policy.ApplicationResult;
 import com.redshape.server.policy.IPolicy;
 import com.redshape.server.policy.PolicyType;
 import com.redshape.utils.Constants;
@@ -93,9 +94,14 @@ public abstract class AbstractSocketServer<T extends IProtocol, R extends IRespo
 
                 this.setLocalSocket(clientSocket);
 
-                if ( this.checkPolicy( this.getProtocol().getClass(), PolicyType.ON_CONNECTION ) ) {
+                ApplicationResult policyResult = this.checkPolicy( this.getProtocol().getClass(), PolicyType.ON_CONNECTION );
+                if ( policyResult.isSuccessful() || policyResult.isVoid() ) {
                     this.getProtocol().getClientsProcessor().onConnection(clientSocket);
                 } else {
+                    if ( policyResult.isException() ) {
+                        log.error("Connection policy crashed with exception", policyResult.getException() );    
+                    }
+
                     this.refuseConnection(clientSocket);
                 }
             } catch ( Throwable e ) {

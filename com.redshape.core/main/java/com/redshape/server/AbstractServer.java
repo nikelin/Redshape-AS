@@ -4,6 +4,7 @@ import com.redshape.config.ConfigException;
 import com.redshape.exceptions.ExceptionWithCode;
 import com.redshape.io.protocols.core.IProtocol;
 import com.redshape.persistence.entities.requesters.IRequester;
+import com.redshape.server.policy.ApplicationResult;
 import com.redshape.server.policy.IPolicy;
 import com.redshape.server.policy.PolicyType;
 import com.redshape.utils.Registry;
@@ -126,31 +127,34 @@ public abstract class AbstractServer implements IServer {
     }
 
     @Override
-    public boolean checkPolicy( Class<? extends IProtocol> protocolContext, PolicyType type  ) throws ExceptionWithCode {
+    public ApplicationResult checkPolicy( Class<? extends IProtocol> protocolContext, PolicyType type  ) {
         return this.checkPolicy( protocolContext, type, null);
     }
 
     @Override
-    public boolean checkPolicy( Class<? extends IProtocol> protocolContext, PolicyType type, Object data ) throws ExceptionWithCode {
-        boolean result = true;
+    public ApplicationResult checkPolicy( Class<? extends IProtocol> protocolContext, PolicyType type, Object data ) {
+        ApplicationResult result = new ApplicationResult();
+
+        log.info("Initiation validation procedure for object " + (data != null ? data.getClass().getCanonicalName() : "<null>") + " in context of " + type.name() );
 
         if ( this.getPolicies( protocolContext, type) == null || this.getPolicies(protocolContext, type).isEmpty() ) {
-            return true;
+            log.info("There is no policies applied to " + this.getClass().getCanonicalName() + " server.");
+            result.markVoid();
+            return result;
         }
 
         for ( IPolicy policy : this.getPolicies( protocolContext, type) ) {
-            policy.resetLastException();
-            
+            log.info("Attempting policy " + policy.getClass().getCanonicalName() + " to check request validity.");
             result = policy.applicate(data);
 
-            ExceptionWithCode exception = policy.getLastException();
-            if ( exception != null ) {
-                throw exception;
-            }
-
-            if ( !result ) {
+            if ( !result.isSuccessful() ) {
+                log.info("Check procedure was finished with failure...");
                 break;
             }
+        }
+
+        if ( result.isSuccessful() ) {
+            log.info("Check has been successful");
         }
 
         return result;

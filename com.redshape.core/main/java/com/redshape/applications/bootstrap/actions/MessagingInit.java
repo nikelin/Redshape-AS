@@ -28,7 +28,7 @@ public class MessagingInit extends AbstractBootstrapAction {
     public void process() throws BootstrapException {
         try {
             log.info("Initializing scheduler...");
-            IConfig config = Registry.getConfig().get("servers").get("jms");
+            IConfig config = Registry.getConfig().get("settings").get("jms");
 
             log.info("Initializing JMS engine...");
             JMSManagerFactory.getDefault()

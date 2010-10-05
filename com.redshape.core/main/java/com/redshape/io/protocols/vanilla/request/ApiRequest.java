@@ -230,7 +230,9 @@ public class ApiRequest implements IApiRequest {
 
     @Override
     public void setChildren( Collection<IApiRequest> body ) {
-        this.children = body;
+        for ( IApiRequest request : body ) {
+            this.addChild(request);
+        }
     }
 
     @Override
@@ -240,6 +242,7 @@ public class ApiRequest implements IApiRequest {
 
     @Override
     public void addChild( IApiRequest invoke ) {
+        invoke.setParent(this);
         this.children.add( invoke );
     }
 

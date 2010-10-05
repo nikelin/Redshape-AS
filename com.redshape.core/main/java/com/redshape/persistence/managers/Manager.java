@@ -16,6 +16,7 @@ import java.util.*;
 
 public class Manager implements IManager {
     private Class<? extends IEntity> entityClass;
+    private static final ThreadLocal<EntityManager> managersList = new ThreadLocal<EntityManager>();
     
     private static final Logger log = Logger.getLogger( com.redshape.persistence.managers.Manager.class );
     private ReflectionUtil reflection = new BaseReflectionUtil();
@@ -59,8 +60,14 @@ public class Manager implements IManager {
 
     protected EntityManager getManager() throws ManagerException {
         try {
-            return Provider.getManager();
+            EntityManager instance = managersList.get();
+            if ( instance == null ) {
+                managersList.set( instance = Provider.createManager() );
+            }
+
+            return instance;
         } catch ( Throwable e ) {
+            log.error( e.getMessage(), e );
             throw new ManagerException( e.getMessage() );
         }
     }
@@ -112,7 +119,7 @@ public class Manager implements IManager {
     }
 
 
-    private Collection _saveNestedUnsavedEntities( Collection<IEntity> list ) throws ManagerException {
+    private Collection<IEntity> _saveNestedUnsavedEntities( Collection<IEntity> list ) throws ManagerException {
         try {
             Collection<IEntity> nList = list.getClass().newInstance();
             for ( Object item : list ) {
@@ -223,7 +230,7 @@ public class Manager implements IManager {
     }
 
     @Override
-    public <T extends IEntity> List<T> findBy( String name, Object value ) throws ManagerException {
+    public <T extends IEntity> Collection<T> findBy( String name, Object value ) throws ManagerException {
         try {
             return (List<T>) this.executeQuery( this.buildMatchesQuery( new String[] { name }, new Object[] { value }, new String[] { "=" } ) );
         } catch ( Throwable e ) {
@@ -277,22 +284,17 @@ public class Manager implements IManager {
     }
 
     @Override
-    public List<? extends IEntity> findAll() throws ManagerException {
+    public Collection<? extends IEntity> findAll() throws ManagerException {
         return this.getManager().createQuery("select t from " + this.getEntityName() + " t" ).getResultList();
     }
 
     @Override
-    public List<? extends IEntity> whereIn( List<Integer> ids ) throws ManagerException {
+    public Collection<? extends IEntity> whereIn( Collection<Integer> ids ) throws ManagerException {
         return this.whereIn( ids.toArray( new Integer[ids.size()] ) );
     }
 
     @Override
-    public List<? extends IEntity> whereIn( Set<Integer> ids ) throws ManagerException {
-        return this.whereIn( ids.toArray( new Integer[ids.size()]));
-    }
-
-    @Override
-    public List<? extends IEntity> whereIn( Integer[] ids ) throws ManagerException {
+    public Collection<? extends IEntity> whereIn( Integer[] ids ) throws ManagerException {
         /**
          * @TODO необходимо получать имя идентификатора для конкретной сущности, ибо
          * он может быть различным
@@ -303,7 +305,7 @@ public class Manager implements IManager {
     
 
     @Override
-    public List<? extends IEntity> whereIn( String name, Integer[] ids ) throws ManagerException {
+    public Collection<? extends IEntity> whereIn( String name, Integer[] ids ) throws ManagerException {
         return this.getManager().createQuery("from " + this.getEntityName() + " where " + name + " in (:ids)")
                                     .setParameter("ids", ids )
                                         .getResultList();
@@ -312,19 +314,19 @@ public class Manager implements IManager {
     }
 
     @Override
-    public List<Integer> getIdsBy( String name, Object value ) throws ManagerException {
+    public Collection<Integer> getIdsBy( String name, Object value ) throws ManagerException {
         return this.getManager().createQuery(
             this.buildMatchesQuery(new String[] {name}, new Object[] {value}, new String[] {"="}, new String[] { "id" } )
         ).getResultList();
     }
 
     @Override
-    public List<Integer> getIds( Integer count ) throws ManagerException {
+    public Collection<Integer> getIds( Integer count ) throws ManagerException {
         return this.getIds(0, count);
     }
 
     @Override
-    public List<Integer> getIds( Integer from, Integer count ) throws ManagerException {
+    public Collection<Integer> getIds( Integer from, Integer count ) throws ManagerException {
         return this.getManager().createQuery(
             this.buildMatchesQuery( new String[] {}, new Object[] {}, new String[] {}, new String[] { "id" }, from, count )
         ).getResultList();
@@ -332,7 +334,7 @@ public class Manager implements IManager {
 
     @Override
     @Deprecated
-    public <T extends IEntity> List<T> findMatches( Map<String, Object> constrain ) throws ManagerException {
+    public <T extends IEntity> Collection<T> findMatches( Map<String, Object> constrain ) throws ManagerException {
         String[] operators = new String[ constrain.size() ];
         Arrays.fill( operators, "=" );
         
@@ -341,21 +343,21 @@ public class Manager implements IManager {
 
     @Override
     @Deprecated
-    public <T extends IEntity> List<T> findMatches( Map<String, Object> constrain, String[] operators ) throws ManagerException {
+    public <T extends IEntity> Collection<T> findMatches( Map<String, Object> constrain, String[] operators ) throws ManagerException {
         return this.findMatches( constrain.keySet().toArray( new String[constrain.size()]), constrain.values().toArray( new Object[constrain.size()]), operators );
     }
 
     @Override
     @Deprecated
-    public <T extends IEntity> List<T> findMatches( String[] names, Object[] values ) throws ManagerException {
+    public <T extends IEntity> Collection<T> findMatches( String[] names, Object[] values ) throws ManagerException {
         return this.findMatches( names, values, this.getDefaultOperators(values.length));
     }
 
     @Override
     @Deprecated
-    public <T extends IEntity> List<T> findMatches( String[] names, Object[] values, String[] operators ) throws ManagerException {
+    public <T extends IEntity> Collection<T> findMatches( String[] names, Object[] values, String[] operators ) throws ManagerException {
         try {
-            return (List<T>) this.getManager().createQuery( this.buildMatchesQuery( names, values, operators ) ).getResultList();
+            return this.getManager().createQuery( this.buildMatchesQuery( names, values, operators ) ).getResultList();
         } catch ( Throwable e ) {
             throw new ManagerException();
         }
@@ -384,12 +386,10 @@ public class Manager implements IManager {
     @Deprecated
     public <T extends IEntity> T findOneMatched( String[] names, Object[] values, String[] operators, String[] select ) throws ManagerException {
         try {
-            T result;
+            T result = null;
             try {
                 result = (T) this.getManager().createQuery( this.buildMatchesQuery(names, values, operators, select, 1 ) ).getSingleResult();
-            } catch ( NoResultException e ) {
-                result = null;
-            }
+            } catch ( NoResultException e ) {}
 
             return result;
         } catch ( Throwable e ) {
@@ -470,11 +470,12 @@ public class Manager implements IManager {
         }
     }
 
-    public List<?> executeQuery( String query ) throws ManagerException {
+    @Override
+    public Collection<?> executeQuery( String query ) throws ManagerException {
         return this.executeQuery(query, new String[] {}, new Object[] {});
     }
 
-    public List<?> executeQuery( String query, String[] names, Object... values ) throws ManagerException {
+    public Collection<?> executeQuery( String query, String[] names, Object... values ) throws ManagerException {
         return this.createQuery(query, names, values).getResultList();
     }
 

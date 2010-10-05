@@ -1,6 +1,7 @@
 package com.redshape.api.security;
 
 import com.redshape.applications.AccessibleApplication;
+import com.redshape.applications.IAccessibleApplication;
 import com.redshape.auth.AuthResult;
 import com.redshape.auth.AuthenticatorFactory;
 import com.redshape.auth.adapters.AuthenticatorInterface;
@@ -15,6 +16,7 @@ import com.redshape.server.ISocketServer;
 import com.redshape.server.ServerException;
 import com.redshape.server.adapters.socket.client.ISocketAdapter;
 import com.redshape.server.policy.AbstractPolicy;
+import com.redshape.server.policy.ApplicationResult;
 import com.redshape.utils.Registry;
 import org.apache.log4j.Logger;
 
@@ -33,10 +35,11 @@ public class AuthenticationPolicy extends AbstractPolicy<IApiRequest, ISocketSer
     private ISocketServer server;
 
     @Override
-    public boolean applicate( IApiRequest request ) {
-        try {
-            boolean checkResult = false;
+    public ApplicationResult applicate( IApiRequest request ) {
+        ApplicationResult result = new ApplicationResult( ApplicationResult.Flags.UNSUCCESSFUL );
 
+        log.info("Client request authentication ...");
+        try {
             ISocketAdapter socket = request.getSocket();
 
             AuthenticatorInterface<IRequester> authenticator = AuthenticatorFactory.getInstance().getAdapter(IRequester.class);
@@ -47,49 +50,44 @@ public class AuthenticationPolicy extends AbstractPolicy<IApiRequest, ISocketSer
                             .getActualProtocol()
                             .getConstant(Constants.API_KEY_HEADER)
                 ).getValue();
-                IRequester resource = ( (AccessibleApplication) Registry.getApplication() ).createRequester();
+                log.info("Client key: " + apiKey );
+
+                IRequester resource = ( (IAccessibleApplication) Registry.getApplication() ).createRequester();
                 resource.setApiKey( apiKey );
                 resource.setAddress( new IPAddress( socket.getInetAddress() ) );
 
-                AuthResult<IRequester> result = authenticator.authenticate( resource );
-                switch ( result.getStatus() ) {
+                AuthResult<IRequester> authResult = authenticator.authenticate( resource );
+                switch ( authResult.getStatus() ) {
                     case INVALID_IDENTITY:
-                        this.setLastException( new ServerException( ErrorCode.EXCEPTION_INVALID_API_KEY ) );
+                       result.setException( new ServerException( ErrorCode.EXCEPTION_INVALID_API_KEY ) );
                     break;
 
                     case FAIL:
-                        this.setLastException( new ServerException( ErrorCode.EXCEPTION_AUTHENTICATION_FAIL ) );
+                        result.setException( new ServerException( ErrorCode.EXCEPTION_AUTHENTICATION_FAIL ) );
                     break;
 
                     case INACTIVE_IDENTITY:
-                        this.setLastException( new ServerException( ErrorCode.EXCEPTION_INACTIVE_API_KEY ) );
+                        result.setException( new ServerException( ErrorCode.EXCEPTION_INACTIVE_API_KEY ) );
                     break;
 
                     case EXPIRED_IDENTITY:
-                        this.setLastException( new ServerException( ErrorCode.EXCEPTION_EXPIRED_API_KEY ) );
+                        result.setException( new ServerException( ErrorCode.EXCEPTION_EXPIRED_API_KEY ) );
                     break;
 
                     case SUCCESS:
-                        identity = result.getIdentity();
-                        checkResult = true;
+                        request.setIdentity(authResult.getIdentity());
+                        result.markSuccessful();
                 }
             } else {
                 log.info("Session exists: restore..");
-                checkResult = true;
+                result.markSuccessful();
             }
 
-            if ( checkResult ) {
-                identity.setLastAccessTime( new Date().getTime() );
-
-                request.setIdentity(identity);
-
-                log.info("Authenticated successful for key " + identity.getApiKey() );
-            }
-
-            return checkResult;
+            return result;
         } catch ( Throwable e ) {
             log.error( e.getMessage(), e );
-            return false;
+            result.setException(e);
+            return result;
         }
     }
 }

@@ -89,6 +89,8 @@ public class JSONRequestHydrator implements IApiRequestHydrator {
     public IApiRequest buildBody( JSONObject body ) {
         ApiRequest invoke = new ApiRequest();
 
+        log.info("Request body `type` value: " + body.get("type") );
+
         invoke.setId( body.containsKey("id") ? body.get("id").toString() : null );
         invoke.setType( body.containsKey("type") ? RequestType.valueOf( body.get("type").toString() ) : RequestType.INTERFACE_INVOKE );
         invoke.setFeatureName(  body.containsKey("interface") ? (String) body.get("interface") : null );

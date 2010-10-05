@@ -3,6 +3,7 @@ package com.redshape.persistence.managers;
 import com.redshape.persistence.entities.IEntity;
 
 import javax.persistence.Query;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,7 +35,7 @@ public interface IManager {
 
     public Class<? extends IEntity> getEntityClass();
 
-    public <T extends IEntity> List<T> findBy( String name, Object value ) throws ManagerException;
+    public <T extends IEntity> Collection<T> findBy( String name, Object value ) throws ManagerException;
 
     public IEntity getOrCreateBy( String name, Object value ) throws ManagerException;
 
@@ -42,33 +43,31 @@ public interface IManager {
 
     public <T extends IEntity> T findOneBy( String name, Object value ) throws ManagerException;
 
-    public List<? extends IEntity> findAll() throws ManagerException;
+    public Collection<? extends IEntity> findAll() throws ManagerException;
 
-    public List<? extends IEntity> whereIn( List<Integer> ids ) throws ManagerException;
+    public Collection<? extends IEntity> whereIn( Collection<Integer> ids ) throws ManagerException;
 
-    public List<? extends IEntity> whereIn( Set<Integer> ids ) throws ManagerException;
+    public Collection<? extends IEntity> whereIn( Integer[] ids ) throws ManagerException;
 
-    public List<? extends IEntity> whereIn( Integer[] ids ) throws ManagerException;
+    public Collection<? extends IEntity> whereIn( String name, Integer[] ids ) throws ManagerException;
 
-    public List<? extends IEntity> whereIn( String name, Integer[] ids ) throws ManagerException;
+    public Collection<Integer> getIdsBy( String name, Object value ) throws ManagerException;
 
-    public List<Integer> getIdsBy( String name, Object value ) throws ManagerException;
+    public Collection<Integer> getIds( Integer count ) throws ManagerException;
 
-    public List<Integer> getIds( Integer count ) throws ManagerException;
-
-    public List<Integer> getIds( Integer from, Integer count ) throws ManagerException;
+    public Collection<Integer> getIds( Integer from, Integer count ) throws ManagerException;
 
     @Deprecated
-    public <T extends IEntity> List<T> findMatches( Map<String, Object> constrain ) throws ManagerException;
+    public <T extends IEntity> Collection<T> findMatches( Map<String, Object> constrain ) throws ManagerException;
 
     @Deprecated
-    public <T extends IEntity> List<T> findMatches( Map<String, Object> constrain, String[] operators ) throws ManagerException;
+    public <T extends IEntity> Collection<T> findMatches( Map<String, Object> constrain, String[] operators ) throws ManagerException;
 
     @Deprecated
-    public <T extends IEntity> List<T> findMatches( String[] names, Object[] values ) throws ManagerException;
+    public <T extends IEntity> Collection<T> findMatches( String[] names, Object[] values ) throws ManagerException;
 
     @Deprecated
-    public <T extends IEntity> List<T> findMatches( String[] names, Object[] values, String[] operators ) throws ManagerException;
+    public <T extends IEntity> Collection<T> findMatches( String[] names, Object[] values, String[] operators ) throws ManagerException;
 
     @Deprecated
     public <T extends IEntity> T findOneMatched( String[] names, Object[] values ) throws ManagerException;
@@ -83,9 +82,9 @@ public interface IManager {
 
     public Query createQuery( String query, String names[], Object values[] ) throws ManagerException;
 
-    public List<?> executeQuery( String query ) throws ManagerException;
+    public Collection<?> executeQuery( String query ) throws ManagerException;
 
-    public List<?> executeQuery( String query, String[] names, Object... values ) throws ManagerException;
+    public Collection<?> executeQuery( String query, String[] names, Object... values ) throws ManagerException;
 
     public String getEntityName();
 }

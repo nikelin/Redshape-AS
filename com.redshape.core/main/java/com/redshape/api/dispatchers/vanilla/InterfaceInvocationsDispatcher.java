@@ -26,16 +26,16 @@ public class InterfaceInvocationsDispatcher implements IVanillaDispatcher<IReque
                 throw new ApiException( ErrorCode.EXCEPTION_REQUEST_METHOD_NOT_EXISTS );
             }
 
-//            if ( !requester.canInteract( featureAspect ) ) {
-//                throw new ApiException( ErrorCode.EXCEPTION_ACCESS_DENIED );
-//            }
+            if ( !requester.canInteract( featureAspect ) ) {
+                //throw new ApiException( ErrorCode.EXCEPTION_ACCESS_DENIED );
+            }
 
             for ( String parameter : invoke.getParams().keySet() ) {
                 featureAspect.setAttribute( parameter, invoke.getParam(parameter) );
             }
 
             if ( !featureAspect.isValid() ) {
-                throw new ApiException( ErrorCode.EXCEPTION_ACCESS_DENIED );
+                throw new ApiException( ErrorCode.EXCEPTION_WRONG_REQUEST_BODY );
             }
 
             try {

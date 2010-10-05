@@ -1,6 +1,6 @@
 package com.redshape.plugins.loaders;
 
-import com.redshape.plugins.Plugin;
+import com.redshape.plugins.IPlugin;
 import com.redshape.plugins.PluginInfo;
 
 /**
@@ -12,6 +12,6 @@ import com.redshape.plugins.PluginInfo;
  */
 public interface PluginLoader {
 
-    public Plugin load( PluginInfo info ) throws PluginLoaderException;
+    public IPlugin load( PluginInfo info ) throws PluginLoaderException;
 
 }
