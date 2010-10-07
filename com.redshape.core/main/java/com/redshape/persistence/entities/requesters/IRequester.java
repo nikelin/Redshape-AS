@@ -15,7 +15,7 @@ import java.util.Set;
  * @package com.vio.persistence.entities
  * @date Apr 17, 2010
  */
-public interface IRequester<T, V extends IAddress> extends IIdentity<T> {
+public interface IRequester<T, V extends IAddress> extends IIdentity<T>, IEntity {
 
     public void setApiKey( String key );
 

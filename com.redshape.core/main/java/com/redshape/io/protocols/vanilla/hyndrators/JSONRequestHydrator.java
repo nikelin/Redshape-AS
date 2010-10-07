@@ -126,7 +126,7 @@ public class JSONRequestHydrator implements IApiRequestHydrator {
                     if ( val.equals( "true" ) || val.equals( "false" ) ) {
                         value = Boolean.parseBoolean(val);
                     }  else {
-                        value = String.valueOf(value);
+                        value = val;
                     }
                 }
             }

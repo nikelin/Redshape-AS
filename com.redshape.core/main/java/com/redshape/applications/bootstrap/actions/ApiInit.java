@@ -29,7 +29,7 @@ public class ApiInit extends AbstractBootstrapAction {
                 FeaturesRegistry.getDefault().addFeaturesPackage( featureNode.value() );
             }
 
-            FeaturesRegistry.getDefault().loadPackages();
+            FeaturesRegistry.getDefault().init();
 
             AbstractRenderersFactory.getDefault();
         } catch ( Throwable e ) {

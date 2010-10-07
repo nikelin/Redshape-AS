@@ -78,6 +78,10 @@ public class FeaturesRegistry implements IFeaturesRegistry {
         this.featuresPackages.add(path);
     }
 
+    public void init() {
+        this.loadPackages();
+    }
+
     protected Set<String> getFeaturesPackages() {
         return this.featuresPackages;
     }

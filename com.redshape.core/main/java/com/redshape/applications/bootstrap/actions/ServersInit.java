@@ -48,15 +48,19 @@ public class ServersInit extends AbstractBootstrapAction {
             IConfig serverConfigNodes = Registry.getConfig().get("servers").get("instances");
             log.info(" Current servers to be initialized: " + Arrays.asList( serverConfigNodes.names() ) );
             for ( final IConfig serverConfigNode : serverConfigNodes.childs() ) {
-                try {
-                    if ( serverConfigNode.get("status").value().equals("on") ) {
-                        log.info("Starting instance of server: " + serverConfigNode.name() );
-                        this.initServerInstance( serverConfigNode );
-                    } else {
-                        log.info("Server " + serverConfigNode.name() + " is turned off.");
-                    }
-                } catch ( Throwable e ) {
-                    log.error( e.getMessage(), e );
+                if ( serverConfigNode.get("status").value().equals("on") ) {
+                    new Thread() {
+                        public void run() {
+                            try {
+                                log.info("Starting instance of server: " + serverConfigNode.name() );
+                                ServersInit.this.initServerInstance( serverConfigNode );
+                            } catch ( Throwable e ) {
+                                log.error( e.getMessage(), e );
+                            }
+                        }
+                    }.start();
+                } else {
+                    log.info("Server " + serverConfigNode.name() + " is turned off.");     
                 }
             }
         } catch ( Throwable e ) {
@@ -105,9 +109,8 @@ public class ServersInit extends AbstractBootstrapAction {
                 }
 
                 ( (ISocketServerFactory) factory).setProtocol( protocolImpl );
+                log.info("Protocol applied to " + factory.getClass().getCanonicalName() + " factory is: " + protocolImpl.getClass().getCanonicalName() );
             }
-
-            log.info("Protocol applied to " + factory.getClass().getCanonicalName() + " factory is: " + protocolImpl.getClass().getCanonicalName() );
 
             IServer server = factory.newInstance( clazz, host, port, isSSLEnabled );
             if ( serverConfigNode.get("policies").hasChilds() ) {

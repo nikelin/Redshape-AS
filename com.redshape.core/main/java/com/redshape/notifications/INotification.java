@@ -9,6 +9,12 @@ package com.redshape.notifications;
  */
 public interface INotification {
 
+    public void addFlag( NotificationFlag flag );
+
+    public void removeFlag( NotificationFlag flag );
+
+    public boolean hasFlag( NotificationFlag flag );
+
     public String getSubject();
     
     public String getBody();

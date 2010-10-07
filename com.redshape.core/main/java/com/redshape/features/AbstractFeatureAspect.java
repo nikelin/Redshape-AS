@@ -93,6 +93,22 @@ public abstract class AbstractFeatureAspect<T extends IFeatureInteractor> implem
         return (Collection<T>) this.getAttribute(name);
     }
 
+    public boolean isMapAttribute( String name ) {
+        return Map.class.isAssignableFrom( this.getAttribute(name).getClass() );
+    }
+
+    public boolean isIntegerAttribute( String name ) {
+        return Integer.class.isAssignableFrom( this.getAttribute(name).getClass() );
+    }
+
+    public boolean isStringAttribute( String name ) {
+        return String.class.isAssignableFrom( this.getAttribute(name).getClass() );
+    }
+
+    public boolean isCollectionAttribute( String name ) {
+        return Collection.class.isAssignableFrom( this.getAttribute(name).getClass() );
+    }
+
     public void setAttribute( String name, Object value ) {
         this.attributes.put( name, value );
     }

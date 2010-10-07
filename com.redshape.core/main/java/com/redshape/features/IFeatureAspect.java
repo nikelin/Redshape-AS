@@ -34,5 +34,5 @@ public interface IFeatureAspect<T extends IFeatureInteractor> {
     public void setRequest( IRequest request );
 
     IInteractionResult createResultObject();
-
+    
 }

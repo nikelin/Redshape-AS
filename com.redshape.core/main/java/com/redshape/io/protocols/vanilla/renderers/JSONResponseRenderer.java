@@ -21,7 +21,7 @@ public class JSONResponseRenderer extends JSONRenderer<IResponse> implements Res
 
     @Override
     public String render( IResponse response ) throws RendererException {
-        return this.renderValue( this.renderSingle( response ) );
+        return this.renderValue( this.renderMap( response ) );
     }
 
     @Override
@@ -43,13 +43,13 @@ public class JSONResponseRenderer extends JSONRenderer<IResponse> implements Res
     public String render( Collection<? extends IResponse> responses ) throws RendererException {
         List<Object> objects = new ArrayList<Object>();
         for ( IResponse response : responses ) {
-            objects.add( this.renderSingle( response ) );
+            objects.add( this.renderMap( response ) );
         }
 
         return this.renderValue( objects );
     }
 
-    public Map<String, Object> renderSingle( IResponse response ) {
+    public Map<String, Object> renderMap( IResponse response ) {
     	Map<String, Object> result = new HashMap<String, Object>();
 
         result.put( "id", response.getId() );

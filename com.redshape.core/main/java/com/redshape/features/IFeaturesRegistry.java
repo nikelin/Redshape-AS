@@ -17,4 +17,6 @@ public interface IFeaturesRegistry {
     <T extends IFeatureAspect> T getFeatureAspect( String featureName, String aspectName );
 
     void addFeaturesPackage( String path );
+
+    void init();
 }

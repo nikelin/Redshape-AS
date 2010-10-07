@@ -14,4 +14,5 @@ public interface IHasher {
     public String hash( Object text );
 
     public String getName();
+   
 }

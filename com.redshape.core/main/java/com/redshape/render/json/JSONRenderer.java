@@ -167,9 +167,7 @@ abstract public class JSONRenderer<T extends IRenderable> implements IRenderer<T
         return this.renderValue( this.renderMap(renderable) );
     }
 
-    public Map<String, Object> renderMap( T object ) throws RendererException {
-        return new HashMap();
-    }
+    abstract public Map<String, Object> renderMap( T object ) throws RendererException;
 
     public static void initRendererMethods() {
         for ( Method method : JSONRenderer.class.getMethods() ) {

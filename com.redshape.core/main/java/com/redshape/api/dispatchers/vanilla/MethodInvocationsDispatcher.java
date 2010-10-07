@@ -54,9 +54,14 @@ public class MethodInvocationsDispatcher implements IVanillaDispatcher<IRequeste
             invokingMethodPrototype = new Class[] {};            
         }
 
+        for ( Class<?> cls : invokingMethodPrototype ) {
+            log.info( cls.getCanonicalName() );
+        }
+
         RemoteInterface hostInterface = InvokableEntitiesRegistry.getEntity( request.getFeatureName() );
         log.info("Requested interface service: " + hostInterface.getClass().getCanonicalName() );
         try {
+            log.info("Real method name: " +  InvokableEntitiesRegistry.getRealMethodName( request.getFeatureName(), request.getAspectName() ) );
             Method method = hostInterface.getClass().getMethod(
                     InvokableEntitiesRegistry.getRealMethodName( request.getFeatureName(), request.getAspectName() ),
                     invokingMethodPrototype
@@ -66,12 +71,15 @@ public class MethodInvocationsDispatcher implements IVanillaDispatcher<IRequeste
                 throw new RequestProcessingException( ErrorCode.EXCEPTION_REQUEST_METHOD_NOT_EXISTS );
             }
 
-            response.addParam("result", method.invoke( hostInterface, request.getParams() ) );
+            log.info( request.getParams().values() );
+            
+            response.addParam("result", method.invoke( hostInterface, request.getParams().values().toArray( new Object[request.getParams().size()]) ) );
         } catch ( NoSuchMethodException e ) {
             response.addError( new RequestProcessingException( ErrorCode.EXCEPTION_REQUEST_METHOD_NOT_EXISTS ) );
         } catch ( ExceptionWithCode e ) {
             response.addError( e );
         } catch ( Throwable e ) {
+            log.error( e.getMessage(), e );
             response.addError( new RequestProcessingException() );
         }
     }
@@ -79,10 +87,9 @@ public class MethodInvocationsDispatcher implements IVanillaDispatcher<IRequeste
     private Class<?>[] buildTypesList( Collection<?> types ) throws ClassNotFoundException {
         Class<?>[] result = new Class[types.size()];
 
-        Iterator<?> iter = types.iterator();
         int i = 0;
-        for ( Object el = iter.next(); iter.hasNext(); el = iter.next(), i++ ) {
-            result[i] = el.getClass();
+        for ( Object type : types ) {
+            result[i++] = type.getClass();
         }
 
         return result;

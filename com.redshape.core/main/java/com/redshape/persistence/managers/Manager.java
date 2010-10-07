@@ -3,8 +3,6 @@ package com.redshape.persistence.managers;
 import com.redshape.persistence.Provider;
 import com.redshape.persistence.entities.IEntity;
 import com.redshape.persistence.entities.Nullable;
-import com.redshape.utils.BaseReflectionUtil;
-import com.redshape.utils.ReflectionUtil;
 import com.redshape.utils.beans.Property;
 import com.redshape.utils.beans.PropertyUtils;
 import org.apache.log4j.Logger;
@@ -19,7 +17,6 @@ public class Manager implements IManager {
     private static final ThreadLocal<EntityManager> managersList = new ThreadLocal<EntityManager>();
     
     private static final Logger log = Logger.getLogger( com.redshape.persistence.managers.Manager.class );
-    private ReflectionUtil reflection = new BaseReflectionUtil();
 
     public <T extends IEntity> Manager( Class<T> entityClass ) {
         this.entityClass = entityClass;
@@ -52,10 +49,6 @@ public class Manager implements IManager {
         }
 
         this.getManager().getTransaction().commit();
-    }
-
-    protected ReflectionUtil getReflection() {
-        return this.reflection;
     }
 
     protected EntityManager getManager() throws ManagerException {
@@ -206,6 +199,7 @@ public class Manager implements IManager {
             this.getManager().remove( object );
             this.commitTransaction();
         } catch ( Throwable e ) {
+            log.error( e.getMessage(), e);
             throw new ManagerException( e.getMessage() );
         }
     }
