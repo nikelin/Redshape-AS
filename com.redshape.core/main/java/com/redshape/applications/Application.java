@@ -142,6 +142,10 @@ public abstract class Application implements IApplication, ISingletonApplication
         return this.envArgs;
     }
 
+    public void setEnvArg( String name, String value ) {
+        env.put( name, value );
+    }
+
     public String getEnvArg( String name ) {
         return env.get(name);
     }
@@ -279,8 +283,15 @@ public abstract class Application implements IApplication, ISingletonApplication
         return this.state == State.RUNNING;
     }
 
+    public String getConfigPath() {
+        return this.getEnvArg("configPath") == null ?
+                                    this.getResourcesDir() + File.separator + XMLConfig.BOOTSTRAP_CONFIG_PATH
+                                    : this.getEnvArg("configPath");
+    }
+
     protected IConfig createConfig() throws IOException, ConfigException {
-        File file = Registry.getResourcesLoader().loadFile( this.getResourcesDir() + File.separator + XMLConfig.BOOTSTRAP_CONFIG_PATH, false );
+        log.info("Config path is: " + this.getConfigPath() );
+        File file = Registry.getResourcesLoader().loadFile( this.getConfigPath(), false );
 
         if ( file.exists() ) {
             return new XMLConfig(file);

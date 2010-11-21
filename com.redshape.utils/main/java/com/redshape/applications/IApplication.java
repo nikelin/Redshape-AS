@@ -16,6 +16,8 @@ public interface IApplication {
 
     public String getExecutionMode();
 
+    public void setEnvArg( String name, String value );
+
     public String getEnvArg( String name );
 
     public IBootstrap getBootstrap();

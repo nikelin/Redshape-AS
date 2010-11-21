@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>as</artifactId>
+        <groupId>com.redshape</groupId>
+        <version>1.0.0A</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>servlet</artifactId>
+    <name>Servlet Core</name>
+    <version>1.0.0A</version>
+    <groupId>com.redshape</groupId>
+
+    <build>
+        <finalName>servlet</finalName>
+        <directory>${project.basedir}/../build/servlet-war</directory>
+        <sourceDirectory>main/java</sourceDirectory>
+        <testSourceDirectory>test</testSourceDirectory>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <executable>/usr/bin/javac</executable>
+                    <compilerVersion>1.6_06</compilerVersion>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.1-beta-1</version>
+                <configuration>
+                    <archiveClasses>false</archiveClasses>
+                    <webappDirectory>${project.basedir}/../build/war</webappDirectory>
+                    <workDirectory>${project.basedir}/build/war</workDirectory>
+                    <webResources>
+                        <resource>
+                            <directory>${project.basedir}/main/resources/WEB-INF</directory>
+                            <!-- override the destination directory for this resource -->
+                            <targetPath>WEB-INF</targetPath>
+                            <!-- enable filtering -->
+                            <filtering>true</filtering>
+                            <includes>
+                              <include>*</include>
+                            </includes>
+                        </resource>
+                    </webResources>
+
+                    <webXml>${project.basedir}/main/resources/WEB-INF/web.xml</webXml>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix />
+                        </manifest>
+                        <manifestEntries>
+                            <url>${pom.url}</url>
+                            <Implementation-Title>${project.name}</Implementation-Title>
+                            <Implementation-Vendor>Redshape Ltd.</Implementation-Vendor>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Built-By>${user.name}</Built-By>
+                            <Built-OS>${os.name}</Built-OS>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <artifactId>servlet-api</artifactId>
+            <groupId>javax.servlet</groupId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <artifactId>core</artifactId>
+            <groupId>com.redshape</groupId>
+            <version>1.0.0A</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+</project>

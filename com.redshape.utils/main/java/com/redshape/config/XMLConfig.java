@@ -36,6 +36,10 @@ public class XMLConfig implements IConfig {
         this( buildDocument(file).getDocumentElement() );
     }
 
+    public XMLConfig() throws ConfigException {
+        this.node = null;
+    }
+
     protected XMLConfig( Element element ) {
         this.node = element;
     }
@@ -45,7 +49,15 @@ public class XMLConfig implements IConfig {
     }
 
     public IConfig get( String name ) throws ConfigException {
-        return new XMLConfig( (Element) this.node.getElementsByTagName(name).item(0) );
+        NodeList list = this.node.getChildNodes();
+        for ( int position = 0; position < list.getLength(); position++ ) {
+            Node item = list.item(position);
+            if ( item.getNodeName().equals( name ) && item.getNodeType() == Node.ELEMENT_NODE ) {
+                return new XMLConfig( (Element) item );
+            }
+        }
+
+        return new XMLConfig();
     }
 
     public String attribute( String name ) {

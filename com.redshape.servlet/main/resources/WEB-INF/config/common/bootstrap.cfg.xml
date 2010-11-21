@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<config>
+    <layout>
+        <basePath>jsp</basePath>
+        <scriptPath>layouts/default</scriptPath>
+        <extension>jsp</extension>
+    </layout>
+</config>

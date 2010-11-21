@@ -20,6 +20,9 @@ public class HeapMonitorTask extends TimerTask {
     @Override
     public void run() {
         log.info("Current memory stats: \n free " + Runtime.getRuntime().freeMemory() / 1000 + "KB \n total: " + Runtime.getRuntime().totalMemory() / 1000 + "KB" );
+        log.info("Performing GC...");
+
+        System.gc();
     }
 
 }
