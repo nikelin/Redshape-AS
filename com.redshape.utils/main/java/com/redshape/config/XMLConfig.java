@@ -23,7 +23,7 @@ import java.util.Vector;
  */
 public class XMLConfig implements IConfig {
     private static final Logger log = Logger.getLogger( XMLConfig.class );
-    public static String BOOTSTRAP_CONFIG_PATH = "configs/common/bootstrap.cfg.xml";
+    public static String BOOTSTRAP_CONFIG_PATH = "configs" + File.pathSeparator + "common" + File.pathSeparator + "bootstrap.cfg.xml";
 
     private Element node;
     private IConfigCacheProvider cacheProvider;
