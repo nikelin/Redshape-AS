@@ -1,11 +1,11 @@
-package tests.com.vio.server;
+package com.vio.server;
 
 import com.redshape.server.ApplicationServer;
 import com.redshape.server.ServerFactoryFacade;
 import com.redshape.server.adapters.socket.SocketAdapterFactory;
 import org.junit.Assert;
 import org.junit.Test;
-import tests.mocks.socket.SocketAdapterFactoryMock;
+import mocks.socket.SocketAdapterFactoryMock;
 
 
 /**

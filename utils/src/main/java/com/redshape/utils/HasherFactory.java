@@ -14,6 +14,7 @@ public class HasherFactory {
     private static HasherFactory defaultInstance = new HasherFactory();
     
     private Map<Class<? extends IHasher>, IHasher> hashers = new HashMap<Class<? extends IHasher>, IHasher>();
+    @Autowired( required = true )
     private PackagesLoader packagesLoader;
     
     public static HasherFactory getDefault() {

@@ -8,6 +8,7 @@ import com.redshape.exceptions.ErrorCode;
 import com.redshape.server.adapters.socket.client.ISocketAdapter;
 import com.redshape.server.adapters.socket.server.IServerSocketAdapter;
 import com.redshape.server.adapters.socket.SocketAdapterFactory;
+import com.redshape.server.execution.ServerExecutionThread;
 import com.redshape.server.policy.ApplicationResult;
 import com.redshape.server.policy.IPolicy;
 import com.redshape.server.policy.PolicyType;
@@ -16,6 +17,8 @@ import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * WebCam Project
@@ -29,6 +32,7 @@ public abstract class AbstractSocketServer<T extends IProtocol, R extends IRespo
                 extends AbstractServer implements ISocketServer<T, R> {
     final private static Logger log = Logger.getLogger( ApplicationServer.class );
 
+    public static int DEFAULT_THREADS_COUNT = 100;
     public static int EXPIRATION_TIME = Constants.TIME_SECOND * 1000;
     public static int CONNECTION_KEEP_ALIVE = Constants.TIME_SECOND * 25;
 
@@ -40,9 +44,12 @@ public abstract class AbstractSocketServer<T extends IProtocol, R extends IRespo
     private IServerSocketAdapter socket;
 
     private T protocol;
+    
+    private Integer threadsCount = DEFAULT_THREADS_COUNT;
+    
+    private ExecutorService executor;
 
     private Map<ThreadGroup, ISocketAdapter> connections = new HashMap<ThreadGroup, ISocketAdapter>();
-
     private Map<Class<? extends IPolicy>, ? extends IPolicy> policies = new HashMap();
 
     public AbstractSocketServer(
@@ -54,16 +61,23 @@ public abstract class AbstractSocketServer<T extends IProtocol, R extends IRespo
         super( host, port, isSSLEnabled );
 
         this.protocol = protocol;
+        this.executor = Executors.newFixedThreadPool( this.threadsCount );
+        
     }
 
     @Override
     public void initialize() throws ServerException {
         this.socket = this.createServerSocket();
 
+        for ( int  i = 0; i < this.threadsCount; i++ ) {
+        	this.executor.execute( new ServerExecutionThread(this) );
+        }
+        
         this.markInitialized( true );
     }
 
-    public IServerSocketAdapter getSocketAdapter() {
+    @Override
+    public IServerSocketAdapter getSocket() {
         return this.socket;
     }
 
@@ -78,36 +92,8 @@ public abstract class AbstractSocketServer<T extends IProtocol, R extends IRespo
         }  else {
             this.changeState(ServerState.RUNNING);
         }
-
-        this.getSocketAdapter().startListening();
-
-        this._startListen();
-    }
-
-    private void _startListen() throws ServerException {
-        /** @TODO **/
-        this.getProtocol().getClientsProcessor().setContext(this);
         
-        for ( ; ;  ) {
-            try {
-                ISocketAdapter clientSocket = this.getSocketAdapter().accept();
-
-                this.setLocalSocket(clientSocket);
-
-                ApplicationResult policyResult = this.checkPolicy( this.getProtocol().getClass(), PolicyType.ON_CONNECTION );
-                if ( policyResult.isSuccessful() || policyResult.isVoid() ) {
-                    this.getProtocol().getClientsProcessor().onConnection(clientSocket);
-                } else {
-                    if ( policyResult.isException() ) {
-                        log.error("Connection policy crashed with exception", policyResult.getException() );    
-                    }
-
-                    this.refuseConnection(clientSocket);
-                }
-            } catch ( Throwable e ) {
-                log.error( e.getMessage(), e );
-            }
-        }
+        this.getSocket().startListening();
     }
 
     @Override
@@ -161,7 +147,7 @@ public abstract class AbstractSocketServer<T extends IProtocol, R extends IRespo
     @Override
     public void shutdown() {
         try {
-            this.getSocketAdapter().close();
+            this.getSocket().close();
         } catch ( Throwable e ) {
             log.info("Unable to shutdown underlying server socket...");
             log.error( e.getMessage(), e );

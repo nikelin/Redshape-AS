@@ -6,7 +6,6 @@ import com.redshape.io.protocols.core.ProtocolException;
 import com.redshape.io.protocols.core.request.IRequest;
 import com.redshape.io.protocols.core.sources.input.BufferedInput;
 import com.redshape.server.ISocketServer;
-import com.redshape.server.BalanserOverloadedException;
 import com.redshape.server.ServerException;
 import com.redshape.server.adapters.socket.client.ISocketAdapter;
 import com.redshape.server.processors.request.IRequestsProcessor;
@@ -21,17 +20,32 @@ import org.apache.log4j.Logger;
  */
 public class ClientsProcessor implements IClientsProcessor {
     private static final Logger log = Logger.getLogger( ClientsProcessor.class );
-    private ISocketServer server;
-
     public static int MAX_WORKER_WARNS = 12;
+    
+    private ISocketServer context;
+    
+    private int errorsTick;
+    
+    private boolean isValid = true;
 
-    public ISocketServer getContext() {
-        return this.server;
+    public void setContext( ISocketServer server ) {
+    	this.context = server;
+    }
+    
+    protected ISocketServer getContext() {
+    	return this.context;
+    }
+    
+    public boolean isValid() {
+        return this.isValid && this.errorsTick < MAX_WORKER_WARNS;
     }
 
-    @Override
-    public void setContext( ISocketServer server ) {
-        this.server = server;
+    public void markInvalid() {
+        this.isValid = false;
+    }
+
+    public void incrErrorsTick() {
+        this.errorsTick += 1;
     }
 
     /**
@@ -44,68 +58,39 @@ public class ClientsProcessor implements IClientsProcessor {
      public boolean onConnection( final ISocketAdapter socket ) throws ServerException {
         log.info("Processing adapters: " + socket.getRemoteSocketAddress() );
 
-        Thread thread = new Thread( Thread.currentThread().getThreadGroup(), new WorkerThread( this.getContext(), socket), "Connection processing thread" );
-        thread.start();
+        try {
+            IProtocol protocol = this.getContext().getProtocol();
+            IRequestsProcessor processor = protocol.createRequestsProcessor( this.getContext() );
+            processor.setServerContext(this.getContext());
+            
+            BufferedInput input = new BufferedInput( socket.getInputStream() );
+            while ( this.isValid() ) {
+                log.info("Waiting request...");
+                try{
+                    IRequest request = protocol.readRequest( input );
+                    if ( request == null ) {
+                        this.incrErrorsTick();
+                        continue;
+                    }
 
+                    request.setSocket( socket );
+
+                    log.info("Processing request...");
+                    processor.onRequest(request);
+                } catch ( ExceptionWithCode e ) {
+                    this.getContext().writeResponse( socket, e );
+                    this.incrErrorsTick();
+                } catch ( Throwable e ) {
+                    this.incrErrorsTick();
+                } 
+            }
+        } catch ( ProtocolException e) {
+            log.error("Protocol related exception", e );
+        } catch ( Throwable e ) {
+            log.error("Internal exception", e );
+        }
+        
         return true;
     }
 
-    private final class WorkerThread implements Runnable {
-        private int errorsTick;
-        private boolean isValid = true;
-        private ISocketAdapter client;
-        private ISocketServer server;
-
-        public WorkerThread( ISocketServer server, ISocketAdapter client ) {
-            this.server = server;
-            this.client = client;
-        }
-
-        public boolean isValid() {
-            return this.isValid && this.errorsTick < MAX_WORKER_WARNS;
-        }
-
-        public void markInvalid() {
-            this.isValid = false;
-        }
-
-        public void incrErrorsTick() {
-            this.errorsTick += 1;
-        }
-
-        @Override
-        public void run() {
-            try {
-                IProtocol protocol = this.server.getProtocol();
-                IRequestsProcessor processor = protocol.createRequestsProcessor();
-                processor.setServerContext(this.server);
-                
-                BufferedInput input = new BufferedInput( this.client.getInputStream() );
-                while ( this.isValid() ) {
-                    log.info("Waiting request...");
-                    try{
-                        IRequest request = protocol.readRequest( input );
-                        if ( request == null ) {
-                            this.incrErrorsTick();
-                            continue;
-                        }
-
-                        request.setSocket( this.client );
-
-                        log.info("Processing request...");
-                        processor.onRequest(request);
-                    } catch ( ExceptionWithCode e ) {
-                        this.server.writeResponse( this.client, e );
-                        this.incrErrorsTick();
-                    } catch ( Throwable e ) {
-                        this.incrErrorsTick();
-                    }
-                }
-            } catch ( ProtocolException e) {
-                log.error("Protocol related exception", e );
-            } catch ( Throwable e ) {
-                log.error("Internal exception", e );
-            }
-        }
-    }
 }

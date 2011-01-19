@@ -6,6 +6,8 @@ import com.redshape.io.protocols.core.response.IResponse;
 import com.redshape.exceptions.ExceptionWithCode;
 import com.redshape.persistence.entities.requesters.IRequester;
 import com.redshape.server.adapters.socket.client.ISocketAdapter;
+import com.redshape.server.adapters.socket.server.IServerSocketAdapter;
+
 import java.util.Collection;
 
 /**
@@ -21,6 +23,8 @@ public interface ISocketServer<T extends IProtocol, R extends IResponse>
 
     public boolean isConnectionExpired( IRequester user ) throws ConfigException;
 
+    public IServerSocketAdapter getSocket();
+    
     public ISocketAdapter getLocalSocket();
 
     public void setLocalSocket( ISocketAdapter socket );

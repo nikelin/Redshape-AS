@@ -36,7 +36,7 @@ public abstract class AbstractVanillaProtocol<T extends IApiRequest,
         /**
          * @TODO: to not forget fix this fucking shit
          */
-        this.setClientsProcessor( new ClientsProcessor() );
+        this.setClientsProcessor( ClientsProcessor.class );
         this.setRequestsProcessor( ApiRequestsProcessor.class );
         this.setRequestsDispatcher( RequestType.INTERFACE_INVOKE, new InterfaceInvocationsDispatcher() );
         this.setRequestsDispatcher( RequestType.METHOD_INVOKE, new MethodInvocationsDispatcher() );

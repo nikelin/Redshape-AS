@@ -13,7 +13,8 @@ import com.redshape.server.adapters.socket.client.ISocketAdapter;
  */
 public interface IClientsProcessor {
 
-    public void setContext( ISocketServer server );
-
-    public boolean onConnection( ISocketAdapter connection ) throws ServerException;    
+	public void setContext( ISocketServer server );
+	
+    public boolean onConnection( ISocketAdapter connection ) throws ServerException;  
+    
 }

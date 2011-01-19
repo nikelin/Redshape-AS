@@ -14,6 +14,8 @@ import com.redshape.io.protocols.core.sources.output.OutputStream;
 import com.redshape.io.protocols.core.writers.IResponseWriter;
 import com.redshape.io.protocols.core.writers.WriterException;
 import com.redshape.io.protocols.core.request.RequestType;
+import com.redshape.server.IServer;
+import com.redshape.server.ISocketServer;
 import com.redshape.server.processors.request.IRequestsProcessor;
 import com.redshape.server.processors.connection.IClientsProcessor;
 import org.apache.log4j.Logger;
@@ -46,7 +48,7 @@ public abstract class AbstractProtocol<
     private IResponseWriter writer;
     
     @Autowired
-    private IClientsProcessor clientsProcessor;
+    private Class<? extends IClientsProcessor> clientsProcessor;
     
     private Class<? extends IRequestsProcessor<?, Z>> requestsProcessor;
     
@@ -128,7 +130,7 @@ public abstract class AbstractProtocol<
     }
 
     @Override
-    public IRequestsProcessor<?, Z> createRequestsProcessor() throws ProtocolException {
+    public IRequestsProcessor<?, Z> createRequestsProcessor( ISocketServer<?, V> server ) throws ProtocolException {
         try {
             return this.requestsProcessor.newInstance();
         } catch ( Throwable e ) {
@@ -138,13 +140,24 @@ public abstract class AbstractProtocol<
     }
 
     @Override
-    public void setClientsProcessor( IClientsProcessor listener ) {
+    public void setClientsProcessor( Class<? extends IClientsProcessor> listener ) {
         this.clientsProcessor = listener;
     }
 
+    protected Class<? extends IClientsProcessor> getClientsProcessor() {
+    	return this.clientsProcessor;
+    }
+    
     @Override
-    public IClientsProcessor getClientsProcessor() {
-        return this.clientsProcessor;
+    public IClientsProcessor createClientsProcessor( ISocketServer<?, V> server ) throws InstantiationException {
+    	try {
+    		IClientsProcessor processor = this.getClientsProcessor().newInstance();
+    		processor.setContext( server );
+    		
+    		return processor;
+    	} catch ( Throwable e ) {
+    		throw new InstantiationException();
+    	}
     }
 
     @Override

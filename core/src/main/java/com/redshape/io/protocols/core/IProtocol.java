@@ -12,6 +12,8 @@ import com.redshape.io.protocols.core.sources.output.OutputStream;
 import com.redshape.io.protocols.core.writers.IResponseWriter;
 import com.redshape.io.protocols.core.writers.WriterException;
 import com.redshape.io.protocols.core.request.RequestType;
+import com.redshape.server.IServer;
+import com.redshape.server.ISocketServer;
 import com.redshape.server.processors.request.IRequestsProcessor;
 import com.redshape.server.processors.connection.IClientsProcessor;
 
@@ -42,11 +44,11 @@ public interface IProtocol<
 
     public void setRequestsProcessor( Class<? extends IRequestsProcessor<?, Z>> processorClass );
 
-    public IRequestsProcessor<?, Z> createRequestsProcessor() throws ProtocolException;
+    public IRequestsProcessor<?, Z> createRequestsProcessor( ISocketServer<?, V> server ) throws ProtocolException;
 
-    public void setClientsProcessor( IClientsProcessor processor );
+    public void setClientsProcessor( Class<? extends IClientsProcessor> processor );
 
-    public IClientsProcessor getClientsProcessor();
+    public IClientsProcessor createClientsProcessor(  ISocketServer<?, V> server  ) throws InstantiationException;
 
     public void writeResponse( OutputStream stream, V response) throws WriterException;
 

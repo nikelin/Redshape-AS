@@ -15,7 +15,7 @@ import java.io.IOException;
  */
 public interface IRequestsProcessor<V extends ISocketServer, T extends IRequest> {
 
-    public void setServerContext( V protocol );
+    public void setServerContext( V server );
 
     public V getServerContext();
 

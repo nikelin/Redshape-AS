@@ -17,7 +17,8 @@
     <artifactId>core</artifactId>
     <packaging>jar</packaging>
 
-    <build>
+    <build> 
+    	<testSourceDirectory>src/tests/java</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
