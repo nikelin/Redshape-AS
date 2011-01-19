@@ -17,28 +17,7 @@
     <artifactId>utils</artifactId>
 
     <build>
-        <defaultGoal>package</defaultGoal>
         <finalName>utils</finalName>
-        <sourceDirectory>${project.basedir}/main/java</sourceDirectory>
-        <directory>${project.basedir}/../build/libs</directory>
-        <testSourceDirectory>${project.basedir}/unit/java</testSourceDirectory>
-
-        <testResources>
-            <testResource>
-                <filtering>false</filtering>
-                <directory>${project.basedir}/unit/java/resources</directory>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </testResource>
-            <testResource>
-                <filtering>false</filtering>
-                <directory>${project.basedir}/</directory>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </testResource>
-        </testResources>
 
         <plugins>
             <plugin>
@@ -51,10 +30,6 @@
                     <goals>
                       <goal>test</goal>
                     </goals>
-                    <configuration>
-                      <testSourceDirectory>${project.basedir}/unit/java</testSourceDirectory>
-                      <skip>false</skip>
-                    </configuration>
                   </execution>
                 </executions>
             </plugin>

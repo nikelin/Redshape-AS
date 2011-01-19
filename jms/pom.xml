@@ -17,14 +17,7 @@
     <build>
         <defaultGoal>package</defaultGoal>
         <finalName>jms</finalName>
-        <sourceDirectory>${project.basedir}/main/java</sourceDirectory>
-        <directory>${project.basedir}/../build/libs</directory>
-        <resources>
-          <resource>
-            <directory>${project.basedir}/main/resources</directory>
-            <filtering>false</filtering>
-          </resource>
-        </resources>
+        <directory>${project-build-path}/libs</directory>
     </build>
     
     <dependencies>

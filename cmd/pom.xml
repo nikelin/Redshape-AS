@@ -2,37 +2,25 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <groupId>com.redshape</groupId>
-    <artifactId>scheduler</artifactId>
-    <modelVersion>4.0.0</modelVersion>
-    <packaging>jar</packaging>
-    
-    <name>Scheduler Application</name>
-    
     <parent>
         <artifactId>as</artifactId>
         <groupId>com.redshape</groupId>
         <version>1.0.0A</version>
     </parent>
 
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>Commands runner</name>
+    <groupId>com.redshape</groupId>
+    <artifactId>cmd</artifactId>
+    <version>1.0.0A</version>
+    <packaging>jar</packaging>
+
     <build>
         <defaultGoal>package</defaultGoal>
-        <finalName>scheduler</finalName>
-        <sourceDirectory>${project.basedir}/main/java</sourceDirectory>
-        <directory>${project.basedir}/../build</directory>
-
+        <finalName>runner</finalName>
+        <directory>${project-build-path}</directory>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <executable>/usr/bin/javac</executable>
-                    <compilerVersion>1.6_06</compilerVersion>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -47,30 +35,21 @@
                 </executions>
                 <configuration>
                     <forceCreation>true</forceCreation>
-                    <outputDirectory>${project-build-path}</outputDirectory>
                     <archive>
                         <index>true</index>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>com.redshape.Main</mainClass>
+                            <mainClass>com.redshape.cmd.Main</mainClass>
                             <classpathPrefix>libs/</classpathPrefix>
                             <customClasspathLayout>$${artifact.groupId}.$${artifact.artifactId}.$${artifact.extension}</customClasspathLayout>
                         </manifest>
                     </archive>
                 </configuration>
-            </plugin>
-        </plugins>
-        <extensions>
-        </extensions>
+              </plugin>
+          </plugins>
     </build>
 
     <dependencies>
-        <dependency>
-            <groupId>quartz</groupId>
-            <artifactId>quartz</artifactId>
-            <version>1.5.2</version>
-        </dependency>
-        
         <dependency>
             <groupId>com.redshape</groupId>
             <artifactId>core</artifactId>
