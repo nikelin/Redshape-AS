@@ -3,7 +3,6 @@ package com.redshape.migration.renderers.engine;
 import com.redshape.render.*;
 import com.redshape.utils.InterfacesFilter;
 import com.redshape.utils.PackageLoaderException;
-import com.redshape.utils.Registry;
 
 /**
  * WebCam Project

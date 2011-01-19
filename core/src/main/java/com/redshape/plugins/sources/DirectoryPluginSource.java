@@ -1,12 +1,14 @@
 package com.redshape.plugins.sources;
 
 import com.redshape.plugins.info.InfoFile;
-import com.redshape.utils.Registry;
+import com.redshape.utils.ResourcesLoader;
 import com.redshape.utils.StringUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,6 +20,17 @@ import java.io.IOException;
 public class DirectoryPluginSource implements PluginSource {
     private File directory;
     private InfoFile infoFile;
+    
+    @Autowired( required = true )
+    private ResourcesLoader resourcesLoader;
+    
+    protected ResourcesLoader getResourcesLoader() {
+    	return this.resourcesLoader;
+    }
+    
+    public void setResourcesLoader( ResourcesLoader loader ) {
+    	this.resourcesLoader = loader;
+    }
 
     public DirectoryPluginSource( String path ) {
         this( new File(path) );
@@ -39,7 +52,7 @@ public class DirectoryPluginSource implements PluginSource {
 
         for ( String fItem : this.directory.list() ) {
             if ( fItem.equals("info.xml") ) {
-                File fItemFile = Registry.getResourcesLoader().loadFile( this.directory.getAbsolutePath() + "/" + fItem );
+                File fItemFile = this.getResourcesLoader().loadFile( this.directory.getAbsolutePath() + "/" + fItem );
 
                 if ( fItemFile.canRead() ) {
                     infoFile = new InfoFile( StringUtils.getFileExtension(fItem), fItemFile );

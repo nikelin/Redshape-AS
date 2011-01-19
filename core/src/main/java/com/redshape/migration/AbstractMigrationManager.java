@@ -1,9 +1,13 @@
 package com.redshape.migration;
 
+import com.redshape.config.IConfig;
 import com.redshape.migration.strategy.MigrationStrategy;
+import com.redshape.utils.ResourcesLoader;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,6 +19,28 @@ import java.util.Map;
 public abstract class AbstractMigrationManager implements MigrationManager {
     private Map<Action, MigrationStrategy> strategies = new HashMap<Action, MigrationStrategy>();
 
+    @Autowired( required = true )
+    private ResourcesLoader loader;
+    
+    @Autowired( required = true )
+    private IConfig config;
+    
+    public void setConfig( IConfig config ) {
+    	this.config = config;
+    }
+    
+    public IConfig getConfig() {
+    	return this.config;
+    }
+    
+    public void setResourcesLoader( ResourcesLoader loader ) {
+    	this.loader = loader;
+    }
+    
+    public ResourcesLoader getResourcesLoader() {
+    	return this.loader;
+    }
+    
     public void setStrategy( Action action, MigrationStrategy strategy ) {
         this.strategies.put( action, strategy );
     }

@@ -17,36 +17,8 @@
     <packaging>jar</packaging>
 
     <build>
-        <defaultGoal>package</defaultGoal>
         <finalName>runner</finalName>
-        <directory>${project-build-path}</directory>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.3</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <forceCreation>true</forceCreation>
-                    <archive>
-                        <index>true</index>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <mainClass>com.redshape.cmd.Main</mainClass>
-                            <classpathPrefix>libs/</classpathPrefix>
-                            <customClasspathLayout>$${artifact.groupId}.$${artifact.artifactId}.$${artifact.extension}</customClasspathLayout>
-                        </manifest>
-                    </archive>
-                </configuration>
-              </plugin>
-          </plugins>
+
     </build>
 
     <dependencies>

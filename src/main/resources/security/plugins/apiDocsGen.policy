@@ -1,0 +1,6 @@
+// Example of plugin permissions declaration
+
+grant {
+  permission java.io.FilePermission
+	"${basedir}/../docs/1.html", "read, write";
+};

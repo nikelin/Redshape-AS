@@ -1,12 +1,13 @@
 package com.redshape.tasks;
 
 import com.redshape.config.ConfigException;
+import com.redshape.config.IConfig;
 import com.redshape.messaging.JMSManager;
 import com.redshape.messaging.IMessageRespond;
 import com.redshape.messaging.MessagingHandler;
 import com.redshape.persistence.managers.ManagersFactory;
-import com.redshape.utils.Registry;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -24,10 +25,22 @@ import java.util.Enumeration;
  */
 public class TasksExecutor implements MessageListener {
     private static final Logger log = Logger.getLogger( TasksExecutor.class );
+    
     private MessagingHandler handlerContext;
-
+    
+    @Autowired( required = true )
+    private IConfig config;
+    
     public TasksExecutor( MessagingHandler handlerContext ) {
         this.handlerContext = handlerContext;
+    }
+    
+    public void setConfig( IConfig config ) {
+    	this.config = config;
+    }
+    
+    protected IConfig getConfig() {
+    	return this.config;
     }
 
     public MessagingHandler getHandlerContext() {
@@ -87,7 +100,7 @@ public class TasksExecutor implements MessageListener {
             taskInstance = (IPersistentTask) ManagersFactory.getDefault().getForEntity( IPersistentTask.class ).find( message.getIntProperty("task_id") );
             taskInstance.setLastExecutionTime( new Date().getTime() );
 
-            if ( new Date().getTime() - taskInstance.getLastExecutionTime() < Integer.valueOf( Registry.getConfig().get("tasks").get("afterFailDelay").value() ) ) {
+            if ( new Date().getTime() - taskInstance.getLastExecutionTime() < Integer.valueOf( this.getConfig().get("tasks").get("afterFailDelay").value() ) ) {
                log.info("ITask after fail delay not elapse... Ingoring.");
                throw new ExecutionException();
             }
@@ -129,7 +142,7 @@ public class TasksExecutor implements MessageListener {
     }
 
     private boolean validateTask( IPersistentTask task ) throws ExecutionException, ConfigException {
-        if ( task.getExecutionFails() > Integer.valueOf( Registry.getConfig().get("tasks").get("failsLimit").value() ) ) {
+        if ( task.getExecutionFails() > Integer.valueOf( this.getConfig().get("tasks").get("failsLimit").value() ) ) {
             try {
                 task.remove();
                 return false;

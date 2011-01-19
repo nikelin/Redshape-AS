@@ -1,10 +1,14 @@
 package com.redshape.daemons;
 
+import com.redshape.config.IConfig;
 import com.redshape.plugins.PluginsRegistry;
 import com.redshape.plugins.loaders.PluginLoaderException;
 import com.redshape.utils.Constants;
-import com.redshape.utils.Registry;
+import com.redshape.utils.PackagesLoader;
+import com.redshape.utils.ResourcesLoader;
+
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.util.Formatter;
@@ -21,12 +25,45 @@ public class PluginsLoaderTask extends TimerTask {
     public static int PERIOD = Constants.TIME_MINUTE * 5;
     private static final Logger log = Logger.getLogger( PluginsLoaderTask.class );
 
+    @Autowired( required = true )
+	private IConfig config;
+	
+    @Autowired( required = true )
+	private PackagesLoader packagesLoader;
+    
+    @Autowired( required = true )
+    private ResourcesLoader resourcesLoader;
+    
+    public void setConfig( IConfig config ) {
+    	this.config = config;
+    }
+    
+    public IConfig getConfig() {
+    	return this.config;
+    }
+    
+    public void setPackagesLoader( PackagesLoader loader ) {
+    	this.packagesLoader = loader;
+    }
+    
+    public PackagesLoader getPackagesLoader() {
+    	return this.packagesLoader;
+    }
+    
+    public ResourcesLoader getResourcesLoader() {
+    	return this.resourcesLoader;
+    }
+    
+    public void setResourcesLoader( ResourcesLoader loader ) {
+    	this.resourcesLoader = loader;
+    }
+    
     @Override
     public void run() {
         try {
-            File pluginsDir = Registry.getResourcesLoader().loadFile( Registry.getConfig().get("paths").get("plugins").value() );
+            File pluginsDir = this.getResourcesLoader().loadFile( this.getConfig().get("paths").get("plugins").value() );
 
-            log.info( "Plugins directory: " + Registry.getConfig().get("paths").get("plugins").value() );
+            log.info( "Plugins directory: " + this.getConfig().get("paths").get("plugins").value() );
 
             if ( pluginsDir.exists() ) {
                 this.syncList( pluginsDir );
@@ -52,7 +89,6 @@ public class PluginsLoaderTask extends TimerTask {
                     PluginsRegistry.unload( path );
                 } else if ( this.isForcedLoading(path) || !PluginsRegistry.isLoaded( path ) ) {
                     log.info("Loading plugin from " + path );
-                    Registry.addClasspathEntry( directory.getPath() + "/" + listItem );
                     PluginsRegistry.load( path );
 
                     count++;

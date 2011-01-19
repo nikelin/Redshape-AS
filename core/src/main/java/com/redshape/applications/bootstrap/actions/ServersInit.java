@@ -18,7 +18,6 @@ import com.redshape.server.ServerFactoryFacade;
 import com.redshape.server.policy.IPolicy;
 import com.redshape.server.policy.PoliciesFactory;
 import com.redshape.server.policy.PolicyType;
-import com.redshape.utils.Registry;
 
 import org.apache.log4j.*;
 
@@ -45,7 +44,7 @@ public class ServersInit extends AbstractBootstrapAction {
         try {
             this.initProtocols();
 
-            IConfig serverConfigNodes = Registry.getConfig().get("servers").get("instances");
+            IConfig serverConfigNodes = this.getConfig().get("servers").get("instances");
             log.info(" Current servers to be initialized: " + Arrays.asList( serverConfigNodes.names() ) );
             for ( final IConfig serverConfigNode : serverConfigNodes.childs() ) {
                 if ( serverConfigNode.get("status").value().equals("on") ) {

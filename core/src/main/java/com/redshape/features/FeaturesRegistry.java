@@ -3,7 +3,8 @@ package com.redshape.features;
 import com.redshape.features.annotations.FeatureAspect;
 import com.redshape.utils.InterfacesFilter;
 import com.redshape.utils.PackageLoaderException;
-import com.redshape.utils.Registry;
+import com.redshape.utils.PackagesLoader;
+
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
@@ -32,6 +33,8 @@ public class FeaturesRegistry implements IFeaturesRegistry {
      */
     private Map<Class<? extends IFeatureAspect>, IFeatureAspect> features = new HashMap();
 
+    private PackagesLoader packagesLoader;
+    
     public static IFeaturesRegistry getDefault() {
         return defaultInstance;
     }
@@ -42,6 +45,14 @@ public class FeaturesRegistry implements IFeaturesRegistry {
 
     private FeaturesRegistry() {
         this.loadPackages();
+    }
+    
+    public void setPackagesLoader( PackagesLoader loader ) {
+    	this.packagesLoader = loader;
+    }
+    
+    public PackagesLoader getPackagesLoader() {
+    	return this.packagesLoader;
     }
 
     @Override
@@ -95,10 +106,10 @@ public class FeaturesRegistry implements IFeaturesRegistry {
             }
         }
     }
-
+    
     private void processPackage( String packagePath ) throws PackageLoaderException, InstantiationException {
         log.info("Loading features from " + packagePath );
-        Class<? extends IFeatureAspect>[] classes = Registry.getPackagesLoader()
+        Class<? extends IFeatureAspect>[] classes = this.getPackagesLoader()
                                                         .<IFeatureAspect>getClasses( packagePath, new InterfacesFilter(
                                                             new Class[] { IFeatureAspect.class },
                                                             new Class[] { FeatureAspect.class },

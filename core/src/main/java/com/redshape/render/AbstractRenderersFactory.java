@@ -1,56 +1,100 @@
 package com.redshape.render;
 
-import com.redshape.applications.Application;
+import com.redshape.applications.AbstractApplication;
+import com.redshape.config.IConfig;
 import com.redshape.exceptions.ErrorCode;
 import com.redshape.render.json.JSONRenderersFactory;
 import com.redshape.utils.InterfacesFilter;
 import com.redshape.utils.PackageLoaderException;
-import com.redshape.utils.Registry;
+import com.redshape.utils.PackagesLoader;
+import com.redshape.utils.ResourcesLoader;
+
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
 public abstract class AbstractRenderersFactory implements IRenderersFactory {
     private static final Logger log = Logger.getLogger( AbstractRenderersFactory.class );
 
-    private static Map< Class<? extends IRenderersFactory>, IRenderersFactory> factories =
-                                                                new HashMap< Class<? extends IRenderersFactory>, IRenderersFactory>();
+    private static Map<Class<? extends IRenderersFactory>, 
+					   IRenderersFactory> factories = new HashMap<
+					   												Class<? extends IRenderersFactory>, 
+					   												IRenderersFactory
+					   										     >();
 
-    private Map< Class<? extends IRenderable>, Class<? extends IRenderer> > entities =
-                                                                new HashMap< Class<? extends IRenderable>, Class<? extends IRenderer>>();
+    private Map<Class<? extends IRenderable>, 
+			    Class<? extends IRenderer> > entities = new HashMap< 
+	    			 												Class<? extends IRenderable>, 
+	    			 												Class<? extends IRenderer>
+    															>();
     
-    private Map<Class<? extends IRenderer>, IRenderer> renderers = new HashMap<Class<? extends IRenderer>, IRenderer>();
-
+    private Map<Class<? extends IRenderer>, IRenderer> renderers = new HashMap<
+	    															Class<? extends IRenderer>, 
+	    															IRenderer
+    															>();
+    
+    @Autowired( required = true )
+    private ResourcesLoader resourcesLoader;
+    
+    @Autowired( required = true )
+    private PackagesLoader packagesLoader;
+    
+    @Autowired( required = true )
+    private IConfig config;
+    
     private static IRenderersFactory defaultInstance;
     static {
         try {
             defaultInstance = getFactory( JSONRenderersFactory.class );
         } catch ( Throwable e ) {
             log.error( "Cannot instantiate default factory", e );
-            Application.exit();
+            throw new RuntimeException( e.getMessage(), e );
         }
     }
 
     public AbstractRenderersFactory( Class<? extends IRenderersFactory> self ) {
         this.initRenderers();
     }
+    
+    public void setConfig( IConfig config ) {
+    	this.config = config;
+    }
+    
+    public IConfig getConfig() {
+    	return this.config;
+    }
+    
+    public void setResourcesLoader( ResourcesLoader loader ) {
+    	this.resourcesLoader = loader;
+    }
+    
+    public ResourcesLoader getResourcesLoader() {
+    	return this.resourcesLoader;
+    }
+    
+    public PackagesLoader getPackagesLoader() {
+    	return this.packagesLoader;
+    }
+    
+    public void setPackagesLoader( PackagesLoader loader ) {
+    	this.packagesLoader = loader;
+    }
 
-    public static <T extends AbstractRenderersFactory> T getFactory( Class<? extends IRenderersFactory> factoryClass )
+    public static <T extends IRenderersFactory> T getFactory( Class<T> factoryClass )
                                                                     throws InstantiationException {
-        IRenderersFactory factory = factories.get( factoryClass );
+        T factory = (T) factories.get( factoryClass );
         if ( factory != null ) {
-            return (T) factory;
+            return factory;
         }
 
         try {
-            factory = factoryClass.newInstance();
+        	factories.put( factoryClass, factory = factoryClass.newInstance() );
         } catch ( Throwable e ) {
             throw new InstantiationException();
         }
 
-        factories.put( factoryClass, factory );
-
-        return (T) factory;
+        return factory;
     }
 
     public static <T extends IRenderersFactory> T getDefault() {
@@ -125,13 +169,21 @@ public abstract class AbstractRenderersFactory implements IRenderersFactory {
         try {
             Set<Class<? extends IRenderer>> renderers = new HashSet();
 
-            String[] packages = Registry.getConfig()
+            String[] packages = this.getConfig()
                                         .get("settings")
-                                            .get("renderers")
-                                                .get( this.getFactoryId() )
-                                                    .get("packages").list("package");
+                                        .get("renderers")
+                                        .get( this.getFactoryId() )
+                                        .get("packages").list("package");
             for ( String pkgPath : packages ) {
-                renderers.addAll( Arrays.<Class<? extends IRenderer>>asList( Registry.getPackagesLoader().<IRenderer>getClasses( pkgPath , new InterfacesFilter( new Class[] { IRenderer.class }, new Class[] { TargetEntity.class }, true  ) ) ) );   
+                renderers.addAll( Arrays.<Class<? extends IRenderer>>asList( 
+                		this.getPackagesLoader()
+                			.<IRenderer>getClasses( pkgPath , 
+                					new InterfacesFilter( 
+            							new Class[] { IRenderer.class }, 
+            							new Class[] { TargetEntity.class }, 
+            							true  
+            						) 
+                			) ) );   
             }
 
             return renderers.toArray( new Class[ renderers.size() ] );
@@ -163,7 +215,7 @@ public abstract class AbstractRenderersFactory implements IRenderersFactory {
                 }
             }
         } catch ( Throwable e ) {
-            Application.exit();
+        	log.error( e.getMessage(), e );
         }
     }
 

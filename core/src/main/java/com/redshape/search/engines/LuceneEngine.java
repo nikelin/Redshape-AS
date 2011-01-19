@@ -1,6 +1,7 @@
 package com.redshape.search.engines;
 
 import com.redshape.config.ConfigException;
+import com.redshape.config.IConfig;
 import com.redshape.search.*;
 import com.redshape.search.collectors.CollectorsFactory;
 import com.redshape.search.collectors.IResultsCollector;
@@ -11,7 +12,6 @@ import com.redshape.search.query.terms.ISearchTerm;
 import com.redshape.search.query.transformers.LuceneQueryTransformer;
 import com.redshape.search.query.transformers.TransformersFactory;
 import com.redshape.search.serializers.ISerializer;
-import com.redshape.utils.Registry;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
@@ -25,6 +25,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.*;
 import java.util.Collection;
@@ -37,9 +38,16 @@ import java.util.Collection;
  * To change this template use File | Settings | File Templates.
  */
 public class LuceneEngine implements ISearchEngine {
-
-    public LuceneEngine() {
-    }
+	@Autowired( required = true )
+	private IConfig config;
+	
+	public void setConfig( IConfig config ) {
+		this.config = config;
+	}
+	
+	protected IConfig getConfig() {
+		return this.config;
+	}
 
     public void save( ISearchable searchable ) throws EngineException {
         try {
@@ -134,7 +142,7 @@ public class LuceneEngine implements ISearchEngine {
     }
 
     protected String getIndexDirectoryPath( IIndex index ) throws ConfigException, IOException {
-        return Registry.getConfig().get("search").get("indexPath").value() + "/" + index.getName();
+        return this.getConfig().get("search").get("indexPath").value() + "/" + index.getName();
     }
 
     private Document createDocument( ISearchable searchable, IIndex index ) throws EngineException {

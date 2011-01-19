@@ -17,7 +17,6 @@
 
     <build>
         <finalName>scheduler</finalName>
-		<directory>${project-build-path}</directory>
 		
         <plugins>
 

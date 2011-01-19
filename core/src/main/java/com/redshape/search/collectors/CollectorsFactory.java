@@ -3,8 +3,9 @@ package com.redshape.search.collectors;
 import com.redshape.search.ISearchable;
 import com.redshape.search.annotations.Collector;
 import com.redshape.utils.InterfacesFilter;
-import com.redshape.utils.Registry;
+import com.redshape.utils.PackagesLoader;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +23,8 @@ public class CollectorsFactory {
     private static CollectorsFactory defaultInstance = new CollectorsFactory();
     private static String collectorsPackage = "com.redshape.search.collectors";
 
+    @Autowired( required = true )
+    private PackagesLoader packagesLoader;
     private Map< Class<? extends ISearchable>, IResultsCollector> collectors = new HashMap();
 
     public static CollectorsFactory getDefault() {
@@ -34,6 +37,14 @@ public class CollectorsFactory {
 
     public CollectorsFactory() {
         this.initialize();
+    }
+    
+    public PackagesLoader getPackagesLoader() {
+    	return this.packagesLoader;
+    }
+    
+    public void setPackagesLoader( PackagesLoader loader ) {
+    	this.packagesLoader = loader;
     }
 
     public static void setCollectorsPackage( String path ) {
@@ -59,7 +70,7 @@ public class CollectorsFactory {
 
     private void initialize() {
         try {
-            for( Class<? extends IResultsCollector> clazz : Registry.getPackagesLoader().<IResultsCollector>getClasses( collectorsPackage, new InterfacesFilter( new Class[] { IResultsCollector.class }, new Class[] {Collector.class } ) ) ) {
+            for( Class<? extends IResultsCollector> clazz : this.getPackagesLoader().<IResultsCollector>getClasses( collectorsPackage, new InterfacesFilter( new Class[] { IResultsCollector.class }, new Class[] {Collector.class } ) ) ) {
                 Collector clazzMeta = clazz.getAnnotation( Collector.class );
 
                 this.collectors.put( clazzMeta.entityType(), clazz.newInstance() );

@@ -6,7 +6,6 @@ import com.redshape.migration.strategy.fixtures.Rollback;
 import com.redshape.migration.strategy.fixtures.Update;
 import com.redshape.utils.BeansLoader;
 import com.redshape.utils.ObjectsLoader;
-import com.redshape.utils.Registry;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -50,7 +49,7 @@ public class DataMigrationManager extends AbstractMigrationManager {
             MigrationStrategy strategy = this.getStrategy( this.getAction( from, to ) );
             log.info("Data migration strategy is: " + strategy.getClass().getCanonicalName() );
 
-            File fixturesDir = Registry.getResourcesLoader().loadFile( Registry.getResourcesDirectory() + "/" + Registry.getConfig().get("database").get("fixturesPath").value() );
+            File fixturesDir = this.getResourcesLoader().loadFile( this.getConfig().get("database").get("fixturesPath").value() );
 
             for ( String fixturesPart : fixturesDir.list() ) {
                 int fixtureVersion;

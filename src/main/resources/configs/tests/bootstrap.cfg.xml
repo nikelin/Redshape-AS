@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+
+<config>
+    <paths>
+        <path name="logs" path="logs" />
+        <path name="plugins" path="vendors" />
+        <path name="locales" path="i18n" />
+        <path name="security" path="security" />
+    </paths>
+    <server>
+        <security>
+            <filter-ip>false</filter-ip>
+        </security>
+        <mode>TESTING</mode>
+        <host>0.0.0.0</host>
+        <port>55234</port>
+        <ssl>
+            <port>55234</port>
+            <host>0.0.0.0</host>
+            <enabled>true</enabled>
+            <storeKey>cambalanet</storeKey>
+            <storeFile>certificates.jks</storeFile>
+        </ssl>
+        <sessions>
+            <lifetime>900</lifetime>
+            <allowPersistentSessions>true</allowPersistentSessions>
+        </sessions>
+        <logging>true</logging>
+        <jms>
+            <adapter>com.redshape.messaging.AMQManager</adapter>
+            <user>system</user>
+            <password>manager</password>
+            <uri>tcp://localhost:61616</uri>
+        </jms>
+        <smtp>
+            <host>dev</host>
+            <port>25</port>
+        </smtp>
+    </server>
+    <database>
+        <adapter>com.mysql.jdbc.Driver</adapter>
+        <uri>jdbc:mysql://localhost:3306/vio_test</uri>
+        <user>d2</user>
+        <password></password>
+        <useUTF8>true</useUTF8>
+        <charset>UTF-8</charset>
+    </database>
+    <applications package="com.redshape.api.interfaces"/>
+    <plugins>
+        <autoload>false</autoload>
+
+        <includes>
+            <testPlugin version='1.0'>
+                <validateSignature>true</validateSignature>
+            </testPlugin>
+        </includes>
+    </plugins>
+</config>

@@ -3,7 +3,6 @@ package com.redshape.render.json;
 import com.redshape.render.*;
 import com.redshape.utils.InterfacesFilter;
 import com.redshape.utils.PackageLoaderException;
-import com.redshape.utils.Registry;
 import org.apache.log4j.Logger;
 
 public class JSONRenderersFactory extends AbstractRenderersFactory {

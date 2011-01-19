@@ -3,28 +3,59 @@ package com.redshape.utils;
 import org.apache.log4j.Logger;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by IntelliJ IDEA.
- * User: nikelin
- * Date: Jan 22, 2010
- * Time: 10:23:11 AM
- * To change this template use File | Settings | File Templates.
- */
+* Created by IntelliJ IDEA.
+* User: nikelin
+* Date: Jan 22, 2010
+* Time: 10:23:11 AM
+* To change this template use File | Settings | File Templates.
+*/
 public class ResourcesLoader {
     private final static Logger log = Logger.getLogger( ResourcesLoader.class );
+    private String rootDirectory;
+    private Collection<String> searchPath = new HashSet<String>();
     final static Pattern NON_PRINTABLE = Pattern
             .compile("[^\t\n\r\u0020-\u007E\u0085\u00A0-\uD7FF\uE000-\uFFFC]");
 
+    public ResourcesLoader() {
+        this(null);
+    }
+
+    public ResourcesLoader( String rootDirectory ) {
+        this( rootDirectory, new HashSet<String>() );
+    }
+
+    public ResourcesLoader( String rootDirectory, Collection<String> searchPath ) {
+        this.rootDirectory = rootDirectory;
+
+        this.searchPath.addAll( Arrays.asList( System.getProperty("java.class.path").split(":") ) );
+        this.searchPath.addAll( searchPath );
+    }
+
+    public void setSearchPath( Collection<String> paths ) {
+        this.searchPath = paths;
+    }
+
+    public Collection<String> getSearchPath() {
+        return this.searchPath;
+    }
+
     public File loadFile( String path ) throws IOException {
         return this.loadFile( path, true );
+    }
+
+    public void setRootDirectory( String rootDirectory ) {
+        this.rootDirectory = rootDirectory;
+    }
+
+    public String getRootDirectory() {
+        return this.rootDirectory;
     }
 
     public File loadFile( String path, boolean searchPath ) throws IOException {
@@ -33,12 +64,13 @@ public class ResourcesLoader {
             return file;
         }
 
-        file = new File( Registry.getRootDirectory() + "/" + path);
+        file = new File( rootDirectory + "/" + path);
         if ( searchPath && !file.exists() ) {
             file = this.find(path);
         }
 
         if ( file == null ) {
+            log.info("Path not found: " + path );
             throw new FileNotFoundException( path );
         }
 
@@ -50,7 +82,7 @@ public class ResourcesLoader {
     }
 
     public String loadData( String path ) throws IOException {
-        return this.loadData(  path, false );
+        return this.loadData( path, false );
     }
 
     public String loadData( String path, boolean escapeNonpritable ) throws IOException {
@@ -79,21 +111,26 @@ public class ResourcesLoader {
     }
 
     public InputStream loadResource( String path ) throws IOException {
-        return new FileInputStream( this.loadFile(path) );
+        try {
+            return new FileInputStream(this.loadFile(path));
+        } catch ( IOException e ) {
+            return this.getClass().getClassLoader().getResourceAsStream(path);
+        }
     }
 
     /**
-     * @TODO загрузка из JAR-classpath элемента
-     * @param path
-     * @return
-     * @throws FileNotFoundException
-     */
+* @TODO загрузка из JAR-classpath элемента
+* @param path
+* @return
+* @throws FileNotFoundException
+*/
     protected File find( String path ) throws FileNotFoundException {
         File candidateFile = null;
-        
-        for( String pathPart : System.getProperty("java.class.path").split(":") ) {
+
+        for( String pathPart : this.getSearchPath() ) {
             candidateFile = new File( pathPart + File.separator + path );
             if ( !candidateFile.exists() ) {
+                log.info( candidateFile.getPath() );
                 candidateFile = null;
             } else {
                 break;
@@ -105,24 +142,17 @@ public class ResourcesLoader {
 
     public String[] getList( String path ) throws IOException {
         JarFile jarFile = new JarFile(path);
-        Enumeration entries = jarFile.entries();
+        Enumeration<JarEntry> entries = jarFile.entries();
         List<String> targetEntries = new ArrayList<String>() ;
         while( entries.hasMoreElements() ) {
-            JarEntry testing = (JarEntry) entries.nextElement();
+            JarEntry testing = entries.nextElement();
 
-            if ( testing.getName().endsWith(".class") )  {
+            if ( testing.getName().endsWith(".class") ) {
                 targetEntries.add( testing.getName() );
             }
         }
 
         return targetEntries.toArray( new String[targetEntries.size()] );
-    }
-
-    private void checkPrintable(CharSequence data) throws Exception {
-        Matcher em = NON_PRINTABLE.matcher(data);
-        if (em.find()) {
-            throw new Exception(" special characters are not allowed");
-        }
     }
 
 }

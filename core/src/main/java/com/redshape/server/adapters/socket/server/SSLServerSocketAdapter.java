@@ -2,8 +2,8 @@ package com.redshape.server.adapters.socket.server;
 
 import com.redshape.config.IConfig;
 import com.redshape.server.ServerException;
-import com.redshape.utils.Registry;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.net.ssl.*;
 import java.io.FileInputStream;
@@ -20,9 +20,20 @@ import java.security.KeyStore;
  */
 public class SSLServerSocketAdapter extends ServerSocketAdapter {
     private static final Logger log = Logger.getLogger( SSLServerSocketAdapter.class );
-
+    
+    @Autowired( required = true )
+    private IConfig config;
+    
     public SSLServerSocketAdapter(String host, Integer port ) throws IOException, ServerException {
         super(host, port);
+    }
+    
+    public void setConfig( IConfig config ) {
+    	this.config = config;
+    }
+    
+    protected IConfig getConfig() {
+    	return this.config;
     }
 
     @Override
@@ -49,7 +60,7 @@ public class SSLServerSocketAdapter extends ServerSocketAdapter {
     }
 
     protected void initSSL() throws Throwable {
-        IConfig sslConfig = Registry.getConfig().get("sharedSettings").get("ssl");
+        IConfig sslConfig = this.getConfig().get("sharedSettings").get("ssl");
 
         SSLContext context = SSLContext.getInstance("TLS");
         // The reference implementation only supports X.509 keys
@@ -65,8 +76,7 @@ public class SSLServerSocketAdapter extends ServerSocketAdapter {
         // literal here completely defeats that purpose.
         char[] password = sslConfig.get("storeKey").value().toCharArray( );
 
-        log.info( Registry.getResourcesDirectory() + "/security/" + sslConfig.get("storeFile").value() );
-        ks.load( new FileInputStream( Registry.getResourcesDirectory() + "/security/" + sslConfig.get("storeFile").value() ), password);
+        ks.load( new FileInputStream( this.getClass().getResource( "/security/" + sslConfig.get("storeFile").value() ).toString() ), password  );
         kmf.init(ks, password);
 
         //

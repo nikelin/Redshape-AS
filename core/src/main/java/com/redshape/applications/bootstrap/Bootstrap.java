@@ -3,8 +3,9 @@ package com.redshape.applications.bootstrap;
 import com.redshape.config.IConfig;
 import com.redshape.utils.InterfacesFilter;
 import com.redshape.utils.PackageLoaderException;
-import com.redshape.utils.Registry;
+import com.redshape.utils.PackagesLoader;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
@@ -19,10 +20,39 @@ public class Bootstrap implements IBootstrap {
     private static final Logger log = Logger.getLogger( Bootstrap.class );
 
     private List<IBootstrapAction> actions = new ArrayList<IBootstrapAction>();
+    
     private Map<Object, Boolean> actionsStatus = new HashMap<Object, Boolean>();
+    
     private Set<String> packages = new HashSet<String>();
+    
     private boolean inited;
-
+    
+    @Autowired( required = true )
+    private IConfig config;
+    
+    @Autowired( required = true )
+    private PackagesLoader packagesLoader;
+    
+    public Bootstrap() throws BootstrapException {
+    	this.init();
+    }
+    
+    protected IConfig getConfig() {
+    	return this.config;
+    }
+    
+    public void setConfig( IConfig config ) {
+    	this.config = config;
+    }
+    
+    protected PackagesLoader getPackagesLoader() {
+    	return this.packagesLoader;
+    }
+    
+    public void setPackagesLoader( PackagesLoader loader ) {
+    	this.packagesLoader = loader;
+    }
+    
     public List<IBootstrapAction> getActions() {
         return this.actions;
     }
@@ -184,10 +214,10 @@ public class Bootstrap implements IBootstrap {
         try {
             Set<Class<? extends IBootstrapAction>> actionClasses = new HashSet();
 
-            for ( String path : Registry.getConfig().get("settings").get("bootstrap").get("packages").list("package") ) {
+            for ( String path : this.getConfig().get("settings").get("bootstrap").get("packages").list("package") ) {
                 actionClasses.addAll(
                     Arrays.asList(
-                        Registry.getPackagesLoader()
+                        this.getPackagesLoader()
                             .<IBootstrapAction>getClasses(
                                 path,
                                 new InterfacesFilter(
@@ -198,7 +228,7 @@ public class Bootstrap implements IBootstrap {
                 );
             }
 
-            IConfig actionClassesNode = Registry.getConfig().get("settings").get("bootstrap").get("classes");
+            IConfig actionClassesNode = this.getConfig().get("settings").get("bootstrap").get("classes");
             if ( actionClassesNode.hasChilds() ) {
                 for( String actionClass : actionClassesNode.list("class") ) {
                     actionClasses.add( (Class<? extends IBootstrapAction>) Class.forName( actionClass ) );

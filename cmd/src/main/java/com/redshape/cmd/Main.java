@@ -1,16 +1,12 @@
 package com.redshape.cmd;
 
-import com.redshape.applications.Application;
 import com.redshape.applications.ApplicationException;
-import com.redshape.applications.bootstrap.Bootstrap;
-import com.redshape.applications.bootstrap.IBootstrap;
+import com.redshape.applications.SpringApplication;
 import com.redshape.applications.bootstrap.IBootstrapAction;
-import com.redshape.applications.bootstrap.actions.DatabaseInit;
 import com.redshape.cmd.commands.HelpCommand;
 import com.redshape.commands.CommandsFactory;
 import com.redshape.commands.ExecutionException;
 import com.redshape.commands.ICommand;
-import com.redshape.utils.Registry;
 
 import org.apache.log4j.*;
 
@@ -21,17 +17,18 @@ import org.apache.log4j.*;
  * Time: 5:04:52 PM
  * To change this template use File | Settings | File Templates.
  */
-public final class Main extends com.redshape.applications.Application {
+public final class Main extends SpringApplication {
     private static final Logger log = Logger.getLogger( Main.class );
     private ICommand actualTask;
 
-    public Main( String[] args, IBootstrap boot ) throws ApplicationException {
-        super( Main.class, args, boot);
+    public Main( String[] args ) throws ApplicationException {
+        super( args);
 
         this.processCommands();
     }
 
-    @Override public void start() throws ApplicationException {
+    @Override 
+    public void start() throws ApplicationException  {
         if ( this.actualTask == null ) {
             this.actualTask = new HelpCommand();
         }
@@ -49,7 +46,6 @@ public final class Main extends com.redshape.applications.Application {
 
         try {
             this.processTask(this.actualTask);
-            Application.exit();
         } catch ( ExecutionException e ) {
             log.error("Task execution exception!", e );
         }
@@ -57,7 +53,7 @@ public final class Main extends com.redshape.applications.Application {
 
     protected void processCommands() {
            try {
-               CommandsFactory.addPackages( Registry.getConfig().get("settings").get("commands").list("package") );
+               CommandsFactory.addPackages( this.getConfig().get("settings").get("commands").list("package") );
 
                String module = null;
                ICommand task = null;
@@ -116,11 +112,8 @@ public final class Main extends com.redshape.applications.Application {
        }
 
        public static void main( String[] args ) {
-           IBootstrap boot = new Bootstrap();
-           boot.clear();
-
            try {
-               Main main = new Main( args, boot );
+               Main main = new Main( args );
                main.start();
            } catch ( Throwable e ) {
                log.error( "Excecution exception!", e );

@@ -8,7 +8,6 @@ import com.redshape.messaging.JMSManager;
 import com.redshape.messaging.JMSManagerFactory;
 import com.redshape.tasks.TasksExecutor;
 import com.redshape.tasks.TasksHandler;
-import com.redshape.utils.Registry;
 import org.apache.log4j.Logger;
 
 /**
@@ -28,7 +27,7 @@ public class MessagingInit extends AbstractBootstrapAction {
     public void process() throws BootstrapException {
         try {
             log.info("Initializing scheduler...");
-            IConfig config = Registry.getConfig().get("settings").get("jms");
+            IConfig config = this.getConfig().get("settings").get("jms");
 
             log.info("Initializing JMS engine...");
             JMSManagerFactory.getDefault()

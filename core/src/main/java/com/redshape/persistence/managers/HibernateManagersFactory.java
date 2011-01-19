@@ -4,7 +4,6 @@ import com.redshape.config.ConfigException;
 import com.redshape.config.IConfig;
 import com.redshape.persistence.ProviderException;
 import com.redshape.persistence.entities.IEntity;
-import com.redshape.utils.Registry;
 import org.apache.log4j.Logger;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
@@ -24,7 +23,7 @@ import java.util.Map;
  */
 public class HibernateManagersFactory extends ManagersFactory {
     private static final Logger log = Logger.getLogger( HibernateManagersFactory.class );
-
+    
     public IManager forEntity( Class<? extends IEntity> entity ) throws InstantiationException {
         try {
             for ( IManager m : this.getManagers() ) {
@@ -40,7 +39,7 @@ public class HibernateManagersFactory extends ManagersFactory {
     }
 
     public Map<String, Object> createConfigObject() throws ConfigException {
-        IConfig databaseConfigNode = Registry.getConfig().get("database");
+        IConfig databaseConfigNode = this.getConfig().get("database");
 
         Map<String, Object> override = new HashMap<String, Object>();
         override.put("hibernate.connection.driver_class", databaseConfigNode.get("adapter") );
@@ -61,6 +60,6 @@ public class HibernateManagersFactory extends ManagersFactory {
         Map<String, Object> configMap = this.createConfigObject();
         configMap.put("hibernate.hbm2ddl.auto", rebuildSchema ? "create-drop" : "update");
 
-        return Persistence.createEntityManagerFactory( Registry.getConfig().get("database").get("persistenceUnit").value(), configMap );
+        return Persistence.createEntityManagerFactory( this.getConfig().get("database").get("persistenceUnit").value(), configMap );
     }
 }

@@ -1,5 +1,7 @@
 package com.redshape.utils;
 
+import sun.net.util.IPAddressUtil;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
@@ -54,14 +56,14 @@ public class StringUtils {
     }
 
     /**
-     * Camelize input string
-     * @param name  Input string
-     * @param ucfirst Make first character uppercased
-     * @return String
-     */
+* Camelize input string
+* @param name Input string
+* @param ucfirst Make first character uppercased
+* @return String
+*/
     public static String toCamelCase( String name, boolean ucfirst ) {
         StringBuilder result = new StringBuilder();
-        
+
         for (int i = 0; i < name.length(); i++) {
             String prevChar = name.substring(i > 0 ? i - 1 : 0, i > 0 ? i : 1);
             String currChar = name.substring(i, i + 1);
@@ -88,7 +90,7 @@ public class StringUtils {
                     result.append( delimiter );
                     last_delimiter_pos = i;
                 }
-                
+
                 result.append( currChar.toLowerCase() );
             } else {
                 result.append( currChar.toLowerCase() );
@@ -115,5 +117,20 @@ public class StringUtils {
 
         return builder.toString();
     }
+
+
+    public static byte[] stringToIP( String addrString ) {
+        return IPAddressUtil.textToNumericFormatV4(addrString);
+    }
+
+    public static String IPToString( byte[] address ) {
+        String[] result = new String[address.length];
+        for ( int i = 0; i < address.length; i++ ) {
+            result[i] = String.valueOf( address[i] & 0xff );
+        }
+
+        return StringUtils.join( result, "." );
+    }
+
 
 }

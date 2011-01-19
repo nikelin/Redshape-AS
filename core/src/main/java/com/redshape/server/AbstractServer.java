@@ -1,14 +1,14 @@
 package com.redshape.server;
 
 import com.redshape.config.ConfigException;
-import com.redshape.exceptions.ExceptionWithCode;
+import com.redshape.config.IConfig;
 import com.redshape.io.protocols.core.IProtocol;
 import com.redshape.persistence.entities.requesters.IRequester;
 import com.redshape.server.policy.ApplicationResult;
 import com.redshape.server.policy.IPolicy;
 import com.redshape.server.policy.PolicyType;
-import com.redshape.utils.Registry;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
@@ -34,6 +34,9 @@ public abstract class AbstractServer implements IServer {
      */
     private Integer port;
 
+    @Autowired( required = true )
+    private IConfig config;
+    
     private Boolean sslEnabled;
 
     private Map<String, Object> properties = new HashMap<String, Object>();
@@ -51,6 +54,14 @@ public abstract class AbstractServer implements IServer {
         this.sslEnabled = isSSLEnabled;
     }
 
+    protected IConfig getConfig() {
+    	return this.config;
+    }
+    
+    public void setConfig( IConfig config ) {
+    	this.config = config;
+    }
+    
     @Override
     public void setHost( String host ) {
         this.host = host;
@@ -91,7 +102,7 @@ public abstract class AbstractServer implements IServer {
     }
 
     public boolean isConnectionExpired( IRequester user ) throws ConfigException {
-        return new Date().getTime() - user.getLastAccessTime() >= Integer.valueOf( Registry.getConfig().get("sharedSettings").get("sessions").get("lifetime").value() );
+        return new Date().getTime() - user.getLastAccessTime() >= Integer.valueOf( this.getConfig().get("sharedSettings").get("sessions").get("lifetime").value() );
     }
 
     @Override

@@ -28,17 +28,7 @@ public class ExceptionWithCode extends Exception {
 
     @Override
     public String getMessage() {
-        try {
-            String message = ErrorCodes.getMessage( this.code );
-
-            if ( message != null ) {
-                return message;
-            }
-
-            return "";
-        } catch ( Throwable e ) {
-            return "";
-        }
+        return this.getClass().getCanonicalName();
     }
 
 }

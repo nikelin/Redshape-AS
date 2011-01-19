@@ -6,8 +6,8 @@ import com.redshape.config.IConfig;
 import com.redshape.servlet.core.controllers.FrontController;
 import com.redshape.servlet.dispatchers.DispatchException;
 import com.redshape.servlet.views.Layout;
-import com.redshape.utils.Registry;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -24,7 +24,16 @@ import javax.servlet.http.HttpServletResponse;
 public class Servlet extends HttpServlet {
     private static final Logger log = Logger.getLogger( Servlet.class );
     private IApplication application;
-
+    @Autowired( required = true )
+    private IConfig config;
+    
+    public void setConfig( IConfig config ) {
+    	this.config = config;
+    }
+    
+    public IConfig getConfig() {
+    	return this.config;
+    }
 
     public void init(javax.servlet.ServletConfig config) throws javax.servlet.ServletException {
         try {
@@ -47,7 +56,7 @@ public class Servlet extends HttpServlet {
     @Override
     public void service( HttpServletRequest request, HttpServletResponse response ) throws ServletException {
         try {
-            IConfig layoutNode = Registry.getConfig().get("layout");
+            IConfig layoutNode = this.getConfig().get("layout");
 
             FrontController controller = FrontController.getInstance();
 

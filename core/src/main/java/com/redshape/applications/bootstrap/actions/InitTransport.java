@@ -9,7 +9,6 @@ import com.redshape.notifications.transport.configuration.ConfigurationException
 import com.redshape.notifications.transport.configuration.ITransportConfiguration;
 import com.redshape.notifications.transport.TransportException;
 import com.redshape.notifications.transport.TransportsFactory;
-import com.redshape.utils.Registry;
 import org.apache.log4j.Logger;
 
 /**
@@ -25,7 +24,7 @@ public class InitTransport extends AbstractBootstrapAction {
     @Override
     public void process() throws BootstrapException {
         try {
-            IConfig transportsListNode = Registry.getConfig().get("settings").get("transports");
+            IConfig transportsListNode = this.getConfig().get("settings").get("transports");
             if ( !transportsListNode.isNull() && transportsListNode.hasChilds() ) {
                 for ( IConfig transportConfigNode : transportsListNode.childs() ) {
                     this.initializeTransporter( transportConfigNode.attribute("class") );
@@ -54,7 +53,7 @@ public class InitTransport extends AbstractBootstrapAction {
     private ITransportConfiguration buildConfiguration( ITransport transport ) throws ConfigurationException, TransportException, ConfigException {
         ITransportConfiguration config = transport.createConfig();
 
-        for( IConfig transportConfigNode : Registry.getConfig().get("settings").get("transports").childs() ) {
+        for( IConfig transportConfigNode : this.getConfig().get("settings").get("transports").childs() ) {
             if ( transportConfigNode.attribute("class").equals( transport.getClass().getCanonicalName() ) ) {
                 for ( IConfig propertyNode : transportConfigNode.get("properties").childs() ) {
                     config.setProperty( propertyNode.attribute("name"), propertyNode.attribute("value") );

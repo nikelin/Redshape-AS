@@ -17,8 +17,8 @@ import com.redshape.server.ServerException;
 import com.redshape.server.adapters.socket.client.ISocketAdapter;
 import com.redshape.server.policy.AbstractPolicy;
 import com.redshape.server.policy.ApplicationResult;
-import com.redshape.utils.Registry;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 
@@ -33,6 +33,17 @@ public class AuthenticationPolicy extends AbstractPolicy<IApiRequest, ISocketSer
     private final static Logger log = Logger.getLogger( AuthenticationPolicy.class );
 
     private ISocketServer server;
+    
+    @Autowired( required = true )
+    private IAccessibleApplication application;
+    
+    public void setApplication( IAccessibleApplication application ) {
+    	this.application = application;
+    }
+    
+    protected IAccessibleApplication getApplication() {
+    	return this.application;
+    }
 
     @Override
     public ApplicationResult applicate( IApiRequest request ) {
@@ -42,7 +53,7 @@ public class AuthenticationPolicy extends AbstractPolicy<IApiRequest, ISocketSer
         try {
             ISocketAdapter socket = request.getSocket();
 
-            AuthenticatorInterface<IRequester> authenticator = AuthenticatorFactory.getInstance().getAdapter(IRequester.class);
+            AuthenticatorInterface<IRequester> authenticator = AuthenticatorFactory.getDefault().getAdapter(IRequester.class);
             IRequester identity = authenticator.getIdentity( socket.getInetAddress() );
             if ( null == identity ) {
                 String apiKey = (String) request.getHeader(
@@ -52,7 +63,7 @@ public class AuthenticationPolicy extends AbstractPolicy<IApiRequest, ISocketSer
                 ).getValue();
                 log.info("Client key: " + apiKey );
 
-                IRequester resource = ( (IAccessibleApplication) Registry.getApplication() ).createRequester();
+                IRequester resource = this.getApplication().createRequester();
                 resource.setApiKey( apiKey );
                 resource.setAddress( new IPAddress( socket.getInetAddress() ) );
 

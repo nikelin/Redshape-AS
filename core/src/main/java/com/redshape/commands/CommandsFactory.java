@@ -3,7 +3,8 @@ package com.redshape.commands;
 import com.redshape.commands.annotations.Command;
 import com.redshape.utils.InterfacesFilter;
 import com.redshape.utils.PackageLoaderException;
-import com.redshape.utils.Registry;
+import com.redshape.utils.PackagesLoader;
+
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -20,6 +21,7 @@ public class CommandsFactory {
     private Map<Command, Class<? extends ICommand> > taskClasses = new HashMap<Command, Class<? extends ICommand>>();
     private static Set<String> packages = new HashSet<String>();
     private static CommandsFactory defaultInstance;
+    private PackagesLoader packagesLoader;
 
     private CommandsFactory() {
         this.initialize();
@@ -35,6 +37,14 @@ public class CommandsFactory {
         }
 
         return defaultInstance;
+    }
+    
+    public void setPackagesLoader( PackagesLoader loader ) {
+    	this.packagesLoader = loader;
+    }
+    
+    public PackagesLoader getPackagesLoader() {
+    	return this.packagesLoader;
     }
 
     public Collection<Command> getTasks() {
@@ -94,7 +104,7 @@ public class CommandsFactory {
     }
 
     private void processPackage( String path )  throws PackageLoaderException {
-        Class<? extends ICommand>[] tasks = Registry.getPackagesLoader().<ICommand>getClasses(path, new InterfacesFilter( new Class[] { ICommand.class }, new Class[] { Command.class } ) );
+        Class<? extends ICommand>[] tasks = this.getPackagesLoader().<ICommand>getClasses(path, new InterfacesFilter( new Class[] { ICommand.class }, new Class[] { Command.class } ) );
         for ( Class<? extends ICommand> task : tasks ) {
             this.taskClasses.put( task.getAnnotation(Command.class), task );
         }

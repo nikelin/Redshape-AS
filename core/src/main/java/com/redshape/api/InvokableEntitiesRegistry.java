@@ -5,7 +5,6 @@ import com.redshape.remoting.annotations.RemoteService;
 import com.redshape.remoting.interfaces.RemoteInterface;
 import com.redshape.utils.InterfacesFilter;
 import com.redshape.utils.PackageLoaderException;
-import com.redshape.utils.Registry;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Method;
@@ -21,8 +20,11 @@ import java.util.*;
  */
 public final class InvokableEntitiesRegistry {
     private static final Logger log = Logger.getLogger( InvokableEntitiesRegistry.class);
-    private static final Map<String, RemoteInterface> invokableEntities = new HashMap();
-    private static final Map<String, Map<String, String>> invokableMethods = new HashMap();
+    private static final Map<String, 
+    						RemoteInterface> invokableEntities = new HashMap<String, RemoteInterface>();
+    private static final Map<String, 
+    						Map<String, String>> invokableMethods = new HashMap<String,
+    																			Map<String, String>>();
 
     public static void registerEntity( String entityName, RemoteInterface entityClass ) {
         invokableEntities.put( entityName, entityClass );

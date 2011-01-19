@@ -1,0 +1,6 @@
+/**
+* This file must be placed in plugin root directory
+* to avoid system from its automatic loading into runtime.
+*
+* @author nikelin
+*/

@@ -1,0 +1,31 @@
+<?xml version='1.0'?>
+
+<com.vio.plugins.PluginInfo>
+    <name>Documentation generator for server API</name>
+    <version>1.0A</version>
+    <description>This plugin may be used to generate documentation for WebCam Server API</description>
+    <mainClass>com.redshape.vendors.apiDocsGenerator.Main</mainClass>
+
+    <authors>
+       <com.vio.plugins.PluginAuthor>
+           <name>Cambala Group</name>
+           <email>contact@cambala.net</email>
+           <url>http://cambala.net</url>
+       </com.vio.plugins.PluginAuthor>
+       <com.vio.plugins.PluginAuthor>
+           <name>Cyril A. Karpenko</name>
+           <email>nikelin@metaid.ru</email>
+           <url>http://nikelin.ru</url>
+       </com.vio.plugins.PluginAuthor>
+    </authors>
+
+    <updateMethods>
+        <com.vio.plugins.update.PluginUpdateMethod>
+            <com.vio.plugins.update.sources.git.GitSource>
+                <repository>http://git.cambala.net/vio/plugins/api-docs-gen</repository>
+                <user>anon</user>
+                <password>anon</password>
+            </com.vio.plugins.update.sources.git.GitSource>
+        </com.vio.plugins.update.PluginUpdateMethod>
+    </updateMethods>
+</com.vio.plugins.PluginInfo>

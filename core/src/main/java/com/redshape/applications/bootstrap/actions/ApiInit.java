@@ -6,8 +6,8 @@ import com.redshape.applications.bootstrap.BootstrapException;
 import com.redshape.config.IConfig;
 import com.redshape.features.FeaturesRegistry;
 import com.redshape.render.AbstractRenderersFactory;
-import com.redshape.utils.Registry;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,14 +18,14 @@ import org.apache.log4j.Logger;
  */
 public class ApiInit extends AbstractBootstrapAction {
     private static final Logger log = Logger.getLogger( ApiInit.class );
-
+    
     public ApiInit() {
         this.setId("api");
     }
 
     public void process() throws BootstrapException {
         try {
-            for ( IConfig featureNode : Registry.getConfig().get("features").childs() ) {
+            for ( IConfig featureNode : this.getConfig().get("features").childs() ) {
                 FeaturesRegistry.getDefault().addFeaturesPackage( featureNode.value() );
             }
 

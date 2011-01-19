@@ -16,8 +16,8 @@ import com.redshape.io.protocols.core.writers.WriterException;
 import com.redshape.io.protocols.core.request.RequestType;
 import com.redshape.server.processors.request.IRequestsProcessor;
 import com.redshape.server.processors.connection.IClientsProcessor;
-import com.redshape.utils.Registry;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -42,11 +42,27 @@ public abstract class AbstractProtocol<
     private static final Logger log = Logger.getLogger( AbstractProtocol.class );
 
     private IRequestReader<I, T> reader;
+    
     private IResponseWriter writer;
+    
+    @Autowired
     private IClientsProcessor clientsProcessor;
+    
     private Class<? extends IRequestsProcessor<?, Z>> requestsProcessor;
-    private Map<RequestType, Q> dispatchers = new HashMap();
-
+    
+    private Map<RequestType, Q> dispatchers = new HashMap<RequestType, Q>();
+    
+    @Autowired( required = true )
+    private IConfig config;
+    
+    public void setConfig( IConfig config ) {
+    	this.config = config;
+    }
+    
+    public IConfig getConfig() {
+    	return this.config;
+    }
+    
     @Override
     public void setReader( IRequestReader<I, T> reader ) {
         this.reader = reader;
@@ -93,7 +109,7 @@ public abstract class AbstractProtocol<
 
     @Override
     public boolean isAnonymousAllowed() throws ConfigException {
-        for ( IConfig protocolNode : Registry.getConfig().get("sharedSettings").get("security").get("protocols").childs() ) {
+        for ( IConfig protocolNode : this.getConfig().get("sharedSettings").get("security").get("protocols").childs() ) {
             if( protocolNode.value().equals( this.getClass().getName() ) ) {
                 return Boolean.valueOf( protocolNode.get("isAnonymousRequestsAllowed").value() );
             }

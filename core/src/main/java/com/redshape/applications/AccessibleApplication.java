@@ -11,11 +11,11 @@ import org.apache.log4j.Logger;
  * @package com.vio.applications
  * @date Apr 19, 2010
  */
-public abstract class AccessibleApplication extends Application implements IAccessibleApplication {
+public abstract class AccessibleApplication extends AbstractApplication implements IAccessibleApplication {
     private static final Logger log = Logger.getLogger( AccessibleApplication.class );
 
-    public AccessibleApplication( Class<?> context, String[] args, Bootstrap bootstrap ) throws ApplicationException {
-        super( context, args, bootstrap );
+    public AccessibleApplication( String[] args ) throws ApplicationException {
+        super( args );
     }
 
 }

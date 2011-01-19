@@ -5,15 +5,15 @@ import org.apache.log4j.Logger;
 import java.lang.annotation.Annotation;
 
 /**
- * Created by IntelliJ IDEA.
- * User: nikelin
- * Date: Feb 22, 2010
- * Time: 1:48:24 PM
- * To change this template use File | Settings | File Templates.
- */
-public class InterfacesFilter implements Filter<Class<?>> {
+* Created by IntelliJ IDEA.
+* User: nikelin
+* Date: Feb 22, 2010
+* Time: 1:48:24 PM
+* To change this template use File | Settings | File Templates.
+*/
+public class InterfacesFilter implements IFilter<Class<?>> {
     private static final Logger log = Logger.getLogger( InterfacesFilter.class );
-    
+
     private Class<?>[] interfaces;
     private Class<? extends Annotation>[] annotations;
     private boolean allowNesting;
@@ -63,3 +63,5 @@ public class InterfacesFilter implements Filter<Class<?>> {
     }
 
 }
+
+

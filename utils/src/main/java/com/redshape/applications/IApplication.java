@@ -1,6 +1,7 @@
 package com.redshape.applications;
 
 import com.redshape.applications.bootstrap.IBootstrap;
+import com.redshape.config.IConfig;
 
 /**
  * WebCam Project
@@ -12,15 +13,13 @@ import com.redshape.applications.bootstrap.IBootstrap;
  */
 public interface IApplication {
 
-    public Integer getCurrentVersion();
-
-    public String getExecutionMode();
-
+    public void setConfig( IConfig config );
+    
+    public IConfig getConfig();
+    
     public void setEnvArg( String name, String value );
 
     public String getEnvArg( String name );
-
-    public IBootstrap getBootstrap();
 
     public void start() throws ApplicationException;
 

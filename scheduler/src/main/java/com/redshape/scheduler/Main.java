@@ -1,7 +1,8 @@
 package com.redshape.scheduler;
 
-import com.redshape.applications.Application;
+import com.redshape.applications.AbstractApplication;
 import com.redshape.applications.ApplicationException;
+import com.redshape.applications.SpringApplication;
 import com.redshape.applications.bootstrap.Action;
 import com.redshape.applications.bootstrap.Bootstrap;
 import com.redshape.applications.bootstrap.IBootstrap;
@@ -26,12 +27,12 @@ import java.util.Date;
  * @package com.vio.scheduler
  * @date Apr 14, 2010
  */
-public final class Main extends Application {
+public final class Main extends SpringApplication {
     private final static Logger log = Logger.getLogger( Main.class );
     private final static Integer DEFAULT_EXECUTION_DELAY = Constants.TIME_MINUTE * 2;
 
-    public Main( String[] args, IBootstrap bootstrap ) throws ApplicationException {
-        super( Main.class, args, bootstrap );
+    public Main( String[] args ) throws ApplicationException {
+        super(args);
 
         JMSManagerFactory.MESSAGES_RECEIVE_PERIOD = Constants.TIME_SECOND * 30;
         JMSManagerFactory.DEFAULT_MANAGER_DESTINATION = JMSManager.SCHEDULER_DESTINATION;
@@ -46,12 +47,7 @@ public final class Main extends Application {
 
     public static void main( String[] args ) {
         try {
-            IBootstrap boot = new Bootstrap();
-            boot.clearActionPackages();
-            boot.clearActions();
-            boot.addAction( new MessagingInit() );
-
-            Main app = new Main(args,  boot);
+            Main app = new Main(args);
             app.start();
         } catch ( Throwable e ) {
             log.error( e.getMessage(), e );
@@ -59,6 +55,7 @@ public final class Main extends Application {
         }
     }
 
+    @Override
     public void start() throws ApplicationException {
         try {
             super.start();

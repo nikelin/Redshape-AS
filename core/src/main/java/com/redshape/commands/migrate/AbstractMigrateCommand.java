@@ -4,7 +4,6 @@ import com.redshape.applications.bootstrap.IBootstrap;
 import com.redshape.applications.bootstrap.actions.DatabaseInit;
 import com.redshape.commands.AbstractCommand;
 import com.redshape.migration.MigrationManager;
-import com.redshape.utils.Registry;
 
 /**
  * Created by IntelliJ IDEA.

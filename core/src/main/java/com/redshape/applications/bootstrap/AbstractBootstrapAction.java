@@ -3,6 +3,11 @@ package com.redshape.applications.bootstrap;
 import java.util.Collection;
 import java.util.HashSet;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.redshape.config.IConfig;
+import com.redshape.utils.PackagesLoader;
+
 /**
  * Created by IntelliJ IDEA.
  * User: nikelin
@@ -34,6 +39,12 @@ public abstract class AbstractBootstrapAction implements IBootstrapAction {
      * @var Object
      */
     private Object id;
+    
+    @Autowired( required = true )
+    private IConfig config;
+    
+    @Autowired( required = true )
+    private PackagesLoader packagesLoader;
 
     /**
      * Identifiers for actions on which current action depends on
@@ -51,6 +62,14 @@ public abstract class AbstractBootstrapAction implements IBootstrapAction {
         return this.bootstrap;
     }
 
+    public void setConfig( IConfig config ) {
+    	this.config = config;
+    }
+    
+    public IConfig getConfig() {
+    	return this.config;
+    }
+    
     /**
      * Change current id to given one
      * @param id
@@ -109,5 +128,13 @@ public abstract class AbstractBootstrapAction implements IBootstrapAction {
 
     public boolean hasDependencies() {
         return this.dependencies.isEmpty();
+    }
+    
+    public void setPackagesLoader( PackagesLoader loader ) {
+    	this.packagesLoader = loader;
+    }
+    
+    public PackagesLoader getPackagesLoader() {
+    	return this.packagesLoader;
     }
 }

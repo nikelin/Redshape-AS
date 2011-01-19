@@ -7,7 +7,6 @@ import com.redshape.notifications.INotification;
 import com.redshape.notifications.NotificationsFactory;
 import com.redshape.notifications.annotations.Notification;
 import com.redshape.utils.InterfacesFilter;
-import com.redshape.utils.Registry;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,8 +20,8 @@ public class InitNotifications extends AbstractBootstrapAction {
     @Override
     public void process() throws BootstrapException {
         try {
-            for ( IConfig packageNode : Registry.getConfig().get("notifications").childs() ) {
-                Class<INotification>[] classes = Registry.getPackagesLoader()
+            for ( IConfig packageNode : this.getConfig().get("notifications").childs() ) {
+                Class<INotification>[] classes = this.getPackagesLoader()
                                                          .getClasses(
                                                             packageNode.value(),
                                                             new InterfacesFilter(

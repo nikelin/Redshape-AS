@@ -18,7 +18,6 @@
 
     <build>
         <finalName>servlet</finalName>
-        <directory>${project-build-path}/libs</directory>
     </build>
 
     <dependencies>
