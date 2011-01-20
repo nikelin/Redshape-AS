@@ -6,6 +6,7 @@ import com.redshape.applications.bootstrap.BootstrapException;
 import com.redshape.commands.CommandsFactory;
 import com.redshape.persistence.Provider;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,6 +15,7 @@ import org.apache.log4j.Logger;
  * Time: 2:44:41 PM
  * To change this template use File | Settings | File Templates.
  */
+@Component
 public class DatabaseInit extends AbstractBootstrapAction {
     private static final Logger log = Logger.getLogger( DatabaseInit.class );
 

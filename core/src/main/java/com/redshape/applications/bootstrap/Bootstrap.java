@@ -23,8 +23,6 @@ public class Bootstrap implements IBootstrap {
     
     private Map<Object, Boolean> actionsStatus = new HashMap<Object, Boolean>();
     
-    private Set<String> packages = new HashSet<String>();
-    
     private boolean inited;
     
     @Autowired( required = true )
@@ -33,11 +31,7 @@ public class Bootstrap implements IBootstrap {
     @Autowired( required = true )
     private PackagesLoader packagesLoader;
     
-    public Bootstrap() throws BootstrapException {
-    	this.init();
-    }
-    
-    protected IConfig getConfig() {
+    public IConfig getConfig() {
     	return this.config;
     }
     
@@ -57,6 +51,10 @@ public class Bootstrap implements IBootstrap {
         return this.actions;
     }
 
+    public void setActions( List<IBootstrapAction> actions ) {
+    	this.actions = actions;
+    }
+    
     synchronized public void removeAction( Object id ) {
         this.actions.remove(id);
     }
@@ -66,27 +64,14 @@ public class Bootstrap implements IBootstrap {
         this.actions.add(action);
     }
 
-    synchronized public void removeActionsPackage( String packagePath ) {
-        this.packages.remove(packagePath);
-    }
-
-    public void clearActionPackages() {
-        this.packages.clear();
-    }
-
     public void clearActions() {
         this.actions.clear();
     }
 
     public void clear() {
         this.clearActions();
-        this.clearActionPackages();
     }
 
-    synchronized public void addActionsPackage( String packagePath ) {
-        this.packages.add(packagePath);
-    }
-    
     public void enableAction( Object id ) {
         this.actionsStatus.put(id, true);
     }
@@ -111,12 +96,6 @@ public class Bootstrap implements IBootstrap {
             return;
         } else {
             this.inited = true;
-        }
-
-        try {
-            this.loadPackages();
-        } catch ( PackageLoaderException e ) {
-            throw new BootstrapException();
         }
 
         List<IBootstrapAction> actions = this.getActions();
@@ -208,45 +187,6 @@ public class Bootstrap implements IBootstrap {
         }
 
         return true;
-    }
-
-    protected void loadPackages() throws PackageLoaderException {
-        try {
-            Set<Class<? extends IBootstrapAction>> actionClasses = new HashSet();
-
-            for ( String path : this.getConfig().get("settings").get("bootstrap").get("packages").list("package") ) {
-                actionClasses.addAll(
-                    Arrays.asList(
-                        this.getPackagesLoader()
-                            .<IBootstrapAction>getClasses(
-                                path,
-                                new InterfacesFilter(
-                                    new Class[] { IBootstrapAction.class }
-                                )
-                            )
-                    )
-                );
-            }
-
-            IConfig actionClassesNode = this.getConfig().get("settings").get("bootstrap").get("classes");
-            if ( actionClassesNode.hasChilds() ) {
-                for( String actionClass : actionClassesNode.list("class") ) {
-                    actionClasses.add( (Class<? extends IBootstrapAction>) Class.forName( actionClass ) );
-                }
-            }
-
-            for ( Class<? extends IBootstrapAction> actionClass : actionClasses ) {
-                try {
-                    this.addAction( actionClass.newInstance() );
-                } catch ( Throwable e ) {
-                    log.error( "Cannot load action " + actionClass.getCanonicalName() + " from package", e);
-                    continue;
-                }
-            }
-        } catch ( Throwable e ) {
-            log.error( e.getMessage(), e );
-            throw new PackageLoaderException();
-        }
     }
 
 

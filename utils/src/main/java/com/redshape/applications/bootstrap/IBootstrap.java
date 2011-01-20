@@ -11,15 +11,9 @@ import java.util.List;
  */
 public interface IBootstrap {
 
-    public void addActionsPackage( String packagePath );
-
-    public void removeActionsPackage( String packagePath );
-
     public void addAction( IBootstrapAction action );
 
     public void clearActions();
-
-    public void clearActionPackages();
 
     public void clear();
  

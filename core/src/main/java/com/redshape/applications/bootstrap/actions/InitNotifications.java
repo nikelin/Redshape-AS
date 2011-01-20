@@ -1,5 +1,8 @@
 package com.redshape.applications.bootstrap.actions;
 
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
+
 import com.redshape.applications.bootstrap.AbstractBootstrapAction;
 import com.redshape.applications.bootstrap.BootstrapException;
 import com.redshape.config.IConfig;
@@ -15,8 +18,10 @@ import com.redshape.utils.InterfacesFilter;
  * Time: 6:44:53 PM
  * To change this template use File | Settings | File Templates.
  */
+@Component
 public class InitNotifications extends AbstractBootstrapAction {
-
+	private static final Logger log = Logger.getLogger( InitNotifications.class );
+	
     @Override
     public void process() throws BootstrapException {
         try {
@@ -34,7 +39,7 @@ public class InitNotifications extends AbstractBootstrapAction {
                 }
             }
         } catch ( Throwable e ) {
-            throw new BootstrapException();
+            throw new BootstrapException( e.getMessage(), e );
         }
     }
 

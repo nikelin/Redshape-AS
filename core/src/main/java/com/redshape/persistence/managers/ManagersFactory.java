@@ -7,6 +7,7 @@ import com.redshape.utils.PackageLoaderException;
 import com.redshape.utils.PackagesLoader;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import java.util.Map;
  * Time: 1:44:55 PM
  * To change this template use File | Settings | File Templates.
  */
+@Component
 abstract public class ManagersFactory implements IManagersFactory {
     private static Logger log = Logger.getLogger( ManagersFactory.class );
     private static IManagersFactory defaultInstance = new HibernateManagersFactory();

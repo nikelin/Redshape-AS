@@ -1,5 +1,7 @@
 package com.redshape.applications.bootstrap.actions;
 
+import org.springframework.stereotype.Component;
+
 import com.redshape.applications.bootstrap.AbstractBootstrapAction;
 import com.redshape.applications.bootstrap.Action;
 import com.redshape.plugins.info.InfoLoaderFactory;
@@ -15,6 +17,7 @@ import com.redshape.plugins.sources.PluginSourcesFactory;
  * Time: 2:41:01 PM
  * To change this template use File | Settings | File Templates.
  */
+@Component
 public class PluginsInit extends AbstractBootstrapAction {
     public PluginsInit() {
         this.setId(Action.PLUGINS_ID);

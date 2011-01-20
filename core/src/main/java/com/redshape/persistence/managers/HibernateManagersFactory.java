@@ -7,6 +7,7 @@ import com.redshape.persistence.entities.IEntity;
 import org.apache.log4j.Logger;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -21,6 +22,7 @@ import java.util.Map;
  * Time: 1:50:09 PM
  * To change this template use File | Settings | File Templates.
  */
+@Component
 public class HibernateManagersFactory extends ManagersFactory {
     private static final Logger log = Logger.getLogger( HibernateManagersFactory.class );
     

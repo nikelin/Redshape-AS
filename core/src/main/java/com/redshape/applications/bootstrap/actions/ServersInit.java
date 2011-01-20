@@ -14,12 +14,12 @@ import com.redshape.io.protocols.vanilla.VanillaProtocolVersion;
 import com.redshape.io.protocols.vanilla.VanillaVersionsRegistry;
 import com.redshape.io.protocols.vanilla.impl.VanillaProtocol_10;
 import com.redshape.server.*;
-import com.redshape.server.ServerFactoryFacade;
 import com.redshape.server.policy.IPolicy;
 import com.redshape.server.policy.PoliciesFactory;
 import com.redshape.server.policy.PolicyType;
 
 import org.apache.log4j.*;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
@@ -30,6 +30,7 @@ import java.util.Arrays;
  * Time: 2:45:39 PM
  * To change this template use File | Settings | File Templates.
  */
+@Component
 public class ServersInit extends AbstractBootstrapAction {
     private static final Logger log = Logger.getLogger( ServersInit.class );
 
@@ -63,7 +64,8 @@ public class ServersInit extends AbstractBootstrapAction {
                 }
             }
         } catch ( Throwable e ) {
-            throw new BootstrapException();
+        	log.error( e.getMessage(), e );
+            throw new BootstrapException( e.getMessage(), e );
         }
     }
 

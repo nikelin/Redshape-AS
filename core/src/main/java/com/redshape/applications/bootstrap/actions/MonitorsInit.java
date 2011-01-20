@@ -6,6 +6,7 @@ import com.redshape.applications.bootstrap.BootstrapException;
 import com.redshape.config.ConfigException;
 import com.redshape.config.IConfig;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -17,6 +18,7 @@ import java.util.TimerTask;
  * Time: 2:51:00 PM
  * To change this template use File | Settings | File Templates.
  */
+@Component
 public class MonitorsInit extends AbstractBootstrapAction {
     private static final Logger log = Logger.getLogger( MonitorsInit.class );
     private Timer timer;
@@ -48,7 +50,7 @@ public class MonitorsInit extends AbstractBootstrapAction {
             }
         } catch ( ConfigException e ) {
             log.error( e.getMessage(), e );
-            throw new BootstrapException();
+            throw new BootstrapException( e.getMessage(), e );
         }
     }
 
