@@ -8,6 +8,7 @@ import com.redshape.features.FeaturesRegistry;
 import com.redshape.render.AbstractRenderersFactory;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Time: 12:14:17 PM
  * To change this template use File | Settings | File Templates.
  */
+@Component
 public class ApiInit extends AbstractBootstrapAction {
     private static final Logger log = Logger.getLogger( ApiInit.class );
     
@@ -30,8 +32,6 @@ public class ApiInit extends AbstractBootstrapAction {
             }
 
             FeaturesRegistry.getDefault().init();
-
-            AbstractRenderersFactory.getDefault();
         } catch ( Throwable e ) {
             log.error( e.getMessage(), e );
             throw new BootstrapException("Interfaces registration exception");

@@ -70,7 +70,6 @@ public class ResourcesLoader {
         }
 
         if ( file == null ) {
-            log.info("Path not found: " + path );
             throw new FileNotFoundException( path );
         }
 
@@ -129,10 +128,10 @@ public class ResourcesLoader {
 
         for( String pathPart : this.getSearchPath() ) {
             candidateFile = new File( pathPart + File.separator + path );
-            if ( !candidateFile.exists() ) {
-                log.info( candidateFile.getPath() );
+            if ( !candidateFile.exists() || !candidateFile.canRead() ) {
                 candidateFile = null;
             } else {
+            	log.info("Found: " + path + "; on " + pathPart );
                 break;
             }
         }

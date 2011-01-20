@@ -10,6 +10,7 @@ import com.redshape.notifications.transport.configuration.ITransportConfiguratio
 import com.redshape.notifications.transport.TransportException;
 import com.redshape.notifications.transport.TransportsFactory;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,6 +19,7 @@ import org.apache.log4j.Logger;
  * Time: 3:49:54 PM
  * To change this template use File | Settings | File Templates.
  */
+@Component
 public class InitTransport extends AbstractBootstrapAction {
     private static final Logger log = Logger.getLogger( InitTransport.class );
 

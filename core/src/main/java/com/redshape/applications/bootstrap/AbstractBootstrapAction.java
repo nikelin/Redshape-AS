@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.redshape.config.IConfig;
 import com.redshape.utils.PackagesLoader;
@@ -15,6 +16,7 @@ import com.redshape.utils.PackagesLoader;
  * Time: 2:42:02 PM
  * To change this template use File | Settings | File Templates.
  */
+@Component
 public abstract class AbstractBootstrapAction implements IBootstrapAction {
     /**
      * Marker for crashed actions

@@ -9,6 +9,7 @@ import com.redshape.messaging.JMSManagerFactory;
 import com.redshape.tasks.TasksExecutor;
 import com.redshape.tasks.TasksHandler;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,6 +18,7 @@ import org.apache.log4j.Logger;
  * Time: 2:48:34 PM
  * To change this template use File | Settings | File Templates.
  */
+@Component
 public class MessagingInit extends AbstractBootstrapAction {
     private static final Logger log = Logger.getLogger( MessagingInit.class );
 

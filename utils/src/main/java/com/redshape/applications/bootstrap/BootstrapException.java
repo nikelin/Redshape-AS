@@ -1,5 +1,7 @@
 package com.redshape.applications.bootstrap;
 
+import com.redshape.applications.ApplicationException;
+
 /**
  * Created by IntelliJ IDEA.
  * User: nikelin
@@ -7,12 +9,18 @@ package com.redshape.applications.bootstrap;
  * Time: 1:58:09 PM
  * To change this template use File | Settings | File Templates.
  */
-public class BootstrapException extends Exception {
+public class BootstrapException extends ApplicationException {
 
-    public BootstrapException() {}
+    public BootstrapException() {
+    	super();
+    }
 
     public BootstrapException( String message ) {
         super(message);
+    }
+    
+    public BootstrapException( String message, Throwable e ) {
+    	super( message, e );
     }
 
 }
