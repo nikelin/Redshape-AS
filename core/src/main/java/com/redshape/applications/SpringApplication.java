@@ -1,12 +1,14 @@
 package com.redshape.applications;
 
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.redshape.applications.bootstrap.IBootstrap;
 import com.redshape.config.IConfig;
 
 public class SpringApplication extends AbstractApplication {
-	private ClassPathXmlApplicationContext context;
+	private ConfigurableApplicationContext context;
 	
 	public SpringApplication( String args[] ) throws ApplicationException {
 		super( args );
@@ -15,7 +17,11 @@ public class SpringApplication extends AbstractApplication {
 			throw new ApplicationException("Too few startup parameters given");
 		}
 		
-		this.context = new ClassPathXmlApplicationContext( args[0] );
+		if ( !isUnderJar( this.getClass().getProtectionDomain().getCodeSource().getLocation().toString() ) ) {
+			this.context = new ClassPathXmlApplicationContext( args[0] );
+		} else {
+			this.context = new FileSystemXmlApplicationContext( args[0] );
+		}
 	}
 	
 	@Override

@@ -37,16 +37,19 @@
     </build>
 
     <dependencies>
-	     <dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <version>${spring.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
-        
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
             <version>${spring.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
         
         <dependency>

@@ -20,12 +20,12 @@ public class PackagesLoader {
     private static final Logger log = Logger.getLogger( PackagesLoader.class );
     private ResourcesLoader resourcesLoader;
 
-    public void setResourcesLoader( ResourcesLoader loader ) {
-        this.resourcesLoader = loader;
-    }
-
-    public ResourcesLoader getResourcesLoader() {
+    protected ResourcesLoader getResourcesLoader() {
         return this.resourcesLoader;
+    }
+    
+    public PackagesLoader( ResourcesLoader loader ) {
+    	this.resourcesLoader = loader;
     }
 
     public <T> Class<T>[] getClasses( String pkgName ) throws PackageLoaderException {

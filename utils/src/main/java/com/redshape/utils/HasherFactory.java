@@ -1,6 +1,7 @@
 package com.redshape.utils;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -14,6 +15,7 @@ public class HasherFactory {
     private static HasherFactory defaultInstance = new HasherFactory();
     
     private Map<Class<? extends IHasher>, IHasher> hashers = new HashMap<Class<? extends IHasher>, IHasher>();
+    
     @Autowired( required = true )
     private PackagesLoader packagesLoader;
     

@@ -1,8 +1,10 @@
 package com.redshape.features;
 
+import com.redshape.config.IConfig;
 import com.redshape.exceptions.ExceptionWithCode;
 import com.redshape.io.protocols.core.request.IRequest;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -17,10 +19,24 @@ import java.util.*;
 public abstract class AbstractFeatureAspect<T extends IFeatureInteractor> implements IFeatureAspect<T> {
     private static final Logger log = Logger.getLogger( AbstractFeatureAspect.class );
 
-    private Map<String, Object> attributes = new HashMap();
+    private Map<String, Object> attributes = new HashMap<String, Object>();
+    
     private String featureName;
+    
     private String aspectName;
+    
     public IRequest request;
+    
+    @Autowired( required = true )
+    private IConfig config;
+    
+    public void setConfig( IConfig config ) {
+    	this.config = config;
+    }
+    
+    public IConfig getConfig() {
+    	return this.config;
+    }
 
     public IInteractionResult interact( T requester ) throws InteractionException {
         try {
