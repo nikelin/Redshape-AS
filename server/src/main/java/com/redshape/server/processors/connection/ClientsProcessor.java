@@ -6,8 +6,8 @@ import com.redshape.io.protocols.core.IProtocol;
 import com.redshape.io.protocols.core.ProtocolException;
 import com.redshape.io.protocols.core.request.IRequest;
 import com.redshape.io.protocols.core.sources.input.BufferedInput;
-import com.redshape.server.ISocketServer;
-import com.redshape.server.ServerException;
+import com.redshape.io.server.ISocketServer;
+import com.redshape.io.server.ServerException;
 import com.redshape.server.processors.request.IRequestsProcessor;
 import org.apache.log4j.Logger;
 

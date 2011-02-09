@@ -6,10 +6,11 @@ import com.redshape.features.FeaturesRegistry;
 import com.redshape.features.IFeatureAspect;
 import com.redshape.features.IInteractionResult;
 import com.redshape.features.InteractionException;
+import com.redshape.io.protocols.dispatchers.IHttpDispatcher;
 import com.redshape.io.protocols.http.request.IHttpRequest;
 import com.redshape.io.protocols.http.response.IHttpResponse;
 import com.redshape.io.protocols.http.routing.IHttpRouter;
-import com.redshape.server.ServerException;
+import com.redshape.io.server.ServerException;
 
 import java.util.Map;
 

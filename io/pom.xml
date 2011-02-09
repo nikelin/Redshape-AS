@@ -1,0 +1,71 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>${project.parent.groupId}</groupId>
+    <artifactId>io</artifactId>
+    <name>IO API</name>
+    <version>${project.parent.version}</version>
+    <packaging>jar</packaging>
+    
+    <parent>
+    	<artifactId>as</artifactId>
+    	<groupId>com.redshape</groupId>
+    	<version>1.0.0A</version>
+    </parent>
+    
+   	<properties>
+        <jsoup.version>1.3.3</jsoup.version>
+        <tika-version>0.8</tika-version>
+	</properties>
+    
+    <build>
+    </build>
+    
+    <dependencies>
+    	<dependency>
+    		<groupId>com.redshape</groupId>
+    		<artifactId>utils</artifactId>
+    		<version>1.0.0A</version>
+    	</dependency>
+    
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+            <version>${tika-version}</version>
+            <classifier>jdk14</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-parsers</artifactId>
+            <version>${tika-version}</version>
+            <classifier>jdk14</classifier>
+        </dependency>
+	
+        <dependency>
+            <groupId>org.samba.jcifs</groupId>
+            <artifactId>jcifs</artifactId>
+            <version>1.2.15</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>${jsoup.version}</version>
+        </dependency>
+
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>2.4</version>
+			<classifier>jdk15</classifier>
+		</dependency>
+
+        <dependency>
+            <groupId>net.schmizz</groupId>
+            <artifactId>sshj</artifactId>
+            <version>0.3.0</version>
+        </dependency>
+    </dependencies>
+    
+</project>

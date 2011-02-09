@@ -1,7 +1,6 @@
 package com.redshape.renderer;
 
 import com.redshape.config.IConfig;
-import com.redshape.exceptions.ErrorCode;
 import com.redshape.utils.InterfacesFilter;
 import com.redshape.utils.PackageLoaderException;
 import com.redshape.utils.PackagesLoader;
@@ -142,7 +141,7 @@ public abstract class AbstractRenderersFactory implements IRenderersFactory {
             throw  new RendererException();
 		} catch ( Throwable e ) {
             log.error( e.getMessage(), e );
-			throw new RendererException( ErrorCode.EXCEPTION_INTERNAL );
+			throw new RendererException( e.getMessage(), e );
 		}
 	}
 

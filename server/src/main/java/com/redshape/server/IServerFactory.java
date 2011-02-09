@@ -1,6 +1,7 @@
 package com.redshape.server;
 
 import com.redshape.io.protocols.core.IProtocol;
+import com.redshape.io.server.IServer;
 import com.redshape.server.policy.IPolicy;
 import com.redshape.server.policy.PolicyType;
 import org.apache.commons.collections.map.MultiKeyMap;

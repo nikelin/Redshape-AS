@@ -1,6 +1,5 @@
 package com.redshape.renderer.json;
 
-import com.redshape.exceptions.ExceptionWithCode;
 import com.redshape.renderer.AbstractRenderersFactory;
 import com.redshape.renderer.Handler;
 import com.redshape.renderer.IRenderer;
@@ -70,10 +69,10 @@ abstract public class JSONRenderer<T> implements IRenderer<T, String> {
     	return this.convertArrayToJSON( value.toArray() );
     }
 
-    @Handler( type = ExceptionWithCode.class )
-    public String renderValue( ExceptionWithCode e ) {
+    @Handler( type = Throwable.class )
+    public String renderValue( Throwable e ) {
     	Map<String, Object> result = new HashMap<String, Object>();
-    	result.put("code", e.getCode().name() );
+    	result.put("code", e.getClass().getCanonicalName() );
     	result.put("message", e.getMessage() );
 
         return this.renderValue( result );

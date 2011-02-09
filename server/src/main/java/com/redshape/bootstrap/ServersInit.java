@@ -13,6 +13,8 @@ import com.redshape.io.protocols.http.impl.HttpProtocol_11;
 import com.redshape.io.protocols.vanilla.VanillaProtocolVersion;
 import com.redshape.io.protocols.vanilla.VanillaVersionsRegistry;
 import com.redshape.io.protocols.vanilla.impl.VanillaProtocol_10;
+import com.redshape.io.server.IServer;
+import com.redshape.io.server.ISocketServer;
 import com.redshape.server.*;
 import com.redshape.server.policy.IPolicy;
 import com.redshape.server.policy.PoliciesFactory;

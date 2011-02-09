@@ -1,0 +1,20 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.redshape.protocols</groupId>
+    <artifactId>protocols-parent</artifactId>
+    <version>${parent.version}</version>
+    <packaging>pom</packaging>
+    
+    <parent>
+    	<artifactId>as</artifactId>
+    	<groupId>com.redshape</groupId>
+    	<version>1.0.0A</version>
+   	</parent>
+    
+    <modules>
+    	<module>core</module>
+        <module>http</module>
+        <module>vanilla</module>
+    </modules>
+</project>

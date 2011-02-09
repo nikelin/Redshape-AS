@@ -6,8 +6,9 @@ import com.redshape.features.*;
 import com.redshape.exceptions.ErrorCode;
 import com.redshape.io.protocols.vanilla.request.IApiRequest;
 import com.redshape.io.protocols.core.request.RequestType;
+import com.redshape.io.protocols.dispatchers.IVanillaDispatcher;
 import com.redshape.io.protocols.vanilla.response.IApiResponse;
-import com.redshape.server.ServerException;
+import com.redshape.io.server.ServerException;
 
 import org.apache.log4j.*;
 

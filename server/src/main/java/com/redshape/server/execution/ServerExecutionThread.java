@@ -3,7 +3,7 @@ package com.redshape.server.execution;
 import org.apache.log4j.Logger;
 
 import com.redshape.io.net.adapters.socket.client.ISocketAdapter;
-import com.redshape.server.ISocketServer;
+import com.redshape.io.server.ISocketServer;
 import com.redshape.server.policy.ApplicationResult;
 import com.redshape.server.policy.PolicyType;
 import com.redshape.server.processors.connection.IClientsProcessor;

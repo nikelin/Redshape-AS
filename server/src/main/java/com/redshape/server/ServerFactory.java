@@ -2,6 +2,8 @@ package com.redshape.server;
 
 import java.util.Map;
 
+import com.redshape.io.server.IServer;
+
 /**
  * Factory class which responsible for producing
  * configured IServer implementations instances.

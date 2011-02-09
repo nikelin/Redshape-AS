@@ -3,6 +3,8 @@ package com.redshape.server;
 import com.redshape.api.InvokableEntitiesRegistry;
 import com.redshape.io.protocols.core.response.Response;
 import com.redshape.io.remoting.interfaces.RemoteInterface;
+import com.redshape.io.server.ServerException;
+import com.redshape.io.server.ServerState;
 
 import org.apache.log4j.Logger;
 import java.rmi.RemoteException;

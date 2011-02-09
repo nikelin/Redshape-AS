@@ -1,13 +1,14 @@
 package com.redshape.server.processors.request;
 
-import com.redshape.api.dispatchers.http.IHttpDispatcher;
 import com.redshape.io.net.adapters.socket.client.ISocketAdapter;
 import com.redshape.io.protocols.http.IHttpProtocol;
 import com.redshape.io.protocols.http.request.IHttpRequest;
 import com.redshape.io.protocols.http.response.IHttpResponse;
 import com.redshape.io.protocols.core.request.RequestType;
-import com.redshape.server.ISocketServer;
-import com.redshape.server.ServerException;
+import com.redshape.io.protocols.dispatchers.IHttpDispatcher;
+import com.redshape.io.server.ISocketServer;
+import com.redshape.io.server.ServerException;
+
 import org.apache.log4j.Logger;
 
 import java.util.Date;

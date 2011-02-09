@@ -2,7 +2,6 @@ package com.redshape.ui;
 
 import com.redshape.ui.events.IEventHandler;
 import com.redshape.ui.events.AppEvent;
-import com.redshape.applications.ApplicationException;
 import com.redshape.ui.events.UIEvents;
 import com.redshape.ui.utils.UIConstants;
 import com.redshape.ui.utils.UIRegistry;

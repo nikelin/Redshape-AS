@@ -8,12 +8,17 @@
     <packaging>pom</packaging>
     
     <modules>
-        <module>core</module>
-        <module>jms</module>
+        <module>commons</module>
+        <module>tasks</module>
         <module>scheduler</module>
-        <module>utils</module>
+        <module>persistence</module>
+        <module>ui</module>
+        <module>payments</module>
+        <module>server</module>
+        <module>protocols</module>
         <module>cmd</module>
         <module>servlet</module>
+        <module>io</module>
     </modules>
     
 

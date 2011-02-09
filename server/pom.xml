@@ -37,6 +37,12 @@
 
     <dependencies>
     	<dependency>
+    		<groupId>com.redshape.protocols</groupId>
+    		<artifactId>protocols-parent</artifactId>
+    		<version>${project.version}</version>
+    	</dependency>
+    
+    	<dependency>
     		<groupId>com.redshape</groupId>
     		<artifactId>persistence</artifactId>
     		<version>1.0.0A</version>

@@ -29,9 +29,9 @@
 
     <dependencies>
         <dependency>
-            <artifactId>server</artifactId>
-            <groupId>com.redshape</groupId>
-            <version>1.0.0A</version>
+            <artifactId>http</artifactId>
+            <groupId>com.redshape.protocols</groupId>
+            <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
 </project>

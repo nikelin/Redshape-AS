@@ -4,6 +4,8 @@ import com.redshape.io.protocols.core.IProtocol;
 import com.redshape.io.protocols.core.response.IResponse;
 import com.redshape.io.protocols.vanilla.response.ApiResponse;
 import com.redshape.io.protocols.vanilla.response.IApiResponse;
+import com.redshape.io.server.ServerException;
+
 import org.apache.log4j.Logger;
 
 /**

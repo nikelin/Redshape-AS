@@ -1,14 +1,17 @@
 package com.redshape.renderer;
 
-import com.redshape.exceptions.ErrorCode;
-import com.redshape.exceptions.ExceptionWithCode;
+public class RendererException extends Throwable {
 
-public class RendererException extends ExceptionWithCode {
+    public RendererException() {
+    	super();
+    }
 
-    public RendererException() {}
-
-	public RendererException( ErrorCode code ) {
+	public RendererException( String code ) {
 		super(code);
+	}
+	
+	public RendererException( String code, Throwable e ) {
+		super(code, e);
 	}
 
 }

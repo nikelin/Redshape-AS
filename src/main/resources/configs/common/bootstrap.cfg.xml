@@ -110,6 +110,7 @@
               <password>qwerty</password>
         </smtp>
     </servers>
+    
     <database>
         <adapter>com.mysql.jdbc.Driver</adapter>
         <uri>jdbc:mysql://127.0.0.1:3306/vio</uri>
@@ -122,8 +123,8 @@
         <fixturesPath>fixtures</fixturesPath>
 
         <migrations package="com.redshape.migration.actions"/>
-
     </database>
+    
     <settings>
         <security>
             <filter-ip>false</filter-ip>
@@ -143,34 +144,20 @@
     </settings>
 
     <features>
-        <package>com.redshape.features.chat</package>
-        <package>com.redshape.features.chat.groups</package>
-        <package>com.redshape.features.auth</package>
-        <package>com.redshape.features.users</package>
-        <package>com.redshape.features.groups</package>
-        <package>com.redshape.features.groups.forms</package>
-        <package>com.redshape.features.fields</package>
-        <package>com.redshape.features.fields.type</package>
-        <package>com.redshape.features.locales</package>
-        <package>com.redshape.features.echo</package>
-        <package>com.redshape.features.messages</package>
-        <package>com.redshape.features.notify</package>
-        <package>com.redshape.features.pages</package>
-        <package>com.redshape.features.payment</package>
-        <package>com.redshape.features.plugins</package>
-        <package>com.redshape.features.menus.element</package>
-        <package>com.redshape.features.resources</package>
-        <package>com.redshape.features.menus</package>
+        <package>com.redshape.features.example</package>
     </features>
+    
     <tasks>
         <failsLimit>3</failsLimit>
         <afterFailDelay>1200</afterFailDelay>
     </tasks>
+    
     <search>
         <engine>com.redshape.search.engines.LuceneEngine</engine>
         <indexPath>/tmp/search/lucene</indexPath>
         <defaultMaxResults>100</defaultMaxResults>
     </search>
+    
     <plugins>
         <autoload>false</autoload>
 

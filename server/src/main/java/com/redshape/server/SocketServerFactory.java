@@ -5,6 +5,9 @@ import com.redshape.api.dispatchers.vanilla.InterfaceInvocationsDispatcher;
 import com.redshape.io.protocols.core.IProtocol;
 import com.redshape.io.protocols.core.VersionRegistryFactory;
 import com.redshape.io.protocols.vanilla.VanillaVersionsRegistry;
+import com.redshape.io.server.IServer;
+import com.redshape.io.server.ISocketServer;
+
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;

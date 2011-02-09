@@ -1,16 +1,17 @@
 package com.redshape.api;
 
-import com.redshape.exceptions.ErrorCode;
-import com.redshape.exceptions.ExceptionWithCode;
-
-public class ApiException extends ExceptionWithCode {
+public class ApiException extends Exception {
 
     public ApiException() {
         super();
     }
 
-    public ApiException( ErrorCode code ) {
-        super(code);
+    public ApiException( String message ) {
+        super(message);
+    }
+    
+    public ApiException( String message, Throwable e ) {
+    	super( message, e );
     }
 
 }

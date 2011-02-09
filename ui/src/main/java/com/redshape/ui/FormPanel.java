@@ -24,12 +24,15 @@ public class FormPanel extends JPanel {
         super();
 
         this.buildUI();
+        this.configUI();
+    }
+    
+    protected void configUI() {
+    	this.setLayout( new GridLayout( 0, 1 ) );
     }
 
     protected void buildUI() {
-        this.setLayout( new GridLayout( 0, 1 ) );
-
-        this.centerPane = new JLayeredPane();
+    	this.centerPane = new JLayeredPane();
         this.centerPane.setLayout( new GridLayout(0, 2) );
         this.add( this.centerPane );
 
