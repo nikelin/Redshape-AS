@@ -1,8 +1,5 @@
 package com.redshape.io.protocols.core;
 
-import com.redshape.config.ConfigException;
-import com.redshape.config.IConfig;
-import com.redshape.exceptions.ExceptionWithCode;
 import com.redshape.io.protocols.core.readers.IRequestReader;
 import com.redshape.io.protocols.core.readers.ReaderException;
 import com.redshape.io.protocols.core.request.IRequest;
@@ -15,6 +12,8 @@ import com.redshape.io.protocols.core.writers.WriterException;
 import com.redshape.io.protocols.core.request.RequestType;
 import com.redshape.io.protocols.dispatchers.IDispatcher;
 
+import com.redshape.utils.config.ConfigException;
+import com.redshape.utils.config.IConfig;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -39,14 +38,9 @@ public abstract class AbstractProtocol<
                     implements IProtocol<Z, T, Q, D, V> {
     private static final Logger log = Logger.getLogger( AbstractProtocol.class );
 
-    private IRequestReader<I, T> reader;
+    private IRequestReader<T> reader;
     
     private IResponseWriter writer;
-    
-    @Autowired
-    private Class<? extends IClientsProcessor> clientsProcessor;
-    
-    private Class<? extends IRequestsProcessor<?, Z>> requestsProcessor;
     
     private Map<RequestType, Q> dispatchers = new HashMap<RequestType, Q>();
     
@@ -62,12 +56,12 @@ public abstract class AbstractProtocol<
     }
     
     @Override
-    public void setReader( IRequestReader<I, T> reader ) {
+    public void setReader( IRequestReader<T> reader ) {
         this.reader = reader;
     }
 
     @Override
-    public IRequestReader<I, T> getReader() {
+    public IRequestReader<T> getReader() {
         return this.reader;
     }
 
@@ -92,7 +86,7 @@ public abstract class AbstractProtocol<
     }
 
     @Override
-    public void writeResponse( OutputStream stream, ExceptionWithCode exception ) throws WriterException {
+    public void writeResponse( OutputStream stream, Throwable exception ) throws WriterException {
         this.getWriter().writeResponse(stream, exception);
     }
 
@@ -101,7 +95,7 @@ public abstract class AbstractProtocol<
     }
 
     @Override
-    public T readRequest( I stream ) throws ReaderException {
+    public T readRequest( BufferedInput stream ) throws ReaderException {
         return this.getReader().readRequest(stream);
     }
 
@@ -118,42 +112,6 @@ public abstract class AbstractProtocol<
 
     public boolean isSupported( IProtocolVersion version ) {
         return this.getProtocolVersion().equals( version );
-    }
-
-    @Override
-    public void setRequestsProcessor( Class<? extends IRequestsProcessor<?, Z>> processor ) {
-        this.requestsProcessor = processor;
-    }
-
-    @Override
-    public IRequestsProcessor<?, Z> createRequestsProcessor( ISocketServer<?, V> server ) throws ProtocolException {
-        try {
-            return this.requestsProcessor.newInstance();
-        } catch ( Throwable e ) {
-            log.error( e.getMessage(), e );
-            throw new ProtocolException();
-        }
-    }
-
-    @Override
-    public void setClientsProcessor( Class<? extends IClientsProcessor> listener ) {
-        this.clientsProcessor = listener;
-    }
-
-    protected Class<? extends IClientsProcessor> getClientsProcessor() {
-    	return this.clientsProcessor;
-    }
-    
-    @Override
-    public IClientsProcessor createClientsProcessor( ISocketServer<?, V> server ) throws InstantiationException {
-    	try {
-    		IClientsProcessor processor = this.getClientsProcessor().newInstance();
-    		processor.setContext( server );
-    		
-    		return processor;
-    	} catch ( Throwable e ) {
-    		throw new InstantiationException();
-    	}
     }
 
     @Override

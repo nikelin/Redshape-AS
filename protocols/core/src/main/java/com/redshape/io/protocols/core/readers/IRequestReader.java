@@ -1,7 +1,7 @@
 package com.redshape.io.protocols.core.readers;
 
-import com.redshape.io.net.request.IRequest;
-import com.redshape.io.protocols.core.sources.input.InputSource;
+import com.redshape.io.protocols.core.request.IRequest;
+import com.redshape.io.protocols.core.sources.input.BufferedInput;
 
 /**
  * WebCam Project
@@ -13,6 +13,6 @@ import com.redshape.io.protocols.core.sources.input.InputSource;
  */
 public interface IRequestReader<V extends IRequest> extends IReader<V> {
 
-    public V readRequest( T source) throws ReaderException;
+    public V readRequest( BufferedInput source) throws ReaderException;
 
 }

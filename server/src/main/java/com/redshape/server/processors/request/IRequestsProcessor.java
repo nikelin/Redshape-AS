@@ -1,8 +1,8 @@
 package com.redshape.server.processors.request;
 
 import com.redshape.io.protocols.core.request.IRequest;
-import com.redshape.io.server.ISocketServer;
 import com.redshape.io.server.ServerException;
+import com.redshape.server.ISocketServer;
 
 import java.io.IOException;
 

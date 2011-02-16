@@ -2,7 +2,6 @@ package com.redshape.io.protocols.core.writers;
 
 import com.redshape.io.protocols.core.response.IResponse;
 import com.redshape.io.protocols.core.sources.output.OutputSource;
-import com.redshape.exceptions.ExceptionWithCode;
 
 import java.util.Collection;
 
@@ -30,7 +29,7 @@ public interface IResponseWriter<T extends OutputSource> extends Writer<T> {
      * @param exception
      * @throws WriterException
      */
-    public void writeResponse( T source, ExceptionWithCode exception ) throws WriterException;
+    public void writeResponse( T source, Throwable exception ) throws WriterException;
 
     /**
      * Метод отправки обычного отклика

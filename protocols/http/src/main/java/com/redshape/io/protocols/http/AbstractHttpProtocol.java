@@ -17,10 +17,9 @@ import com.redshape.io.protocols.http.response.IHttpResponse;
 public abstract class AbstractHttpProtocol<
                         T extends IHttpRequest,
                         D extends IHttpDispatcher,
-                        R extends IHttpResponse,
-                        I extends BufferedInput>
-        extends AbstractProtocol<IHttpRequest, T, IHttpDispatcher, D, R, I>
-        implements IHttpProtocol<T, D, R, I> {
+                        R extends IHttpResponse>
+        extends AbstractProtocol<IHttpRequest, T, IHttpDispatcher, D, R>
+        implements IHttpProtocol<T, D, R> {
 
 	
 	
@@ -30,7 +29,6 @@ public abstract class AbstractHttpProtocol<
 
     // @FIXME: important!
     protected void initializeDispatchers() {
-        this.setRequestsProcessor( null );
         //@FIXME: due to `protocols` refactoring
         this.setRequestsDispatcher(RequestType.INTERFACE_INVOKE, null );
     }

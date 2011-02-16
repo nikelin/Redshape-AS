@@ -3,10 +3,10 @@ package com.redshape.server.processors.request;
 import com.redshape.io.protocols.core.IProtocol;
 import com.redshape.io.protocols.core.request.IRequest;
 import com.redshape.io.protocols.core.response.IResponse;
-import com.redshape.io.server.ISocketServer;
 import com.redshape.io.server.ServerException;
-import com.redshape.server.policy.ApplicationResult;
-import com.redshape.server.policy.PolicyType;
+import com.redshape.io.server.policy.ApplicationResult;
+import com.redshape.io.server.policy.PolicyType;
+import com.redshape.server.ISocketServer;
 import org.apache.log4j.Logger;
 
 /**
@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * To change this template use File | Settings | File Templates.
  */
 public abstract class AbstractRequestsProcessor<
-                                T extends ISocketServer<? extends IProtocol<G, ?, ?, ?, Q, ?>, Q>,
+                                T extends ISocketServer,
                                 Q extends IResponse,
                                 G extends IRequest>
                 implements IRequestsProcessor<T, G> {

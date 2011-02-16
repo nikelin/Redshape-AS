@@ -5,12 +5,12 @@
     <version>${project.parent.version}</version>
     <artifactId>http</artifactId>
     <packaging>jar</packaging>
+    <name>HTTP Protocol API</name>
     
     <parent>
     	<artifactId>protocols-parent</artifactId>
     	<groupId>com.redshape.protocols</groupId>
     	<version>1.0.0A</version>
-    	<relativePath>maven</relativePath>
     </parent>
     
     <dependencies>

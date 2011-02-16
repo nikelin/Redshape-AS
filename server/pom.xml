@@ -38,7 +38,13 @@
     <dependencies>
     	<dependency>
     		<groupId>com.redshape.protocols</groupId>
-    		<artifactId>protocols-parent</artifactId>
+    		<artifactId>vanilla</artifactId>
+    		<version>${project.version}</version>
+    	</dependency>
+
+        <dependency>
+    		<groupId>com.redshape.protocols</groupId>
+    		<artifactId>http</artifactId>
     		<version>${project.version}</version>
     	</dependency>
     
@@ -135,8 +141,7 @@
        </dependency>
 
        <dependency>
-           <groupId>org.apache.hadoop
-           </groupId>
+           <groupId>org.apache.hadoop</groupId>
            <artifactId>hadoop-core</artifactId>
            <version>0.20.2</version>
        </dependency>

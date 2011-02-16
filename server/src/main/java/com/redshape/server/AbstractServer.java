@@ -1,15 +1,15 @@
 package com.redshape.server;
 
 import com.redshape.api.requesters.IRequester;
-import com.redshape.config.ConfigException;
-import com.redshape.config.IConfig;
+import com.redshape.io.server.policy.ApplicationResult;
+import com.redshape.io.server.policy.IPolicy;
+import com.redshape.io.server.policy.PolicyType;
+import com.redshape.utils.config.ConfigException;
+import com.redshape.utils.config.IConfig;
 import com.redshape.io.protocols.core.IProtocol;
 import com.redshape.io.server.IServer;
 import com.redshape.io.server.ServerException;
 import com.redshape.io.server.ServerState;
-import com.redshape.server.policy.ApplicationResult;
-import com.redshape.server.policy.IPolicy;
-import com.redshape.server.policy.PolicyType;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,7 +22,7 @@ import java.util.*;
  * Time: 12:59:31 AM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class AbstractServer implements IServer {
+public abstract class AbstractServer<T> implements IServer<T> {
     private final static Logger log = Logger.getLogger( AbstractServer.class );
 
     /**
@@ -127,7 +127,7 @@ public abstract class AbstractServer implements IServer {
     }
 
     @Override
-    public void addPolicy( Class<? extends IProtocol> protocolContext, PolicyType type, IPolicy policy ) {
+    public void addPolicy( Class<T> protocolContext, PolicyType type, IPolicy policy ) {
         if ( this.policies.get(type) != null ) {
             this.policies.get(type).add(policy);
             return;
@@ -136,17 +136,17 @@ public abstract class AbstractServer implements IServer {
         this.policies.put( type, Arrays.asList( new IPolicy[] { policy } ) );
     }
 
-    public Collection<IPolicy> getPolicies( Class<? extends IProtocol> protocolContext, PolicyType type ) {
+    public Collection<IPolicy> getPolicies( Class<T> protocolContext, PolicyType type ) {
         return this.policies.get(type);
     }
 
     @Override
-    public ApplicationResult checkPolicy( Class<? extends IProtocol> protocolContext, PolicyType type  ) {
+    public ApplicationResult checkPolicy( Class<T> protocolContext, PolicyType type  ) {
         return this.checkPolicy( protocolContext, type, null);
     }
 
     @Override
-    public ApplicationResult checkPolicy( Class<? extends IProtocol> protocolContext, PolicyType type, Object data ) {
+    public ApplicationResult checkPolicy( Class<T> protocolContext, PolicyType type, Object data ) {
         ApplicationResult result = new ApplicationResult();
 
         log.info("Initiation validation procedure for object " + (data != null ? data.getClass().getCanonicalName() : "<null>") + " in context of " + type.name() );

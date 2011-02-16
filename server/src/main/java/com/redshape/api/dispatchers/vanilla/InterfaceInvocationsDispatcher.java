@@ -3,7 +3,7 @@ package com.redshape.api.dispatchers.vanilla;
 import com.redshape.api.ApiException;
 import com.redshape.api.requesters.IRequester;
 import com.redshape.features.*;
-import com.redshape.exceptions.ErrorCode;
+import com.redshape.io.protocols.dispatchers.DispatcherException;
 import com.redshape.io.protocols.vanilla.request.IApiRequest;
 import com.redshape.io.protocols.core.request.RequestType;
 import com.redshape.io.protocols.dispatchers.IVanillaDispatcher;
@@ -12,19 +12,19 @@ import com.redshape.io.server.ServerException;
 
 import org.apache.log4j.*;
 
-public class InterfaceInvocationsDispatcher implements IVanillaDispatcher<IRequester, IApiRequest, IApiResponse> {
+public class InterfaceInvocationsDispatcher implements IVanillaDispatcher<IFeatureInteractor, IApiRequest, IApiResponse> {
 	private static final Logger log = Logger.getLogger( InterfaceInvocationsDispatcher.class );
 
     public RequestType getDispatchingType() {
         return RequestType.INTERFACE_INVOKE;
     }
 
-	public void dispatch( IRequester requester, IApiRequest invoke, IApiResponse response ) throws ServerException {
+	public void dispatch( IFeatureInteractor requester, IApiRequest invoke, IApiResponse response ) throws DispatcherException {
         try {
             log.info("Calling action " + invoke.getAspectName() + " of " + invoke.getFeatureName() + " interface...");
             IFeatureAspect featureAspect = FeaturesRegistry.getDefault().getFeatureAspect( invoke.getFeatureName(), invoke.getAspectName() );
             if ( featureAspect == null ) {
-                throw new ApiException( ErrorCode.EXCEPTION_REQUEST_METHOD_NOT_EXISTS );
+                throw new ApiException("ErrorCode.EXCEPTION_REQUEST_METHOD_NOT_EXISTS");
             }
 
             if ( !requester.canInteract( featureAspect ) ) {
@@ -36,7 +36,7 @@ public class InterfaceInvocationsDispatcher implements IVanillaDispatcher<IReque
             }
 
             if ( !featureAspect.isValid() ) {
-                throw new ApiException( ErrorCode.EXCEPTION_WRONG_REQUEST_BODY );
+                throw new ApiException("ErrorCode.EXCEPTION_WRONG_REQUEST_BODY");
             }
 
             try {

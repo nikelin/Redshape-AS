@@ -1,13 +1,11 @@
 package com.redshape.io.protocols.dispatchers;
 
-import com.redshape.api.dispatchers.IDispatcher;
-import com.redshape.features.IFeatureInteractor;
+import com.redshape.api.requesters.IRequester;
 import com.redshape.io.protocols.vanilla.request.IApiRequest;
 import com.redshape.io.protocols.core.request.RequestType;
 import com.redshape.io.protocols.vanilla.response.IApiResponse;
-import com.redshape.server.ServerException;
 
-public interface IVanillaDispatcher<T extends IFeatureInteractor,
+public interface IVanillaDispatcher<T extends IRequester,
                                     V extends IApiRequest,
                                     Q extends IApiResponse>
                     extends IDispatcher<T, V, Q> {
@@ -21,6 +19,6 @@ public interface IVanillaDispatcher<T extends IFeatureInteractor,
     public RequestType getDispatchingType();
     
     @Override
-    public void dispatch( T requester, V invoke, Q response ) throws ServerException;
+    public void dispatch( T requester, V invoke, Q response ) throws DispatcherException;
 	
 }

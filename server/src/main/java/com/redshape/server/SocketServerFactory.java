@@ -1,12 +1,11 @@
 package com.redshape.server;
 
-import com.redshape.api.dispatchers.IDispatcher;
 import com.redshape.api.dispatchers.vanilla.InterfaceInvocationsDispatcher;
 import com.redshape.io.protocols.core.IProtocol;
 import com.redshape.io.protocols.core.VersionRegistryFactory;
+import com.redshape.io.protocols.dispatchers.IDispatcher;
 import com.redshape.io.protocols.vanilla.VanillaVersionsRegistry;
 import com.redshape.io.server.IServer;
-import com.redshape.io.server.ISocketServer;
 
 import org.apache.log4j.Logger;
 
@@ -15,11 +14,6 @@ import java.util.Map;
 
 public class SocketServerFactory extends AbstractServerFactory implements ISocketServerFactory {
     private static final Logger log = Logger.getLogger( SocketServerFactory.class );
-
-    /**
-     * Default requests dispatcher for each new server instance
-     */
-    public static final IDispatcher DEFAULT_DISPATCHER = new InterfaceInvocationsDispatcher();
 
     public static IProtocol DEFAULT_PROTOCOL;
     static {

@@ -1,6 +1,5 @@
 package com.redshape.io.protocols.http.renderers;
 
-import com.redshape.exceptions.ExceptionWithCode;
 import com.redshape.io.protocols.http.request.HttpCode;
 import com.redshape.io.protocols.http.response.HttpResponse;
 import com.redshape.io.protocols.http.response.IHttpResponse;
@@ -20,7 +19,7 @@ import java.util.Collection;
 public class HttpResponseRenderer implements ResponseRenderer<Object, IHttpResponse> {
 
     @Override
-    public Object render( ExceptionWithCode e ) throws RendererException {
+    public Object render( Throwable e ) throws RendererException {
         throw new RendererException();
     }
 
@@ -35,7 +34,7 @@ public class HttpResponseRenderer implements ResponseRenderer<Object, IHttpRespo
     }
 
     @Override
-    public byte[] renderBytes( ExceptionWithCode e ) throws RendererException {
+    public byte[] renderBytes( Throwable e ) throws RendererException {
         throw new RendererException();
     }
 

@@ -1,7 +1,7 @@
 package com.redshape.scheduler.tasks;
 
-import com.redshape.messaging.JMSManager;
-import com.redshape.messaging.JMSManagerFactory;
+import com.redshape.delivering.JMSManager;
+import com.redshape.delivering.JMSManagerFactory;
 import org.apache.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobDataMap;

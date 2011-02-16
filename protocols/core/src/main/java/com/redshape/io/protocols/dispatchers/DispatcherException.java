@@ -1,6 +1,8 @@
 package com.redshape.io.protocols.dispatchers;
 
-public class DispatcherException extends Exception {
+import com.redshape.io.server.ServerException;
+
+public class DispatcherException extends ServerException {
 	
 	public DispatcherException() {
 		super();

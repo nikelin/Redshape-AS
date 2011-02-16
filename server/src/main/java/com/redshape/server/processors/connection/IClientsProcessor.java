@@ -1,8 +1,8 @@
 package com.redshape.server.processors.connection;
 
 import com.redshape.io.net.adapters.socket.client.ISocketAdapter;
-import com.redshape.io.server.ISocketServer;
 import com.redshape.io.server.ServerException;
+import com.redshape.server.ISocketServer;
 
 /**
  * Created by IntelliJ IDEA.

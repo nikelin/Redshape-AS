@@ -2,6 +2,7 @@ package com.redshape.features.example;
 
 import com.redshape.api.requesters.IRequester;
 import com.redshape.features.AbstractFeatureAspect;
+import com.redshape.features.IFeatureInteractor;
 import com.redshape.features.InteractionException;
 import com.redshape.features.InteractionResult;
 import com.redshape.features.annotations.FeatureAspect;
@@ -14,9 +15,10 @@ import com.redshape.features.annotations.FeatureAspect;
  * To change this template use File | Settings | File Templates.
  */
 @FeatureAspect( name = "echo", feature = "example" )
-public class EchoAction extends AbstractFeatureAspect<IRequester> {
+public class EchoAction extends AbstractFeatureAspect<IFeatureInteractor> {
 
-    public InteractionResult processInteraction( IRequester interactor ) throws InteractionException {
+    @Override
+    protected InteractionResult processInteraction( IFeatureInteractor interactor ) throws InteractionException {
         InteractionResult response = new InteractionResult();
         
         response.setAttribute( "response", this.getAttribute("request") );

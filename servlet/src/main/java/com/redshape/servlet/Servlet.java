@@ -1,8 +1,8 @@
 package com.redshape.servlet;
 
 import com.redshape.applications.IApplication;
-import com.redshape.config.ConfigException;
-import com.redshape.config.IConfig;
+import com.redshape.utils.config.ConfigException;
+import com.redshape.utils.config.IConfig;
 import com.redshape.servlet.core.controllers.FrontController;
 import com.redshape.servlet.dispatchers.DispatchException;
 import com.redshape.servlet.views.Layout;

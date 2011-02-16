@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
  * @package com.vio.api.io.readers
  * @date Apr 1, 2010
  */
-public class APIRequestReader implements IRequestReader<BufferedInput, IApiRequest> {
+public class APIRequestReader implements IRequestReader<IApiRequest> {
     private static final Logger log = Logger.getLogger( APIRequestReader.class );
     private IApiRequestHydrator hydrator;
 

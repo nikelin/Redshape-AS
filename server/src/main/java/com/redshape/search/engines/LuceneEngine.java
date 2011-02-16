@@ -1,7 +1,7 @@
 package com.redshape.search.engines;
 
-import com.redshape.config.ConfigException;
-import com.redshape.config.IConfig;
+import com.redshape.utils.config.ConfigException;
+import com.redshape.utils.config.IConfig;
 import com.redshape.search.*;
 import com.redshape.search.collectors.CollectorsFactory;
 import com.redshape.search.collectors.IResultsCollector;

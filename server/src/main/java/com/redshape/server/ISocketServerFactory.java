@@ -1,7 +1,6 @@
 package com.redshape.server;
 
 import com.redshape.io.protocols.core.IProtocol;
-import com.redshape.io.server.ISocketServer;
 
 import java.util.Map;
 

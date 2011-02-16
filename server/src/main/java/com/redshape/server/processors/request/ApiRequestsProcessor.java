@@ -6,9 +6,9 @@ import com.redshape.io.protocols.dispatchers.IVanillaDispatcher;
 import com.redshape.io.protocols.vanilla.IVanillaProtocol;
 import com.redshape.io.protocols.vanilla.request.IApiRequest;
 import com.redshape.io.protocols.vanilla.response.IApiResponse;
-import com.redshape.io.server.ISocketServer;
 import com.redshape.io.server.ServerException;
 
+import com.redshape.server.ISocketServer;
 import org.apache.log4j.Logger;
 
 import java.util.Date;
@@ -22,10 +22,10 @@ import java.util.Date;
  */
 public class ApiRequestsProcessor
         extends AbstractRequestsProcessor<
-                    ISocketServer<
-                        IVanillaProtocol<IApiRequest, IVanillaDispatcher, IApiResponse, ?>,
-                        IApiResponse
-                    >, IApiResponse, IApiRequest> {
+                            ISocketServer<
+                                IVanillaProtocol<IApiRequest, IVanillaDispatcher, IApiResponse>,
+                                IApiResponse
+                            >, IApiResponse, IApiRequest> {
     
     private static final Logger log = Logger.getLogger( ApiRequestsProcessor.class);
 
@@ -65,7 +65,7 @@ public class ApiRequestsProcessor
         }
     }
 
-    private void processInvoke( ISocketAdapter socket, IVanillaProtocol<?, IVanillaDispatcher, ?, ?> protocol, IApiRequest invoke, IApiResponse response ) throws ServerException {
+    private void processInvoke( ISocketAdapter socket, IVanillaProtocol<?, IVanillaDispatcher, ?> protocol, IApiRequest invoke, IApiResponse response ) throws ServerException {
         log.info("Invoke id: " + invoke.getId() );
         log.info("Processing start time: " + new Date( new Date().getTime() ).toLocaleString() );
         long startTime = System.currentTimeMillis();

@@ -3,7 +3,6 @@ package com.redshape.io.protocols.core.writers;
 import com.redshape.io.protocols.core.response.IResponse;
 import com.redshape.io.protocols.core.renderers.ResponseRenderer;
 import com.redshape.io.protocols.core.sources.output.OutputStream;
-import com.redshape.exceptions.ExceptionWithCode;
 import com.redshape.renderer.RendererException;
 import com.redshape.utils.Constants;
 import org.apache.log4j.Logger;
@@ -31,7 +30,7 @@ public class ResponseWriter implements IResponseWriter<OutputStream> {
         return this.renderer;
     }
 
-    public void writeResponse( OutputStream source, ExceptionWithCode exception ) throws WriterException {
+    public void writeResponse( OutputStream source, Throwable exception ) throws WriterException {
         try {
             this.writeResponse( source, this.getRenderer().renderBytes(exception) );
         } catch( Throwable e ) {

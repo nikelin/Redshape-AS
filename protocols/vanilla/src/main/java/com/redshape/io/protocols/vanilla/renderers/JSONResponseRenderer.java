@@ -1,7 +1,6 @@
 package com.redshape.io.protocols.vanilla.renderers;
 
 import com.redshape.io.protocols.core.response.IResponse;
-import com.redshape.exceptions.ExceptionWithCode;
 import com.redshape.io.protocols.core.renderers.ResponseRenderer;
 import com.redshape.renderer.RendererException;
 import com.redshape.renderer.json.JSONRenderer;
@@ -16,7 +15,7 @@ import java.util.*;
 public class JSONResponseRenderer extends JSONRenderer<IResponse> implements ResponseRenderer<String, IResponse> {
     private static final Logger log = Logger.getLogger( JSONResponseRenderer.class );
 
-    public String render( ExceptionWithCode e ) {
+    public String render( Throwable e ) {
         return this.renderValue(e);
     }
 
@@ -26,7 +25,7 @@ public class JSONResponseRenderer extends JSONRenderer<IResponse> implements Res
     }
 
     @Override
-    public byte[] renderBytes( ExceptionWithCode exception ) throws RendererException {
+    public byte[] renderBytes( Throwable exception ) throws RendererException {
         return this.render(exception).getBytes();
     }
 

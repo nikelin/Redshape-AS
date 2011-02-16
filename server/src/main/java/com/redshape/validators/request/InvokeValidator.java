@@ -1,7 +1,6 @@
 package com.redshape.validators.request;
 
 import com.redshape.io.protocols.vanilla.request.IApiRequest;
-
 import java.util.List;
 
 /**

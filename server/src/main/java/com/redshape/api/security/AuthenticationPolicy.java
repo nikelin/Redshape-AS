@@ -6,17 +6,16 @@ import com.redshape.applications.IAccessibleApplication;
 import com.redshape.auth.AuthResult;
 import com.redshape.auth.AuthenticatorFactory;
 import com.redshape.auth.adapters.AuthenticatorInterface;
-import com.redshape.exceptions.ErrorCode;
 import com.redshape.io.net.adapters.socket.client.ISocketAdapter;
 import com.redshape.io.protocols.core.Constants;
 import com.redshape.io.protocols.core.VersionRegistryFactory;
 import com.redshape.io.protocols.vanilla.VanillaVersionsRegistry;
 import com.redshape.io.protocols.vanilla.request.IApiRequest;
-import com.redshape.io.server.ISocketServer;
 import com.redshape.io.server.ServerException;
+import com.redshape.io.server.policy.AbstractPolicy;
+import com.redshape.io.server.policy.ApplicationResult;
 import com.redshape.persistence.entities.IPAddress;
-import com.redshape.server.policy.AbstractPolicy;
-import com.redshape.server.policy.ApplicationResult;
+import com.redshape.server.ISocketServer;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -70,19 +69,19 @@ public class AuthenticationPolicy extends AbstractPolicy<IApiRequest, ISocketSer
                 AuthResult<IRequester> authResult = authenticator.authenticate( resource );
                 switch ( authResult.getStatus() ) {
                     case INVALID_IDENTITY:
-                       result.setException( new ServerException( ErrorCode.EXCEPTION_INVALID_API_KEY ) );
+                       result.setException( new ServerException("ErrorCode.EXCEPTION_INVALID_API_KEY") );
                     break;
 
                     case FAIL:
-                        result.setException( new ServerException( ErrorCode.EXCEPTION_AUTHENTICATION_FAIL ) );
+                        result.setException( new ServerException("ErrorCode.EXCEPTION_AUTHENTICATION_FAIL") );
                     break;
 
                     case INACTIVE_IDENTITY:
-                        result.setException( new ServerException( ErrorCode.EXCEPTION_INACTIVE_API_KEY ) );
+                        result.setException( new ServerException("ErrorCode.EXCEPTION_INACTIVE_API_KEY") );
                     break;
 
                     case EXPIRED_IDENTITY:
-                        result.setException( new ServerException( ErrorCode.EXCEPTION_EXPIRED_API_KEY ) );
+                        result.setException( new ServerException("ErrorCode.EXCEPTION_EXPIRED_API_KEY") );
                     break;
 
                     case SUCCESS:

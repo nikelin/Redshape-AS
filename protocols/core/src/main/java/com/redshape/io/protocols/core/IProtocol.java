@@ -1,8 +1,8 @@
 package com.redshape.io.protocols.core;
 
 import com.redshape.utils.config.ConfigException;
-import com.redshape.io.net.request.IRequest;
-import com.redshape.io.net.request.RequestType;
+import com.redshape.io.protocols.core.request.IRequest;
+import com.redshape.io.protocols.core.request.RequestType;
 import com.redshape.io.protocols.core.readers.IRequestReader;
 import com.redshape.io.protocols.core.readers.ReaderException;
 import com.redshape.io.protocols.core.response.IResponse;
@@ -28,27 +28,19 @@ public interface IProtocol<
                 D extends Q,
                 V extends IResponse> {
 
-    public void setReader( IRequestReader<I, T> reader );
+    public void setReader( IRequestReader<T> reader );
 
-    public IRequestReader<I, T> getReader();
+    public IRequestReader<T> getReader();
 
     public void setWriter( IResponseWriter writer );
 
     public IResponseWriter getWriter();
 
-    public void setRequestsProcessor( Class<? extends IRequestsProcessor<?, Z>> processorClass );
-
-    public IRequestsProcessor<?, Z> createRequestsProcessor( ISocketServer<?, V> server ) throws ProtocolException;
-
-    public void setClientsProcessor( Class<? extends IClientsProcessor> processor );
-
-    public IClientsProcessor createClientsProcessor(  ISocketServer<?, V> server  ) throws InstantiationException;
-
     public void writeResponse( OutputStream stream, V response) throws WriterException;
 
     public void writeResponse( OutputStream stream, Collection<? extends V> responses ) throws WriterException;
 
-    public void writeResponse( OutputStream stream, Exception exception ) throws WriterException;
+    public void writeResponse( OutputStream stream, Throwable exception ) throws WriterException;
 
     public T readRequest( BufferedInput stream ) throws ReaderException;
 

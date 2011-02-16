@@ -20,7 +20,7 @@ import com.redshape.io.protocols.dispatchers.IHttpDispatcher;
  * Time: 7:14:07 PM
  * To change this template use File | Settings | File Templates.
  */
-public class HttpProtocol_11 extends AbstractHttpProtocol<IHttpRequest, IHttpDispatcher, IHttpResponse, BufferedInput> {
+public class HttpProtocol_11 extends AbstractHttpProtocol<IHttpRequest, IHttpDispatcher, IHttpResponse> {
 
     public HttpProtocol_11() {
         super( HttpProtocol_11.class );

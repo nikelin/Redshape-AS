@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  * Time: 3:55:04 PM
  * To change this template use File | Settings | File Templates.
  */
-public class HttpRequestReader implements IRequestReader<BufferedInput, IHttpRequest> {
+public class HttpRequestReader implements IRequestReader<IHttpRequest> {
     private static final Logger log = Logger.getLogger( HttpRequestReader.class );
     private IHttpRequestHydrator hydrator;
 

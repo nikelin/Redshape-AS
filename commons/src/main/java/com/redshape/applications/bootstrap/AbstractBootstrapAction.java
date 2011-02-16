@@ -6,7 +6,7 @@ import java.util.HashSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.redshape.config.IConfig;
+import com.redshape.utils.config.IConfig;
 import com.redshape.utils.PackagesLoader;
 
 /**

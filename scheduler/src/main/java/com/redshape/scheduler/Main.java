@@ -1,23 +1,21 @@
 package com.redshape.scheduler;
 
-import com.redshape.applications.AbstractApplication;
 import com.redshape.applications.ApplicationException;
 import com.redshape.applications.SpringApplication;
-import com.redshape.applications.bootstrap.Action;
-import com.redshape.applications.bootstrap.Bootstrap;
-import com.redshape.applications.bootstrap.IBootstrap;
-import com.redshape.applications.bootstrap.actions.MessagingInit;
-import com.redshape.messaging.JMSManager;
-import com.redshape.messaging.JMSManagerFactory;
+import com.redshape.delivering.JMSManager;
+import com.redshape.delivering.JMSManagerFactory;
 import com.redshape.scheduler.listeners.JobsListener;
 import com.redshape.utils.Constants;
 import org.apache.log4j.Logger;
-import org.quartz.*;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SimpleTrigger;
+import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
-import java.util.Date;
+import java.util.Date; 
 
 /**
  * WebCam Project
@@ -37,11 +35,6 @@ public final class Main extends SpringApplication {
         JMSManagerFactory.MESSAGES_RECEIVE_PERIOD = Constants.TIME_SECOND * 30;
         JMSManagerFactory.DEFAULT_MANAGER_DESTINATION = JMSManager.SCHEDULER_DESTINATION;
 
-        this.getBootstrap().disableAction( Action.SERVERS_ID );
-        this.getBootstrap().disableAction( Action.DATABASE_ID );
-        this.getBootstrap().disableAction(Action.PLUGINS_ID );
-        this.getBootstrap().disableAction(Action.API_ID );
-
         this.setPidCheckup(false);
     }
 
@@ -55,17 +48,16 @@ public final class Main extends SpringApplication {
         }
     }
 
-    @Override
     public void start() throws ApplicationException {
+        super.start();
+
         try {
-            super.start();
-            
             JMSManagerFactory.getDefault().getManager().addMessageListener( new JobsListener(this) );
 
             this.getTasksScheduler().start();
         } catch ( Throwable e ) {
             log.error( e.getMessage(), e );
-            throw new ApplicationException();
+            throw new RuntimeException();
         }
     }
 

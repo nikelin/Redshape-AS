@@ -13,6 +13,7 @@
         <module>scheduler</module>
         <module>persistence</module>
         <module>ui</module>
+        <module>utils</module>
         <module>payments</module>
         <module>server</module>
         <module>protocols</module>
@@ -26,7 +27,7 @@
     	<spring.version>3.0.5.RELEASE</spring.version>
     	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <hibernate-core-version>3.5.1-Final</hibernate-core-version>
-        <project-build-path>/home/user/work/idea-workspace/git-based/redshape/ServerCore/build</project-build-path>
+        <project-build-path>/archives/work/projects/redshape/server/build</project-build-path>
     </properties>
 
     <repositories>

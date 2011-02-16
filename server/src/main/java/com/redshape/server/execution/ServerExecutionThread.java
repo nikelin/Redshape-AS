@@ -1,11 +1,11 @@
 package com.redshape.server.execution;
 
+import com.redshape.io.server.policy.ApplicationResult;
+import com.redshape.io.server.policy.PolicyType;
+import com.redshape.server.ISocketServer;
 import org.apache.log4j.Logger;
 
 import com.redshape.io.net.adapters.socket.client.ISocketAdapter;
-import com.redshape.io.server.ISocketServer;
-import com.redshape.server.policy.ApplicationResult;
-import com.redshape.server.policy.PolicyType;
 import com.redshape.server.processors.connection.IClientsProcessor;
 
 public class ServerExecutionThread implements Runnable {
@@ -24,7 +24,8 @@ public class ServerExecutionThread implements Runnable {
 
                 ApplicationResult policyResult = this.server.checkPolicy( this.server.getProtocol().getClass(), PolicyType.ON_CONNECTION );
                 if ( policyResult.isSuccessful() || policyResult.isVoid() ) {
-                    IClientsProcessor processor = this.server.getProtocol().createClientsProcessor(this.server); 
+                    // @FIXME: aaa!!!
+                    IClientsProcessor processor = null; // this.server.getProtocol().createClientsProcessor(this.server); 
                 	processor.onConnection(clientSocket);
                 } else {
                     if ( policyResult.isException() ) {

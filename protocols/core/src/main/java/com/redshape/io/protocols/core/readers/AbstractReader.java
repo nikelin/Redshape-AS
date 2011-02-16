@@ -1,6 +1,6 @@
 package com.redshape.io.protocols.core.readers;
 
-import com.redshape.io.net.request.IRequest;
+import com.redshape.io.protocols.core.request.IRequest;
 import com.redshape.io.protocols.core.hydrators.RequestHydrator;
 import com.redshape.io.protocols.core.sources.input.InputSource;
 

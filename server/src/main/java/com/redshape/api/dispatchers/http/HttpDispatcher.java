@@ -1,16 +1,12 @@
 package com.redshape.api.dispatchers.http;
 
 import com.redshape.api.requesters.IRequester;
-import com.redshape.exceptions.ErrorCode;
-import com.redshape.features.FeaturesRegistry;
-import com.redshape.features.IFeatureAspect;
-import com.redshape.features.IInteractionResult;
-import com.redshape.features.InteractionException;
+import com.redshape.features.*;
+import com.redshape.io.protocols.dispatchers.DispatcherException;
 import com.redshape.io.protocols.dispatchers.IHttpDispatcher;
 import com.redshape.io.protocols.http.request.IHttpRequest;
 import com.redshape.io.protocols.http.response.IHttpResponse;
 import com.redshape.io.protocols.http.routing.IHttpRouter;
-import com.redshape.io.server.ServerException;
 
 import java.util.Map;
 
@@ -21,7 +17,7 @@ import java.util.Map;
  * Time: 12:50:47 PM
  * To change this template use File | Settings | File Templates.
  */
-public class HttpDispatcher implements IHttpDispatcher<IRequester, IHttpRequest, IHttpResponse> {
+public class HttpDispatcher implements IHttpDispatcher<IFeatureInteractor, IHttpRequest, IHttpResponse> {
     private IHttpRouter router;
 
     public IHttpRouter getRouter() {
@@ -32,7 +28,8 @@ public class HttpDispatcher implements IHttpDispatcher<IRequester, IHttpRequest,
         this.router = router;
     }
 
-    public void dispatch( IRequester requester, IHttpRequest request, IHttpResponse response ) throws ServerException {
+    @Override
+    public void dispatch( IFeatureInteractor requester, IHttpRequest request, IHttpResponse response ) throws DispatcherException {
         try {
             if ( this.getRouter() != null ) {
                 this.getRouter().route( request );
@@ -41,7 +38,7 @@ public class HttpDispatcher implements IHttpDispatcher<IRequester, IHttpRequest,
             IFeatureAspect aspect = FeaturesRegistry.getDefault()
                                                     .getFeatureAspect( request.getFeatureName(), request.getAspectName() );
             if ( aspect == null ) {
-                throw new ServerException(ErrorCode.EXCEPTION_REQUEST_METHOD_NOT_EXISTS);
+                throw new DispatcherException("ErrorCode.EXCEPTION_REQUEST_METHOD_NOT_EXISTS");
             }
 
 

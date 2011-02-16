@@ -1,6 +1,6 @@
 package com.redshape.renderer;
 
-import com.redshape.config.IConfig;
+import com.redshape.utils.config.IConfig;
 import com.redshape.utils.InterfacesFilter;
 import com.redshape.utils.PackageLoaderException;
 import com.redshape.utils.PackagesLoader;

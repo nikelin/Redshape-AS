@@ -16,7 +16,6 @@ import com.redshape.io.protocols.http.response.IHttpResponse;
 public interface IHttpProtocol<
                     T extends IHttpRequest,
                     D extends IHttpDispatcher,
-                    V extends IHttpResponse,
-                    I extends BufferedInput>
-        extends IProtocol<IHttpRequest, T, IHttpDispatcher, D, V, I> {
+                    V extends IHttpResponse>
+        extends IProtocol<IHttpRequest, T, IHttpDispatcher, D, V> {
 }

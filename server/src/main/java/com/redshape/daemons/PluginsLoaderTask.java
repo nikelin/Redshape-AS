@@ -1,6 +1,6 @@
 package com.redshape.daemons;
 
-import com.redshape.config.IConfig;
+import com.redshape.utils.config.IConfig;
 import com.redshape.plugins.PluginsRegistry;
 import com.redshape.plugins.loaders.PluginLoaderException;
 import com.redshape.utils.Constants;

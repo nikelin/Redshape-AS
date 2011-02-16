@@ -2,7 +2,6 @@ package com.redshape.io.protocols.vanilla.impl;
 
 import com.redshape.io.protocols.core.Constants;
 import com.redshape.io.protocols.core.IProtocolVersion;
-import com.redshape.io.protocols.core.sources.input.BufferedInput;
 import com.redshape.io.protocols.vanilla.AbstractVanillaProtocol;
 import com.redshape.io.protocols.vanilla.VanillaProtocolVersion;
 import com.redshape.io.protocols.vanilla.hyndrators.JSONRequestHydrator;
@@ -19,7 +18,7 @@ import com.redshape.io.protocols.dispatchers.IVanillaDispatcher;
  * Time: 7:57:42 PM
  * To change this template use File | Settings | File Templates.
  */
-public class VanillaProtocol_10 extends AbstractVanillaProtocol<IApiRequest, IVanillaDispatcher, IApiResponse, BufferedInput> {
+public class VanillaProtocol_10 extends AbstractVanillaProtocol<IApiRequest, IVanillaDispatcher, IApiResponse> {
 
     public VanillaProtocol_10() {
         super( VanillaProtocol_10.class );

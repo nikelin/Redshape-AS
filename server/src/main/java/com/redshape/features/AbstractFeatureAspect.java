@@ -1,7 +1,6 @@
 package com.redshape.features;
 
-import com.redshape.config.IConfig;
-import com.redshape.exceptions.ExceptionWithCode;
+import com.redshape.utils.config.IConfig;
 import com.redshape.io.protocols.core.request.IRequest;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,9 +56,9 @@ public abstract class AbstractFeatureAspect<T extends IFeatureInteractor> implem
             }
 
             return this.processInteraction( requester );
-        } catch ( ExceptionWithCode e ) {
+        } catch ( Exception e ) {
             log.error( e.getMessage(), e );
-            throw new InteractionException(e);
+            throw new InteractionException(e.getMessage(), e);
         } catch ( Throwable e ) {
             log.error(e.getMessage(), e);
             throw new InteractionException();

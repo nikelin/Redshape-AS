@@ -1,7 +1,8 @@
 package com.redshape.io.protocols.dispatchers;
 
-import com.redshape.io.net.fetch.IResponse;
+import com.redshape.api.requesters.IRequester;
 import com.redshape.io.protocols.core.request.IRequest;
+import com.redshape.io.protocols.core.response.IResponse;
 
 
 /**
@@ -14,7 +15,7 @@ import com.redshape.io.protocols.core.request.IRequest;
  * @author nikelin
  * @group api
  */
-public interface IDispatcher<T, V extends IRequest, Q extends IResponse> {
+public interface IDispatcher<T extends IRequester, V extends IRequest, Q extends IResponse> {
     
     public void dispatch( T requester, V request, Q response ) throws DispatcherException;
 

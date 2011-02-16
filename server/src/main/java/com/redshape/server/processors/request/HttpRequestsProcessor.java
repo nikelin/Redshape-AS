@@ -6,9 +6,9 @@ import com.redshape.io.protocols.http.request.IHttpRequest;
 import com.redshape.io.protocols.http.response.IHttpResponse;
 import com.redshape.io.protocols.core.request.RequestType;
 import com.redshape.io.protocols.dispatchers.IHttpDispatcher;
-import com.redshape.io.server.ISocketServer;
 import com.redshape.io.server.ServerException;
 
+import com.redshape.server.ISocketServer;
 import org.apache.log4j.Logger;
 
 import java.util.Date;
@@ -22,10 +22,10 @@ import java.util.Date;
  */
 public class HttpRequestsProcessor
         extends AbstractRequestsProcessor<
-                    ISocketServer<
-                        IHttpProtocol<IHttpRequest, IHttpDispatcher, IHttpResponse, ?>,
-                        IHttpResponse
-                    >, IHttpResponse, IHttpRequest> {
+                            ISocketServer<
+                                IHttpProtocol<IHttpRequest, IHttpDispatcher, IHttpResponse>,
+                                IHttpResponse
+                            >, IHttpResponse, IHttpRequest> {
     
     private static final Logger log = Logger.getLogger( HttpRequestsProcessor.class );
 

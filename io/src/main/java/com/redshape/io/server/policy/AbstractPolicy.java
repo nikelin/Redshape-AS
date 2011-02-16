@@ -1,6 +1,5 @@
 package com.redshape.io.server.policy;
 
-import com.redshape.io.net.request.IRequest;
 import com.redshape.io.server.IServer;
 
 /**
@@ -10,7 +9,7 @@ import com.redshape.io.server.IServer;
  * Time: 5:26:47 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class AbstractPolicy<T extends IRequest, V extends IServer> implements IPolicy<T, V> {
+public abstract class AbstractPolicy<T, V extends IServer> implements IPolicy<T, V> {
     private V context;
 
     public void setContext( V context ) {

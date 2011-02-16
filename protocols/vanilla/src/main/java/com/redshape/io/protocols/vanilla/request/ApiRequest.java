@@ -5,7 +5,6 @@ import com.redshape.io.protocols.core.request.*;
 import com.redshape.io.protocols.vanilla.hyndrators.IApiRequestHydrator;
 import com.redshape.io.protocols.vanilla.hyndrators.JSONRequestHydrator;
 import com.redshape.api.requesters.IRequester;
-import com.redshape.exceptions.ErrorCode;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -156,17 +155,17 @@ public class ApiRequest implements IApiRequest {
 
             Collection<RequestHeader> headers = hydrator.readHeaders();
             if ( headers == null ) {
-                throw new RequestFormattingException(ErrorCode.EXCEPTION_MISSED_REQUEST_HEAD );
+                throw new RequestFormattingException();
             }
             request.setHeaders( headers );
 
             if ( !isValidHeaders(request) ) {
-                throw new RequestProcessingException(ErrorCode.EXCEPTION_WRONG_REQUEST_HEADERS );
+                throw new RequestProcessingException();
             }
 
             Collection<IApiRequest> body = hydrator.readBody();
             if ( body == null ) {
-                throw new RequestFormattingException(ErrorCode.EXCEPTION_MISSED_REQUEST_BODY );
+                throw new RequestFormattingException();
             }
 
             boolean isValidBody = true;
@@ -185,14 +184,14 @@ public class ApiRequest implements IApiRequest {
             }
 
             if ( !isValidBody ) {
-                throw new RequestFormattingException( ErrorCode.EXCEPTION_MISSED_REQUEST_BODY );
+                throw new RequestFormattingException();
             }
 
             return request;
         } catch ( RequestException e ) {
             throw e;
         } catch ( Throwable e ) {
-            throw new RequestFormattingException(ErrorCode.EXCEPTION_WRONG_REQUEST);
+            throw new RequestFormattingException();
         }
     }
 

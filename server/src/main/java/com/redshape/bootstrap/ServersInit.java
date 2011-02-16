@@ -3,22 +3,21 @@ package com.redshape.bootstrap;
 import com.redshape.applications.bootstrap.AbstractBootstrapAction;
 import com.redshape.applications.bootstrap.Action;
 import com.redshape.applications.bootstrap.BootstrapException;
-import com.redshape.config.IConfig;
-import com.redshape.io.protocols.core.IProtocol;
-import com.redshape.io.protocols.core.IVersionsRegistry;
-import com.redshape.io.protocols.core.VersionRegistryFactory;
 import com.redshape.io.protocols.http.HttpProtocolVersion;
 import com.redshape.io.protocols.http.HttpVersionsRegistry;
 import com.redshape.io.protocols.http.impl.HttpProtocol_11;
+import com.redshape.io.server.policy.IPolicy;
+import com.redshape.io.server.policy.PoliciesFactory;
+import com.redshape.io.server.policy.PolicyType;
+import com.redshape.utils.config.IConfig;
+import com.redshape.io.protocols.core.IProtocol;
+import com.redshape.io.protocols.core.IVersionsRegistry;
+import com.redshape.io.protocols.core.VersionRegistryFactory;
 import com.redshape.io.protocols.vanilla.VanillaProtocolVersion;
 import com.redshape.io.protocols.vanilla.VanillaVersionsRegistry;
 import com.redshape.io.protocols.vanilla.impl.VanillaProtocol_10;
 import com.redshape.io.server.IServer;
-import com.redshape.io.server.ISocketServer;
 import com.redshape.server.*;
-import com.redshape.server.policy.IPolicy;
-import com.redshape.server.policy.PoliciesFactory;
-import com.redshape.server.policy.PolicyType;
 
 import org.apache.log4j.*;
 import org.springframework.stereotype.Component;
@@ -191,7 +190,7 @@ public class ServersInit extends AbstractBootstrapAction {
                   .addVersion(VanillaProtocolVersion.VERSION_1, new VanillaProtocol_10() );
 
         VersionRegistryFactory.getInstance(HttpVersionsRegistry.class)
-                  .addVersion(HttpProtocolVersion.HTTP_11, new HttpProtocol_11() );        
+                  .addVersion(HttpProtocolVersion.HTTP_11, new HttpProtocol_11() );
     }
 
 }

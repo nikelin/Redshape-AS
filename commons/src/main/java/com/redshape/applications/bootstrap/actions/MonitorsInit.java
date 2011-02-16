@@ -3,8 +3,8 @@ package com.redshape.applications.bootstrap.actions;
 import com.redshape.applications.bootstrap.AbstractBootstrapAction;
 import com.redshape.applications.bootstrap.Action;
 import com.redshape.applications.bootstrap.BootstrapException;
-import com.redshape.config.ConfigException;
-import com.redshape.config.IConfig;
+import com.redshape.utils.config.ConfigException;
+import com.redshape.utils.config.IConfig;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 

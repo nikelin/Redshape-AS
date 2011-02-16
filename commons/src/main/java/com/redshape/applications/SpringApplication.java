@@ -6,7 +6,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.redshape.applications.bootstrap.IBootstrap;
-import com.redshape.config.IConfig;
+import com.redshape.utils.config.IConfig;
 
 public class SpringApplication extends AbstractApplication {
 	private static final Logger log = Logger.getLogger( SpringApplication.class );
