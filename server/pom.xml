@@ -79,12 +79,6 @@
         </dependency>
 
        <dependency>
-          <groupId>org.apache.activemq</groupId>
-          <artifactId>activemq-core</artifactId>
-          <version>5.3.1</version>
-       </dependency>
-
-       <dependency>
            <groupId>net.sf.json-lib</groupId>
            <artifactId>json-lib</artifactId>
            <version>2.3</version>
@@ -122,12 +116,6 @@
             <version>5.1.9</version>
         </dependency>
 
-       <dependency>
-           <artifactId>lucene-core</artifactId>
-           <groupId>org.apache.lucene</groupId>
-           <version>3.0.2</version>
-       </dependency>
-
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
@@ -138,12 +126,6 @@
            <groupId>net.sf.ehcache</groupId>
            <artifactId>ehcache-core</artifactId>
            <version>2.1.0</version>
-       </dependency>
-
-       <dependency>
-           <groupId>org.apache.hadoop</groupId>
-           <artifactId>hadoop-core</artifactId>
-           <version>0.20.2</version>
        </dependency>
 
         <dependency>

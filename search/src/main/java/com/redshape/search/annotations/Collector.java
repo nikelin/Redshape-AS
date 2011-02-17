@@ -1,7 +1,5 @@
 package com.redshape.search.annotations;
 
-import com.redshape.search.ISearchable;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 

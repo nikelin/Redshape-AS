@@ -125,7 +125,7 @@ public class LuceneEngine implements ISearchEngine {
 
             return writer;
         } catch ( Throwable e ) {
-            throw new EngineException("Cannot create search index writer");
+            throw new EngineException("Cannot create com.redshape.search index writer");
         }
     }
 

@@ -33,7 +33,6 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <forceCreation>true</forceCreation>
                     <outputDirectory>${project-build-path}</outputDirectory>
                     <archive>
                         <index>true</index>

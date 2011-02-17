@@ -1,10 +1,7 @@
 package com.redshape.servlet.dispatchers;
 
-import com.redshape.api.dispatchers.IDispatcher;
 import com.redshape.servlet.dispatchers.http.IHttpDispatcher;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 

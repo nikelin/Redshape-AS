@@ -30,7 +30,7 @@ public @interface SearchableField {
     IndexingType type() default IndexingType.TEXT;
 
     /**
-     * Store or not this field in search index
+     * Store or not this field in com.redshape.search index
      * @return
      */
     boolean stored() default true;
