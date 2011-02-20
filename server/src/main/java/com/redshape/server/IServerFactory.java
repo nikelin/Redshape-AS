@@ -2,8 +2,9 @@ package com.redshape.server;
 
 import com.redshape.io.protocols.core.IProtocol;
 import com.redshape.io.server.IServer;
-import com.redshape.server.policy.IPolicy;
-import com.redshape.server.policy.PolicyType;
+import com.redshape.io.server.policy.IPolicy;
+import com.redshape.io.server.policy.PolicyType;
+
 import org.apache.commons.collections.map.MultiKeyMap;
 
 import java.util.Map;
@@ -48,12 +49,12 @@ public interface IServerFactory {
     ) throws InstantiationException;
 
     /**
-     * Add grobal security policy
+     * Add global security policy
      * @param protocolContext
      * @param type
      * @param policy
      */
-    public void addPolicy( Class<? extends IProtocol> protocolContext, PolicyType type, IPolicy policy );
+    public void addPolicy( Class<?> protocolContext, PolicyType type, IPolicy<?> policy );
 
     /**
      * Get all global security policies applied to current factory

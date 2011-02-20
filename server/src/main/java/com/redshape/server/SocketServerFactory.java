@@ -1,12 +1,11 @@
 package com.redshape.server;
 
-import com.redshape.api.dispatchers.IDispatcher;
 import com.redshape.api.dispatchers.vanilla.InterfaceInvocationsDispatcher;
 import com.redshape.io.protocols.core.IProtocol;
 import com.redshape.io.protocols.core.VersionRegistryFactory;
+import com.redshape.io.protocols.dispatchers.IDispatcher;
 import com.redshape.io.protocols.vanilla.VanillaVersionsRegistry;
 import com.redshape.io.server.IServer;
-import com.redshape.io.server.ISocketServer;
 
 import org.apache.log4j.Logger;
 
@@ -19,9 +18,9 @@ public class SocketServerFactory extends AbstractServerFactory implements ISocke
     /**
      * Default requests dispatcher for each new server instance
      */
-    public static final IDispatcher DEFAULT_DISPATCHER = new InterfaceInvocationsDispatcher();
+    public static final IDispatcher<?, ?, ?> DEFAULT_DISPATCHER = new InterfaceInvocationsDispatcher();
 
-    public static IProtocol DEFAULT_PROTOCOL;
+    public static IProtocol<?, ?,?,?,?,?> DEFAULT_PROTOCOL;
     static {
         try {
            DEFAULT_PROTOCOL  = VersionRegistryFactory.getInstance(VanillaVersionsRegistry.class).getActualProtocol();
@@ -59,8 +58,8 @@ public class SocketServerFactory extends AbstractServerFactory implements ISocke
     }
 
     @Override
-    public <T extends ISocketServer> T newInstance( Class<T> serverClass, String host,
-                                Integer port, Boolean isSSLEnabled, Map<String, Object> properties, IProtocol protocol )
+    public <P, V extends IProtocol, T extends ISocketServer<V,?,P>> T newInstance( Class<T> serverClass, String host,
+                                Integer port, Boolean isSSLEnabled, Map<String, Object> properties, V protocol )
         throws InstantiationException {
         try {
             T server = serverClass.newInstance();
@@ -69,7 +68,7 @@ public class SocketServerFactory extends AbstractServerFactory implements ISocke
             server.enableSSL(isSSLEnabled);
             server.setProtocol( protocol );
 
-            this.bindPolicies( server, this.getPolicies() );
+            this.<V,P>bindPolicies( server, this.getPolicies() );
             this.bindProperties( server, properties );
 
             return server;

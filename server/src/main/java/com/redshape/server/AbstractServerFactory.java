@@ -1,9 +1,9 @@
 package com.redshape.server;
 
-import com.redshape.io.protocols.core.IProtocol;
 import com.redshape.io.server.IServer;
-import com.redshape.server.policy.IPolicy;
-import com.redshape.server.policy.PolicyType;
+import com.redshape.io.server.policy.IPolicy;
+import com.redshape.io.server.policy.PolicyType;
+
 import org.apache.commons.collections.keyvalue.MultiKey;
 import org.apache.commons.collections.map.MultiKeyMap;
 
@@ -22,14 +22,14 @@ public abstract class AbstractServerFactory implements IServerFactory {
     private Map<String, Object> properties = new HashMap<String, Object>();
 
     public AbstractServerFactory() {
-        this( new HashMap() );
+        this( new HashMap<String, Object>() );
     }
 
     public AbstractServerFactory( Map<String, Object> properties ) {
         this.properties = properties;
     }
 
-    protected void bindProperties( IServer server, Map<String, Object> properties ) {
+    protected void bindProperties( IServer<?, ?> server, Map<String, Object> properties ) {
         for ( String name : properties.keySet() ) {
             if ( server.isPropertySupports(name) ) {
                 server.setProperty( name, properties.get(name) );
@@ -37,17 +37,18 @@ public abstract class AbstractServerFactory implements IServerFactory {
         }
     }
 
-    protected void bindPolicies( IServer server, MultiKeyMap policies ) {
+    @SuppressWarnings("unchecked")
+	protected <T, V> void bindPolicies( IServer<T,V> server, MultiKeyMap policies ) {
         for ( final Object itemKey : policies.keySet() ) {
-            final IPolicy policy = (IPolicy) policies.get(itemKey);
+            final IPolicy<V> policy = (IPolicy<V>) policies.get(itemKey);
             final Object[] keys = ( (MultiKey) itemKey ).getKeys();
 
-            server.addPolicy( (Class<? extends IProtocol>) keys[0], (PolicyType) keys[1], policy );
+            server.addPolicy( (Class<T>) keys[0], (PolicyType) keys[1], (IPolicy<V>) policy );
         }
     }
 
     @Override
-    public void addPolicy( Class<? extends IProtocol> protocolContext, PolicyType type, IPolicy policy ) {
+    public void addPolicy( Class<?> protocolContext, PolicyType type, IPolicy<?> policy ) {
         this.policies.put( protocolContext, type, policy );
     }
 

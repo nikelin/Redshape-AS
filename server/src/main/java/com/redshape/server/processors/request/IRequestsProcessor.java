@@ -1,8 +1,8 @@
 package com.redshape.server.processors.request;
 
-import com.redshape.io.protocols.core.request.IRequest;
-import com.redshape.io.server.ISocketServer;
+import com.redshape.io.net.request.IRequest;
 import com.redshape.io.server.ServerException;
+import com.redshape.server.ISocketServer;
 
 import java.io.IOException;
 
@@ -13,7 +13,7 @@ import java.io.IOException;
  * Time: 3:21:23 AM
  * To change this template use File | Settings | File Templates.
  */
-public interface IRequestsProcessor<V extends ISocketServer, T extends IRequest> {
+public interface IRequestsProcessor<V extends ISocketServer<?,?,?>, T extends IRequest> {
 
     public void setServerContext( V server );
 

@@ -2,6 +2,7 @@ package com.redshape.server;
 
 import com.redshape.io.protocols.core.IProtocol;
 import com.redshape.io.protocols.core.response.IResponse;
+import com.redshape.io.protocols.vanilla.request.IApiRequest;
 import com.redshape.io.protocols.vanilla.response.ApiResponse;
 import com.redshape.io.protocols.vanilla.response.IApiResponse;
 import com.redshape.io.server.ServerException;
@@ -13,7 +14,7 @@ import org.apache.log4j.Logger;
  *
  * @author nikelin
  */
-public class ApplicationServer extends AbstractSocketServer<IProtocol, IResponse> {
+public class ApplicationServer extends AbstractSocketServer<IProtocol<?, ?,?,?,?,IResponse>, IResponse, IApiRequest> {
     private static final Logger log = Logger.getLogger( ApplicationServer.class );
 
     public final static Class<? extends IApiResponse> DEFAULT_RESPONSE_OBJECT = ApiResponse.class;

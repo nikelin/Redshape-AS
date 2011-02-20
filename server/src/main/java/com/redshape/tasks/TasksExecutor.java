@@ -1,11 +1,11 @@
 package com.redshape.tasks;
 
-import com.redshape.config.ConfigException;
-import com.redshape.config.IConfig;
 import com.redshape.delivering.IMessageRespond;
 import com.redshape.delivering.JMSManager;
 import com.redshape.delivering.MessagingHandler;
 import com.redshape.persistence.entities.IPersistentTask;
+import com.redshape.utils.config.ConfigException;
+import com.redshape.utils.config.IConfig;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

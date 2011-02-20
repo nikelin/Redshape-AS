@@ -1,20 +1,15 @@
 package com.redshape.server;
 
-import com.redshape.exceptions.ExceptionWithCode;
 import com.redshape.io.net.adapters.socket.SocketAdapterFactory;
 import com.redshape.io.net.adapters.socket.client.ISocketAdapter;
 import com.redshape.io.net.adapters.socket.server.IServerSocketAdapter;
 import com.redshape.io.protocols.core.IProtocol;
 import com.redshape.io.protocols.core.response.IResponse;
-import com.redshape.io.protocols.core.sources.output.BufferedOutput;
-import com.redshape.io.server.ISocketServer;
+import com.redshape.io.server.ErrorCodes;
 import com.redshape.io.server.ServerException;
 import com.redshape.io.server.ServerState;
-import com.redshape.exceptions.ErrorCode;
+import com.redshape.io.server.policy.IPolicy;
 import com.redshape.server.execution.ServerExecutionThread;
-import com.redshape.server.policy.ApplicationResult;
-import com.redshape.server.policy.IPolicy;
-import com.redshape.server.policy.PolicyType;
 import com.redshape.utils.Constants;
 import org.apache.log4j.Logger;
 
@@ -31,8 +26,8 @@ import java.util.concurrent.Executors;
  * @package com.vio.server
  * @date Apr 14, 2010
  */
-public abstract class AbstractSocketServer<T extends IProtocol, R extends IResponse>
-                extends AbstractServer implements ISocketServer<T, R> {
+public abstract class AbstractSocketServer<T extends IProtocol<?, ?,?,?,?,R>, R extends IResponse, V>
+                extends AbstractServer<T,V> implements ISocketServer<T, R, V> {
     final private static Logger log = Logger.getLogger( ApplicationServer.class );
 
     public static int DEFAULT_THREADS_COUNT = 100;
@@ -53,7 +48,7 @@ public abstract class AbstractSocketServer<T extends IProtocol, R extends IRespo
     private ExecutorService executor;
 
     private Map<ThreadGroup, ISocketAdapter> connections = new HashMap<ThreadGroup, ISocketAdapter>();
-    private Map<Class<? extends IPolicy>, ? extends IPolicy> policies = new HashMap();
+    private Map<Class<? extends IPolicy<V>>, IPolicy<V>> policies = new HashMap<Class<? extends IPolicy<V>>, IPolicy<V>>();
 
     public AbstractSocketServer(
             String host,
@@ -73,7 +68,7 @@ public abstract class AbstractSocketServer<T extends IProtocol, R extends IRespo
         this.socket = this.createServerSocket();
 
         for ( int  i = 0; i < this.threadsCount; i++ ) {
-        	this.executor.execute( new ServerExecutionThread(this) );
+        	this.executor.execute( new ServerExecutionThread<T>(this) );
         }
         
         this.markInitialized( true );
@@ -91,7 +86,7 @@ public abstract class AbstractSocketServer<T extends IProtocol, R extends IRespo
         }
 
         if ( this.isRunning() ) {
-            throw new ServerException( ErrorCode.EXCEPTION_SERVER_ALREADY_STARTED);
+            throw new ServerException("ErrorCode.EXCEPTION_SERVER_ALREADY_STARTED");
         }  else {
             this.changeState(ServerState.RUNNING);
         }
@@ -162,16 +157,16 @@ public abstract class AbstractSocketServer<T extends IProtocol, R extends IRespo
     @Override
     public void writeResponse( ISocketAdapter socket, R response ) throws ServerException {
         try {
-            this.getProtocol().writeResponse( new BufferedOutput( socket.getOutputStream() ), response );
+            this.getProtocol().writeResponse( socket.getOutputStream(), response );
         } catch ( Throwable e ) {
-            throw new ServerException( ErrorCode.EXCEPTION_INTERNAL );
+            throw new ServerException( ErrorCodes.EXCEPTION_INTERNAL.getMessage() );
         }
     }
 
     @Override
-    public void writeResponse( ISocketAdapter socket, ExceptionWithCode exception ) {
+    public void writeResponse( ISocketAdapter socket, Throwable exception ) {
         try {
-            this.getProtocol().writeResponse( new BufferedOutput(socket.getOutputStream()), exception );
+            this.getProtocol().writeResponse( socket.getOutputStream(), exception );
         } catch ( Throwable e ) {
             log.info( e.getMessage(), e );
             log.info("Cannot write exception!");
@@ -181,10 +176,10 @@ public abstract class AbstractSocketServer<T extends IProtocol, R extends IRespo
     @Override
     public void writeResponse( ISocketAdapter socket, Collection<R> response ) throws ServerException {
         try {
-            this.getProtocol().writeResponse( new BufferedOutput( socket.getOutputStream() ), response );
+            this.getProtocol().writeResponse( socket.getOutputStream(), response );
         } catch ( Throwable e ) {
             log.info( e.getMessage(), e );
-            throw new ServerException( ErrorCode.EXCEPTION_INTERNAL );
+            throw new ServerException( ErrorCodes.EXCEPTION_INTERNAL.getMessage() );
         }
     }
 
@@ -195,7 +190,7 @@ public abstract class AbstractSocketServer<T extends IProtocol, R extends IRespo
     @Override
     public void refuseConnection( ISocketAdapter socket ) throws ServerException {
         try {
-            this.getProtocol().writeResponse( new BufferedOutput( socket.getOutputStream() ), new ServerException( ErrorCode.EXCEPTION_RECONNECT ) );
+            this.getProtocol().writeResponse( socket.getOutputStream(), new ServerException( ErrorCodes.EXCEPTION_RECONNECT.getMessage() ) );
 
             socket.close();
         } catch ( Throwable e ) {

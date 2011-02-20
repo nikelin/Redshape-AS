@@ -1,7 +1,6 @@
 package com.redshape.server;
 
 import com.redshape.io.server.IServer;
-import com.redshape.io.server.ISocketServer;
 
 /**
  * Created by IntelliJ IDEA.

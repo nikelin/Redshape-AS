@@ -2,11 +2,11 @@ package com.redshape.api.dispatchers.vanilla;
 
 import com.redshape.api.InvokableEntitiesRegistry;
 import com.redshape.api.requesters.IRequester;
-import com.redshape.exceptions.ErrorCode;
-import com.redshape.exceptions.ExceptionWithCode;
-import com.redshape.io.protocols.core.request.RequestProcessingException;
+import com.redshape.features.InteractionException;
+import com.redshape.io.net.request.RequestProcessingException;
+import com.redshape.io.net.request.RequestType;
 import com.redshape.io.protocols.vanilla.request.IApiRequest;
-import com.redshape.io.protocols.core.request.RequestType;
+import com.redshape.io.protocols.dispatchers.DispatcherException;
 import com.redshape.io.protocols.dispatchers.IVanillaDispatcher;
 import com.redshape.io.protocols.vanilla.response.IApiResponse;
 import com.redshape.io.remoting.annotations.RemoteMethod;
@@ -33,14 +33,15 @@ public class MethodInvocationsDispatcher implements IVanillaDispatcher<IRequeste
         return RequestType.METHOD_INVOKE;
     }
 
-    public void dispatch( IRequester requester, IApiRequest request, IApiResponse response ) throws ServerException {
+    @Override
+    public void dispatch( IRequester requester, IApiRequest request, IApiResponse response ) throws DispatcherException {
         if ( !InvokableEntitiesRegistry.isRegistered( request.getFeatureName() ) ) {
-            response.addError( new RequestProcessingException( ErrorCode.EXCEPTION_REQUEST_INTERFACE_NOT_EXISTS ) );
+            response.addError( new RequestProcessingException("ErrorCode.EXCEPTION_REQUEST_INTERFACE_NOT_EXISTS") );
             return;
         }
 
         if ( !InvokableEntitiesRegistry.isInvokeAllowed( request.getFeatureName(), request.getAspectName() ) ) {
-            response.addError( new RequestProcessingException( ErrorCode.EXCEPTION_REQUEST_METHOD_NOT_EXISTS ) );
+            response.addError( new RequestProcessingException("ErrorCode.EXCEPTION_REQUEST_METHOD_NOT_EXISTS") );
             return;
         }
 
@@ -49,7 +50,7 @@ public class MethodInvocationsDispatcher implements IVanillaDispatcher<IRequeste
             try {
                 invokingMethodPrototype = this.buildTypesList( request.getParams().values() );
             } catch ( ClassNotFoundException e ) {
-                response.addError( new RequestProcessingException( ErrorCode.EXCEPTION_WRONG_REQUEST_BODY ) );
+                response.addError( new RequestProcessingException("ErrorCode.EXCEPTION_WRONG_REQUEST_BODY") );
                 return;
             }
         } else {
@@ -70,16 +71,14 @@ public class MethodInvocationsDispatcher implements IVanillaDispatcher<IRequeste
             );
             log.info("Requested service method runner: " + method.getName() );
             if ( method.getAnnotation(RemoteMethod.class) == null ) {
-                throw new RequestProcessingException( ErrorCode.EXCEPTION_REQUEST_METHOD_NOT_EXISTS );
+                throw new RequestProcessingException("ErrorCode.EXCEPTION_REQUEST_METHOD_NOT_EXISTS");
             }
 
             log.info( request.getParams().values() );
             
             response.addParam("result", method.invoke( hostInterface, request.getParams().values().toArray( new Object[request.getParams().size()]) ) );
         } catch ( NoSuchMethodException e ) {
-            response.addError( new RequestProcessingException( ErrorCode.EXCEPTION_REQUEST_METHOD_NOT_EXISTS ) );
-        } catch ( ExceptionWithCode e ) {
-            response.addError( e );
+            response.addError( new RequestProcessingException("ErrorCode.EXCEPTION_REQUEST_METHOD_NOT_EXIST") );
         } catch ( Throwable e ) {
             log.error( e.getMessage(), e );
             response.addError( new RequestProcessingException() );

@@ -1,13 +1,14 @@
 package com.redshape.server.processors.request;
 
+import com.redshape.api.requesters.IRequester;
 import com.redshape.io.net.adapters.socket.client.ISocketAdapter;
+import com.redshape.io.net.request.RequestType;
 import com.redshape.io.protocols.http.IHttpProtocol;
 import com.redshape.io.protocols.http.request.IHttpRequest;
 import com.redshape.io.protocols.http.response.IHttpResponse;
-import com.redshape.io.protocols.core.request.RequestType;
 import com.redshape.io.protocols.dispatchers.IHttpDispatcher;
-import com.redshape.io.server.ISocketServer;
 import com.redshape.io.server.ServerException;
+import com.redshape.server.ISocketServer;
 
 import org.apache.log4j.Logger;
 
@@ -20,11 +21,21 @@ import java.util.Date;
  * Time: 8:21:41 PM
  * To change this template use File | Settings | File Templates.
  */
-public class HttpRequestsProcessor
+public class HttpRequestsProcessor<P extends IHttpProtocol<IRequester, 
+														   IHttpRequest, 
+														   IHttpDispatcher<
+														   		IRequester, 
+														   		IHttpRequest, 
+														   		IHttpResponse
+													   		>, 
+													   		IHttpResponse
+												   		>>
         extends AbstractRequestsProcessor<
+        			P,
                     ISocketServer<
-                        IHttpProtocol<IHttpRequest, IHttpDispatcher, IHttpResponse, ?>,
-                        IHttpResponse
+                        P,
+                        IHttpResponse,
+                        IHttpRequest
                     >, IHttpResponse, IHttpRequest> {
     
     private static final Logger log = Logger.getLogger( HttpRequestsProcessor.class );
@@ -38,7 +49,7 @@ public class HttpRequestsProcessor
             }
 
             IHttpResponse response = this.getServerContext().createResponseObject();
-            IHttpProtocol protocol = this.getServerContext().getProtocol();
+            P protocol = this.getServerContext().getProtocol();
 
             ISocketAdapter socket = request.getSocket();
             log.info("Processing request" );

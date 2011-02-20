@@ -7,7 +7,7 @@ package com.redshape.io.protocols.core;
  * Time: 10:42:36 AM
  * To change this template use File | Settings | File Templates.
  */
-public interface IVersionsRegistry<P extends IProtocol, V extends IProtocolVersion> {
+public interface IVersionsRegistry<P extends IProtocol<?,?,?,?,?,?>, V extends IProtocolVersion> {
     
     public V getVersion( String versionName );
     

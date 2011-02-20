@@ -1,13 +1,15 @@
 package com.redshape.server.processors.request;
 
+import com.redshape.api.requesters.IRequester;
 import com.redshape.io.net.adapters.socket.client.ISocketAdapter;
-import com.redshape.io.protocols.core.request.RequestType;
+import com.redshape.io.net.request.RequestType;
+import com.redshape.io.protocols.dispatchers.DispatcherException;
 import com.redshape.io.protocols.dispatchers.IVanillaDispatcher;
 import com.redshape.io.protocols.vanilla.IVanillaProtocol;
 import com.redshape.io.protocols.vanilla.request.IApiRequest;
 import com.redshape.io.protocols.vanilla.response.IApiResponse;
-import com.redshape.io.server.ISocketServer;
 import com.redshape.io.server.ServerException;
+import com.redshape.server.ISocketServer;
 
 import org.apache.log4j.Logger;
 
@@ -20,12 +22,20 @@ import java.util.Date;
  * Time: 3:38:54 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ApiRequestsProcessor
+public class ApiRequestsProcessor<P extends IVanillaProtocol<IRequester, 
+															IApiRequest, 
+															IVanillaDispatcher<
+																IRequester, 
+																IApiRequest, 
+																IApiResponse
+															>, 
+															IApiResponse>
+														>
         extends AbstractRequestsProcessor<
-                    ISocketServer<
-                        IVanillaProtocol<IApiRequest, IVanillaDispatcher, IApiResponse, ?>,
-                        IApiResponse
-                    >, IApiResponse, IApiRequest> {
+        			P,
+                    ISocketServer<P,IApiResponse,IApiRequest>, 
+                    IApiResponse, 
+                    IApiRequest> {
     
     private static final Logger log = Logger.getLogger( ApiRequestsProcessor.class);
 
@@ -65,14 +75,15 @@ public class ApiRequestsProcessor
         }
     }
 
-    private void processInvoke( ISocketAdapter socket, IVanillaProtocol<?, IVanillaDispatcher, ?, ?> protocol, IApiRequest invoke, IApiResponse response ) throws ServerException {
+    private void processInvoke( ISocketAdapter socket, P protocol, IApiRequest invoke, IApiResponse response ) 
+    										throws ServerException, DispatcherException {
         log.info("Invoke id: " + invoke.getId() );
         log.info("Processing start time: " + new Date( new Date().getTime() ).toLocaleString() );
         long startTime = System.currentTimeMillis();
         IApiResponse currentResponse = this.getServerContext().createResponseObject();
         currentResponse.setId( invoke.getId() );
 
-        IVanillaDispatcher dispatcher = protocol.getRequestDispatcher( invoke.getType() != null ? invoke.getType() : RequestType.INTERFACE_INVOKE);
+        IVanillaDispatcher<IRequester, IApiRequest, IApiResponse> dispatcher = protocol.getRequestDispatcher( invoke.getType() != null ? invoke.getType() : RequestType.INTERFACE_INVOKE);
         log.info( "Request type: " + invoke.getType() );
         log.info( "Request dispatcher: " + dispatcher.getClass().getCanonicalName() );
         log.info( "Current invoke identity: " + invoke.getIdentity() );

@@ -1,14 +1,11 @@
 package com.redshape.server.processors.connection;
 
-import com.redshape.exceptions.ExceptionWithCode;
 import com.redshape.io.net.adapters.socket.client.ISocketAdapter;
+import com.redshape.io.net.request.IRequest;
 import com.redshape.io.protocols.core.IProtocol;
 import com.redshape.io.protocols.core.ProtocolException;
-import com.redshape.io.protocols.core.request.IRequest;
-import com.redshape.io.protocols.core.sources.input.BufferedInput;
-import com.redshape.io.server.ISocketServer;
 import com.redshape.io.server.ServerException;
-import com.redshape.server.processors.request.IRequestsProcessor;
+import com.redshape.server.ISocketServer;
 import org.apache.log4j.Logger;
 
 /**
@@ -22,17 +19,17 @@ public class ClientsProcessor implements IClientsProcessor {
     private static final Logger log = Logger.getLogger( ClientsProcessor.class );
     public static int MAX_WORKER_WARNS = 12;
     
-    private ISocketServer context;
+    private ISocketServer<?,?,?> context;
     
     private int errorsTick;
     
     private boolean isValid = true;
 
-    public void setContext( ISocketServer server ) {
+    public void setContext( ISocketServer<?, ?, ?> server ) {
     	this.context = server;
     }
     
-    protected ISocketServer getContext() {
+    protected ISocketServer<?,?,?> getContext() {
     	return this.context;
     }
     
@@ -59,15 +56,15 @@ public class ClientsProcessor implements IClientsProcessor {
         log.info("Processing adapters: " + socket.getRemoteSocketAddress() );
 
         try {
-            IProtocol protocol = this.getContext().getProtocol();
-            IRequestsProcessor processor = protocol.createRequestsProcessor( this.getContext() );
-            processor.setServerContext(this.getContext());
+            IProtocol<?, ?,?,?,?,?> protocol = this.getContext().getProtocol();
+            // @FIXME: refactor due to Protocols API refactoring
+//            IRequestsProcessor processor = protocol.createRequestsProcessor( this.getContext() );
+//            processor.setServerContext(this.getContext());
             
-            BufferedInput input = new BufferedInput( socket.getInputStream() );
             while ( this.isValid() ) {
                 log.info("Waiting request...");
                 try{
-                    IRequest request = protocol.readRequest( input );
+                    IRequest request = protocol.readRequest( socket.getInputStream() );
                     if ( request == null ) {
                         this.incrErrorsTick();
                         continue;
@@ -76,16 +73,12 @@ public class ClientsProcessor implements IClientsProcessor {
                     request.setSocket( socket );
 
                     log.info("Processing request...");
-                    processor.onRequest(request);
-                } catch ( ExceptionWithCode e ) {
-                    this.getContext().writeResponse( socket, e );
-                    this.incrErrorsTick();
+                    //@FIXME: due to Protocols API refactoring
+                    // processor.onRequest(request);
                 } catch ( Throwable e ) {
                     this.incrErrorsTick();
                 } 
             }
-        } catch ( ProtocolException e) {
-            log.error("Protocol related exception", e );
         } catch ( Throwable e ) {
             log.error("Internal exception", e );
         }

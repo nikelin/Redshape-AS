@@ -1,7 +1,6 @@
 package com.redshape.server;
 
 import com.redshape.io.protocols.core.IProtocol;
-import com.redshape.io.server.ISocketServer;
 
 import java.util.Map;
 
@@ -14,9 +13,9 @@ import java.util.Map;
  */
 public interface ISocketServerFactory extends IServerFactory {
 
-    public <T extends ISocketServer> T newInstance(
+    public <P, V extends IProtocol, T extends ISocketServer<V,?,P>> T newInstance(
         Class<T> clazz, String host,
-        Integer port, Boolean isSSLEnabled, Map<String, Object> properties, IProtocol protocol
+        Integer port, Boolean isSSLEnabled, Map<String, Object> properties, V protocol
     ) throws InstantiationException;
 
     public void setProtocol( IProtocol protocol );

@@ -3,6 +3,8 @@
 .classpath
 .project
 nbproject
+pom.properties
+*tmp
 build
 interpolated-pom.xml
 *.jar

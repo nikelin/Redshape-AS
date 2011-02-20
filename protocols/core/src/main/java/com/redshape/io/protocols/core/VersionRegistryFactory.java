@@ -11,30 +11,31 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public final class VersionRegistryFactory {
-    public static IVersionsRegistry getInstance( Class<? extends IVersionsRegistry> clazz ) throws InstantiationException {
+    public static <T extends IVersionsRegistry> T getInstance( Class<T> clazz ) throws InstantiationException {
         return InstancesHandler.getInstance( clazz );
     }
 
-    public static IVersionsRegistry newInstance( Class<? extends IVersionsRegistry> clazz ) throws InstantiationException {
+    public static <T extends IVersionsRegistry> T newInstance( Class<T> clazz ) throws InstantiationException {
         return InstancesHandler.newInstance( clazz );
     }
 
     final static class InstancesHandler {
         private static final Map<Class<? extends IVersionsRegistry>, IVersionsRegistry> instances = new HashMap();
 
-        public static IVersionsRegistry getInstance( Class<? extends IVersionsRegistry> registryClass )
+        @SuppressWarnings("unchecked")
+		public static <T extends IVersionsRegistry> T getInstance( Class<T> registryClass )
             throws InstantiationException {
-            IVersionsRegistry registryInstance = instances.get(registryClass);
+            T registryInstance = (T) instances.get(registryClass);
             if ( registryInstance == null ) {
-                instances.put( registryClass, registryInstance = newInstance( registryClass ) );
+                instances.put( (Class<T>) registryClass, (T) ( registryInstance = newInstance( registryClass ) ) );
             }
 
             return registryInstance;
         }
 
-        synchronized public static IVersionsRegistry newInstance( Class<? extends IVersionsRegistry> registryClazz )
+        synchronized public static <T extends IVersionsRegistry> T newInstance( Class<T> registryClazz )
             throws InstantiationException {
-            IVersionsRegistry instance;
+            T instance;
 
             try {
                 instance = registryClazz.newInstance();

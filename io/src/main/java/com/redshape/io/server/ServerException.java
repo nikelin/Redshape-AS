@@ -13,6 +13,10 @@ public class ServerException extends Exception {
     	super();
     }
     
+    public ServerException( ErrorCodes code ) {
+    	this( code.getMessage(), code );
+    }
+    
     public ServerException( String message ) {
     	super(message);
     }
