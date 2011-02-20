@@ -10,7 +10,7 @@ import com.redshape.ui.events.IEventHandler;
  * Time: 2:51
  * To change this template use File | Settings | File Templates.
  */
-public interface IView<T extends EventType> extends IEventHandler<T> {
+public interface IView extends IEventHandler {
 
     public void init();
 

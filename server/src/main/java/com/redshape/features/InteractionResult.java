@@ -1,7 +1,5 @@
 package com.redshape.features;
 
-import com.redshape.exceptions.ExceptionWithCode;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +13,7 @@ import java.util.Map;
 public class InteractionResult implements IInteractionResult {
     private Map<String, Object> attributes = new HashMap();
     private boolean is_error;
-    private ExceptionWithCode last_exception;
+    private Throwable last_exception;
 
     public void setAttribute( String name, Object value ) {
         this.attributes.put(name, value);
@@ -33,7 +31,7 @@ public class InteractionResult implements IInteractionResult {
         return this.attributes;
     }
 
-    public ExceptionWithCode getError() {
+    public Throwable getError() {
         return this.last_exception;
     }
 

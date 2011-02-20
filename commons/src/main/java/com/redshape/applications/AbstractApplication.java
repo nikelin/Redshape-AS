@@ -1,11 +1,9 @@
 package com.redshape.applications;
 
 import com.redshape.applications.bootstrap.IBootstrap;
-import com.redshape.config.ConfigException;
-import com.redshape.config.XMLConfig;
-import com.redshape.config.IConfig;
 import com.redshape.utils.PackagesLoader;
 import com.redshape.utils.ResourcesLoader;
+import com.redshape.utils.config.IConfig;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;

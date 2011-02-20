@@ -5,11 +5,11 @@ import org.springframework.stereotype.Component;
 
 import com.redshape.applications.bootstrap.AbstractBootstrapAction;
 import com.redshape.applications.bootstrap.BootstrapException;
-import com.redshape.config.IConfig;
 import com.redshape.notifications.INotification;
 import com.redshape.notifications.NotificationsFactory;
 import com.redshape.notifications.annotations.Notification;
 import com.redshape.utils.InterfacesFilter;
+import com.redshape.utils.config.IConfig;
 
 /**
  * Created by IntelliJ IDEA.

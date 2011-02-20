@@ -9,8 +9,8 @@ import com.redshape.ui.events.AppEvent;
  * Time: 21:46
  * To change this template use File | Settings | File Templates.
  */
-public interface IEventHandler<T extends EventType> {
+public interface IEventHandler {
 
-    public void handle( AppEvent<T> event );
+    public void handle( AppEvent event );
 
 }

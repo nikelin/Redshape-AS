@@ -1,10 +1,8 @@
 package com.redshape.io.protocols.core.response;
 
-import com.redshape.io.protocols.core.request.RequestHeader;
-import com.redshape.io.protocols.core.renderers.ResponseRenderer;
-
+import com.redshape.io.net.request.RequestHeader;
+import com.redshape.io.protocols.core.renderers.IResponseRenderer;
 import java.util.*;
-
 
 /**
  * @author nikelin

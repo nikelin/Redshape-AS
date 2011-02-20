@@ -1,11 +1,14 @@
 package com.redshape.io.protocols.vanilla.request;
 
 import com.redshape.io.net.adapters.socket.client.ISocketAdapter;
-import com.redshape.io.protocols.core.request.*;
+import com.redshape.io.net.request.RequestException;
+import com.redshape.io.net.request.RequestFormattingException;
+import com.redshape.io.net.request.RequestHeader;
+import com.redshape.io.net.request.RequestProcessingException;
+import com.redshape.io.net.request.RequestType;
 import com.redshape.io.protocols.vanilla.hyndrators.IApiRequestHydrator;
 import com.redshape.io.protocols.vanilla.hyndrators.JSONRequestHydrator;
 import com.redshape.api.requesters.IRequester;
-import com.redshape.exceptions.ErrorCode;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -25,7 +28,7 @@ public class ApiRequest implements IApiRequest {
     private String id;
     private String interfaceId;
     private String actionId;
-    private boolean is_valid;
+    private boolean valid;
     private RequestType type;
     private Map<String, Object> params = new HashMap<String, Object>();
     private Map<String, Object> response = new HashMap<String, Object>();
@@ -87,12 +90,12 @@ public class ApiRequest implements IApiRequest {
 
     @Override
     public boolean isValid() {
-        return this.is_valid;
+        return this.valid;
     }
 
     @Override
     public void markInvalid( boolean state ) {
-        this.is_valid = state;
+        this.valid = state;
     }
 
     @Override
@@ -156,17 +159,17 @@ public class ApiRequest implements IApiRequest {
 
             Collection<RequestHeader> headers = hydrator.readHeaders();
             if ( headers == null ) {
-                throw new RequestFormattingException(ErrorCode.EXCEPTION_MISSED_REQUEST_HEAD );
+                throw new RequestFormattingException("ErrorCode.EXCEPTION_MISSED_REQUEST_HEAD");
             }
             request.setHeaders( headers );
 
             if ( !isValidHeaders(request) ) {
-                throw new RequestProcessingException(ErrorCode.EXCEPTION_WRONG_REQUEST_HEADERS );
+                throw new RequestProcessingException("ErrorCode.EXCEPTION_WRONG_REQUEST_HEADERS");
             }
 
             Collection<IApiRequest> body = hydrator.readBody();
             if ( body == null ) {
-                throw new RequestFormattingException(ErrorCode.EXCEPTION_MISSED_REQUEST_BODY );
+                throw new RequestFormattingException("ErrorCode.EXCEPTION_MISSED_REQUEST_BODY");
             }
 
             boolean isValidBody = true;
@@ -185,14 +188,14 @@ public class ApiRequest implements IApiRequest {
             }
 
             if ( !isValidBody ) {
-                throw new RequestFormattingException( ErrorCode.EXCEPTION_MISSED_REQUEST_BODY );
+                throw new RequestFormattingException("ErrorCode.EXCEPTION_MISSED_REQUEST_BODY");
             }
 
             return request;
         } catch ( RequestException e ) {
             throw e;
         } catch ( Throwable e ) {
-            throw new RequestFormattingException(ErrorCode.EXCEPTION_WRONG_REQUEST);
+            throw new RequestFormattingException("ErrorCode.EXCEPTION_WRONG_REQUEST");
         }
     }
 

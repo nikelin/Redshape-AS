@@ -7,15 +7,15 @@ package com.redshape.ui.events;
  * Time: 21:47
  * To change this template use File | Settings | File Templates.
  */
-public class AppEvent<T extends EventType> {
-    private T type;
+public class AppEvent {
+    private EventType type;
     private Object[] args;
 
-    public AppEvent( T type ) {
+    public AppEvent( EventType type ) {
         this(type, null);
     }
 
-    public AppEvent( T type, Object... args ) {
+    public AppEvent( EventType type, Object... args ) {
         this.type = type;
         this.args = args;
     }

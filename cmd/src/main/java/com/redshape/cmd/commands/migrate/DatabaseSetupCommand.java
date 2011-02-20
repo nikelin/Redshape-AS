@@ -3,8 +3,6 @@ package com.redshape.cmd.commands.migrate;
 import com.redshape.commands.AbstractCommand;
 import com.redshape.commands.ExecutionException;
 import com.redshape.commands.annotations.Command;
-import com.redshape.persistence.Provider;
-import com.redshape.persistence.managers.ManagerException;
 import org.apache.log4j.Logger;
 
 /**
@@ -20,12 +18,9 @@ public class DatabaseSetupCommand extends AbstractCommand {
 
     @Override
     public void process() throws ExecutionException {
-        try {
-            Provider.getEJBFactory(true);
-        } catch ( Throwable e ) {
-            log.error( e.getMessage(), e );
-            throw new ExecutionException();
-        }
+        /**
+         * @FIXME: due to DAO refactoring
+         */
     }
 
     @Override

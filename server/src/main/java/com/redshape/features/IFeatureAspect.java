@@ -1,6 +1,6 @@
 package com.redshape.features;
 
-import com.redshape.io.protocols.core.request.IRequest;
+import com.redshape.io.net.request.IRequest;
 
 /**
  * Created by IntelliJ IDEA.
@@ -9,7 +9,7 @@ import com.redshape.io.protocols.core.request.IRequest;
  * Time: 3:14:50 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface IFeatureAspect<T extends IFeatureInteractor> {
+public interface IFeatureAspect {
 
     public String getFeatureName();
 
@@ -19,11 +19,11 @@ public interface IFeatureAspect<T extends IFeatureInteractor> {
 
     public void setAspectName( String name );
 
-    public IInteractionResult interact( T interactor ) throws InteractionException;
+    public IInteractionResult interact( IFeatureInteractor interactor ) throws InteractionException;
 
     public void setAttribute( String name, Object value );
 
-    public Object getAttribute( String name );
+    public <V> V getAttribute( String name );
 
     public boolean hasAttribute( String name );
 
@@ -33,6 +33,6 @@ public interface IFeatureAspect<T extends IFeatureInteractor> {
 
     public void setRequest( IRequest request );
 
-    IInteractionResult createResultObject();
+    public IInteractionResult createResultObject();
     
 }

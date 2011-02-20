@@ -71,7 +71,7 @@ public abstract class AbstractController implements IController {
     }
 
     @Override
-    public void handle( AppEvent<EventType> event ) {
+    public void handle( AppEvent event ) {
         for ( Method method : this.getClass().getMethods() ) {
             Action annotation = method.getAnnotation( Action.class );
             if ( annotation == null ) {

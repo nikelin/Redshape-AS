@@ -13,20 +13,20 @@ import com.redshape.io.net.IAddress;
  * @package com.vio.persistence.entities
  * @date Apr 17, 2010
  */
-public interface IRequester<T, V extends IAddress> extends IIdentity<T> {
+public interface IRequester extends IIdentity {
 
     public void setApiKey( String key );
 
     public String getApiKey();
 
-    public void setAddress( V address );
+    public void setAddress( IAddress address );
 
-    public V getAddress();
+    public IAddress getAddress();
 
-    public Set<? extends IRequesterProperty> getProperties();
+    public <V extends IRequesterProperty> Set<V> getProperties();
 
-    public <T extends IRequesterPropertyId> void setProperty( T id, String value );
+    public <V extends IRequesterPropertyId> void setProperty( V id, String value );
 
-    public <T extends IRequesterPropertyId> IRequesterProperty getProperty( T id );
+    public <V extends IRequesterPropertyId> IRequesterProperty getProperty( V id );
 
 }

@@ -1,7 +1,6 @@
 package com.redshape.cmd.commands.migrate;
 
 import com.redshape.applications.bootstrap.IBootstrapAction;
-import com.redshape.applications.bootstrap.actions.DatabaseInit;
 import com.redshape.commands.ExecutionException;
 import com.redshape.commands.migrate.AbstractMigrateCommand;
 import com.redshape.migration.DataMigrationManager;

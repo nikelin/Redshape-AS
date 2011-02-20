@@ -53,14 +53,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>quartz</groupId>
-            <artifactId>quartz</artifactId>
-            <version>1.5.2</version>
+        	<groupId>com.redshape</groupId>
+        	<artifactId>tasks</artifactId>
+        	<version>1.0.0A</version>
         </dependency>
         
         <dependency>
             <groupId>com.redshape</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>commons</artifactId>
             <version>1.0.0A</version>
         </dependency>
     </dependencies>

@@ -1,8 +1,8 @@
 package com.redshape.io.protocols.vanilla.impl;
 
+import com.redshape.api.requesters.IRequester;
 import com.redshape.io.protocols.core.Constants;
 import com.redshape.io.protocols.core.IProtocolVersion;
-import com.redshape.io.protocols.core.sources.input.BufferedInput;
 import com.redshape.io.protocols.vanilla.AbstractVanillaProtocol;
 import com.redshape.io.protocols.vanilla.VanillaProtocolVersion;
 import com.redshape.io.protocols.vanilla.hyndrators.JSONRequestHydrator;
@@ -10,6 +10,8 @@ import com.redshape.io.protocols.vanilla.readers.APIRequestReader;
 import com.redshape.io.protocols.vanilla.renderers.JSONResponseRenderer;
 import com.redshape.io.protocols.vanilla.request.IApiRequest;
 import com.redshape.io.protocols.vanilla.response.IApiResponse;
+import com.redshape.io.protocols.core.readers.IRequestReader;
+import com.redshape.io.protocols.core.writers.IResponseWriter;
 import com.redshape.io.protocols.core.writers.ResponseWriter;
 import com.redshape.io.protocols.dispatchers.IVanillaDispatcher;
 /**
@@ -19,13 +21,28 @@ import com.redshape.io.protocols.dispatchers.IVanillaDispatcher;
  * Time: 7:57:42 PM
  * To change this template use File | Settings | File Templates.
  */
-public class VanillaProtocol_10 extends AbstractVanillaProtocol<IApiRequest, IVanillaDispatcher, IApiResponse, BufferedInput> {
+public class VanillaProtocol_10 extends AbstractVanillaProtocol<IRequester, 
+																IApiRequest, 
+																IVanillaDispatcher<
+																	IRequester, 
+																	IApiRequest, 
+																	IApiResponse
+																>, 
+																IApiResponse> {
 
     public VanillaProtocol_10() {
         super( VanillaProtocol_10.class );
 
-        this.setReader( new APIRequestReader( new JSONRequestHydrator() ) );
-        this.setWriter( new ResponseWriter( new JSONResponseRenderer() ) );
+        this.setReader( this.createReader() );
+        this.setWriter( this.createWriter() );
+    }
+    
+    protected IResponseWriter<IApiResponse> createWriter() {
+    	return new ResponseWriter<IApiResponse>( new JSONResponseRenderer<IApiResponse>() );
+    }
+    
+    protected IRequestReader<IApiRequest> createReader() {
+    	return new APIRequestReader( new JSONRequestHydrator() );
     }
 
     @Override

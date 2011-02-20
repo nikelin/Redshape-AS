@@ -3,9 +3,9 @@ package com.redshape.bootstrap;
 import com.redshape.api.InvokableEntitiesRegistry;
 import com.redshape.applications.bootstrap.AbstractBootstrapAction;
 import com.redshape.applications.bootstrap.BootstrapException;
-import com.redshape.config.IConfig;
 import com.redshape.features.FeaturesRegistry;
 import com.redshape.renderer.AbstractRenderersFactory;
+import com.redshape.utils.config.IConfig;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

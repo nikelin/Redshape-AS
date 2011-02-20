@@ -1,7 +1,7 @@
 package com.redshape.io.protocols.http.request;
 
+import com.redshape.io.net.request.IRequest;
 import com.redshape.io.protocols.http.HttpProtocolVersion;
-import com.redshape.io.protocols.core.request.IRequest;
 
 import java.util.Map;
 

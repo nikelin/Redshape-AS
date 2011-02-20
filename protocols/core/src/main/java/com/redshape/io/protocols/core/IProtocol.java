@@ -1,17 +1,18 @@
 package com.redshape.io.protocols.core;
 
 import com.redshape.utils.config.ConfigException;
+import com.redshape.api.requesters.IRequester;
 import com.redshape.io.net.request.IRequest;
 import com.redshape.io.net.request.RequestType;
 import com.redshape.io.protocols.core.readers.IRequestReader;
 import com.redshape.io.protocols.core.readers.ReaderException;
 import com.redshape.io.protocols.core.response.IResponse;
-import com.redshape.io.protocols.core.sources.input.BufferedInput;
-import com.redshape.io.protocols.core.sources.output.OutputStream;
 import com.redshape.io.protocols.core.writers.IResponseWriter;
 import com.redshape.io.protocols.core.writers.WriterException;
 import com.redshape.io.protocols.dispatchers.IDispatcher;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 
 /**
@@ -22,35 +23,28 @@ import java.util.Collection;
  * To change this template use File | Settings | File Templates.
  */
 public interface IProtocol<
+				E extends IRequester,
                 Z extends IRequest,
                 T extends Z,
-                Q extends IDispatcher,
+                Q extends IDispatcher<E, T, V>,
                 D extends Q,
                 V extends IResponse> {
 
-    public void setReader( IRequestReader<I, T> reader );
+    public void setReader( IRequestReader<T> reader );
 
-    public IRequestReader<I, T> getReader();
+    public IRequestReader<T> getReader();
 
-    public void setWriter( IResponseWriter writer );
+    public void setWriter( IResponseWriter<V> writer );
 
-    public IResponseWriter getWriter();
-
-    public void setRequestsProcessor( Class<? extends IRequestsProcessor<?, Z>> processorClass );
-
-    public IRequestsProcessor<?, Z> createRequestsProcessor( ISocketServer<?, V> server ) throws ProtocolException;
-
-    public void setClientsProcessor( Class<? extends IClientsProcessor> processor );
-
-    public IClientsProcessor createClientsProcessor(  ISocketServer<?, V> server  ) throws InstantiationException;
+    public IResponseWriter<V> getWriter();
 
     public void writeResponse( OutputStream stream, V response) throws WriterException;
 
-    public void writeResponse( OutputStream stream, Collection<? extends V> responses ) throws WriterException;
+    public void writeResponse( OutputStream stream, Collection<V> responses ) throws WriterException;
 
-    public void writeResponse( OutputStream stream, Exception exception ) throws WriterException;
+    public void writeResponse( OutputStream stream, Throwable exception ) throws WriterException;
 
-    public T readRequest( BufferedInput stream ) throws ReaderException;
+    public T readRequest( InputStream stream ) throws ReaderException;
 
     public boolean isAnonymousAllowed() throws ConfigException;
 

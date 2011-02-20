@@ -20,13 +20,12 @@
         <module>servlet</module>
         <module>io</module>
     </modules>
-    
 
     <properties>
     	<spring.version>3.0.5.RELEASE</spring.version>
     	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <hibernate-core-version>3.5.1-Final</hibernate-core-version>
-        <project-build-path>/home/user/work/idea-workspace/git-based/redshape/ServerCore/build</project-build-path>
+        <project-build-path>/archives/work/projects/redshape/server</project-build-path>
     </properties>
 
     <repositories>
@@ -95,6 +94,15 @@
               </plugin>
         </plugins>
     </build>
+    
+    <dependencies>
+	    <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.2</version>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
 
 </project>
 

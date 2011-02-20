@@ -3,11 +3,12 @@ package com.redshape.bootstrap;
 import com.redshape.applications.bootstrap.AbstractBootstrapAction;
 import com.redshape.applications.bootstrap.Action;
 import com.redshape.applications.bootstrap.BootstrapException;
-import com.redshape.config.IConfig;
 import com.redshape.delivering.JMSManager;
 import com.redshape.delivering.JMSManagerFactory;
 import com.redshape.tasks.TasksExecutor;
 import com.redshape.tasks.TasksHandler;
+import com.redshape.utils.config.IConfig;
+
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 

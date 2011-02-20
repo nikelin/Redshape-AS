@@ -73,9 +73,9 @@ public class HttpCode {
                     }
                 }
             }
-        } catch ( Throwable e ) {
+            
             return null;
-        } finally {
+        } catch ( Throwable e ) {
             return null;
         }
     }

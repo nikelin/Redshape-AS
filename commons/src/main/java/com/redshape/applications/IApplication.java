@@ -1,7 +1,7 @@
 package com.redshape.applications;
 
 import com.redshape.applications.bootstrap.IBootstrap;
-import com.redshape.config.IConfig;
+import com.redshape.utils.config.IConfig;
 
 /**
  * WebCam Project

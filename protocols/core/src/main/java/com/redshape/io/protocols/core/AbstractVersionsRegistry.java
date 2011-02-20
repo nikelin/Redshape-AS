@@ -10,8 +10,9 @@ import java.util.Map;
  * Time: 11:46:01 AM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class AbstractVersionsRegistry<P extends IProtocol, V extends IProtocolVersion> implements IVersionsRegistry<P, V> {
-    private Map<V, P> instances = new HashMap();
+public abstract class AbstractVersionsRegistry<P extends IProtocol<?, ?,?,?,?,?>, V extends IProtocolVersion> 
+											implements IVersionsRegistry<P, V> {
+    private Map<V, P> instances = new HashMap<V, P>();
 
     public P addVersion( V version, P protocol ) {
         return this.instances.put( version, protocol );
@@ -29,7 +30,8 @@ public abstract class AbstractVersionsRegistry<P extends IProtocol, V extends IP
         return protocol;
     }
 
-    public V getProtocolVersion( P protocol ) {
+    @SuppressWarnings("unchecked")
+	public V getProtocolVersion( P protocol ) {
         return this.getProtocolVersion( (Class<P>) protocol.getClass() );
     }
 

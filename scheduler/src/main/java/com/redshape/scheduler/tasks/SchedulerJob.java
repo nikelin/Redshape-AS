@@ -1,12 +1,13 @@
 package com.redshape.scheduler.tasks;
 
-import com.redshape.messaging.JMSManager;
-import com.redshape.messaging.JMSManagerFactory;
 import org.apache.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+
+import com.redshape.delivering.JMSManager;
+import com.redshape.delivering.JMSManagerFactory;
 
 import javax.jms.*;
 import java.util.Date;

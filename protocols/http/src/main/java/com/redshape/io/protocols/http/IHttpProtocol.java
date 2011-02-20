@@ -1,7 +1,7 @@
 package com.redshape.io.protocols.http;
 
+import com.redshape.api.requesters.IRequester;
 import com.redshape.io.protocols.core.IProtocol;
-import com.redshape.io.protocols.core.sources.input.BufferedInput;
 import com.redshape.io.protocols.dispatchers.IHttpDispatcher;
 import com.redshape.io.protocols.http.request.IHttpRequest;
 import com.redshape.io.protocols.http.response.IHttpResponse;
@@ -14,9 +14,9 @@ import com.redshape.io.protocols.http.response.IHttpResponse;
  * To change this template use File | Settings | File Templates.
  */
 public interface IHttpProtocol<
+					E extends IRequester,
                     T extends IHttpRequest,
-                    D extends IHttpDispatcher,
-                    V extends IHttpResponse,
-                    I extends BufferedInput>
-        extends IProtocol<IHttpRequest, T, IHttpDispatcher, D, V, I> {
+                    D extends IHttpDispatcher<E, T, V>,
+                    V extends IHttpResponse>
+        extends IProtocol<E, IHttpRequest, T, IHttpDispatcher<E, T, V>, D, V> {
 }

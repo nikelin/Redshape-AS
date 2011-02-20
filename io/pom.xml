@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>${project.parent.groupId}</groupId>
+    <groupId>com.redshape</groupId>
     <artifactId>io</artifactId>
     <name>IO API</name>
-    <version>${project.parent.version}</version>
+    <version>1.0.0A</version>
     <packaging>jar</packaging>
     
     <parent>

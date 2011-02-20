@@ -1,5 +1,7 @@
 package com.redshape.io.net;
 
+import java.net.InetAddress;
+
 /**
  * WebCam Project
  *
@@ -8,7 +10,8 @@ package com.redshape.io.net;
  * @package com.vio.persistence.entities
  * @date Apr 17, 2010
  */
-public interface IAddress<T> {
+public interface IAddress {
 
-    public T getAddress();
+	public InetAddress getInetAddress();
+	
 }

@@ -1,7 +1,8 @@
 package com.redshape.io.protocols.core.hydrators;
 
-import com.redshape.io.protocols.core.request.RequestException;
 import org.apache.log4j.Logger;
+
+import com.redshape.io.net.request.RequestException;
 
 /**
  * Created by IntelliJ IDEA.

@@ -15,7 +15,7 @@ import com.redshape.io.server.policy.PolicyType;
  * @package com.vio.server
  * @date May 4, 2010
  */
-public interface IServer<T> {
+public interface IServer<T, V> {
 
     public void setHost( String host );
 
@@ -73,21 +73,21 @@ public interface IServer<T> {
      * @param type
      * @return
      */
-    public Collection<IPolicy> getPolicies( Class<T> context, PolicyType type );
+    public Collection<IPolicy<V>> getPolicies( Class<T> context, PolicyType type );
 
     /**
      * Add new server policy
      * @param type Category what policy related on
      * @param policy Policy
      */
-    public void addPolicy( Class<T> protocolContext, PolicyType type, IPolicy policy );
+    public void addPolicy( Class<T> protocolContext, PolicyType type, IPolicy<V> policy );
 
     /**
      * Activate all policies related to given type for correctness
      * @param type
      * @return
      */
-    public ApplicationResult checkPolicy( Class<T> protocolContext, PolicyType type, Object object );
+    public ApplicationResult checkPolicy( Class<T> protocolContext, PolicyType type, V object );
 
     public ApplicationResult checkPolicy( Class<T> protocolContext, PolicyType type );
 

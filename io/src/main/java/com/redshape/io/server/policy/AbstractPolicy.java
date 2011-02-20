@@ -10,14 +10,15 @@ import com.redshape.io.server.IServer;
  * Time: 5:26:47 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class AbstractPolicy<T extends IRequest, V extends IServer> implements IPolicy<T, V> {
-    private V context;
+public abstract class AbstractPolicy<T extends IRequest> implements IPolicy<T> {
+    private IServer<?, T> context;
 
-    public void setContext( V context ) {
+    @Override
+    public void setContext( IServer<?, T> context ) {
         this.context = context;
     }
 
-    public V getContext() {
+    public IServer<?, T> getContext() {
         return this.context;
     }
 

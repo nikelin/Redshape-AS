@@ -6,7 +6,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.redshape.applications.bootstrap.IBootstrap;
-import com.redshape.config.IConfig;
+import com.redshape.utils.config.IConfig;
 
 public class SpringApplication extends AbstractApplication {
 	private static final Logger log = Logger.getLogger( SpringApplication.class );
@@ -29,7 +29,7 @@ public class SpringApplication extends AbstractApplication {
 			boot.init();
 			
 			this.setBootstrap( boot );
-			this.setConfig( (IConfig) this.context.getBean("config") );
+			this.setConfig( this.context.getBean("config", IConfig.class ) );
 		} catch ( Throwable e ) {
 			log.error( e.getMessage(), e );
 			throw new ApplicationException( e.getMessage(), e );

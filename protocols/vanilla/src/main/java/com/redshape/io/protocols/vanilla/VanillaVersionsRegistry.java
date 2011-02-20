@@ -1,6 +1,7 @@
 package com.redshape.io.protocols.vanilla;
 
 import com.redshape.io.protocols.core.AbstractVersionsRegistry;
+import com.redshape.io.protocols.vanilla.VanillaProtocolVersion;
 import org.apache.log4j.Logger;
 
 /**
@@ -10,7 +11,7 @@ import org.apache.log4j.Logger;
  * Time: 11:06:30 AM
  * To change this template use File | Settings | File Templates.
  */
-public class VanillaVersionsRegistry extends AbstractVersionsRegistry<IVanillaProtocol, VanillaProtocolVersion> {
+public class VanillaVersionsRegistry extends AbstractVersionsRegistry<IVanillaProtocol<?, ?,?,?>, VanillaProtocolVersion> {
     private static final Logger log = Logger.getLogger( VanillaVersionsRegistry.class );
 
     @Override

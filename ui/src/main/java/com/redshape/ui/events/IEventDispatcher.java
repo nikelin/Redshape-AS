@@ -9,12 +9,12 @@ import com.redshape.ui.events.AppEvent;
  * Time: 13:07
  * To change this template use File | Settings | File Templates.
  */
-public interface IEventDispatcher<T extends EventType> {
+public interface IEventDispatcher {
 
-    public void forwardEvent( AppEvent<T> event );
+    public void forwardEvent( AppEvent event );
 
-    public void forwardEvent( T type, Object... args );
+    public void forwardEvent( EventType type, Object... args );
 
-    public void addListener( T type, IEventHandler<T> handler );
+    public void addListener( EventType type, IEventHandler handler );
 
 }

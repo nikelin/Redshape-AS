@@ -1,6 +1,7 @@
 package com.redshape.ui.data.adapters.swing;
 
 import com.redshape.ui.events.AppEvent;
+import com.redshape.ui.events.EventDispatcher;
 import com.redshape.ui.events.IEventHandler;
 import com.redshape.ui.data.IModelData;
 import com.redshape.ui.data.IModelType;
@@ -20,7 +21,8 @@ import java.util.HashSet;
  * Time: 0:00
  * To change this template use File | Settings | File Templates.
  */
-public class TableModelAdapter<T extends IModelData> implements TableModel, IStore<T> {
+public class TableModelAdapter<T extends IModelData> extends EventDispatcher
+													 implements TableModel, IStore<T> {
     private IStore<T> store;
     private Collection<TableModelListener> listeners = new HashSet<TableModelListener>();
 
@@ -80,7 +82,7 @@ public class TableModelAdapter<T extends IModelData> implements TableModel, ISto
         this.store.load();
     }
 
-    public void addListener( StoreEvents type, IEventHandler<StoreEvents> handler ) {
+    public void addListener( StoreEvents type, IEventHandler handler ) {
         this.store.addListener( type, handler );
     }
 
@@ -104,7 +106,7 @@ public class TableModelAdapter<T extends IModelData> implements TableModel, ISto
         this.store.forwardEvent( type, args );
     }
 
-    public void forwardEvent( AppEvent<StoreEvents> event ) {
+    public void forwardEvent( AppEvent event ) {
         this.store.forwardEvent( event );
     }
 

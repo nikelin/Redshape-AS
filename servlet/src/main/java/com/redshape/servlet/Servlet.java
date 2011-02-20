@@ -1,11 +1,12 @@
 package com.redshape.servlet;
 
 import com.redshape.applications.IApplication;
-import com.redshape.config.ConfigException;
-import com.redshape.config.IConfig;
 import com.redshape.servlet.core.controllers.FrontController;
 import com.redshape.servlet.dispatchers.DispatchException;
 import com.redshape.servlet.views.Layout;
+import com.redshape.utils.config.ConfigException;
+import com.redshape.utils.config.IConfig;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 public class Servlet extends HttpServlet {
     private static final Logger log = Logger.getLogger( Servlet.class );
     private IApplication application;
+    
     @Autowired( required = true )
     private IConfig config;
     

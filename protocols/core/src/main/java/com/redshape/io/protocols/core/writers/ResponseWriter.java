@@ -1,15 +1,13 @@
 package com.redshape.io.protocols.core.writers;
 
 import com.redshape.io.protocols.core.response.IResponse;
-import com.redshape.io.protocols.core.renderers.ResponseRenderer;
-import com.redshape.io.protocols.core.sources.output.OutputStream;
-import com.redshape.exceptions.ExceptionWithCode;
+import com.redshape.io.protocols.core.renderers.IResponseRenderer;
 import com.redshape.renderer.RendererException;
 import com.redshape.utils.Constants;
 import org.apache.log4j.Logger;
 
+import java.io.OutputStream;
 import java.util.Collection;
-
 
 /**
  * WebCam Project
@@ -19,19 +17,20 @@ import java.util.Collection;
  * @package com.vio.api.io.writers
  * @date Apr 1, 2010
  */
-public class ResponseWriter implements IResponseWriter<OutputStream> {
+public class ResponseWriter<T extends IResponse> implements IResponseWriter<T> {
     private static final Logger log = Logger.getLogger( ResponseWriter.class );
-    private ResponseRenderer renderer;
+    private IResponseRenderer<String, T> renderer;
 
-    public ResponseWriter( ResponseRenderer renderer ) {
+    public ResponseWriter( IResponseRenderer<String, T> renderer ) {
         this.renderer = renderer;
     }
 
-    protected ResponseRenderer getRenderer() {
+    protected IResponseRenderer<String, T> getRenderer() {
         return this.renderer;
     }
 
-    public void writeResponse( OutputStream source, ExceptionWithCode exception ) throws WriterException {
+    @Override
+    public void writeResponse( OutputStream source, Throwable exception ) throws WriterException {
         try {
             this.writeResponse( source, this.getRenderer().renderBytes(exception) );
         } catch( Throwable e ) {
@@ -39,15 +38,17 @@ public class ResponseWriter implements IResponseWriter<OutputStream> {
         }
     }
 
-    public void writeResponse( OutputStream source, Collection<? extends IResponse> response ) throws WriterException {
+    @Override
+    public void writeResponse( OutputStream source, Collection<T> response ) throws WriterException {
         try {
-            this.writeResponse( source, this.getRenderer().renderBytes(response) );
+            this.writeResponse( source, this.getRenderer().renderBytes( response ) );
         } catch ( RendererException e ) {
            throw new WriterException();
         }
     }
 
-    public void writeResponse( OutputStream source, IResponse response ) throws WriterException {
+    @Override
+    public void writeResponse( OutputStream source, T response ) throws WriterException {
         try {
             this.writeResponse(source, this.getRenderer().renderBytes(response) );
         } catch ( RendererException e ) {
@@ -55,10 +56,11 @@ public class ResponseWriter implements IResponseWriter<OutputStream> {
         }
     }
 
+    @Override
     public void writeResponse( OutputStream source, byte[] bytes ) throws WriterException {
         try {
             source.write( bytes );
-            source.write( Constants.EOL );
+            source.write( (byte) Constants.EOL );
             source.flush();
 
             log.info("Written " + bytes.length + " bytes...");

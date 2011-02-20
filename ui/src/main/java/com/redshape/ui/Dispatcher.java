@@ -2,6 +2,8 @@ package com.redshape.ui;
 
 import com.redshape.ui.events.EventDispatcher;
 import com.redshape.ui.events.AppEvent;
+import com.redshape.ui.events.EventType;
+
 import java.util.*;
 
 /**
@@ -39,6 +41,7 @@ public final class Dispatcher extends EventDispatcher {
         }
 
         controller.handle( event );
+        
         this.activeController = controller;
     }
 

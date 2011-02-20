@@ -9,11 +9,11 @@ import com.redshape.io.server.IServer;
  * Time: 1:46:10 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface IPolicy<T, V extends IServer> {
+public interface IPolicy<T extends Object> {
 
-    public void setContext( V server );
+    public void setContext( IServer<?, T> server );
 
-    public V getContext();
+    public IServer<?, T> getContext();
 
     public ApplicationResult applicate( T subject );
 

@@ -1,8 +1,9 @@
 package com.redshape.io.protocols.core.readers;
 
+import java.io.InputStream;
+
 import com.redshape.io.net.request.IRequest;
 import com.redshape.io.protocols.core.hydrators.RequestHydrator;
-import com.redshape.io.protocols.core.sources.input.InputSource;
 
 /**
  * WebCam Project
@@ -12,7 +13,7 @@ import com.redshape.io.protocols.core.sources.input.InputSource;
  * @package com.vio.api.io.readers
  * @date Apr 18, 2010
  */
-public abstract class AbstractReader<T extends InputSource, V extends IRequest> implements IRequestReader<V> {
+public abstract class AbstractReader<T extends InputStream, V extends IRequest> implements IRequestReader<V> {
     private RequestHydrator hydrator;
 
     public AbstractReader( RequestHydrator hydrator ) {

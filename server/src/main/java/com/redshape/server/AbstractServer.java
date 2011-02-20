@@ -1,15 +1,15 @@
 package com.redshape.server;
 
 import com.redshape.api.requesters.IRequester;
-import com.redshape.config.ConfigException;
-import com.redshape.config.IConfig;
-import com.redshape.io.protocols.core.IProtocol;
 import com.redshape.io.server.IServer;
 import com.redshape.io.server.ServerException;
 import com.redshape.io.server.ServerState;
-import com.redshape.server.policy.ApplicationResult;
-import com.redshape.server.policy.IPolicy;
-import com.redshape.server.policy.PolicyType;
+import com.redshape.io.server.policy.ApplicationResult;
+import com.redshape.io.server.policy.IPolicy;
+import com.redshape.io.server.policy.PolicyType;
+import com.redshape.utils.config.ConfigException;
+import com.redshape.utils.config.IConfig;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,7 +22,7 @@ import java.util.*;
  * Time: 12:59:31 AM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class AbstractServer implements IServer {
+public abstract class AbstractServer<T, V> implements IServer<T, V> {
     private final static Logger log = Logger.getLogger( AbstractServer.class );
 
     /**
@@ -44,7 +44,7 @@ public abstract class AbstractServer implements IServer {
 
     private Map<String, Object> properties = new HashMap<String, Object>();
 
-    private Map<PolicyType, Collection<IPolicy> > policies = new HashMap<PolicyType, Collection<IPolicy>>();
+    private Map<PolicyType, List<IPolicy<V>>> policies = new HashMap<PolicyType, List<IPolicy<V>>>();
 
     /**
     * Состояние запущенности сервера { @see com.redshape.server.ApplicationServer State}
@@ -126,27 +126,29 @@ public abstract class AbstractServer implements IServer {
         this.initialized = state;
     }
 
-    @Override
-    public void addPolicy( Class<? extends IProtocol> protocolContext, PolicyType type, IPolicy policy ) {
+    @SuppressWarnings("unchecked")
+	@Override
+    public void addPolicy( Class<T> protocolContext, PolicyType type, IPolicy<V> policy ) {
         if ( this.policies.get(type) != null ) {
             this.policies.get(type).add(policy);
             return;
         }
 
-        this.policies.put( type, Arrays.asList( new IPolicy[] { policy } ) );
+        this.policies.put( type, Arrays.asList( (IPolicy<V>[]) new IPolicy[] { policy } ) );
     }
 
-    public Collection<IPolicy> getPolicies( Class<? extends IProtocol> protocolContext, PolicyType type ) {
+    @Override
+    public List<IPolicy<V>> getPolicies( Class<T> protocolContext, PolicyType type ) {
         return this.policies.get(type);
     }
 
     @Override
-    public ApplicationResult checkPolicy( Class<? extends IProtocol> protocolContext, PolicyType type  ) {
+    public ApplicationResult checkPolicy( Class<T> protocolContext, PolicyType type  ) {
         return this.checkPolicy( protocolContext, type, null);
     }
 
     @Override
-    public ApplicationResult checkPolicy( Class<? extends IProtocol> protocolContext, PolicyType type, Object data ) {
+    public ApplicationResult checkPolicy( Class<T> protocolContext, PolicyType type, V data ) {
         ApplicationResult result = new ApplicationResult();
 
         log.info("Initiation validation procedure for object " + (data != null ? data.getClass().getCanonicalName() : "<null>") + " in context of " + type.name() );
@@ -157,9 +159,9 @@ public abstract class AbstractServer implements IServer {
             return result;
         }
 
-        for ( IPolicy policy : this.getPolicies( protocolContext, type) ) {
+        for ( IPolicy<V> policy : this.getPolicies( protocolContext, type) ) {
             log.info("Attempting policy " + policy.getClass().getCanonicalName() + " to check request validity.");
-            result = policy.applicate(data);
+            result = policy.applicate( data );
 
             if ( !result.isSuccessful() ) {
                 log.info("Check procedure was finished with failure...");

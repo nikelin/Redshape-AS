@@ -1,11 +1,10 @@
 package com.redshape.io.protocols.http.renderers;
 
-import com.redshape.exceptions.ExceptionWithCode;
+import com.redshape.io.net.request.RequestHeader;
 import com.redshape.io.protocols.http.request.HttpCode;
 import com.redshape.io.protocols.http.response.HttpResponse;
 import com.redshape.io.protocols.http.response.IHttpResponse;
-import com.redshape.io.protocols.core.renderers.ResponseRenderer;
-import com.redshape.io.protocols.core.request.RequestHeader;
+import com.redshape.io.protocols.core.renderers.IResponseRenderer;
 import com.redshape.renderer.RendererException;
 
 import java.util.Collection;
@@ -17,25 +16,25 @@ import java.util.Collection;
  * Time: 3:36:48 PM
  * To change this template use File | Settings | File Templates.
  */
-public class HttpResponseRenderer implements ResponseRenderer<Object, IHttpResponse> {
+public class HttpResponseRenderer implements IResponseRenderer<String, IHttpResponse> {
 
     @Override
-    public Object render( ExceptionWithCode e ) throws RendererException {
+    public String render( Throwable e ) throws RendererException {
         throw new RendererException();
     }
 
     @Override
-    public Object render( Collection<IHttpResponse> e ) throws RendererException {
+    public String render( Collection<IHttpResponse> e ) throws RendererException {
         throw new RendererException();
     }
 
     @Override
-    public Object render( IHttpResponse response ) throws RendererException {
+    public String render( IHttpResponse response ) throws RendererException {
          return this.renderSingle(response);
     }
 
     @Override
-    public byte[] renderBytes( ExceptionWithCode e ) throws RendererException {
+    public byte[] renderBytes( Throwable e ) throws RendererException {
         throw new RendererException();
     }
 

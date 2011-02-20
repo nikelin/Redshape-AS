@@ -1,10 +1,10 @@
 package com.redshape.renderer;
 
-import com.redshape.config.IConfig;
 import com.redshape.utils.InterfacesFilter;
 import com.redshape.utils.PackageLoaderException;
 import com.redshape.utils.PackagesLoader;
 import com.redshape.utils.ResourcesLoader;
+import com.redshape.utils.config.IConfig;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,23 +14,20 @@ import java.util.*;
 public abstract class AbstractRenderersFactory implements IRenderersFactory {
     private static final Logger log = Logger.getLogger( AbstractRenderersFactory.class );
 
-    private static Map<Class<? extends IRenderersFactory>, 
-					   IRenderersFactory> factories = new HashMap<
-					   												Class<? extends IRenderersFactory>, 
-					   												IRenderersFactory
-					   										     >();
+    private static Map<Class<? extends IRenderersFactory>,  IRenderersFactory> factories = new HashMap<
+												   												Class<? extends IRenderersFactory>, 
+												   												IRenderersFactory
+												   										     >();
 
-    private Map<Class<?>, 
-			    Class<? extends IRenderer> > 
-    		entities = new HashMap< Class<?>, 
-	    			 				Class<? extends IRenderer>
-    							>();
+    private Map<Class<?>, Class<? extends IRenderer> > entities = new HashMap< 
+																		Class<?>, 
+	    			 													Class<? extends IRenderer>
+																>();
     
-    private Map<Class<? extends IRenderer>, 
-    			IRenderer> 
-			renderers = new HashMap< Class<? extends IRenderer>, 
-									 IRenderer
-								   >();
+    private Map<Class<? extends IRenderer>, IRenderer> renderers = new HashMap< 
+    																	Class<? extends IRenderer>, 
+    																	IRenderer
+																	>();
     
     @Autowired( required = true )
     private ResourcesLoader resourcesLoader;

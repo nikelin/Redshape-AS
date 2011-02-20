@@ -5,19 +5,21 @@ import com.redshape.applications.ApplicationException;
 import com.redshape.applications.SpringApplication;
 import com.redshape.applications.bootstrap.Action;
 import com.redshape.applications.bootstrap.Bootstrap;
-import com.redshape.applications.bootstrap.IBootstrap;
-import com.redshape.applications.bootstrap.actions.MessagingInit;
-import com.redshape.messaging.JMSManager;
-import com.redshape.messaging.JMSManagerFactory;
+import com.redshape.delivering.JMSManager;
+import com.redshape.delivering.JMSManagerFactory;
 import com.redshape.scheduler.listeners.JobsListener;
 import com.redshape.utils.Constants;
 import org.apache.log4j.Logger;
-import org.quartz.*;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SimpleTrigger;
+import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
+
+import java.util.Date;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
-import java.util.Date;
 
 /**
  * WebCam Project

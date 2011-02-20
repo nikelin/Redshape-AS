@@ -1,9 +1,8 @@
 package com.redshape.io.protocols.core.writers;
 
 import com.redshape.io.protocols.core.response.IResponse;
-import com.redshape.io.protocols.core.sources.output.OutputSource;
-import com.redshape.exceptions.ExceptionWithCode;
 
+import java.io.OutputStream;
 import java.util.Collection;
 
 /**
@@ -14,7 +13,7 @@ import java.util.Collection;
  * @package com.vio.api.io.writers
  * @date Apr 1, 2010
  */
-public interface IResponseWriter<T extends OutputSource> extends Writer<T> {
+public interface IResponseWriter<T extends IResponse> extends IWriter {
 
     /**
      * Метод отправки композитного отклика
@@ -22,7 +21,7 @@ public interface IResponseWriter<T extends OutputSource> extends Writer<T> {
      * @param responses
      * @throws WriterException
      */
-    public void writeResponse( T source, Collection<? extends IResponse> responses ) throws WriterException;
+    public void writeResponse( OutputStream source, Collection<T> responses ) throws WriterException;
 
     /**
      * Метод отправки отклика ввиде ошибки проводки
@@ -30,7 +29,7 @@ public interface IResponseWriter<T extends OutputSource> extends Writer<T> {
      * @param exception
      * @throws WriterException
      */
-    public void writeResponse( T source, ExceptionWithCode exception ) throws WriterException;
+    public void writeResponse( OutputStream source, Throwable exception ) throws WriterException;
 
     /**
      * Метод отправки обычного отклика
@@ -38,6 +37,6 @@ public interface IResponseWriter<T extends OutputSource> extends Writer<T> {
      * @param response
      * @throws WriterException
      */
-    public void writeResponse( T source, IResponse response) throws WriterException;
+    public void writeResponse( OutputStream source, T response) throws WriterException;
 
 }

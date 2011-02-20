@@ -1,8 +1,8 @@
 package com.redshape.io.protocols.vanilla.hyndrators;
 
-import com.redshape.io.protocols.core.request.RequestException;
-import com.redshape.io.protocols.core.request.RequestHeader;
-import com.redshape.io.protocols.core.request.RequestType;
+import com.redshape.io.net.request.RequestException;
+import com.redshape.io.net.request.RequestHeader;
+import com.redshape.io.net.request.RequestType;
 import com.redshape.io.protocols.vanilla.request.ApiRequest;
 import com.redshape.io.protocols.vanilla.request.IApiRequest;
 import net.sf.json.JSONArray;

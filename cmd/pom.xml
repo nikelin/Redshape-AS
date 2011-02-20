@@ -22,9 +22,14 @@
     </build>
 
     <dependencies>
+    	<dependency>
+    		<groupId>com.redshape</groupId>
+    		<artifactId>persistence</artifactId>
+    		<version>1.0.0A</version>
+    	</dependency>
         <dependency>
             <groupId>com.redshape</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>commons</artifactId>
             <version>1.0.0A</version>
         </dependency>
     </dependencies>

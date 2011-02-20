@@ -13,7 +13,7 @@ import java.util.Collection;
  * Time: 18:54
  * To change this template use File | Settings | File Templates.
  */
-public interface IStore<V extends IModelData> extends IEventDispatcher<StoreEvents> {
+public interface IStore<V extends IModelData> extends IEventDispatcher {
 
     public IModelType getType();
 

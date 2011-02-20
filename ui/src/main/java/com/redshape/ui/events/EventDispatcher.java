@@ -14,29 +14,30 @@ import java.util.Map;
  * Time: 22:44
  * To change this template use File | Settings | File Templates.
  */
-public abstract class EventDispatcher<T extends EventType> {
-    private Map<T, Collection<IEventHandler<T>>> listeners = new HashMap<T, Collection<IEventHandler<T>>>();
+public abstract class EventDispatcher {
+    private Map<EventType, Collection<IEventHandler>> listeners = 
+    				new HashMap<EventType, Collection<IEventHandler>>();
 
-    public void addListener( T type, IEventHandler<T> handler ) {
+    public void addListener( EventType type, IEventHandler handler ) {
         if ( !this.listeners.containsKey(type) ) {
-            this.listeners.put( type, new HashSet<IEventHandler<T>>() );
+            this.listeners.put( type, new HashSet<IEventHandler>() );
         }
 
         this.listeners.get(type).add( handler );
     }
 
-    public void forwardEvent( T type ) {
+    public void forwardEvent( EventType type ) {
         this.forwardEvent( type, new Object[] {}  );
     }
 
-    public void forwardEvent( T type, Object... args ) {
+    public void forwardEvent( EventType type, Object... args ) {
         this.forwardEvent( new AppEvent( type, args  ) );
     }
 
-    public void forwardEvent( AppEvent<T> event ) {
-        Collection<IEventHandler<T>> handlers = this.listeners.get( event.getType() );
+    public void forwardEvent( AppEvent event ) {
+        Collection<IEventHandler> handlers = this.listeners.get( event.getType() );
         if ( handlers != null && !handlers.isEmpty() ) {
-            for ( IEventHandler<T> handler : handlers ) {
+            for ( IEventHandler handler : handlers ) {
                 handler.handle( event );
             }
         }

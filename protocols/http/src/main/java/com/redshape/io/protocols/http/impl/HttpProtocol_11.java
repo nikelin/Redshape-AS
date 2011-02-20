@@ -1,8 +1,8 @@
 package com.redshape.io.protocols.http.impl;
 
+import com.redshape.api.requesters.IRequester;
 import com.redshape.io.protocols.core.Constants;
 import com.redshape.io.protocols.core.IProtocolVersion;
-import com.redshape.io.protocols.core.sources.input.BufferedInput;
 import com.redshape.io.protocols.http.AbstractHttpProtocol;
 import com.redshape.io.protocols.http.HttpProtocolVersion;
 import com.redshape.io.protocols.http.hydrators.HttpRequestHydrator;
@@ -10,6 +10,8 @@ import com.redshape.io.protocols.http.readers.HttpRequestReader;
 import com.redshape.io.protocols.http.renderers.HttpResponseRenderer;
 import com.redshape.io.protocols.http.request.IHttpRequest;
 import com.redshape.io.protocols.http.response.IHttpResponse;
+import com.redshape.io.protocols.core.readers.IRequestReader;
+import com.redshape.io.protocols.core.writers.IResponseWriter;
 import com.redshape.io.protocols.core.writers.ResponseWriter;
 import com.redshape.io.protocols.dispatchers.IHttpDispatcher;
 
@@ -20,15 +22,26 @@ import com.redshape.io.protocols.dispatchers.IHttpDispatcher;
  * Time: 7:14:07 PM
  * To change this template use File | Settings | File Templates.
  */
-public class HttpProtocol_11 extends AbstractHttpProtocol<IHttpRequest, IHttpDispatcher, IHttpResponse, BufferedInput> {
+public class HttpProtocol_11 extends AbstractHttpProtocol<IRequester,
+														  IHttpRequest, 
+														  IHttpDispatcher<IRequester, IHttpRequest, IHttpResponse>, 
+														  IHttpResponse> {
 
     public HttpProtocol_11() {
         super( HttpProtocol_11.class );
 
-        this.setReader( new HttpRequestReader( new HttpRequestHydrator() ) );
-        this.setWriter( new ResponseWriter( new HttpResponseRenderer() ) );
+        this.setReader( this.createReader() );
+        this.setWriter( this.createWriter() );
     }
 
+    protected IRequestReader<IHttpRequest> createReader() {
+    	return new HttpRequestReader( new HttpRequestHydrator() ); 
+    }
+    
+    protected IResponseWriter<IHttpResponse> createWriter() {
+    	return new ResponseWriter<IHttpResponse>( new HttpResponseRenderer() );
+    }
+    
     @Override
     public IProtocolVersion getProtocolVersion() {
         return HttpProtocolVersion.HTTP_11;

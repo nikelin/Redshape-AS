@@ -2,13 +2,14 @@ package com.redshape.bootstrap;
 
 import com.redshape.applications.bootstrap.AbstractBootstrapAction;
 import com.redshape.applications.bootstrap.BootstrapException;
-import com.redshape.config.ConfigException;
-import com.redshape.config.IConfig;
 import com.redshape.notifications.transport.ITransport;
 import com.redshape.notifications.transport.configuration.ConfigurationException;
 import com.redshape.notifications.transport.configuration.ITransportConfiguration;
 import com.redshape.notifications.transport.TransportException;
 import com.redshape.notifications.transport.TransportsFactory;
+import com.redshape.utils.config.ConfigException;
+import com.redshape.utils.config.IConfig;
+
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 

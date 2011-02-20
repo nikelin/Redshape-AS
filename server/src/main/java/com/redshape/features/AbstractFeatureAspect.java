@@ -1,10 +1,10 @@
 package com.redshape.features;
 
-import com.redshape.config.IConfig;
-import com.redshape.exceptions.ExceptionWithCode;
-import com.redshape.io.protocols.core.request.IRequest;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.redshape.io.net.request.IRequest;
+import com.redshape.utils.config.IConfig;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -16,7 +16,7 @@ import java.util.*;
  * Time: 5:45:55 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class AbstractFeatureAspect<T extends IFeatureInteractor> implements IFeatureAspect<T> {
+public abstract class AbstractFeatureAspect implements IFeatureAspect {
     private static final Logger log = Logger.getLogger( AbstractFeatureAspect.class );
 
     private Map<String, Object> attributes = new HashMap<String, Object>();
@@ -38,7 +38,8 @@ public abstract class AbstractFeatureAspect<T extends IFeatureInteractor> implem
     	return this.config;
     }
 
-    public IInteractionResult interact( T requester ) throws InteractionException {
+    @Override
+    public IInteractionResult interact( IFeatureInteractor requester ) throws InteractionException {
         try {
             for ( Method method : this.getClass().getMethods() ) {
                 if ( !method.getName().equals( "interact" ) ) {
@@ -57,16 +58,13 @@ public abstract class AbstractFeatureAspect<T extends IFeatureInteractor> implem
             }
 
             return this.processInteraction( requester );
-        } catch ( ExceptionWithCode e ) {
-            log.error( e.getMessage(), e );
-            throw new InteractionException(e);
         } catch ( Throwable e ) {
             log.error(e.getMessage(), e);
-            throw new InteractionException();
+            throw new InteractionException( e.getMessage(), e );
         }
     }
 
-    abstract protected IInteractionResult processInteraction( T requester ) throws InteractionException;
+    abstract protected IInteractionResult processInteraction( IFeatureInteractor requester ) throws InteractionException;
 
     public void setFeatureName( String name ) {
         this.featureName = name;
@@ -84,8 +82,9 @@ public abstract class AbstractFeatureAspect<T extends IFeatureInteractor> implem
         this.aspectName = name;
     }
 
-    public Object getAttribute( String name ) {
-        return this.attributes.get(name);
+    @SuppressWarnings("unchecked")
+	public <V> V getAttribute( String name ) {
+        return (V) this.attributes.get(name);
     }
 
     public String getStringAttribute( String name ) {
@@ -100,13 +99,14 @@ public abstract class AbstractFeatureAspect<T extends IFeatureInteractor> implem
         return Double.valueOf( this.getStringAttribute( name ) );
     }
 
-    public Map getMapAttribute( String name ) {
-        final Map attribute = (Map) this.getAttribute(name);
-        return attribute;
+    @SuppressWarnings("unchecked")
+	public <K, V> Map<K, V> getMapAttribute( String name ) {
+    	return (Map<K, V>) this.getAttribute(name);
     }
 
-    public <T> Collection<T> getCollectionAttribute( String name ) {
-        return (Collection<T>) this.getAttribute(name);
+    @SuppressWarnings("unchecked")
+	public <V> Collection<V> getCollectionAttribute( String name ) {
+        return (Collection<V>) this.getAttribute(name);
     }
 
     public boolean isMapAttribute( String name ) {

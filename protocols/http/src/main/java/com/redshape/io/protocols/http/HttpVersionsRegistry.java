@@ -9,7 +9,7 @@ import com.redshape.io.protocols.core.AbstractVersionsRegistry;
  * Time: 11:06:30 AM
  * To change this template use File | Settings | File Templates.
  */
-public class HttpVersionsRegistry extends AbstractVersionsRegistry<IHttpProtocol, HttpProtocolVersion> {
+public class HttpVersionsRegistry extends AbstractVersionsRegistry<IHttpProtocol<?, ?, ?, ?>, HttpProtocolVersion> {
 
     @Override
     public boolean isSupports( HttpProtocolVersion version ) {

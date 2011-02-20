@@ -1,10 +1,13 @@
 package com.redshape.io.protocols.vanilla.readers;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 import com.redshape.io.protocols.vanilla.request.ApiRequest;
 import com.redshape.io.protocols.vanilla.hyndrators.IApiRequestHydrator;
 import com.redshape.io.protocols.core.readers.IRequestReader;
 import com.redshape.io.protocols.core.readers.ReaderException;
-import com.redshape.io.protocols.core.sources.input.BufferedInput;
 import com.redshape.io.protocols.vanilla.request.IApiRequest;
 import org.apache.log4j.Logger;
 
@@ -16,7 +19,7 @@ import org.apache.log4j.Logger;
  * @package com.vio.api.io.readers
  * @date Apr 1, 2010
  */
-public class APIRequestReader implements IRequestReader<BufferedInput, IApiRequest> {
+public class APIRequestReader implements IRequestReader<IApiRequest> {
     private static final Logger log = Logger.getLogger( APIRequestReader.class );
     private IApiRequestHydrator hydrator;
 
@@ -29,9 +32,9 @@ public class APIRequestReader implements IRequestReader<BufferedInput, IApiReque
     }
 
     @Override
-    public IApiRequest readRequest( BufferedInput source ) throws ReaderException {
+    public IApiRequest readRequest( InputStream source ) throws ReaderException {
         try {
-            String data = source.readLine();
+        	String data = new BufferedReader( new InputStreamReader(source) ).readLine();
             if ( data != null && !data.isEmpty() ) {
                 return ApiRequest.buildRequest( data, this.getHydrator() );
             }

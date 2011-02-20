@@ -1,8 +1,4 @@
 package com.redshape.features;
-
-import com.redshape.exceptions.ErrorCode;
-import com.redshape.exceptions.ExceptionWithCode;
-
 /**
  * Created by IntelliJ IDEA.
  * User: nikelin
@@ -10,17 +6,17 @@ import com.redshape.exceptions.ExceptionWithCode;
  * Time: 12:30:08 PM
  * To change this template use File | Settings | File Templates.
  */
-public class InteractionException extends ExceptionWithCode {
+public class InteractionException extends Exception {
 
     public InteractionException() {
-        super( ErrorCode.EXCEPTION_INTERNAL );
+    	super();
     }
 
-    public InteractionException( ExceptionWithCode cause ) {
-        super( cause.getCode() );
+    public InteractionException( String message, Throwable cause ) {
+        super( message, cause );
     }
 
-    public InteractionException( ErrorCode code ) {
+    public InteractionException( String code ) {
         super(code);
     }
 

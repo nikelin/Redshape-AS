@@ -1,7 +1,6 @@
 package com.redshape.io.protocols.core.readers;
 
-import com.redshape.io.protocols.core.sources.input.BufferedInput;
-import com.redshape.io.protocols.core.sources.input.InputSource;
+import java.io.InputStream;
 
 /**
  * WebCam Project
@@ -13,6 +12,6 @@ import com.redshape.io.protocols.core.sources.input.InputSource;
  */
 public interface IReader<V> {
 
-    public V readRequest( BufferedInput source ) throws ReaderException;
+    public V readRequest( InputStream source ) throws ReaderException;
 
 }

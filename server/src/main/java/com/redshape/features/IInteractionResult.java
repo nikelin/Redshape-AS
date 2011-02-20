@@ -1,7 +1,5 @@
 package com.redshape.features;
 
-import com.redshape.exceptions.ExceptionWithCode;
-
 import java.util.Map;
 
 /**
@@ -23,6 +21,6 @@ public interface IInteractionResult {
 
     public void markError( boolean status );
 
-    public ExceptionWithCode getError();
+    public Throwable getError();
 
 }

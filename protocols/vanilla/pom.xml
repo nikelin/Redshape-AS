@@ -1,23 +1,27 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>${project.parent.groupId}</groupId>
-    <version>${project.parent.version}</version>
+    <groupId>com.redshape.protocols</groupId>
+    <version>1.0.0A</version>
     <artifactId>vanilla</artifactId>
     <packaging>jar</packaging>
+    <name>Vanilla Protocol API</name>
     
     <parent>
     	<artifactId>protocols-parent</artifactId>
     	<groupId>com.redshape.protocols</groupId>
     	<version>1.0.0A</version>
-    	<relativePath>maven</relativePath>
     </parent>
+    
+    <build>
+    	<finalName>vanilla-api</finalName>
+    </build>
     
     <dependencies>
     	<dependency>
     		<artifactId>core</artifactId>
     		<groupId>com.redshape.protocols</groupId>
-    		<version>${project.version}</version>
+    		<version>1.0.0A</version>
     	</dependency>
     </dependencies>
     

@@ -1,8 +1,7 @@
 package com.redshape.io.protocols.http;
 
+import com.redshape.api.requesters.IRequester;
 import com.redshape.io.protocols.core.AbstractProtocol;
-import com.redshape.io.protocols.core.request.RequestType;
-import com.redshape.io.protocols.core.sources.input.BufferedInput;
 import com.redshape.io.protocols.dispatchers.IHttpDispatcher;
 import com.redshape.io.protocols.http.request.IHttpRequest;
 import com.redshape.io.protocols.http.response.IHttpResponse;
@@ -15,24 +14,21 @@ import com.redshape.io.protocols.http.response.IHttpResponse;
  * To change this template use File | Settings | File Templates.
  */
 public abstract class AbstractHttpProtocol<
+						E extends IRequester,
                         T extends IHttpRequest,
-                        D extends IHttpDispatcher,
-                        R extends IHttpResponse,
-                        I extends BufferedInput>
-        extends AbstractProtocol<IHttpRequest, T, IHttpDispatcher, D, R, I>
-        implements IHttpProtocol<T, D, R, I> {
+                        D extends IHttpDispatcher<E, T, R>,
+                        R extends IHttpResponse>
+        extends AbstractProtocol<E, IHttpRequest, T, IHttpDispatcher<E, T, R>, D, R>
+        implements IHttpProtocol<E, T, D, R> {
 
 	
 	
-    public AbstractHttpProtocol( Class<? extends IHttpProtocol> protocol ) {
+    public AbstractHttpProtocol( Class<? extends IHttpProtocol<E, T, D, R>> protocol ) {
         this.initializeDispatchers();
     }
 
     // @FIXME: important!
     protected void initializeDispatchers() {
-        this.setRequestsProcessor( null );
-        //@FIXME: due to `protocols` refactoring
-        this.setRequestsDispatcher(RequestType.INTERFACE_INVOKE, null );
     }
 
 }

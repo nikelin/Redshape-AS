@@ -14,21 +14,33 @@ import java.util.Map;
 public final class UIRegistry {
     private static Map<Integer, Object> values = new HashMap<Integer, Object>();
     private static JFrame context;
+    private static JMenu menu;
 
-    public static <V> V set( Integer id, Object value ) {
+    @SuppressWarnings("unchecked")
+	public static <V> V set( Integer id, Object value ) {
         values.put(id, value);
         return (V) get(id);
     }
 
-    public static <V> V get( Integer id ) {
+    @SuppressWarnings("unchecked")
+	public static <V> V get( Integer id ) {
         return (V) values.get(id);
     }
 
-    public void setRootContext( JFrame context ) {
-        this.context = context;
+    public static JMenu getMenu() {
+    	return UIRegistry.menu;
+    }
+    
+    public static void setMenu( JMenu menu ) {
+    	UIRegistry.menu = menu;
+    }
+    
+	public void setRootContext( JFrame context ) {
+        UIRegistry.context = context;
     }
 
-    public static <V extends JFrame> V getRootContext() {
+    @SuppressWarnings("unchecked")
+	public static <V extends JFrame> V getRootContext() {
         return (V) context;
     }
 

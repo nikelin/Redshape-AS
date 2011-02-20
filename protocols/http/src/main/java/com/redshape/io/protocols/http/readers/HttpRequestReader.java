@@ -5,10 +5,11 @@ import com.redshape.io.protocols.http.request.HttpRequest;
 import com.redshape.io.protocols.http.request.IHttpRequest;
 import com.redshape.io.protocols.core.readers.IRequestReader;
 import com.redshape.io.protocols.core.readers.ReaderException;
-import com.redshape.io.protocols.core.sources.input.BufferedInput;
 import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.IOException;
+import java.io.InputStream;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -18,7 +19,7 @@ import org.apache.log4j.Logger;
  * Time: 3:55:04 PM
  * To change this template use File | Settings | File Templates.
  */
-public class HttpRequestReader implements IRequestReader<BufferedInput, IHttpRequest> {
+public class HttpRequestReader implements IRequestReader<IHttpRequest> {
     private static final Logger log = Logger.getLogger( HttpRequestReader.class );
     private IHttpRequestHydrator hydrator;
 
@@ -31,9 +32,9 @@ public class HttpRequestReader implements IRequestReader<BufferedInput, IHttpReq
     }
 
     @Override
-    public IHttpRequest readRequest( BufferedInput source ) throws ReaderException {
+    public IHttpRequest readRequest( InputStream source ) throws ReaderException {
         try {
-            DataInputStream stream = new DataInputStream( source.getRawSource() );
+            DataInputStream stream = new DataInputStream( source);
             StringBuilder dataBuff = new StringBuilder();
             do {
                 try {

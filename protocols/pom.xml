@@ -3,8 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.redshape.protocols</groupId>
     <artifactId>protocols-parent</artifactId>
-    <version>${parent.version}</version>
+    <version>1.0.0A</version>
     <packaging>pom</packaging>
+    <name>Protocols API</name>
     
     <parent>
     	<artifactId>as</artifactId>

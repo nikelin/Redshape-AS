@@ -7,7 +7,7 @@ package com.redshape.auth;
  * Time: 6:06:19 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface IIdentity<T> {
+public interface IIdentity {
 
     public Long getLastAccessTime();
 

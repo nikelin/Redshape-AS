@@ -12,9 +12,9 @@ import java.util.Set;
  * Time: 2:50
  * To change this template use File | Settings | File Templates.
  */
-public interface IController extends IEventHandler<EventType> {
+public interface IController extends IEventHandler {
 
-    public Set<EventType> getRegisteredEvents();
+    public Set getRegisteredEvents();
 
     public void addChild( IController controller );
 

@@ -21,7 +21,7 @@ import java.util.List;
  * Time: 22:34
  * To change this template use File | Settings | File Templates.
  */
-public class ListStore<V extends IModelData> extends EventDispatcher<StoreEvents> implements IStore<V> {
+public class ListStore<V extends IModelData> extends EventDispatcher implements IStore<V> {
     private List<V> records = new ArrayList<V>();
     private IDataLoader<V> loader;
     private IModelType type;
@@ -34,9 +34,9 @@ public class ListStore<V extends IModelData> extends EventDispatcher<StoreEvents
     }
 
     protected void bindLoader( IDataLoader<V> loader ) {
-        loader.addListener(LoaderEvents.Loaded, new IEventHandler<LoaderEvents>() {
+        loader.addListener(LoaderEvents.Loaded, new IEventHandler() {
             @Override
-            public void handle( AppEvent<LoaderEvents> type) {
+            public void handle( AppEvent type) {
                 for ( V record : type.<Collection<V>>getArg(0) ) {
                     ListStore.this.add(record);
                 }
