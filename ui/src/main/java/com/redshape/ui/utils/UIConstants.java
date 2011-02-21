@@ -12,4 +12,5 @@ public final class UIConstants {
     public final static int NORTH_PANE = 1;
     public final static int MAIN_MENU = 2;
     public final static int BOTTOM_PANE = 3;
+    public final static int SPRING_CONTEXT = 4;
 }

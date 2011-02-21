@@ -1,22 +1,21 @@
 package com.redshape.ui.components.locators;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.HashSet;
-
-import javax.swing.Action;
+import java.util.StringTokenizer;
 
 import com.redshape.ui.components.IComponent;
-import com.redshape.ui.components.actions.ComponentAction;
-import com.redshape.ui.events.AppEvent;
-import com.redshape.ui.events.IEventHandler;
 import com.redshape.utils.config.IConfig;
 
 public class ConfigBasedLocator implements IComponentsLocator {
+	public static String DEFAULT_CONFIG_PATH = "ui.components";
 	private IConfig config;
 	private IConfig contextPart;
-	private String configPath = "ui.components";
+	private String configPath;
+	
+	public ConfigBasedLocator( IConfig config ) throws LocationException {
+		this(config, DEFAULT_CONFIG_PATH );
+	}
 	
 	public ConfigBasedLocator( IConfig config, String configPath ) throws LocationException {
 		this.config = config;
@@ -60,14 +59,13 @@ public class ConfigBasedLocator implements IComponentsLocator {
 	
 	protected void init() throws LocationException {
 		try {
-			String[] pathParts = this.configPath.split(".");
-			this.contextPart = config.get(pathParts[0]);
-			int offset = 1;
-			while( offset != pathParts.length ) {
-				this.contextPart = this.contextPart.get( pathParts[offset++] );
+			StringTokenizer tokenizer = new StringTokenizer( this.configPath, ".");
+			IConfig context = this.config;
+			while ( tokenizer.hasMoreTokens() ) {
+				context = context.get(tokenizer.nextToken());
 			}
 			
-			pathParts = null;
+			this.contextPart = context;
 		} catch ( Throwable e ) {
 			throw new LocationException( e.getMessage(), e );
 		}
@@ -80,8 +78,8 @@ public class ConfigBasedLocator implements IComponentsLocator {
 			Collection<IComponent> result = new HashSet<IComponent>();
 			for ( IConfig componentNode : this.contextPart.childs() ) {
 				result.add( this.createComponent( 
-						(Class<? extends IComponent>) Class.forName( componentNode.get("class").value() ), 
-						componentNode 
+					(Class<? extends IComponent>) Class.forName( componentNode.get("class").value() ), 
+					componentNode 
 				) );
 			}
 			
@@ -93,28 +91,23 @@ public class ConfigBasedLocator implements IComponentsLocator {
 		}
 	}
 	
-	protected IComponent createComponent( Class<? extends IComponent> clazz, IConfig componentConfig ) throws LocationException {
+	protected IComponent createComponent( Class<? extends IComponent> clazz, IConfig componentConfig ) 
+					throws LocationException {
 		try {
 			IComponent component = clazz.newInstance();
 			
-			for ( IConfig actionNode : componentConfig.get("actions").childs() ) {
-				component.addAction( this.createComponentAction( component, actionNode ) );
+			if ( null != componentConfig.attribute("name") ) {
+				component.setName( componentConfig.attribute("name") );
+			}
+			
+			if ( null != componentConfig.attribute("title") ) {
+				component.setTitle( componentConfig.attribute("title") );
 			}
 			
 			return component;
 		} catch ( Throwable e ) {
 			throw new LocationException( e.getMessage(), e );
 		}
-	}
-	
-	protected Action createComponentAction( IComponent component, IConfig actionConfig ) {
-		return new ComponentAction( component, new IEventHandler() {
-			@Override
-			public void handle(AppEvent event) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
 	}
 
 }

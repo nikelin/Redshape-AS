@@ -9,15 +9,16 @@ package com.redshape.ui.events;
  */
 public class UIEvents extends EventType {
 
-    public UIEvents( String code ) {
+    protected UIEvents( String code ) {
         super(code);
     }
 
     public static class Core extends UIEvents {
-        public Core( String code ) {
+        protected Core( String code ) {
             super(code);
         }
 
+        public static Core Error = new Core("Core.Error");
         public static Core Init = new Core("Core.Init");
         public static Core Repaint = new Core("Core.Repaint");
         public static Core Unload = new Core("Core.Unload");

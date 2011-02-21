@@ -30,7 +30,9 @@ public class ListStore<V extends IModelData> extends EventDispatcher implements 
         this.loader = loader;
         this.type = type;
 
-        this.bindLoader(loader);
+        if ( this.loader != null ) {
+        	this.bindLoader(loader);
+        }
     }
 
     protected void bindLoader( IDataLoader<V> loader ) {
@@ -78,8 +80,8 @@ public class ListStore<V extends IModelData> extends EventDispatcher implements 
     }
 
     public void clean() {
-        for( V record : this.records ) {
-            this.remove(record);
+        for( int i = 0; i < this.records.size(); i++ ) {
+        	this.records.remove(i);
         }
     }
 

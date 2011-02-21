@@ -15,8 +15,9 @@ import java.awt.event.*;
  * To change this template use File | Settings | File Templates.
  */
 public abstract class AbstractMainWindow extends JFrame {
+	private static final long serialVersionUID = -3138024523185479599L;
 
-    public AbstractMainWindow() {
+	public AbstractMainWindow() {
         super();
 
         this.configUI();

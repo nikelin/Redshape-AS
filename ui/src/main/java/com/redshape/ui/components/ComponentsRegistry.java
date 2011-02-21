@@ -14,7 +14,9 @@ public class ComponentsRegistry implements IComponentsRegistry {
 	private Collection<IComponent> components = new HashSet<IComponent>();
 	private IComponentsLocator locator;
 	
-	public ComponentsRegistry() throws LocationException {
+	public ComponentsRegistry( IComponentsLocator locator ) throws LocationException {
+		this.locator = locator;
+		
 		this.init();
 	}
 	
@@ -45,12 +47,12 @@ public class ComponentsRegistry implements IComponentsRegistry {
 		return this.components;
 	}
 	
-	public IComponentsLocator getComponentsLocator() {
+	protected IComponentsLocator getComponentsLocator() {
 		return this.locator;
 	}
 	
-	public void setComponentsLocator( IComponentsLocator scanner ) {
-		this.locator = scanner;
+	public void setComponentsLocator( IComponentsLocator locator ) {
+		this.locator = locator;
 	}
 	
 }

@@ -9,6 +9,10 @@ package com.redshape.ui.data;
  */
 public interface IModelField {
 
+	public void setTitle( String title );
+	
+	public String getTitle();
+	
     public void setType( Class<?> type );
 
     public Class<?> getType();

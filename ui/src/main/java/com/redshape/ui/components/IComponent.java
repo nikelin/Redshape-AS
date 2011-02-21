@@ -3,16 +3,21 @@ package com.redshape.ui.components;
 import java.util.Collection;
 
 import javax.swing.Action;
-
-import com.redshape.ui.components.actions.ComponentAction;
-import com.redshape.ui.components.events.ComponentEvents;
 import com.redshape.ui.events.IEventDispatcher;
 
 public interface IComponent extends IEventDispatcher {
 	
+	public boolean doRenderMenu();
+	
+	public void doRenderMenu( boolean value );
+	
 	public String getTitle();
 	
+	public void setTitle( String title );
+	
 	public String getName();
+	
+	public void setName( String name );
 	
 	public void init();
 	

@@ -56,11 +56,20 @@ public abstract class AbstractModelType implements IModelType {
     public class ModelTypeField implements IModelField {
         private String name;
         private String format;
+        private String title;
         private Class<?> type;
         private boolean required;
 
         public ModelTypeField( String name ) {
             this.name = name;
+        }
+        
+        public String getTitle() {
+        	return this.title;
+        }
+        
+        public void setTitle( String title ) {
+        	this.title = title;
         }
 
         public String getName() {

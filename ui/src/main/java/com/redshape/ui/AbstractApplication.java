@@ -1,5 +1,6 @@
 package com.redshape.ui;
 
+import java.awt.Component;
 import java.awt.event.ActionListener;
 
 import com.redshape.ui.components.IComponent;
@@ -35,9 +36,14 @@ public abstract class AbstractApplication {
     	Dispatcher.get().addListener(UIEvents.Core.Repaint, new IEventHandler() {
             @Override
             public void handle(AppEvent type) {
-                JComponent context = ( (JComponent) UIRegistry.get(UIConstants.CENTER_PANE) );
-	            context.revalidate();
-	            context.repaint();
+            	System.out.println("Repainted");
+            	AbstractApplication.this.context.invalidate();
+            	AbstractApplication.this.context.repaint();
+            	
+            	JComponent component = UIRegistry.<JComponent>get( UIConstants.CENTER_PANE );
+            	component.revalidate();
+            	component.invalidate();
+            	component.repaint();
             }
         });
 
@@ -53,6 +59,7 @@ public abstract class AbstractApplication {
     		
     		// @todo: move to entitity like MenuBuilder or elsewhere
     		UIRegistry.getMenu().add( this.createMenu( component ) );
+    		Dispatcher.get().forwardEvent( UIEvents.Core.Repaint );
     	}
 
         Dispatcher.get().forwardEvent( UIEvents.Core.Init );

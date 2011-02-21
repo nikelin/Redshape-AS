@@ -43,7 +43,7 @@ public class TableModelAdapter<T extends IModelData> extends EventDispatcher
     }
 
     public String getColumnName( int index ) {
-        return this.store.getType().getField(index).getName();
+        return this.store.getType().getField(index).getTitle();
     }
 
     public Class<?> getColumnClass( int index ) {

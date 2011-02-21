@@ -1,4 +1,4 @@
-package com.redshape.ui.components.actions;
+package com.redshape.ui.actions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,12 +16,12 @@ public class ComponentAction extends AbstractAction {
 	private IComponent component;
 	private IEventHandler listener;
 	
-	public ComponentAction( IComponent component ) {
-		this(component, null);
+	public ComponentAction( String name, IComponent component ) {
+		this( name, component, null);
 	}
 	
-	public ComponentAction( IComponent component, IEventHandler listener ) {
-		super( component.getName() );
+	public ComponentAction( String name, IComponent component, IEventHandler listener ) {
+		super( name );
 	
 		this.listener = listener;
 		this.component = component;
@@ -30,7 +30,7 @@ public class ComponentAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if ( this.listener != null ) {
-			this.listener.handle( new AppEvent( ComponentEvents.ActionPerformed, e ) );
+			this.listener.handle( new AppEvent( ComponentEvents.ActionPerformed, e, this.component ) );
 		} else {
 			
 		}
