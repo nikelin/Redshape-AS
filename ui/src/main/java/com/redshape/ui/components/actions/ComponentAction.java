@@ -29,7 +29,11 @@ public class ComponentAction extends AbstractAction {
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		this.listener.handle( new AppEvent( ComponentEvents.ActionPerformed, e ) );
+		if ( this.listener != null ) {
+			this.listener.handle( new AppEvent( ComponentEvents.ActionPerformed, e ) );
+		} else {
+			
+		}
 	}
 
 }

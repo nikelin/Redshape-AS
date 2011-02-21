@@ -1,5 +1,7 @@
 package com.redshape.ui.components.locators;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -7,14 +9,16 @@ import javax.swing.Action;
 
 import com.redshape.ui.components.IComponent;
 import com.redshape.ui.components.actions.ComponentAction;
+import com.redshape.ui.events.AppEvent;
+import com.redshape.ui.events.IEventHandler;
 import com.redshape.utils.config.IConfig;
 
-public class ConfigBasedScanner implements IComponentsLocator {
+public class ConfigBasedLocator implements IComponentsLocator {
 	private IConfig config;
 	private IConfig contextPart;
 	private String configPath = "ui.components";
 	
-	public ConfigBasedScanner( IConfig config, String configPath ) throws LocationException {
+	public ConfigBasedLocator( IConfig config, String configPath ) throws LocationException {
 		this.config = config;
 		this.configPath = configPath;
 		
@@ -104,9 +108,13 @@ public class ConfigBasedScanner implements IComponentsLocator {
 	}
 	
 	protected Action createComponentAction( IComponent component, IConfig actionConfig ) {
-		Action action = new ComponentAction( component );
-		
-		return action;
+		return new ComponentAction( component, new IEventHandler() {
+			@Override
+			public void handle(AppEvent event) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 
 }

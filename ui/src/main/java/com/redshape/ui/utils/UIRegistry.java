@@ -14,7 +14,7 @@ import java.util.Map;
 public final class UIRegistry {
     private static Map<Integer, Object> values = new HashMap<Integer, Object>();
     private static JFrame context;
-    private static JMenu menu;
+    private static JMenuBar menu;
 
     @SuppressWarnings("unchecked")
 	public static <V> V set( Integer id, Object value ) {
@@ -27,11 +27,11 @@ public final class UIRegistry {
         return (V) values.get(id);
     }
 
-    public static JMenu getMenu() {
+    public static JMenuBar getMenu() {
     	return UIRegistry.menu;
     }
     
-    public static void setMenu( JMenu menu ) {
+    public static void setMenu( JMenuBar menu ) {
     	UIRegistry.menu = menu;
     }
     

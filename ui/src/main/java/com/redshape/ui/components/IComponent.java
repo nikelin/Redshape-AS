@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import javax.swing.Action;
 
+import com.redshape.ui.components.actions.ComponentAction;
 import com.redshape.ui.components.events.ComponentEvents;
 import com.redshape.ui.events.IEventDispatcher;
 
@@ -21,7 +22,7 @@ public interface IComponent extends IEventDispatcher {
 	
 	public void addAction( Action action );
 	
-	public Collection<Action> getActions();
+	public <T extends Action> Collection<T> getActions();
 	
 	public void removeAction( Action action );
 	
