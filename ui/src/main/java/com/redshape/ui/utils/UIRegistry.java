@@ -12,18 +12,18 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public final class UIRegistry {
-    private static Map<Integer, Object> values = new HashMap<Integer, Object>();
+    private static Map<UIConstants.Attribute, Object> values = new HashMap<UIConstants.Attribute, Object>();
     private static JFrame context;
     private static JMenuBar menu;
 
     @SuppressWarnings("unchecked")
-	public static <V> V set( Integer id, Object value ) {
+	public static <V> V set( UIConstants.Attribute id, Object value ) {
         values.put(id, value);
         return (V) get(id);
     }
 
     @SuppressWarnings("unchecked")
-	public static <V> V get( Integer id ) {
+	public static <V> V get( UIConstants.Attribute id ) {
         return (V) values.get(id);
     }
 

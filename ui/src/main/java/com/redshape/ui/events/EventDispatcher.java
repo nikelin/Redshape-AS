@@ -14,7 +14,7 @@ import java.util.Map;
  * Time: 22:44
  * To change this template use File | Settings | File Templates.
  */
-public abstract class EventDispatcher {
+public class EventDispatcher implements IEventDispatcher {
     private Map<EventType, Collection<IEventHandler>> listeners = 
     				new HashMap<EventType, Collection<IEventHandler>>();
 

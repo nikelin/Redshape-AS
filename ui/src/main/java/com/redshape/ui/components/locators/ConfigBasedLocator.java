@@ -6,9 +6,10 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import com.redshape.ui.components.IComponent;
+import com.redshape.ui.widgets.IWidget;
 import com.redshape.utils.config.IConfig;
 
-public class ConfigBasedLocator implements IComponentsLocator {
+public class ConfigBasedLocator<T extends IWidget> implements IComponentsLocator<T> {
 	public static String DEFAULT_CONFIG_PATH = "ui.components";
 	private IConfig config;
 	private IConfig contextPart;
@@ -74,12 +75,12 @@ public class ConfigBasedLocator implements IComponentsLocator {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<IComponent> locate() throws LocationException {
+	public Collection<T> locate() throws LocationException {
 		try {
-			List<IComponent> result = new ArrayList<IComponent>();
+			List<T> result = new ArrayList<T>();
 			for ( IConfig componentNode : this.contextPart.childs() ) {
 				result.add( this.createComponent( 
-					(Class<? extends IComponent>) Class.forName( componentNode.get("class").value() ), 
+					(Class<T>) Class.forName( componentNode.get("class").value() ), 
 					componentNode 
 				) );
 			}
@@ -92,10 +93,10 @@ public class ConfigBasedLocator implements IComponentsLocator {
 		}
 	}
 	
-	protected IComponent createComponent( Class<? extends IComponent> clazz, IConfig componentConfig ) 
+	protected T createComponent( Class<T> clazz, IConfig componentConfig ) 
 					throws LocationException {
 		try {
-			IComponent component = clazz.newInstance();
+			T component = clazz.newInstance();
 			
 			if ( null != componentConfig.attribute("name") ) {
 				component.setName( componentConfig.attribute("name") );

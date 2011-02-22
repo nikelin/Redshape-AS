@@ -1,5 +1,6 @@
 package com.redshape.ui.components;
 
+import java.awt.Container;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.List;
 import javax.swing.Action;
 
 import com.redshape.ui.events.EventDispatcher;
+import com.redshape.ui.utils.UIConstants;
 
 public abstract class AbstractComponent extends EventDispatcher implements IComponent {
 	private String name;
@@ -27,10 +29,17 @@ public abstract class AbstractComponent extends EventDispatcher implements IComp
 		this.title = title;
 	}
 	
+	@Override
+	public void render( Container container ) {
+		
+	}
+	
+	@Override
 	public boolean doRenderMenu() {
 		return this.doRenderMenu;
 	}
 	
+	@Override
 	public void doRenderMenu( boolean value ) {
 		this.doRenderMenu = value;
 	}

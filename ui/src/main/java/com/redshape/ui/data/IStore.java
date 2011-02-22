@@ -22,11 +22,15 @@ public interface IStore<V extends IModelData> extends IEventDispatcher {
     public void add( V record );
 
     public void remove( V record );
+    
+    public void removeAt( int index );
 
     public V getAt( int index );
 
     public Collection<V> getList();
 
     public void load() throws LoaderException;
+    
+    public void clear();
 
 }

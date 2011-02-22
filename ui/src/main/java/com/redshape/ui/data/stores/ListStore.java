@@ -34,8 +34,16 @@ public class ListStore<V extends IModelData> extends EventDispatcher implements 
         	this.bindLoader(loader);
         }
     }
+    
+    @Override
+    // @TODO: add events dispatching
+    public void clear() {
+    	this.records.clear();
+    }
 
     protected void bindLoader( IDataLoader<V> loader ) {
+    	loader.bind(this);
+    	
         loader.addListener(LoaderEvents.Loaded, new IEventHandler() {
             @Override
             public void handle( AppEvent type) {
@@ -46,43 +54,40 @@ public class ListStore<V extends IModelData> extends EventDispatcher implements 
         });
     }
 
+    @Override
     public V getAt( int index ) {
         return this.records.get(index);
     }
 
+    @Override
     public IModelType getType() {
         return this.type;
     }
 
-    public void setType( IModelType type ) {
-        this.type = type;
-    }
-
+    @Override
     public int count() {
         return this.records.size();
     }
 
+    @Override
     public void add( V record ) {
         this.records.add(record);
     }
 
+    @Override
     public List<V> getList() {
         return this.records;
     }
 
+    @Override
     public void remove( V item ) {
         this.records.remove(item);
         this.forwardEvent( StoreEvents.Removed, item );
     }
 
+    @Override
     public void removeAt( int index ) {
         this.remove( this.records.get(index) );
-    }
-
-    public void clean() {
-        for( int i = 0; i < this.records.size(); i++ ) {
-        	this.records.remove(i);
-        }
     }
 
     protected IDataLoader<V> getLoader() {
@@ -90,7 +95,7 @@ public class ListStore<V extends IModelData> extends EventDispatcher implements 
     }
 
     public void load() throws LoaderException {
-        this.clean();
+        this.clear();
         this.loader.load();
     }
 }

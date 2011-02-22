@@ -4,26 +4,13 @@ import java.util.Collection;
 
 import javax.swing.Action;
 import com.redshape.ui.events.IEventDispatcher;
+import com.redshape.ui.widgets.IWidget;
 
-public interface IComponent extends IEventDispatcher {
+public interface IComponent extends IWidget {
 	
 	public boolean doRenderMenu();
 	
 	public void doRenderMenu( boolean value );
-	
-	public String getTitle();
-	
-	public void setTitle( String title );
-	
-	public String getName();
-	
-	public void setName( String name );
-	
-	public void init();
-	
-	public void activate();
-	
-	public void deactivate();
 	
 	public void addAction( Action action );
 	

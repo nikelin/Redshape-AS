@@ -29,11 +29,14 @@ public abstract class AbstractMainWindow extends JFrame {
     protected void buildUI() {
         this.setLayout( new BorderLayout() );
 
-        this.add( (Component) UIRegistry.set( UIConstants.MAIN_MENU, this.createMenu()), BorderLayout.NORTH );
-        this.add( (Component) UIRegistry.set( UIConstants.CENTER_PANE, this.createCenterPanel() ), BorderLayout.CENTER );
-        this.add( (Component) UIRegistry.set( UIConstants.BOTTOM_PANE, this.createBottom() ), BorderLayout.SOUTH );
+        this.add( (Component) UIRegistry.set( UIConstants.Area.WEST, this.createWestPanel() ) );
+        this.add( (Component) UIRegistry.set( UIConstants.Area.MENU, this.createMenu()), BorderLayout.NORTH );
+        this.add( (Component) UIRegistry.set( UIConstants.Area.CENTER, this.createCenterPanel() ), BorderLayout.CENTER );
+        this.add( (Component) UIRegistry.set( UIConstants.Area.SOUTH, this.createBottom() ), BorderLayout.SOUTH );
     }
 
+    abstract protected JPanel createWestPanel();
+    
     abstract protected JPanel createCenterPanel();
     
     abstract protected JMenuBar createMenu();

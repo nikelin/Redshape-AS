@@ -2,10 +2,10 @@ package com.redshape.ui.components.locators;
 
 import java.util.Collection;
 
-import com.redshape.ui.components.IComponent;
+import com.redshape.ui.widgets.IWidget;
 
-public interface IComponentsLocator {
+public interface IComponentsLocator<T extends IWidget> {
 	
-	public Collection<IComponent> locate() throws LocationException;
+	public Collection<T> locate() throws LocationException;
 	
 }

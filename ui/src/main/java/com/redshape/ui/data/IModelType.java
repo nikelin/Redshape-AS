@@ -12,6 +12,8 @@ import java.util.Collection;
 public interface IModelType {
 
     public int count();
+    
+    public int nonTransientCount();
 
     public IModelField getField( int index );
 

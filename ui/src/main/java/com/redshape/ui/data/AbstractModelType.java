@@ -25,6 +25,17 @@ public abstract class AbstractModelType implements IModelType {
         this.values.remove(name);
     }
 
+    public int nonTransientCount() {
+    	int size = 0;
+    	for ( IModelField field : this.getFields() ) {
+    		if ( !field.isTransient() ) {
+    			size++;
+    		}
+    	}
+    	
+    	return size;
+    }
+    
     public int count() {
         return this.values.size();
     }
@@ -59,6 +70,7 @@ public abstract class AbstractModelType implements IModelType {
         private String title;
         private Class<?> type;
         private boolean required;
+        private boolean isTransient;
 
         public ModelTypeField( String name ) {
             this.name = name;
@@ -70,6 +82,14 @@ public abstract class AbstractModelType implements IModelType {
         
         public void setTitle( String title ) {
         	this.title = title;
+        }
+        
+        public boolean isTransient() {
+        	return this.isTransient;
+        }
+        
+        public void makeTransient( boolean status ) {
+        	this.isTransient = status;
         }
 
         public String getName() {

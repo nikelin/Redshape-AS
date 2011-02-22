@@ -25,7 +25,7 @@ public class TableModelAdapter<T extends IModelData> extends EventDispatcher
 													 implements TableModel, IStore<T> {
     private IStore<T> store;
     private Collection<TableModelListener> listeners = new HashSet<TableModelListener>();
-
+    
     public TableModelAdapter( IStore<T> store ) {
         this.store = store;
     }
@@ -34,6 +34,10 @@ public class TableModelAdapter<T extends IModelData> extends EventDispatcher
         this.store.add(record);
     }
 
+    public void clear() {
+    	this.store.clear();
+    }
+    
     public void remove( T record ) {
         this.store.remove(record);
     }
@@ -59,7 +63,7 @@ public class TableModelAdapter<T extends IModelData> extends EventDispatcher
     }
 
     public int getColumnCount() {
-        return this.store.getType().count();
+        return this.store.getType().nonTransientCount() + 1;
     }
 
     public boolean isCellEditable( int row, int col ) {
@@ -109,5 +113,10 @@ public class TableModelAdapter<T extends IModelData> extends EventDispatcher
     public void forwardEvent( AppEvent event ) {
         this.store.forwardEvent( event );
     }
+
+	@Override
+	public void removeAt(int index) {
+		this.store.removeAt(index);
+	}
 
 }

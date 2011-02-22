@@ -8,9 +8,20 @@ package com.redshape.ui.utils;
  * To change this template use File | Settings | File Templates.
  */
 public final class UIConstants {
-    public final static int CENTER_PANE = 0;
-    public final static int NORTH_PANE = 1;
-    public final static int MAIN_MENU = 2;
-    public final static int BOTTOM_PANE = 3;
-    public final static int SPRING_CONTEXT = 4;
+	public interface Attribute {
+	}
+	
+	public enum Area implements Attribute {
+		NONE,
+		SOUTH,
+		NORTH,
+		CENTER,
+		EAST,
+		WEST,
+		MENU
+	}
+	
+	public enum System implements Attribute {
+		SPRING_CONTEXT
+	}
 }

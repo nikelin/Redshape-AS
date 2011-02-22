@@ -9,6 +9,10 @@ package com.redshape.ui.data;
  */
 public interface IModelField {
 
+	public boolean isTransient();
+	
+	public void makeTransient( boolean value );
+	
 	public void setTitle( String title );
 	
 	public String getTitle();

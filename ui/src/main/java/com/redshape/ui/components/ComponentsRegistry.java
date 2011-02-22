@@ -13,9 +13,9 @@ public class ComponentsRegistry implements IComponentsRegistry {
 	private static final Logger log = Logger.getLogger( ComponentsRegistry.class );
 	
 	private List<IComponent> components = new ArrayList<IComponent>();
-	private IComponentsLocator locator;
+	private IComponentsLocator<IComponent> locator;
 	
-	public ComponentsRegistry( IComponentsLocator locator ) throws LocationException {
+	public ComponentsRegistry( IComponentsLocator<IComponent> locator ) throws LocationException {
 		this.locator = locator;
 		
 		this.init();
@@ -49,11 +49,11 @@ public class ComponentsRegistry implements IComponentsRegistry {
 		return this.components;
 	}
 	
-	protected IComponentsLocator getComponentsLocator() {
+	protected IComponentsLocator<IComponent> getComponentsLocator() {
 		return this.locator;
 	}
 	
-	public void setComponentsLocator( IComponentsLocator locator ) {
+	public void setComponentsLocator( IComponentsLocator<IComponent> locator ) {
 		this.locator = locator;
 	}
 	
