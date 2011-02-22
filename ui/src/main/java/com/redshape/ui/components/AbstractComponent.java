@@ -1,7 +1,8 @@
 package com.redshape.ui.components;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.List;
 
 import javax.swing.Action;
 
@@ -11,7 +12,7 @@ public abstract class AbstractComponent extends EventDispatcher implements IComp
 	private String name;
 	private String title;
 	private boolean doRenderMenu;
-	private Collection<Action> actions = new HashSet<Action>();
+	private List<Action> actions = new ArrayList<Action>();
 	
 	public AbstractComponent( String name, String title ) {
 		this(name, title, true);
@@ -59,7 +60,7 @@ public abstract class AbstractComponent extends EventDispatcher implements IComp
 		this.actions.add(action);
 	}
 	
-	public void setActions( Collection<Action> actions ) {
+	public void setActions( List<Action> actions ) {
 		this.actions = actions;
 	}
 	

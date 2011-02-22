@@ -1,7 +1,7 @@
 package com.redshape.ui;
 
-import java.awt.Component;
-import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import com.redshape.ui.components.IComponent;
 import com.redshape.ui.components.IComponentsRegistry;
@@ -22,6 +22,23 @@ public abstract class AbstractApplication {
 
     public AbstractApplication( AbstractMainWindow context ) {
         this.context = context;
+        
+        this.context.addWindowListener( new WindowAdapter() {
+        	@Override
+        	public void windowClosed(WindowEvent e) {
+        		super.windowClosed(e);
+        		
+        		AbstractApplication.this.exit();
+        	}
+		});
+    }
+    
+    public JFrame getRootContext() {
+    	return this.context;
+    }
+    
+    public void exit() {
+    	System.exit(1);
     }
     
     public void setComponentsRegistry( IComponentsRegistry registry ) {
@@ -30,6 +47,25 @@ public abstract class AbstractApplication {
     
     protected IComponentsRegistry getComponentsRegistry() {
     	return this.registry;
+    }
+    
+    protected void init() {
+		Dispatcher.get().addListener( UIEvents.Core.Exit, new IEventHandler() {
+			@Override
+			public void handle(AppEvent event) {
+				System.out.println("Exiting...");
+				AbstractApplication.this.exit();
+			}
+		});
+    	
+        for ( IComponent component : this.getComponentsRegistry().getComponents() ) {
+    		component.init();
+    		
+    		if ( component.doRenderMenu() ) {
+	    		// @todo: move to entitity like MenuBuilder or elsewhere
+	    		UIRegistry.getMenu().add( this.createMenu( component ) );
+    		}
+    	}
     }
 
     public void start() throws ApplicationException {
@@ -51,16 +87,9 @@ public abstract class AbstractApplication {
             @Override
             public void handle(AppEvent type) {
                 AbstractApplication.this.context.setVisible(true);
+                Dispatcher.get().forwardEvent( UIEvents.Core.Repaint );
             }
         });
-        
-        for ( IComponent component : this.getComponentsRegistry().getComponents() ) {
-    		component.init();
-    		
-    		// @todo: move to entitity like MenuBuilder or elsewhere
-    		UIRegistry.getMenu().add( this.createMenu( component ) );
-    		Dispatcher.get().forwardEvent( UIEvents.Core.Repaint );
-    	}
 
         Dispatcher.get().forwardEvent( UIEvents.Core.Init );
     }

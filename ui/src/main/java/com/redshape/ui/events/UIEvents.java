@@ -18,6 +18,7 @@ public class UIEvents extends EventType {
             super(code);
         }
 
+        public static Core Exit = new Core("Core.Exit");
         public static Core Error = new Core("Core.Error");
         public static Core Init = new Core("Core.Init");
         public static Core Repaint = new Core("Core.Repaint");

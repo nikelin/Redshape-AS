@@ -11,8 +11,12 @@ public class AppEvent {
     private EventType type;
     private Object[] args;
 
+    public AppEvent() {
+    	this(null);
+    }
+    
     public AppEvent( EventType type ) {
-        this(type, null);
+        this(type, new Object[] {} );
     }
 
     public AppEvent( EventType type, Object... args ) {
@@ -28,15 +32,16 @@ public class AppEvent {
         return args;
     }
 
-    public <V> V getArg( int num ) {
-        return (V) args[num];
+    @SuppressWarnings("unchecked")
+	public <V> V getArg( int num ) {
+        return (V) this.args[num];
     }
 
     public boolean isSame( EventType type ) {
-        return this.getType().equals( type );
+        return this.getType() != null ? this.getType().equals( type ) : false;
     }
 
     public boolean isSame( AppEvent event ) {
-        return this.getType().equals( event.getType() );
+        return this.getType() != null ? this.getType().equals( event.getType() ) : false;
     }
 }

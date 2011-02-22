@@ -2,7 +2,6 @@ package com.redshape.ui;
 
 import com.redshape.ui.events.EventDispatcher;
 import com.redshape.ui.events.AppEvent;
-import com.redshape.ui.events.EventType;
 import com.redshape.ui.events.UIEvents;
 
 import java.util.*;

@@ -1,7 +1,8 @@
 package com.redshape.ui.components;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -11,7 +12,7 @@ import com.redshape.ui.components.locators.LocationException;
 public class ComponentsRegistry implements IComponentsRegistry {
 	private static final Logger log = Logger.getLogger( ComponentsRegistry.class );
 	
-	private Collection<IComponent> components = new HashSet<IComponent>();
+	private List<IComponent> components = new ArrayList<IComponent>();
 	private IComponentsLocator locator;
 	
 	public ComponentsRegistry( IComponentsLocator locator ) throws LocationException {
@@ -27,6 +28,7 @@ public class ComponentsRegistry implements IComponentsRegistry {
 		}
 		
 		for ( IComponent component : this.getComponentsLocator().locate() ) {
+			log.info("Registering component: " + component.getName() );
 			this.addComponent( component );
 		}
 	}

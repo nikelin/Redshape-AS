@@ -1,7 +1,8 @@
 package com.redshape.ui.components.locators;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import com.redshape.ui.components.IComponent;
@@ -75,7 +76,7 @@ public class ConfigBasedLocator implements IComponentsLocator {
 	@Override
 	public Collection<IComponent> locate() throws LocationException {
 		try {
-			Collection<IComponent> result = new HashSet<IComponent>();
+			List<IComponent> result = new ArrayList<IComponent>();
 			for ( IConfig componentNode : this.contextPart.childs() ) {
 				result.add( this.createComponent( 
 					(Class<? extends IComponent>) Class.forName( componentNode.get("class").value() ), 
