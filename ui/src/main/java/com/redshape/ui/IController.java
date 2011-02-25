@@ -19,6 +19,8 @@ public interface IController extends IEventHandler {
     public void addChild( IController controller );
 
     public void forwardToView( IView view, AppEvent event );
+    
+    public void forwardToView( IView view, AppEvent event, boolean unload );
 
     public void unload();
 

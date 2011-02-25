@@ -4,6 +4,10 @@ import com.redshape.ui.events.EventType;
 import com.redshape.ui.events.AppEvent;
 import com.redshape.ui.annotations.Action;
 import com.redshape.ui.events.UIEvents;
+import com.redshape.ui.utils.UIConstants;
+import com.redshape.ui.utils.UIRegistry;
+
+import java.awt.Container;
 import java.lang.reflect.Method;
 
 import java.util.HashSet;
@@ -42,8 +46,14 @@ public abstract class AbstractController implements IController {
 
     @Override
     public void forwardToView( IView view, AppEvent event ) {
-        if ( this.activeView != null ) {
-            this.activeView.unload();
+    	this.forwardToView( view, event, true );
+    }
+    
+    @Override
+    public void forwardToView( IView view, AppEvent event, boolean unload ) {
+        if ( this.activeView != null && unload ) {
+        	// @FIXME: refactor me, please!
+            this.activeView.unload( UIRegistry.<Container>get( UIConstants.Area.CENTER ) );
         }
 
         if ( !this.initialized.contains(view) ) {
@@ -52,6 +62,9 @@ public abstract class AbstractController implements IController {
         }
 
         view.handle(event);
+        // @FIXME: refactor me, please!
+        view.render( UIRegistry.<Container>get( UIConstants.Area.CENTER ) );
+        
         Dispatcher.get().forwardEvent( UIEvents.Core.Repaint );
 
         this.activeView = view;
@@ -60,7 +73,8 @@ public abstract class AbstractController implements IController {
     @Override
     public void unload() {
         if ( this.getActiveView() != null ) {
-            this.getActiveView().unload();
+        	// @FIXME: refactor me, please!
+            this.getActiveView().unload( UIRegistry.<Container>get( UIConstants.Area.CENTER ) );
         }
 
         Dispatcher.get().forwardEvent( UIEvents.Core.Repaint );

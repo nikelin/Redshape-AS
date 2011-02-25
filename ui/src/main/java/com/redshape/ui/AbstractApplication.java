@@ -34,6 +34,8 @@ public abstract class AbstractApplication {
         this.context = context;
         this.applicationContext = applicationContext;
         
+        UIRegistry.setRootContext(context);
+        
         this.context.addWindowListener( new WindowAdapter() {
         	@Override
         	public void windowClosed(WindowEvent e) {

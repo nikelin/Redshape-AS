@@ -17,6 +17,6 @@ public interface IView extends IEventHandler {
 	
     public void init();
 
-    public void unload();
+    public void unload( Container component );
 
 }
