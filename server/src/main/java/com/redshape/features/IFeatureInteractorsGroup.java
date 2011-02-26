@@ -13,10 +13,10 @@ public interface IFeatureInteractorsGroup {
 
     public <T extends IFeatureInteractor> Set<T> getInteractors();
 
-    public <T extends IFeatureInteractor> void setInteractors( Set<T> interactors );
+    public void setInteractors( Set<IFeatureInteractor> interactors );
 
-    public <T extends IFeatureInteractor> void addInteractor( T interactor );
+    public void addInteractor( IFeatureInteractor interactor );
 
-    public <T extends IFeatureInteractor> void removeInteractor( T interactor );
+    public void removeInteractor( IFeatureInteractor interactor );
 
 }

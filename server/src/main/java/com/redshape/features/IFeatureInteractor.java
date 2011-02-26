@@ -11,7 +11,7 @@ import com.redshape.api.requesters.IRequester;
  */
 public interface IFeatureInteractor extends IRequester {
 
-    public IFeatureInteractorsGroup getInteractorsGroup();
+    public <T extends IFeatureInteractorsGroup> T getInteractorsGroup();
 
     public void setInteractorsGroup( IFeatureInteractorsGroup group );
 

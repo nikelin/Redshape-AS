@@ -10,7 +10,8 @@ import com.redshape.payments.entities.BalanceOperations;
  * Time: 5:23:21 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface IBalanceOperation<T extends ICurrencyAmount, V extends Number> {
+// @TODO: refactor to remove generics
+public interface IBalanceOperation<T extends ICurrencyAmount<T, V>, V extends Number> {
 
     public void setType( BalanceOperations type );
 

@@ -24,17 +24,17 @@ abstract public class AbstractAuthenticator<T extends IIdentity> implements Auth
 
     public AbstractAuthenticator() throws InstantiationException {
         try {
-            this.setStorage( defaultStorage.newInstance() );
+            this.setStorage( (AuthStorage<T>) defaultStorage.newInstance() );
         } catch ( Throwable e ) {
             throw new InstantiationException();
         }
     }
 
-    public AbstractAuthenticator( AuthStorage storage ) {
+    public AbstractAuthenticator( AuthStorage<T> storage ) {
         this.setStorage( storage );
     }
 
-    public void setStorage( AuthStorage storage ) {
+    public void setStorage( AuthStorage<T> storage ) {
         this.storage = storage;
     }
 
