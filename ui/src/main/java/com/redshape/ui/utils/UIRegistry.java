@@ -35,7 +35,7 @@ public final class UIRegistry {
     	UIRegistry.menu = menu;
     }
     
-	public void setRootContext( JFrame context ) {
+	public static void setRootContext( JFrame context ) {
         UIRegistry.context = context;
     }
 

@@ -104,6 +104,13 @@
             <type>jar</type>
         </dependency>
     </dependencies>
+    
+    <distributionManagement>
+    	<repository>
+    		<id>Artifactory</id>
+    		<url>http://10.0.0.3:8180/artifactory</url>
+    	</repository>
+    </distributionManagement>
 
 </project>
 

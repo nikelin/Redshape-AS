@@ -39,10 +39,6 @@ public final class Dispatcher extends EventDispatcher {
 
 
     public void forwardToController( IController controller, AppEvent event ) {
-        if ( this.activeController != null ) {
-            this.activeController.unload();
-        }
-
         controller.handle( event );
         
         this.activeController = controller;
