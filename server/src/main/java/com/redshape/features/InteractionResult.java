@@ -11,7 +11,7 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class InteractionResult implements IInteractionResult {
-    private Map<String, Object> attributes = new HashMap();
+    private Map<String, Object> attributes = new HashMap<String, Object>();
     private boolean is_error;
     private Throwable last_exception;
 

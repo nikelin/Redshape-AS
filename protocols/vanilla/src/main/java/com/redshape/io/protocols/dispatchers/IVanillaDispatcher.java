@@ -1,6 +1,7 @@
 package com.redshape.io.protocols.dispatchers;
 
 import com.redshape.api.requesters.IRequester;
+
 import com.redshape.io.protocols.vanilla.request.IApiRequest;
 import com.redshape.io.protocols.vanilla.response.IApiResponse;
 

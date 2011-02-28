@@ -27,7 +27,7 @@
     	<spring.version>3.0.5.RELEASE</spring.version>
     	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <hibernate-core-version>3.5.1-Final</hibernate-core-version>
-        <project-build-path>/archives/workspace/redshape/server/build</project-build-path>
+        <project-build-path>/archives/work/projects/redshape/server/build</project-build-path>
     </properties>
 
     <repositories>

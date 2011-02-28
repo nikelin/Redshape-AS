@@ -2,6 +2,7 @@ package com.redshape.io.protocols.vanilla.renderers;
 
 import com.redshape.io.protocols.core.response.IResponse;
 import com.redshape.io.protocols.core.renderers.IResponseRenderer;
+
 import com.redshape.renderer.RendererException;
 import com.redshape.renderer.json.JSONRenderer;
 

@@ -1,7 +1,9 @@
 package com.redshape.bootstrap;
 
 import com.redshape.applications.bootstrap.AbstractBootstrapAction;
+
 import com.redshape.applications.bootstrap.BootstrapException;
+
 import com.redshape.notifications.transport.ITransport;
 import com.redshape.notifications.transport.configuration.ConfigurationException;
 import com.redshape.notifications.transport.configuration.ITransportConfiguration;

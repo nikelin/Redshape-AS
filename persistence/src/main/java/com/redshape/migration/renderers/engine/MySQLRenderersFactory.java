@@ -2,9 +2,8 @@ package com.redshape.migration.renderers.engine;
 
 import com.redshape.renderer.AbstractRenderersFactory;
 
+
 /**
- * WebCam Project
- *
  * @author nikelin
  * @project vio
  * @package com.vio.migration.renderers.engine

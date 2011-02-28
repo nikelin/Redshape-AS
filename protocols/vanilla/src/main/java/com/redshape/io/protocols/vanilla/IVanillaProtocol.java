@@ -19,5 +19,4 @@ public interface IVanillaProtocol<
                         D extends IVanillaDispatcher<E, T, V>,
                         V extends IApiResponse>
         extends IProtocol<E, IApiRequest, T, IVanillaDispatcher<E, T, V>, D, V> {
-
 }

@@ -8,6 +8,7 @@ import com.redshape.io.protocols.core.request.RequestProcessingException;
 import com.redshape.io.protocols.core.request.RequestType;
 import com.redshape.io.protocols.vanilla.hyndrators.IApiRequestHydrator;
 import com.redshape.io.protocols.vanilla.hyndrators.JSONRequestHydrator;
+import com.redshape.io.server.ErrorCodes;
 import com.redshape.api.requesters.IRequester;
 import org.apache.log4j.Logger;
 
@@ -160,19 +161,19 @@ public class ApiRequest implements IApiRequest {
             Collection<RequestHeader> headers = hydrator.readHeaders();
             if ( headers == null ) {
             	// TODO
-                throw new RequestFormattingException("ErrorCode.EXCEPTION_MISSED_REQUEST_HEAD");
+                throw new RequestFormattingException(ErrorCodes.EXCEPTION_MISSED_REQUEST_HEAD);
             }
             request.setHeaders( headers );
 
             if ( !isValidHeaders(request) ) {
             	// TODO
-                throw new RequestProcessingException("ErrorCode.EXCEPTION_WRONG_REQUEST_HEADERS");
+                throw new RequestProcessingException(ErrorCodes.EXCEPTION_WRONG_REQUEST_HEADERS);
             }
 
             Collection<IApiRequest> body = hydrator.readBody();
             if ( body == null ) {
             	// TODO
-                throw new RequestFormattingException("ErrorCode.EXCEPTION_MISSED_REQUEST_BODY");
+                throw new RequestFormattingException(ErrorCodes.EXCEPTION_MISSED_REQUEST_BODY);
             }
 
             boolean isValidBody = true;
@@ -191,14 +192,14 @@ public class ApiRequest implements IApiRequest {
             }
 
             if ( !isValidBody ) {
-                throw new RequestFormattingException("ErrorCode.EXCEPTION_MISSED_REQUEST_BODY");
+                throw new RequestFormattingException(ErrorCodes.EXCEPTION_MISSED_REQUEST_BODY);
             }
 
             return request;
         } catch ( RequestException e ) {
             throw e;
         } catch ( Throwable e ) {
-            throw new RequestFormattingException("ErrorCode.EXCEPTION_WRONG_REQUEST");
+            throw new RequestFormattingException(ErrorCodes.EXCEPTION_WRONG_REQUEST);
         }
     }
 

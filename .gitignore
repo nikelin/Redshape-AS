@@ -3,10 +3,15 @@
 .classpath
 .project
 <<<<<<< HEAD
+<<<<<<< HEAD
 nbproject
 pom.properties
 *tmp
 build
+=======
+nbproject/
+build/
+>>>>>>> refs/heads/2.0.0A
 =======
 nbproject/
 build/

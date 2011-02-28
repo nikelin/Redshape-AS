@@ -31,7 +31,11 @@ public @interface SearchableField {
 
     /**
 <<<<<<< HEAD
+<<<<<<< HEAD
      * Store or not this field in search index
+=======
+     * Store or not this field in com.redshape.search index
+>>>>>>> refs/heads/2.0.0A
 =======
      * Store or not this field in com.redshape.search index
 >>>>>>> refs/heads/2.0.0A

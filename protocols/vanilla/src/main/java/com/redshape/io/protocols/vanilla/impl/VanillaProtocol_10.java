@@ -1,6 +1,7 @@
 package com.redshape.io.protocols.vanilla.impl;
 
 import com.redshape.api.requesters.IRequester;
+
 import com.redshape.io.protocols.vanilla.AbstractVanillaProtocol;
 import com.redshape.io.protocols.vanilla.VanillaProtocolVersion;
 import com.redshape.io.protocols.vanilla.hyndrators.JSONRequestHydrator;

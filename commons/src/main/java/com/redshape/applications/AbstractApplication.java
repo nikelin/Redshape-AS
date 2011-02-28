@@ -1,6 +1,7 @@
 package com.redshape.applications;
 
 import com.redshape.applications.bootstrap.IBootstrap;
+
 import com.redshape.utils.PackagesLoader;
 import com.redshape.utils.ResourcesLoader;
 import com.redshape.utils.config.IConfig;

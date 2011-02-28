@@ -2,24 +2,23 @@ package com.redshape.api.dispatchers.vanilla;
 
 import com.redshape.api.ErrorCodes;
 import com.redshape.api.InvokableEntitiesRegistry;
-import com.redshape.api.requesters.IRequester;
+
 import com.redshape.features.IFeatureInteractor;
 import com.redshape.features.InteractionException;
 import com.redshape.io.protocols.core.request.RequestProcessingException;
-import com.redshape.io.protocols.core.request.RequestType;
 import com.redshape.io.protocols.dispatchers.DispatcherException;
 import com.redshape.io.protocols.vanilla.request.IApiRequest;
+
+import com.redshape.io.protocols.core.request.RequestType;
 import com.redshape.io.protocols.dispatchers.IVanillaDispatcher;
 import com.redshape.io.protocols.vanilla.response.IApiResponse;
 import com.redshape.io.remoting.annotations.RemoteMethod;
 import com.redshape.io.remoting.interfaces.RemoteInterface;
-import com.redshape.io.server.ServerException;
 
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * Created by IntelliJ IDEA.

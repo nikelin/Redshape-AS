@@ -2,6 +2,7 @@ package com.redshape.io.protocols.core.writers;
 
 import com.redshape.io.protocols.core.renderers.IResponseRenderer;
 import com.redshape.io.protocols.core.response.IResponse;
+
 import com.redshape.renderer.RendererException;
 import com.redshape.utils.Constants;
 import org.apache.log4j.Logger;

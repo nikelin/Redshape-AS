@@ -2,6 +2,7 @@ package com.redshape.io.protocols.vanilla;
 
 import com.redshape.api.requesters.IRequester;
 import com.redshape.io.protocols.core.AbstractProtocol;
+
 import com.redshape.io.protocols.dispatchers.IVanillaDispatcher;
 import com.redshape.io.protocols.vanilla.request.IApiRequest;
 import com.redshape.io.protocols.vanilla.response.IApiResponse;
@@ -13,7 +14,6 @@ import com.redshape.io.protocols.vanilla.response.IApiResponse;
  * Time: 2:41:37 PM
  * To change this template use File | Settings | File Templates.
  */
-
 public abstract class AbstractVanillaProtocol<
 											  E extends IRequester,
 											  T extends IApiRequest,

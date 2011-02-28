@@ -4,7 +4,9 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import com.redshape.applications.bootstrap.AbstractBootstrapAction;
+
 import com.redshape.applications.bootstrap.BootstrapException;
+
 import com.redshape.notifications.INotification;
 import com.redshape.notifications.NotificationsFactory;
 import com.redshape.notifications.annotations.Notification;

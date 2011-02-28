@@ -36,6 +36,7 @@ public class ApiRequestsProcessor<P extends IVanillaProtocol<IRequester,
 		                    ISocketServer<P,IApiResponse,IApiRequest>, 
 		                    IApiResponse, 
 		                    IApiRequest> {
+
     
     private static final Logger log = Logger.getLogger( ApiRequestsProcessor.class);
 

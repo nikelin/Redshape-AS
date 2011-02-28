@@ -8,8 +8,9 @@ package com.redshape.io.server;
  * To change this template use File | Settings | File Templates.
  */
 public class ServerException extends Exception {
+	private static final long serialVersionUID = -9135005376527904008L;
 
-    public ServerException() {
+	public ServerException() {
     	super();
     }
     

@@ -24,9 +24,7 @@ import java.util.*;
  * Time: 12:59:31 AM
  * To change this template use File | Settings | File Templates.
  */
-
 public abstract class AbstractServer<T, V> implements IServer<T, V> {
-
     private final static Logger log = Logger.getLogger( AbstractServer.class );
 
     /**

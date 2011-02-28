@@ -1,7 +1,5 @@
 package com.redshape.io.protocols.core;
 
-import com.redshape.utils.config.ConfigException;
-
 import com.redshape.api.requesters.IRequester;
 import com.redshape.io.protocols.core.request.IRequest;
 import com.redshape.io.protocols.core.request.RequestType;
@@ -12,6 +10,7 @@ import com.redshape.io.protocols.core.response.IResponse;
 import com.redshape.io.protocols.core.writers.IResponseWriter;
 import com.redshape.io.protocols.core.writers.WriterException;
 import com.redshape.io.protocols.dispatchers.IDispatcher;
+import com.redshape.utils.config.ConfigException;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -39,6 +38,7 @@ public interface IProtocol<
     public void setWriter( IResponseWriter<V> writer );
 
     public IResponseWriter<V> getWriter();
+
 
     public void writeResponse( OutputStream stream, V response) throws WriterException;
 

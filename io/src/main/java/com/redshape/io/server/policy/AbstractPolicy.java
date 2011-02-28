@@ -11,7 +11,7 @@ import com.redshape.io.server.IServer;
  */
 public abstract class AbstractPolicy<T> implements IPolicy<T> {
     private IServer<?, T> context;
-
+    
     @Override
     public void setContext( IServer<?, T> context ) {
         this.context = context;

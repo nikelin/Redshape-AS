@@ -2,7 +2,9 @@ package com.redshape.bootstrap;
 
 import com.redshape.applications.bootstrap.AbstractBootstrapAction;
 import com.redshape.applications.bootstrap.Action;
+
 import com.redshape.applications.bootstrap.BootstrapException;
+
 import com.redshape.delivering.JMSManager;
 import com.redshape.delivering.JMSManagerFactory;
 import com.redshape.tasks.TasksExecutor;

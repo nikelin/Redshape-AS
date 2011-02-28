@@ -3,6 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 <<<<<<< HEAD
+<<<<<<< HEAD
     <name>Applications Server</name>
     
     <parent>
@@ -51,6 +52,42 @@
     </dependencies>
 
 </project>
+=======
+    <name>Search API</name>
+
+    <parent>
+        <artifactId>as</artifactId>
+        <groupId>com.redshape</groupId>
+        <version>1.0.0A</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.redshape</groupId>
+    <version>1.0.0A</version>
+    <artifactId>search</artifactId>
+    <packaging>jar</packaging>
+
+    <dependencies>
+       <dependency>
+           <artifactId>utils</artifactId>
+           <groupId>com.redshape</groupId>
+           <version>1.0.0A</version>
+       </dependency>
+        <dependency>
+            <artifactId>persistence</artifactId>
+            <groupId>com.redshape</groupId>
+            <version>1.0.0A</version>
+        </dependency>
+       <dependency>
+           <artifactId>lucene-core</artifactId>
+           <groupId>org.apache.lucene</groupId>
+           <version>3.0.2</version>
+       </dependency>
+    </dependencies>
+    
+</project>
+>>>>>>> refs/heads/2.0.0A
 =======
     <name>Search API</name>
 

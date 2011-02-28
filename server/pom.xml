@@ -20,6 +20,12 @@
     <dependencies>
     	<dependency>
     		<groupId>com.redshape.protocols</groupId>
+    		<artifactId>vanilla</artifactId>
+    		<version>${project.version}</version>
+    	</dependency>
+
+        <dependency>
+    		<groupId>com.redshape.protocols</groupId>
     		<artifactId>http</artifactId>
     		<version>${project.version}</version>
     	</dependency>

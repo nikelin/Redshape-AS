@@ -21,17 +21,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * WebCam Project
- *
  * @author nikelin
  * @project vio
  * @package com.vio.server
  * @date Apr 14, 2010
  */
-
 public abstract class AbstractSocketServer<T extends IProtocol<?, ?,?,?,?,R>, R extends IResponse, V>
                 extends AbstractServer<T,V> implements ISocketServer<T, R, V> {
-
     final private static Logger log = Logger.getLogger( ApplicationServer.class );
 
     public static int DEFAULT_THREADS_COUNT = 100;

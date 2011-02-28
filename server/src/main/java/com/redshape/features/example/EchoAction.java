@@ -14,6 +14,7 @@ import com.redshape.features.annotations.FeatureAspect;
  * To change this template use File | Settings | File Templates.
  */
 @FeatureAspect( name = "echo", feature = "example" )
+
 public class EchoAction extends AbstractFeatureAspect {
 
     @Override

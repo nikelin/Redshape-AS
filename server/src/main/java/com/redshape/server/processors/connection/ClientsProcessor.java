@@ -2,10 +2,11 @@ package com.redshape.server.processors.connection;
 
 import com.redshape.io.net.adapters.socket.client.ISocketAdapter;
 import com.redshape.io.protocols.core.IProtocol;
-import com.redshape.io.protocols.core.ProtocolException;
 import com.redshape.io.protocols.core.request.IRequest;
 import com.redshape.io.server.ServerException;
+
 import com.redshape.server.ISocketServer;
+
 import org.apache.log4j.Logger;
 
 /**

@@ -1,15 +1,12 @@
 package com.redshape.api.dispatchers.vanilla;
 
-import com.redshape.api.ApiException;
 import com.redshape.api.ErrorCodes;
-import com.redshape.api.requesters.IRequester;
 import com.redshape.features.*;
 import com.redshape.io.protocols.dispatchers.DispatcherException;
 import com.redshape.io.protocols.vanilla.request.IApiRequest;
 import com.redshape.io.protocols.core.request.RequestType;
 import com.redshape.io.protocols.dispatchers.IVanillaDispatcher;
 import com.redshape.io.protocols.vanilla.response.IApiResponse;
-import com.redshape.io.server.ServerException;
 
 import org.apache.log4j.*;
 
@@ -19,12 +16,13 @@ public class InterfaceInvocationsDispatcher implements IVanillaDispatcher<IFeatu
     public RequestType getDispatchingType() {
         return RequestType.INTERFACE_INVOKE;
     }
-
+    
     @Override
 	public void dispatch( IFeatureInteractor requester, IApiRequest invoke, IApiResponse response ) throws DispatcherException {
         try {
             log.info("Calling action " + invoke.getAspectName() + " of " + invoke.getFeatureName() + " interface...");
             IFeatureAspect featureAspect = FeaturesRegistry.getDefault().getFeatureAspect( invoke.getFeatureName(), invoke.getAspectName() );
+            
             if ( featureAspect == null ) {
                 throw new InteractionException(ErrorCodes.EXCEPTION_REQUEST_METHOD_NOT_EXISTS);
             }

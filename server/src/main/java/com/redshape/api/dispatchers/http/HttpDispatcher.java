@@ -1,6 +1,5 @@
 package com.redshape.api.dispatchers.http;
 
-
 import com.redshape.api.ErrorCodes;
 import com.redshape.features.FeaturesRegistry;
 import com.redshape.features.IFeatureAspect;
@@ -45,7 +44,6 @@ public class HttpDispatcher implements IHttpDispatcher<IFeatureInteractor, IHttp
                                                     .getFeatureAspect( request.getFeatureName(), request.getAspectName() );
             if ( aspect == null ) {
                 throw new InteractionException(ErrorCodes.EXCEPTION_REQUEST_METHOD_NOT_EXISTS);
-
             }
 
 

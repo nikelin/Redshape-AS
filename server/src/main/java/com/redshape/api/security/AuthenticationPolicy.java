@@ -2,7 +2,6 @@ package com.redshape.api.security;
 
 import com.redshape.api.ErrorCodes;
 import com.redshape.api.requesters.IRequester;
-import com.redshape.applications.AccessibleApplication;
 import com.redshape.applications.IAccessibleApplication;
 import com.redshape.auth.AuthResult;
 import com.redshape.auth.AuthenticatorFactory;
@@ -16,11 +15,8 @@ import com.redshape.io.server.ServerException;
 import com.redshape.io.server.policy.AbstractPolicy;
 import com.redshape.io.server.policy.ApplicationResult;
 import com.redshape.persistence.entities.IPAddress;
-import com.redshape.server.ISocketServer;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.
@@ -70,15 +66,12 @@ public class AuthenticationPolicy extends AbstractPolicy<IApiRequest> {
                     case INVALID_IDENTITY:
                        result.setException( new ServerException( ErrorCodes.EXCEPTION_INVALID_API_KEY ) );
                     break;
-
                     case FAIL:
                         result.setException( new ServerException( ErrorCodes.EXCEPTION_AUTHENTICATION_FAIL ) );
                     break;
-
                     case INACTIVE_IDENTITY:
                         result.setException( new ServerException( ErrorCodes.EXCEPTION_INACTIVE_API_KEY ) );
                     break;
-
                     case EXPIRED_IDENTITY:
                         result.setException( new ServerException( ErrorCodes.EXCEPTION_EXPIRED_API_KEY ) );
                     break;

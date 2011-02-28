@@ -1,5 +1,6 @@
 package com.redshape.migration;
 
+
 import com.redshape.utils.config.ConfigException;
 import com.redshape.migration.strategy.MigrationStrategy;
 import com.redshape.migration.strategy.fixtures.Rollback;

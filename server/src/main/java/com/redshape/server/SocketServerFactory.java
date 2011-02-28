@@ -20,6 +20,7 @@ public class SocketServerFactory extends AbstractServerFactory implements ISocke
      */
     public static final IDispatcher<?, ?, ?> DEFAULT_DISPATCHER = new InterfaceInvocationsDispatcher();
 
+
     public static IProtocol<?, ?,?,?,?,?> DEFAULT_PROTOCOL;
     static {
         try {

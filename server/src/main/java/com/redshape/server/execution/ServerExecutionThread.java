@@ -2,12 +2,13 @@ package com.redshape.server.execution;
 
 import com.redshape.io.server.policy.ApplicationResult;
 import com.redshape.io.server.policy.PolicyType;
+import com.redshape.io.net.adapters.socket.client.ISocketAdapter;
+import com.redshape.io.protocols.core.IProtocol;
+
 import com.redshape.server.ISocketServer;
+
 import org.apache.log4j.Logger;
 
-import com.redshape.io.net.adapters.socket.client.ISocketAdapter;
-
-import com.redshape.io.protocols.core.IProtocol;
 
 public class ServerExecutionThread<T extends IProtocol<?, ?,?,?,?,?>> implements Runnable {
 	private static final Logger log = Logger.getLogger( ServerExecutionThread.class );

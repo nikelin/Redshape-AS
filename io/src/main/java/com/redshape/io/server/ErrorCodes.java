@@ -11,8 +11,16 @@ public class ErrorCodes extends Exception {
 		super( code.getMessage(), e );
 	}
 	
-	public static ErrorCodes EXCEPTION_INTERNAL = new ErrorCodes( "Error.ExceptionInternal" );
+	public static final ErrorCodes EXCEPTION_WRONG_REQUEST = new ErrorCodes( "Error.WrongRequest" );
 	
-	public static ErrorCodes EXCEPTION_RECONNECT = new ErrorCodes( "Error.ExceptionReconnect" );
+	public static final ErrorCodes EXCEPTION_INTERNAL = new ErrorCodes( "Error.ExceptionInternal" );
+	
+	public static final ErrorCodes EXCEPTION_RECONNECT = new ErrorCodes( "Error.ExceptionReconnect" );
+
+	public static final ErrorCodes EXCEPTION_MISSED_REQUEST_BODY = new ErrorCodes( "Error.MissedRequestBody" );
+
+	public static final ErrorCodes EXCEPTION_WRONG_REQUEST_HEADERS = new ErrorCodes( "Error.WrongRequestHeaders" );
+
+	public static final ErrorCodes EXCEPTION_MISSED_REQUEST_HEAD = new ErrorCodes( "Error.MissedRequestHead" );
 
 }

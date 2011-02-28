@@ -1,6 +1,7 @@
 package com.redshape.servlet;
 
 import com.redshape.applications.IApplication;
+
 import com.redshape.servlet.core.controllers.FrontController;
 import com.redshape.servlet.dispatchers.DispatchException;
 import com.redshape.servlet.views.Layout;

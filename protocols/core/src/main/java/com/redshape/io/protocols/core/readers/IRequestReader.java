@@ -2,7 +2,6 @@ package com.redshape.io.protocols.core.readers;
 
 import com.redshape.io.protocols.core.request.IRequest;
 
-
 /**
  * @author nikelin
  * @project vio

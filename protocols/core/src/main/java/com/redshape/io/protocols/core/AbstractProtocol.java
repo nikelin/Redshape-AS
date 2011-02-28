@@ -40,7 +40,7 @@ public abstract class AbstractProtocol<
     private static final Logger log = Logger.getLogger( AbstractProtocol.class );
 
     private IRequestReader<T> reader;
-    
+
     private IResponseWriter writer;
     
     private Map<RequestType, Q> dispatchers = new HashMap<RequestType, Q>();

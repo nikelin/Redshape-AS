@@ -10,8 +10,9 @@ import com.redshape.io.server.ErrorCodes;
  * To change this template use File | Settings | File Templates.
  */
 public class InteractionException extends Exception {
+	private static final long serialVersionUID = -7020493305214514319L;
 
-    public InteractionException() {
+	public InteractionException() {
         this(ErrorCodes.EXCEPTION_INTERNAL);
     }
 

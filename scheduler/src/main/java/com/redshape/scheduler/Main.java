@@ -1,7 +1,9 @@
 package com.redshape.scheduler;
 
 import com.redshape.applications.ApplicationException;
+
 import com.redshape.applications.SpringApplication;
+
 import com.redshape.delivering.JMSManager;
 import com.redshape.delivering.JMSManagerFactory;
 import com.redshape.scheduler.listeners.JobsListener;
@@ -17,6 +19,7 @@ import java.util.Date;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
+
 /**
  * WebCam Project
  *

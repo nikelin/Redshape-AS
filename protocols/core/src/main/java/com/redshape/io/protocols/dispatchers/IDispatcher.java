@@ -6,7 +6,7 @@ import com.redshape.io.protocols.core.response.IResponse;
 
 
 /**
- * IEntity responsible on dispatching incoming requests
+ * Entity responsible for dispatching incoming requests
  * to one of the available features (@see com.redshape.features )
  *
  * Process given request and write results in a view of items

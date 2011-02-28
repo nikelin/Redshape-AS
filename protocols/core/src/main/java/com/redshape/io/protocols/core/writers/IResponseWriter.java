@@ -31,6 +31,7 @@ public interface IResponseWriter<T extends IResponse> extends IWriter {
      */
     public void writeResponse( OutputStream source, Throwable exception ) throws WriterException;
 
+
     /**
      * Метод отправки обычного отклика
      * @param source

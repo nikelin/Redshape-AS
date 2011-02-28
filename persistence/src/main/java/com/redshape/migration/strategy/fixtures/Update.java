@@ -6,7 +6,6 @@ import com.redshape.migration.strategy.MigrationStrategy;
 import com.redshape.persistence.entities.IEntity;
 import org.apache.log4j.Logger;
 
-
 /**
  * Created by IntelliJ IDEA.
  * User: nikelin

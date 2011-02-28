@@ -4,7 +4,9 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Component;
+
 import com.redshape.utils.PackagesLoader;
 import com.redshape.utils.config.IConfig;
 
