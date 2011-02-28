@@ -71,6 +71,41 @@ public abstract class AbstractApplication {
     }
     
     protected void init() throws ApplicationException {
+    	Dispatcher.get().addListener(UIEvents.Core.Repaint, new IEventHandler() {
+            @Override
+            public void handle(AppEvent event) {
+            	if ( event.getArg(0) != null && ( event.getArg(0) instanceof JComponent ) ) {
+            		log.info("Partial repainting for component: " + event.getArg(0) );
+            		JComponent component = event.getArg(0);
+            		component.revalidate();
+            		component.repaint();
+            	} else if ( event.getArg(0) != null && ( event.getArg(0) instanceof UIConstants.Attribute ) ) {
+            		log.info("Partial repainting for attribute: " + event.getArg(0) );
+            		Object registryObject = UIRegistry.get( event.<UIConstants.Attribute>getArg(0) );
+            		// TODO: java.awt.Component needs to be repainted to...
+            		if ( registryObject instanceof JComponent ) {
+            			final JComponent component = ( (JComponent) registryObject );
+            			component.revalidate();
+            			component.repaint();
+            		}
+            	} else {
+            		log.info("Full repaint...");
+                	for ( UIConstants.Area area : UIConstants.Area.values() ) {
+                		JComponent component = UIRegistry.get( area );
+                		if ( component == null ) {
+                			continue;
+                		}
+                		
+    	            	component.revalidate();
+    	            	component.repaint();
+                	}
+                	
+                	AbstractApplication.this.context.invalidate();
+                	AbstractApplication.this.context.repaint();
+            	}
+            }
+        });
+    	
 		Dispatcher.get().addListener( UIEvents.Core.Exit, new IEventHandler() {
 			@Override
 			public void handle(AppEvent event) {
@@ -150,6 +185,7 @@ public abstract class AbstractApplication {
     }
 
     public void start() throws ApplicationException {
+    	
 		IWidgetsManager manager = this.getWidgetsManager(); 
 		for ( UIConstants.Area area : UIConstants.Area.values() ) {
 			Collection<IWidget> widgets = manager.getWidgets(area);
@@ -168,24 +204,6 @@ public abstract class AbstractApplication {
 				}
 			}
 		}
-
-    	Dispatcher.get().addListener(UIEvents.Core.Repaint, new IEventHandler() {
-            @Override
-            public void handle(AppEvent type) {
-            	System.out.println("Repainted");
-            	for ( UIConstants.Area area : UIConstants.Area.values() ) {
-            		JComponent component = UIRegistry.get( area );
-            		if ( component == null ) {
-            			continue;
-            		}
-            		
-	            	component.revalidate();
-	            	component.doLayout();
-	            	component.repaint();
-            	}
-            	            	
-            }
-        });
 
         Dispatcher.get().addListener(UIEvents.Core.Init, new IEventHandler() {
             @Override

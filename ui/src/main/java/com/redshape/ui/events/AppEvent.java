@@ -34,7 +34,7 @@ public class AppEvent {
 
     @SuppressWarnings("unchecked")
 	public <V> V getArg( int num ) {
-        return (V) this.args[num];
+        return num >= this.args.length || num < 0 ? null : (V) this.args[num];
     }
 
     public boolean isSame( EventType type ) {
