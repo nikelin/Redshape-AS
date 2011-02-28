@@ -215,11 +215,11 @@ public class FormPanel extends JPanel {
             } else if ( this.getComponent() instanceof JComboBox ) {
             	final JComboBox component = (JComboBox) this.getComponent();
             	object = component.getItemAt( component.getSelectedIndex() );
-            } else if ( this.getComponent() instanceof  ItemSelectable ) {
-                object = ( (ItemSelectable) this.getComponent() ).getSelectedObjects();
             } else if ( this.getComponent() instanceof JCheckBox ) {
             	object = ( (Boolean) ( (JCheckBox) this.getComponent() ).isSelected() );
-            }
+            } else if ( this.getComponent() instanceof  ItemSelectable ) {
+                object = ( (ItemSelectable) this.getComponent() ).getSelectedObjects();
+            } 
 
             return (T) object;
         }

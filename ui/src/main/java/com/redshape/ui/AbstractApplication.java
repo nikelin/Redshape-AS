@@ -94,20 +94,39 @@ public abstract class AbstractApplication {
 		Dispatcher.get().addListener( UIEvents.Core.Error, new IEventHandler() {
 			@Override
 			public void handle(AppEvent event) {
-				Throwable exception = event.getArg(0);
-				
-				int option = JOptionPane.showConfirmDialog(
-						AbstractApplication.this.context, 
-						"Some internal exception throwed. See details?", 
-						"Error", 
-						JOptionPane.YES_NO_CANCEL_OPTION,
-						JOptionPane.ERROR_MESSAGE );
-				
-				if ( JOptionPane.YES_OPTION == option ) {
+				Object errorDescription = event.getArg(0);
+				if ( errorDescription instanceof Throwable ) {
+					Throwable exception = event.getArg(0);
+					
+					int option = JOptionPane.showConfirmDialog(
+							AbstractApplication.this.context, 
+							"Some internal exception throwed. See details?", 
+							"Error!", 
+							JOptionPane.YES_NO_CANCEL_OPTION,
+							JOptionPane.ERROR_MESSAGE );
+					
+					if ( JOptionPane.YES_OPTION == option ) {
+						JOptionPane.showMessageDialog( 
+							AbstractApplication.this.context, 
+							AbstractApplication.this.stackTraceAsString( exception ) );
+					} 
+				} else if ( errorDescription instanceof String ){
 					JOptionPane.showMessageDialog( 
-						AbstractApplication.this.context, 
-						AbstractApplication.this.stackTraceAsString( exception ) );
-				} 
+						AbstractApplication.this.context,
+						String.valueOf( event.getArg(0) ),
+						"Error!",
+						JOptionPane.ERROR_MESSAGE
+					);
+				} else {
+					JOptionPane.showMessageDialog(
+						AbstractApplication.this.context,
+						errorDescription != null ? 
+								errorDescription.toString()
+								: "Unknow exception",
+						"Error!",
+						JOptionPane.ERROR_MESSAGE
+					);
+				}
 			}
 		});
 		

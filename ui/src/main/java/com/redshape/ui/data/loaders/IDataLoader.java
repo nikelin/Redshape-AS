@@ -16,7 +16,5 @@ public interface IDataLoader<T extends IModelData> extends IEventDispatcher {
     public void load() throws LoaderException;
     
     public void refresh() throws LoaderException;
-    
-    public void bind( IStore<T> store );
 
 }

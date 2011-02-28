@@ -39,17 +39,20 @@ public class ListStore<V extends IModelData> extends EventDispatcher implements 
     // @TODO: add events dispatching
     public void clear() {
     	this.records.clear();
+    	this.forwardEvent( StoreEvents.Clean );
     }
 
     protected void bindLoader( IDataLoader<V> loader ) {
-    	loader.bind(this);
-    	
         loader.addListener(LoaderEvents.Loaded, new IEventHandler() {
             @Override
             public void handle( AppEvent type) {
+            	ListStore.this.clear();
+            	
                 for ( V record : type.<Collection<V>>getArg(0) ) {
                     ListStore.this.add(record);
                 }
+                
+                ListStore.this.forwardEvent( StoreEvents.Loaded );
             }
         });
     }
@@ -72,6 +75,7 @@ public class ListStore<V extends IModelData> extends EventDispatcher implements 
     @Override
     public void add( V record ) {
         this.records.add(record);
+        this.forwardEvent( StoreEvents.Added );
     }
 
     @Override
@@ -87,7 +91,9 @@ public class ListStore<V extends IModelData> extends EventDispatcher implements 
 
     @Override
     public void removeAt( int index ) {
-        this.remove( this.records.get(index) );
+    	V item;
+        this.remove( item = this.records.get(index) );
+        this.forwardEvent( StoreEvents.Removed, item );
     }
 
     protected IDataLoader<V> getLoader() {
