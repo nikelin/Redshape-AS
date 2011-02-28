@@ -1,6 +1,7 @@
 .idea/
 .settings/
 .classpath
+.project
 pom.properties
 *tmp
 build
