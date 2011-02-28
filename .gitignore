@@ -20,3 +20,4 @@ apidocs/
 assemblies/
 build/
 pom.properties
+maven-archiver/
