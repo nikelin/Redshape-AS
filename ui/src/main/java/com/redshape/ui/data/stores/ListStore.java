@@ -30,13 +30,10 @@ public class ListStore<V extends IModelData> extends EventDispatcher implements 
         this.loader = loader;
         this.type = type;
 
-        if ( this.loader != null ) {
-        	this.bindLoader(loader);
-        }
+    	this.bindLoader(loader);
     }
     
     @Override
-    // @TODO: add events dispatching
     public void clear() {
     	this.records.clear();
     	this.forwardEvent( StoreEvents.Clean );
