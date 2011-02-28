@@ -27,7 +27,13 @@ public class NetworkNode implements INetworkNode {
     private Integer latency;
 
     public NetworkNode() {
-        super();
+    	this(null);
+    }
+    
+    public NetworkNode( InetAddress address ) {
+    	super();
+    	
+    	this.networkPoint = address;
     }
 
     public void setLatency( Integer value) {

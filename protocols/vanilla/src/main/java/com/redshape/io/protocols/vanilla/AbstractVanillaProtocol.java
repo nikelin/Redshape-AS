@@ -13,6 +13,7 @@ import com.redshape.io.protocols.vanilla.response.IApiResponse;
  * Time: 2:41:37 PM
  * To change this template use File | Settings | File Templates.
  */
+
 public abstract class AbstractVanillaProtocol<
 											  E extends IRequester,
 											  T extends IApiRequest,

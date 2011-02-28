@@ -17,7 +17,6 @@ import com.redshape.io.server.policy.AbstractPolicy;
 import com.redshape.io.server.policy.ApplicationResult;
 import com.redshape.persistence.entities.IPAddress;
 import com.redshape.server.ISocketServer;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 

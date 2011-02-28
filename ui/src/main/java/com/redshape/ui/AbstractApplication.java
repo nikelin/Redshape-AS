@@ -3,6 +3,9 @@ package com.redshape.ui;
 import java.awt.Component;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Collection;
 
 import com.redshape.ui.components.IComponent;
@@ -14,6 +17,7 @@ import com.redshape.ui.utils.UIConstants;
 import com.redshape.ui.utils.UIRegistry;
 import com.redshape.ui.widgets.IWidget;
 import com.redshape.ui.widgets.IWidgetsManager;
+import com.redshape.ui.widgets.WidgetsManager;
 
 import javax.swing.*;
 
@@ -41,7 +45,7 @@ public abstract class AbstractApplication {
         	public void windowClosed(WindowEvent e) {
         		super.windowClosed(e);
         		
-        		AbstractApplication.this.exit();
+        		Dispatcher.get().forwardEvent(UIEvents.Core.Exit);
         	}
 		});
     }
@@ -70,8 +74,40 @@ public abstract class AbstractApplication {
 		Dispatcher.get().addListener( UIEvents.Core.Exit, new IEventHandler() {
 			@Override
 			public void handle(AppEvent event) {
-				System.out.println("Exiting...");
-				AbstractApplication.this.exit();
+				if ( JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(AbstractApplication.this.context, "Are you really want to exit?") ) {
+					System.out.println("Exiting...");
+				
+        			AbstractApplication.this.exit();
+        		}
+			}
+		});
+		
+		Thread.currentThread().setUncaughtExceptionHandler( new Thread.UncaughtExceptionHandler() {
+			
+			@Override
+			public void uncaughtException(Thread t, Throwable e) {
+				// TODO Auto-generated method stub
+				
+			}
+		} );
+		
+		Dispatcher.get().addListener( UIEvents.Core.Error, new IEventHandler() {
+			@Override
+			public void handle(AppEvent event) {
+				Throwable exception = event.getArg(0);
+				
+				int option = JOptionPane.showConfirmDialog(
+						AbstractApplication.this.context, 
+						"Some internal exception throwed. See details?", 
+						"Error", 
+						JOptionPane.YES_NO_CANCEL_OPTION,
+						JOptionPane.ERROR_MESSAGE );
+				
+				if ( JOptionPane.YES_OPTION == option ) {
+					JOptionPane.showMessageDialog( 
+						AbstractApplication.this.context, 
+						AbstractApplication.this.stackTraceAsString( exception ) );
+				} 
 			}
 		});
 		
@@ -83,6 +119,15 @@ public abstract class AbstractApplication {
 	    		UIRegistry.getMenu().add( this.createMenu( component ) );
     		}
     	}
+    }
+    
+    private String stackTraceAsString( Throwable e ) {
+    	final Writer writer = new StringWriter();
+    	final PrintWriter printer = new PrintWriter(writer);
+    	
+    	e.printStackTrace(printer);
+    	
+    	return writer.toString();
     }
 
     public void start() throws ApplicationException {
@@ -109,13 +154,17 @@ public abstract class AbstractApplication {
             @Override
             public void handle(AppEvent type) {
             	System.out.println("Repainted");
-            	AbstractApplication.this.context.invalidate();
-            	AbstractApplication.this.context.repaint();
-            	
-            	JComponent component = UIRegistry.<JComponent>get( UIConstants.Area.CENTER );
-            	component.revalidate();
-            	component.invalidate();
-            	component.repaint();
+            	for ( UIConstants.Area area : UIConstants.Area.values() ) {
+            		JComponent component = UIRegistry.get( area );
+            		if ( component == null ) {
+            			continue;
+            		}
+            		
+	            	component.revalidate();
+	            	component.doLayout();
+	            	component.repaint();
+            	}
+            	            	
             }
         });
 

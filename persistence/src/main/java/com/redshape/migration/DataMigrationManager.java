@@ -1,11 +1,11 @@
 package com.redshape.migration;
 
+import com.redshape.utils.config.ConfigException;
 import com.redshape.migration.strategy.MigrationStrategy;
 import com.redshape.migration.strategy.fixtures.Rollback;
 import com.redshape.migration.strategy.fixtures.Update;
 import com.redshape.utils.BeansLoader;
 import com.redshape.utils.ObjectsLoader;
-import com.redshape.utils.config.ConfigException;
 
 import org.apache.log4j.Logger;
 

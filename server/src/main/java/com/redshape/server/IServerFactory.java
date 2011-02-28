@@ -1,6 +1,5 @@
 package com.redshape.server;
 
-import com.redshape.io.protocols.core.IProtocol;
 import com.redshape.io.server.IServer;
 import com.redshape.io.server.policy.IPolicy;
 import com.redshape.io.server.policy.PolicyType;

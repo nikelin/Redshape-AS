@@ -5,7 +5,6 @@ import com.redshape.applications.bootstrap.Action;
 import com.redshape.applications.bootstrap.BootstrapException;
 import com.redshape.utils.config.ConfigException;
 import com.redshape.utils.config.IConfig;
-
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 

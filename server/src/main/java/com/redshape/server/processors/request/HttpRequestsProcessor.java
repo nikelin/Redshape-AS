@@ -2,10 +2,10 @@ package com.redshape.server.processors.request;
 
 import com.redshape.api.requesters.IRequester;
 import com.redshape.io.net.adapters.socket.client.ISocketAdapter;
-import com.redshape.io.net.request.RequestType;
 import com.redshape.io.protocols.http.IHttpProtocol;
 import com.redshape.io.protocols.http.request.IHttpRequest;
 import com.redshape.io.protocols.http.response.IHttpResponse;
+import com.redshape.io.protocols.core.request.RequestType;
 import com.redshape.io.protocols.dispatchers.IHttpDispatcher;
 import com.redshape.io.server.ServerException;
 import com.redshape.server.ISocketServer;
@@ -28,15 +28,14 @@ public class HttpRequestsProcessor<P extends IHttpProtocol<IRequester,
 														   		IHttpRequest, 
 														   		IHttpResponse
 													   		>, 
-													   		IHttpResponse
-												   		>>
-        extends AbstractRequestsProcessor<
-        			P,
-                    ISocketServer<
-                        P,
-                        IHttpResponse,
-                        IHttpRequest
-                    >, IHttpResponse, IHttpRequest> {
+													   		IHttpResponse>>
+				        extends AbstractRequestsProcessor<
+				        			P,
+				                    ISocketServer<
+				                        P,
+				                        IHttpResponse,
+				                        IHttpRequest
+				                    >, IHttpResponse, IHttpRequest> {
     
     private static final Logger log = Logger.getLogger( HttpRequestsProcessor.class );
 

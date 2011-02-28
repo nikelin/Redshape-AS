@@ -1,7 +1,7 @@
 package com.redshape.io.protocols.dispatchers;
 
 import com.redshape.api.requesters.IRequester;
-import com.redshape.io.net.request.IRequest;
+import com.redshape.io.protocols.core.request.IRequest;
 import com.redshape.io.protocols.core.response.IResponse;
 
 

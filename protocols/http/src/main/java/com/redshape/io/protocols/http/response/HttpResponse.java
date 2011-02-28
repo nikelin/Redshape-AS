@@ -1,8 +1,8 @@
 package com.redshape.io.protocols.http.response;
 
-import com.redshape.io.net.request.RequestHeader;
 import com.redshape.io.protocols.http.HttpProtocolVersion;
 import com.redshape.io.protocols.http.request.HttpCode;
+import com.redshape.io.protocols.core.request.RequestHeader;
 import com.redshape.io.protocols.core.response.Response;
 
 import java.util.*;

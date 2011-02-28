@@ -1,7 +1,8 @@
 package com.redshape.io.protocols.core.response;
 
-import com.redshape.io.net.request.RequestHeader;
 import com.redshape.io.protocols.core.renderers.IResponseRenderer;
+import com.redshape.io.protocols.core.request.RequestHeader;
+
 import java.util.*;
 
 /**

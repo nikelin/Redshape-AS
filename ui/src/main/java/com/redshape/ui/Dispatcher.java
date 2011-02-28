@@ -32,7 +32,14 @@ public final class Dispatcher extends EventDispatcher {
 
         for ( IController controller : this.controllers ) {
             if ( controller.getRegisteredEvents().contains(event.getType()) ) {
-                this.forwardToController( controller, event );
+            	if ( this.activeController != null ) {
+            		if ( this.activeController != controller ) {
+            			this.activeController.unload();
+            		}
+            	} 
+            		
+            	this.forwardToController( controller, event );
+            	this.activeController = controller;
             }
         }
     }

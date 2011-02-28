@@ -25,7 +25,7 @@ public interface IRequester extends IIdentity {
 
     public <V extends IRequesterProperty> Set<V> getProperties();
 
-    public <V extends IRequesterPropertyId> void setProperty( V id, String value );
+    public void setProperty( IRequesterPropertyId id, String value );
 
     public <V extends IRequesterPropertyId> IRequesterProperty getProperty( V id );
 

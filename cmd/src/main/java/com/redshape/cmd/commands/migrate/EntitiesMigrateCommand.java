@@ -2,7 +2,7 @@ package com.redshape.cmd.commands.migrate;
 
 import com.redshape.commands.ExecutionException;
 import com.redshape.commands.annotations.Command;
-import com.redshape.commands.migrate.AbstractMigrateCommand;
+import com.redshape.migration.commands.AbstractMigrateCommand;
 import com.redshape.migration.EntitiesMigrationManager;
 import com.redshape.migration.MigrationException;
 import org.apache.log4j.Logger;

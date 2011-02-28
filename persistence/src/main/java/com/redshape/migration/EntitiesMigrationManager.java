@@ -1,12 +1,12 @@
 package com.redshape.migration;
 
+import com.redshape.utils.config.ConfigException;
 import com.redshape.migration.strategy.MigrationStrategy;
 import com.redshape.migration.strategy.entities.Rollback;
 import com.redshape.migration.strategy.entities.Update;
 import com.redshape.utils.InterfacesFilter;
 import com.redshape.utils.PackageLoaderException;
 import com.redshape.utils.PackagesLoader;
-import com.redshape.utils.config.ConfigException;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,11 +1,11 @@
 package com.redshape.io.protocols.vanilla.request;
 
 import com.redshape.io.net.adapters.socket.client.ISocketAdapter;
-import com.redshape.io.net.request.RequestException;
-import com.redshape.io.net.request.RequestFormattingException;
-import com.redshape.io.net.request.RequestHeader;
-import com.redshape.io.net.request.RequestProcessingException;
-import com.redshape.io.net.request.RequestType;
+import com.redshape.io.protocols.core.request.RequestException;
+import com.redshape.io.protocols.core.request.RequestFormattingException;
+import com.redshape.io.protocols.core.request.RequestHeader;
+import com.redshape.io.protocols.core.request.RequestProcessingException;
+import com.redshape.io.protocols.core.request.RequestType;
 import com.redshape.io.protocols.vanilla.hyndrators.IApiRequestHydrator;
 import com.redshape.io.protocols.vanilla.hyndrators.JSONRequestHydrator;
 import com.redshape.api.requesters.IRequester;
@@ -159,16 +159,19 @@ public class ApiRequest implements IApiRequest {
 
             Collection<RequestHeader> headers = hydrator.readHeaders();
             if ( headers == null ) {
+            	// TODO
                 throw new RequestFormattingException("ErrorCode.EXCEPTION_MISSED_REQUEST_HEAD");
             }
             request.setHeaders( headers );
 
             if ( !isValidHeaders(request) ) {
+            	// TODO
                 throw new RequestProcessingException("ErrorCode.EXCEPTION_WRONG_REQUEST_HEADERS");
             }
 
             Collection<IApiRequest> body = hydrator.readBody();
             if ( body == null ) {
+            	// TODO
                 throw new RequestFormattingException("ErrorCode.EXCEPTION_MISSED_REQUEST_BODY");
             }
 

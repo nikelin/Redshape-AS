@@ -1,9 +1,11 @@
 package com.redshape.server;
 
 import com.redshape.api.requesters.IRequester;
+
 import com.redshape.io.server.IServer;
 import com.redshape.io.server.ServerException;
 import com.redshape.io.server.ServerState;
+
 import com.redshape.io.server.policy.ApplicationResult;
 import com.redshape.io.server.policy.IPolicy;
 import com.redshape.io.server.policy.PolicyType;
@@ -22,7 +24,9 @@ import java.util.*;
  * Time: 12:59:31 AM
  * To change this template use File | Settings | File Templates.
  */
+
 public abstract class AbstractServer<T, V> implements IServer<T, V> {
+
     private final static Logger log = Logger.getLogger( AbstractServer.class );
 
     /**

@@ -71,49 +71,64 @@ public abstract class AbstractModelType implements IModelType {
         private Class<?> type;
         private boolean required;
         private boolean isTransient;
+        private boolean isList;
 
         public ModelTypeField( String name ) {
             this.name = name;
+        }
+        
+        public IModelField markList( boolean value ) {
+        	this.isList = value;
+        	return this;
+        }
+        
+        public boolean isList() {
+        	return this.isList;
         }
         
         public String getTitle() {
         	return this.title;
         }
         
-        public void setTitle( String title ) {
+        public IModelField setTitle( String title ) {
         	this.title = title;
+        	return this;
         }
         
         public boolean isTransient() {
         	return this.isTransient;
         }
         
-        public void makeTransient( boolean status ) {
+        public IModelField makeTransient( boolean status ) {
         	this.isTransient = status;
+        	return this;
         }
 
         public String getName() {
             return this.name;
         }
 
-        public void setFormat( String format ) {
+        public IModelField setFormat( String format ) {
             this.format = format;
+            return this;
         }
 
         public String getFormat() {
             return this.format;
         }
 
-        public void setRequired( boolean required ) {
+        public IModelField setRequired( boolean required ) {
             this.required = required;
+            return this;
         }
 
         public boolean isRequired() {
             return this.required;
         }
 
-        public void setType( Class<?> type ) {
+        public IModelField setType( Class<?> type ) {
             this.type = type;
+            return this;
         }
 
         public Class<?> getType() {

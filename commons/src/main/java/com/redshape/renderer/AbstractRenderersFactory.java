@@ -66,7 +66,8 @@ public abstract class AbstractRenderersFactory implements IRenderersFactory {
     	this.packagesLoader = loader;
     }
 
-    public static <T extends IRenderersFactory> T getFactory( Class<T> factoryClass )
+    @SuppressWarnings("unchecked")
+	public static <T extends IRenderersFactory> T getFactory( Class<T> factoryClass )
                                                                     throws InstantiationException {
         T factory = (T) factories.get( factoryClass );
         if ( factory != null ) {

@@ -33,7 +33,6 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <forceCreation>true</forceCreation>
                     <outputDirectory>${project-build-path}</outputDirectory>
                     <archive>
                         <index>true</index>
@@ -56,6 +55,11 @@
         	<groupId>com.redshape</groupId>
         	<artifactId>tasks</artifactId>
         	<version>1.0.0A</version>
+        </dependency>
+        <dependency>
+            <groupId>com.redshape</groupId>
+            <artifactId>tasks</artifactId>
+            <version>1.0.0A</version>
         </dependency>
         
         <dependency>

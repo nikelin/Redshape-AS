@@ -7,11 +7,12 @@ import com.redshape.notifications.transport.email.configuration.EmailTransportCo
 import com.redshape.notifications.transport.email.destinations.EmailDestination;
 import org.apache.log4j.Logger;
 
+import java.util.Date;
+import java.util.Properties;
+
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.MimeMessage;
-import java.util.Date;
-import java.util.Properties;
 
 /**
  * Created by IntelliJ IDEA.

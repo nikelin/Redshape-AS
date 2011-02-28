@@ -2,8 +2,8 @@ package com.redshape.io.protocols.core.readers;
 
 import java.io.InputStream;
 
-import com.redshape.io.net.request.IRequest;
 import com.redshape.io.protocols.core.hydrators.RequestHydrator;
+import com.redshape.io.protocols.core.request.IRequest;
 
 /**
  * WebCam Project

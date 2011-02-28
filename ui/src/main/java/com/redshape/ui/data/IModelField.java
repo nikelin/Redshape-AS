@@ -11,23 +11,27 @@ public interface IModelField {
 
 	public boolean isTransient();
 	
-	public void makeTransient( boolean value );
+	public IModelField markList( boolean value );
 	
-	public void setTitle( String title );
+	public boolean isList();
+	
+	public IModelField makeTransient( boolean value );
+	
+	public IModelField setTitle( String title );
 	
 	public String getTitle();
 	
-    public void setType( Class<?> type );
+    public IModelField setType( Class<?> type );
 
     public Class<?> getType();
 
-    public void setRequired( boolean required );
+    public IModelField setRequired( boolean required );
 
     public boolean isRequired();
 
     public String getName();
 
-    public void setFormat( String format );
+    public IModelField setFormat( String format );
 
     public String getFormat();
 

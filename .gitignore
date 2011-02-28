@@ -1,21 +1,25 @@
-.idea
-.settings
+.idea/
+.settings/
 .classpath
 .project
+<<<<<<< HEAD
 nbproject
 pom.properties
 *tmp
 build
+=======
+nbproject/
+build/
+>>>>>>> refs/heads/2.0.0A
 interpolated-pom.xml
 *.jar
 *.iws
 *.log
-*/*.log
-logs/*
-logs
+logs/
 *.class
 *.ipr
-apidocs
+apidocs/
 *.iml
-assemblies
-*/build
+assemblies/
+build/
+pom.properties

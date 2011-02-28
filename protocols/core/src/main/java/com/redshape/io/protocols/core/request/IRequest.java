@@ -1,4 +1,4 @@
-package com.redshape.io.net.request;
+package com.redshape.io.protocols.core.request;
 
 import java.util.Collection;
 import com.redshape.io.net.adapters.socket.client.ISocketAdapter;

@@ -26,7 +26,7 @@
 		<constructor-arg><ref bean="resourcesLoader"/></constructor-arg>
 	</bean>
 	
-	<bean id="config" class="com.redshape.config.XMLConfig" scope="prototype">
+	<bean id="config" class="com.redshape.utils.config.XMLConfig" scope="prototype">
 		<constructor-arg><ref bean="xmlHelper"/></constructor-arg>
 		<constructor-arg><value>configs/common/bootstrap.cfg.xml</value></constructor-arg>
 	</bean>

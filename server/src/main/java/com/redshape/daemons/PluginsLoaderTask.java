@@ -1,11 +1,11 @@
 package com.redshape.daemons;
 
+import com.redshape.utils.config.IConfig;
 import com.redshape.plugins.PluginsRegistry;
 import com.redshape.plugins.loaders.PluginLoaderException;
 import com.redshape.utils.Constants;
 import com.redshape.utils.PackagesLoader;
 import com.redshape.utils.ResourcesLoader;
-import com.redshape.utils.config.IConfig;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,7 +2,7 @@ package com.redshape.server.processors.request;
 
 import com.redshape.api.requesters.IRequester;
 import com.redshape.io.net.adapters.socket.client.ISocketAdapter;
-import com.redshape.io.net.request.RequestType;
+import com.redshape.io.protocols.core.request.RequestType;
 import com.redshape.io.protocols.dispatchers.DispatcherException;
 import com.redshape.io.protocols.dispatchers.IVanillaDispatcher;
 import com.redshape.io.protocols.vanilla.IVanillaProtocol;
@@ -11,6 +11,7 @@ import com.redshape.io.protocols.vanilla.response.IApiResponse;
 import com.redshape.io.server.ServerException;
 import com.redshape.server.ISocketServer;
 
+import com.redshape.server.ISocketServer;
 import org.apache.log4j.Logger;
 
 import java.util.Date;
@@ -29,13 +30,12 @@ public class ApiRequestsProcessor<P extends IVanillaProtocol<IRequester,
 																IApiRequest, 
 																IApiResponse
 															>, 
-															IApiResponse>
-														>
-        extends AbstractRequestsProcessor<
-        			P,
-                    ISocketServer<P,IApiResponse,IApiRequest>, 
-                    IApiResponse, 
-                    IApiRequest> {
+															IApiResponse>>
+					extends AbstractRequestsProcessor<
+		        			P,
+		                    ISocketServer<P,IApiResponse,IApiRequest>, 
+		                    IApiResponse, 
+		                    IApiRequest> {
     
     private static final Logger log = Logger.getLogger( ApiRequestsProcessor.class);
 

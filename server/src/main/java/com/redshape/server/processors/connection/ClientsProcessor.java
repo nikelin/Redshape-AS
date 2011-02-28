@@ -1,9 +1,9 @@
 package com.redshape.server.processors.connection;
 
 import com.redshape.io.net.adapters.socket.client.ISocketAdapter;
-import com.redshape.io.net.request.IRequest;
 import com.redshape.io.protocols.core.IProtocol;
 import com.redshape.io.protocols.core.ProtocolException;
+import com.redshape.io.protocols.core.request.IRequest;
 import com.redshape.io.server.ServerException;
 import com.redshape.server.ISocketServer;
 import org.apache.log4j.Logger;
@@ -46,10 +46,8 @@ public class ClientsProcessor implements IClientsProcessor {
     }
 
     /**
-     * Поставить текущего пользователя в очередь
      * @param socket
      * @throws java.io.IOException
-     * @throws BalanserOverloadedException
      */
      @Override
      public boolean onConnection( final ISocketAdapter socket ) throws ServerException {
@@ -60,7 +58,6 @@ public class ClientsProcessor implements IClientsProcessor {
             // @FIXME: refactor due to Protocols API refactoring
 //            IRequestsProcessor processor = protocol.createRequestsProcessor( this.getContext() );
 //            processor.setServerContext(this.getContext());
-            
             while ( this.isValid() ) {
                 log.info("Waiting request...");
                 try{

@@ -154,7 +154,7 @@
     
     <search>
         <engine>com.redshape.search.engines.LuceneEngine</engine>
-        <indexPath>/tmp/search/lucene</indexPath>
+        <indexPath>/tmp/com.redshape.search/lucene</indexPath>
         <defaultMaxResults>100</defaultMaxResults>
     </search>
     

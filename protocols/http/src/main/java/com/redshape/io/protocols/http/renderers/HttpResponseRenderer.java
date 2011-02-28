@@ -1,10 +1,10 @@
 package com.redshape.io.protocols.http.renderers;
 
-import com.redshape.io.net.request.RequestHeader;
 import com.redshape.io.protocols.http.request.HttpCode;
 import com.redshape.io.protocols.http.response.HttpResponse;
 import com.redshape.io.protocols.http.response.IHttpResponse;
 import com.redshape.io.protocols.core.renderers.IResponseRenderer;
+import com.redshape.io.protocols.core.request.RequestHeader;
 import com.redshape.renderer.RendererException;
 
 import java.util.Collection;

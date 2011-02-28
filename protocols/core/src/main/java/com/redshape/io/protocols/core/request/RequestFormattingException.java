@@ -1,4 +1,4 @@
-package com.redshape.io.net.request;
+package com.redshape.io.protocols.core.request;
 
 
 /**

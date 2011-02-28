@@ -1,6 +1,5 @@
 package com.redshape.features.example;
 
-import com.redshape.api.requesters.IRequester;
 import com.redshape.features.AbstractFeatureAspect;
 import com.redshape.features.IFeatureInteractor;
 import com.redshape.features.InteractionException;
@@ -17,8 +16,8 @@ import com.redshape.features.annotations.FeatureAspect;
 @FeatureAspect( name = "echo", feature = "example" )
 public class EchoAction extends AbstractFeatureAspect {
 
-	@Override
-    public InteractionResult processInteraction( IFeatureInteractor interactor ) throws InteractionException {
+    @Override
+    protected InteractionResult processInteraction( IFeatureInteractor interactor ) throws InteractionException {
         InteractionResult response = new InteractionResult();
         
         response.setAttribute( "response", this.getAttribute("request") );

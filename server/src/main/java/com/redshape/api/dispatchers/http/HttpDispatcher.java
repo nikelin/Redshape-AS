@@ -1,10 +1,13 @@
 package com.redshape.api.dispatchers.http;
 
+
+import com.redshape.api.ErrorCodes;
 import com.redshape.features.FeaturesRegistry;
 import com.redshape.features.IFeatureAspect;
 import com.redshape.features.IFeatureInteractor;
 import com.redshape.features.IInteractionResult;
 import com.redshape.features.InteractionException;
+
 import com.redshape.io.protocols.dispatchers.DispatcherException;
 import com.redshape.io.protocols.dispatchers.IHttpDispatcher;
 import com.redshape.io.protocols.http.request.IHttpRequest;
@@ -41,7 +44,8 @@ public class HttpDispatcher implements IHttpDispatcher<IFeatureInteractor, IHttp
             IFeatureAspect aspect = FeaturesRegistry.getDefault()
                                                     .getFeatureAspect( request.getFeatureName(), request.getAspectName() );
             if ( aspect == null ) {
-                throw new InteractionException("ErrorCode.EXCEPTION_REQUEST_METHOD_NOT_EXISTS");
+                throw new InteractionException(ErrorCodes.EXCEPTION_REQUEST_METHOD_NOT_EXISTS);
+
             }
 
 

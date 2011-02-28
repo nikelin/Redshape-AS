@@ -1,8 +1,8 @@
 package com.redshape.io.protocols.http.request;
 
 import com.redshape.io.net.adapters.socket.client.ISocketAdapter;
-import com.redshape.io.net.request.RequestException;
-import com.redshape.io.net.request.RequestHeader;
+import com.redshape.io.protocols.core.request.RequestException;
+import com.redshape.io.protocols.core.request.RequestHeader;
 import com.redshape.io.protocols.http.HttpProtocolVersion;
 import com.redshape.io.protocols.http.hydrators.IHttpRequestHydrator;
 

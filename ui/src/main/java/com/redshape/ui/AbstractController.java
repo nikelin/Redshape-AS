@@ -51,8 +51,7 @@ public abstract class AbstractController implements IController {
     
     @Override
     public void forwardToView( IView view, AppEvent event, boolean unload ) {
-        if ( this.activeView != null && unload ) {
-        	// @FIXME: refactor me, please!
+    	if ( this.activeView != null && unload ) {
             this.activeView.unload( UIRegistry.<Container>get( UIConstants.Area.CENTER ) );
         }
 
@@ -62,7 +61,7 @@ public abstract class AbstractController implements IController {
         }
 
         view.handle(event);
-        // @FIXME: refactor me, please!
+        
         view.render( UIRegistry.<Container>get( UIConstants.Area.CENTER ) );
         
         Dispatcher.get().forwardEvent( UIEvents.Core.Repaint );
@@ -73,7 +72,6 @@ public abstract class AbstractController implements IController {
     @Override
     public void unload() {
         if ( this.getActiveView() != null ) {
-        	// @FIXME: refactor me, please!
             this.getActiveView().unload( UIRegistry.<Container>get( UIConstants.Area.CENTER ) );
         }
 

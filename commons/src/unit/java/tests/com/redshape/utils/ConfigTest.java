@@ -1,8 +1,8 @@
 package tests.com.redshape.utils;
 
-import com.redshape.config.XMLConfig;
-import com.redshape.config.ConfigException;
-import com.redshape.config.IConfig;
+import com.redshape.utils.config.XMLConfig;
+import com.redshape.utils.config.ConfigException;
+import com.redshape.utils.config.IConfig;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -3,7 +3,7 @@ package com.redshape.features;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.redshape.io.net.request.IRequest;
+import com.redshape.io.protocols.core.request.IRequest;
 import com.redshape.utils.config.IConfig;
 
 import java.lang.reflect.Method;

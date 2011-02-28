@@ -21,6 +21,7 @@ public abstract class AbstractHttpProtocol<
         extends AbstractProtocol<E, IHttpRequest, T, IHttpDispatcher<E, T, R>, D, R>
         implements IHttpProtocol<E, T, D, R> {
 
+
 	
 	
     public AbstractHttpProtocol( Class<? extends IHttpProtocol<E, T, D, R>> protocol ) {
@@ -29,6 +30,7 @@ public abstract class AbstractHttpProtocol<
 
     // @FIXME: important!
     protected void initializeDispatchers() {
+    	throw new RuntimeException("Not implemented yet");
     }
 
 }

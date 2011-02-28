@@ -2,10 +2,10 @@ package com.redshape.migration.strategy.fixtures;
 
 import com.redshape.migration.MigrationException;
 import com.redshape.migration.strategy.MigrationStrategy;
-import com.redshape.persistence.dao.ManagerException;
+
 import com.redshape.persistence.entities.IEntity;
 import org.apache.log4j.Logger;
-import org.hibernate.exception.ConstraintViolationException;
+
 
 /**
  * Created by IntelliJ IDEA.

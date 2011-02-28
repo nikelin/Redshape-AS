@@ -1,12 +1,14 @@
 package com.redshape.api.dispatchers.vanilla;
 
+import com.redshape.api.ErrorCodes;
 import com.redshape.api.InvokableEntitiesRegistry;
 import com.redshape.api.requesters.IRequester;
+import com.redshape.features.IFeatureInteractor;
 import com.redshape.features.InteractionException;
-import com.redshape.io.net.request.RequestProcessingException;
-import com.redshape.io.net.request.RequestType;
-import com.redshape.io.protocols.vanilla.request.IApiRequest;
+import com.redshape.io.protocols.core.request.RequestProcessingException;
+import com.redshape.io.protocols.core.request.RequestType;
 import com.redshape.io.protocols.dispatchers.DispatcherException;
+import com.redshape.io.protocols.vanilla.request.IApiRequest;
 import com.redshape.io.protocols.dispatchers.IVanillaDispatcher;
 import com.redshape.io.protocols.vanilla.response.IApiResponse;
 import com.redshape.io.remoting.annotations.RemoteMethod;
@@ -26,15 +28,15 @@ import java.util.Iterator;
  * Time: 12:44:30 PM
  * To change this template use File | Settings | File Templates.
  */
-public class MethodInvocationsDispatcher implements IVanillaDispatcher<IRequester, IApiRequest, IApiResponse> {
+public class MethodInvocationsDispatcher implements IVanillaDispatcher<IFeatureInteractor, IApiRequest, IApiResponse> {
     private static final Logger log = Logger.getLogger( MethodInvocationsDispatcher.class );
 
     public RequestType getDispatchingType() {
         return RequestType.METHOD_INVOKE;
     }
 
-    @Override
-    public void dispatch( IRequester requester, IApiRequest request, IApiResponse response ) throws DispatcherException {
+    public void dispatch( IFeatureInteractor requester, IApiRequest request, IApiResponse response ) throws DispatcherException
+    {
         if ( !InvokableEntitiesRegistry.isRegistered( request.getFeatureName() ) ) {
             response.addError( new RequestProcessingException("ErrorCode.EXCEPTION_REQUEST_INTERFACE_NOT_EXISTS") );
             return;
@@ -78,7 +80,7 @@ public class MethodInvocationsDispatcher implements IVanillaDispatcher<IRequeste
             
             response.addParam("result", method.invoke( hostInterface, request.getParams().values().toArray( new Object[request.getParams().size()]) ) );
         } catch ( NoSuchMethodException e ) {
-            response.addError( new RequestProcessingException("ErrorCode.EXCEPTION_REQUEST_METHOD_NOT_EXIST") );
+            response.addError( new InteractionException( ErrorCodes.EXCEPTION_REQUEST_METHOD_NOT_EXISTS ) );
         } catch ( Throwable e ) {
             log.error( e.getMessage(), e );
             response.addError( new RequestProcessingException() );

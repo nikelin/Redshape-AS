@@ -5,8 +5,9 @@
     <version>1.0.0A</version>
     <artifactId>core</artifactId>
     <packaging>jar</packaging>
+
     <name>Protocols API Core</name>
-    
+
     <parent>
     	<artifactId>protocols-parent</artifactId>
     	<groupId>com.redshape.protocols</groupId>

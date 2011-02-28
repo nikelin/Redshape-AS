@@ -1,6 +1,7 @@
 package com.redshape.features;
 
-import com.redshape.io.net.request.IRequest;
+import com.redshape.io.protocols.core.request.IRequest;
+
 
 /**
  * Created by IntelliJ IDEA.

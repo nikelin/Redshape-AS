@@ -1,8 +1,6 @@
 package com.redshape.migration.renderers.engine;
 
 import com.redshape.renderer.AbstractRenderersFactory;
-import com.redshape.utils.InterfacesFilter;
-import com.redshape.utils.PackageLoaderException;
 
 /**
  * WebCam Project

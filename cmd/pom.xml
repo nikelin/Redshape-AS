@@ -18,7 +18,6 @@
 
     <build>
         <finalName>runner</finalName>
-
     </build>
 
     <dependencies>

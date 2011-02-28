@@ -6,7 +6,6 @@ import com.redshape.utils.ResourcesLoader;
 import com.redshape.utils.config.IConfig;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.*;

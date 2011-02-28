@@ -1,5 +1,8 @@
 package com.redshape.ui;
 
+import com.redshape.ui.data.IModelData;
+import com.redshape.ui.data.IModelField;
+import com.redshape.ui.data.IModelType;
 import com.redshape.ui.events.UIEvents;
 import com.redshape.ui.validators.IValidator;
 
@@ -26,25 +29,69 @@ public class FormPanel extends JPanel {
 	private Map<String, FormField<?>> fields = new HashMap<String, FormField<?>>();
     protected JComponent centerPane;
     protected JComponent buttonsPane;
-
+    private IModelType type;
+    private boolean typeWritable;
+    private IModelData model;
+    
     public FormPanel() {
+    	this(null, false);
+    }
+    
+    public FormPanel( IModelType type, boolean writable ) {
         super();
 
+        this.type = type;
+        this.typeWritable = writable;
+        
         this.buildUI();
         this.configUI();
+        this.init();
+    }
+    
+    protected void init() {
+    	if ( this.type != null ) {
+    		for ( IModelField field : this.type.getFields() ) {
+    			this.addField( 
+					field.getName(), 
+					field.getTitle(), 
+					this.typeWritable ? 
+							this.createEditableComponent() 
+							: this.createReadableComponent() 
+					);
+    		}
+    	}
+    }
+    
+    protected JComponent createReadableComponent() {
+    	return new JLabel();
+    }
+    
+    protected JComponent createEditableComponent() {
+    	return new JTextField();
+    }
+    
+    public void setModel( IModelData data ) {
+    	this.model = data;
+    	
+    	for ( IModelField field : this.type.getFields() ) {
+    		FormField<?> formField = this.getField(field.getName());
+    		if ( formField != null ) {
+    			formField.setValue( data.get( field.getName() ) );
+    		}
+    	}
     }
     
     protected void configUI() {
-    	this.setLayout( new GridLayout( 0, 1 ) );
+    	this.setLayout( new BoxLayout( this, BoxLayout.Y_AXIS ) );
     }
 
     protected void buildUI() {
-    	this.centerPane = new JLayeredPane();
+    	this.centerPane = new JPanel();
         this.centerPane.setLayout( new GridLayout(0, 2) );
         this.add( this.centerPane );
 
-        this.buttonsPane = new JLayeredPane();
-        this.buttonsPane.setLayout( new FlowLayout( FlowLayout.RIGHT ) );
+        this.buttonsPane = new JPanel();
+        this.buttonsPane.setVisible(false);
         this.add( this.buttonsPane );
     }
 
@@ -83,7 +130,8 @@ public class FormPanel extends JPanel {
     	
     	for ( FormField<?> field : this.fields.values() ) {
     		result.add( (FormField<T>) field );
-    	}
+    	}    	this.setLayout( new GridLayout( 0, 1 ) );
+
     	
     	return result;
     }
@@ -99,6 +147,7 @@ public class FormPanel extends JPanel {
 
     public void addButton( JButton button ) {
         this.buttonsPane.add(button);
+        this.buttonsPane.setVisible(true);
     }
 
     public <T> void addField( String id, String label, JComponent component ) {
@@ -106,13 +155,6 @@ public class FormPanel extends JPanel {
         this.fields.put( id, field );
         this.centerPane.add( field.getLabel() );
         this.centerPane.add( field.getComponent() );
-    }
-
-    @Override
-    public void doLayout() {
-        super.doLayout();
-
-        Dispatcher.get().forwardEvent(UIEvents.Core.Repaint);
     }
 
     public class FormField<T> extends JComponent {
@@ -156,21 +198,30 @@ public class FormPanel extends JPanel {
         public void setValue( Object value ) {
         	if ( this.getComponent() instanceof JTextComponent ) {
         		( (JTextComponent) this.getComponent() ).setText( String.valueOf( value ) );
-        		this.getComponent().revalidate();
-        	} else if ( this.getComponent() instanceof ItemSelectable ) {
-        		
+        	} else if ( this.getComponent() instanceof JCheckBox ) {
+        		( (JCheckBox) this.getComponent() ).setSelected( (Boolean) value );
+        	} else if ( this.getComponent() instanceof JComboBox ) {
+        		( (JComboBox) this.getComponent() ).setSelectedIndex( (Integer) value );
         	}
+        	
+        	this.getComponent().revalidate();
         }
         
         @SuppressWarnings("unchecked")
 		public T getValue() {
+        	Object object = null;
             if ( this.getComponent() instanceof JTextComponent ) {
-                return (T) ( (JTextComponent) this.getComponent() ).getText();
+                object = ( (JTextComponent) this.getComponent() ).getText();
+            } else if ( this.getComponent() instanceof JComboBox ) {
+            	final JComboBox component = (JComboBox) this.getComponent();
+            	object = component.getItemAt( component.getSelectedIndex() );
             } else if ( this.getComponent() instanceof  ItemSelectable ) {
-                return (T) ( (ItemSelectable) this.getComponent() ).getSelectedObjects();
+                object = ( (ItemSelectable) this.getComponent() ).getSelectedObjects();
+            } else if ( this.getComponent() instanceof JCheckBox ) {
+            	object = ( (Boolean) ( (JCheckBox) this.getComponent() ).isSelected() );
             }
 
-            return null;
+            return (T) object;
         }
         
         public void markInvalid() {

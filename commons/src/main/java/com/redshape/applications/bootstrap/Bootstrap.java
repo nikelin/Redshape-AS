@@ -1,7 +1,5 @@
 package com.redshape.applications.bootstrap;
 
-import com.redshape.utils.InterfacesFilter;
-import com.redshape.utils.PackageLoaderException;
 import com.redshape.utils.PackagesLoader;
 import com.redshape.utils.config.IConfig;
 

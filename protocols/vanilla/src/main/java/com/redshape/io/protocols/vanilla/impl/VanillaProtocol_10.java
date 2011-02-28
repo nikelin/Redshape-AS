@@ -1,8 +1,6 @@
 package com.redshape.io.protocols.vanilla.impl;
 
 import com.redshape.api.requesters.IRequester;
-import com.redshape.io.protocols.core.Constants;
-import com.redshape.io.protocols.core.IProtocolVersion;
 import com.redshape.io.protocols.vanilla.AbstractVanillaProtocol;
 import com.redshape.io.protocols.vanilla.VanillaProtocolVersion;
 import com.redshape.io.protocols.vanilla.hyndrators.JSONRequestHydrator;
@@ -10,6 +8,8 @@ import com.redshape.io.protocols.vanilla.readers.APIRequestReader;
 import com.redshape.io.protocols.vanilla.renderers.JSONResponseRenderer;
 import com.redshape.io.protocols.vanilla.request.IApiRequest;
 import com.redshape.io.protocols.vanilla.response.IApiResponse;
+import com.redshape.io.protocols.core.Constants;
+import com.redshape.io.protocols.core.IProtocolVersion;
 import com.redshape.io.protocols.core.readers.IRequestReader;
 import com.redshape.io.protocols.core.writers.IResponseWriter;
 import com.redshape.io.protocols.core.writers.ResponseWriter;
@@ -29,7 +29,6 @@ public class VanillaProtocol_10 extends AbstractVanillaProtocol<IRequester,
 																	IApiResponse
 																>, 
 																IApiResponse> {
-
     public VanillaProtocol_10() {
         super( VanillaProtocol_10.class );
 

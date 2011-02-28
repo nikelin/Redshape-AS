@@ -1,4 +1,7 @@
 package com.redshape.features;
+
+import com.redshape.io.server.ErrorCodes;
+
 /**
  * Created by IntelliJ IDEA.
  * User: nikelin
@@ -9,9 +12,13 @@ package com.redshape.features;
 public class InteractionException extends Exception {
 
     public InteractionException() {
-    	super();
+        this(ErrorCodes.EXCEPTION_INTERNAL);
     }
 
+    public InteractionException( ErrorCodes e ) {
+    	this( e.getMessage(), e );
+    }
+    
     public InteractionException( String message, Throwable cause ) {
         super( message, cause );
     }

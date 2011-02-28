@@ -4,6 +4,7 @@
     <groupId>com.redshape.protocols</groupId>
     <artifactId>protocols-parent</artifactId>
     <version>1.0.0A</version>
+    
     <packaging>pom</packaging>
     <name>Protocols API</name>
     

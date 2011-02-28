@@ -1,9 +1,11 @@
 package com.redshape.io.protocols.core;
 
 import com.redshape.utils.config.ConfigException;
+
 import com.redshape.api.requesters.IRequester;
-import com.redshape.io.net.request.IRequest;
-import com.redshape.io.net.request.RequestType;
+import com.redshape.io.protocols.core.request.IRequest;
+import com.redshape.io.protocols.core.request.RequestType;
+
 import com.redshape.io.protocols.core.readers.IRequestReader;
 import com.redshape.io.protocols.core.readers.ReaderException;
 import com.redshape.io.protocols.core.response.IResponse;
