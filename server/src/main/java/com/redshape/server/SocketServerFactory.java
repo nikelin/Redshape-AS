@@ -59,7 +59,7 @@ public class SocketServerFactory extends AbstractServerFactory implements ISocke
     }
 
     @Override
-    public <P, V extends IProtocol, T extends ISocketServer<V,?,P>> T newInstance( Class<T> serverClass, String host,
+    public <P, V extends IProtocol<?,?,?,?,?,?>, T extends ISocketServer<V,?,P>> T newInstance( Class<T> serverClass, String host,
                                 Integer port, Boolean isSSLEnabled, Map<String, Object> properties, V protocol )
         throws InstantiationException {
         try {

@@ -13,13 +13,13 @@ import java.util.Map;
  */
 public interface ISocketServerFactory extends IServerFactory {
 
-    public <P, V extends IProtocol, T extends ISocketServer<V,?,P>> T newInstance(
+    public <P, V extends IProtocol<?, ?,?,?,?,?>, T extends ISocketServer<V,?,P>> T newInstance(
         Class<T> clazz, String host,
         Integer port, Boolean isSSLEnabled, Map<String, Object> properties, V protocol
     ) throws InstantiationException;
 
-    public void setProtocol( IProtocol protocol );
+    public void setProtocol( IProtocol<?, ?,?,?,?,?> protocol );
 
-    public IProtocol getProtocol();
+    public IProtocol<?, ?,?,?,?,?> getProtocol();
 
 }
