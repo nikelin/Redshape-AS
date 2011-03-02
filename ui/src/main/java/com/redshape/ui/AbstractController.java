@@ -94,6 +94,7 @@ public abstract class AbstractController implements IController {
                     event.getType().getCode().equals( annotation.eventType() ) ) {
                 try {
                     method.invoke( this, event );
+                    break;
                 } catch ( Throwable e ) {
                     log.error( e.getMessage(), e );
                     break;
