@@ -19,6 +19,7 @@ import java.util.*;
  * ability to find associated interactor for given network node.
  *
  * @author nikelin.
+ * @todo: Refactor!
  */
 public final class InteractorsFactory implements IInteractorsFactory, IPackagesLoader {
     private static final Logger log = Logger.getLogger( InteractorsFactory.class );
@@ -38,7 +39,8 @@ public final class InteractorsFactory implements IInteractorsFactory, IPackagesL
         this( packages, false);
     }
 
-    public InteractorsFactory( Collection<String> packages, boolean initialize ) throws InstantiationException {
+    public InteractorsFactory( Collection<String> packages, boolean initialize ) 
+    	throws InstantiationException {
         this.packages = packages;
 
         if ( initialize ) {
@@ -54,36 +56,48 @@ public final class InteractorsFactory implements IInteractorsFactory, IPackagesL
         return this.packagesLoader;
     }
 
-    public void setCredentialsProviders( Map<Class<? extends INetworkInteractor>, ICredentialsProvider> providers ) {
+    public void setCredentialsProviders( 
+    		Map<Class<? extends INetworkInteractor>, 
+    		ICredentialsProvider> providers ) {
         this.credentialsProviders = providers;
     }
 
-    public void addCredentialsProvider( Class<? extends INetworkInteractor> interactorClass, ICredentialsProvider provider ) {
+    public void addCredentialsProvider( 
+    		Class<? extends INetworkInteractor> interactorClass, 
+    		ICredentialsProvider provider ) {
         this.credentialsProviders.put(interactorClass, provider);
     }
 
-    protected ICredentialsProvider getCredentialsProvider( Class<? extends INetworkInteractor> interactor ) {
+    protected ICredentialsProvider getCredentialsProvider( 
+    		Class<? extends INetworkInteractor> interactor ) {
         return this.credentialsProviders.get(interactor);
     }
 
-    public void setInteractorConfiguration( Class<? extends INetworkInteractor> interactorClass, IConfig config ) {
+    public void setInteractorConfiguration( 
+    		Class<? extends INetworkInteractor> interactorClass, 
+    		IConfig config ) {
         this.interactorsConfiguration.put( interactorClass, config );
     }
 
-    public void setInteractorsConfiguration( Map<Class<? extends INetworkInteractor>, IConfig> configuration ) {
+    public void setInteractorsConfiguration( 
+    		Map<Class<? extends INetworkInteractor>, 
+    		IConfig> configuration ) {
         this.interactorsConfiguration = configuration;
     }
 
-    public IConfig getInteractorConfiguration( Class<? extends INetworkInteractor> interactorClazz ) {
+    public IConfig getInteractorConfiguration( 
+    		Class<? extends INetworkInteractor> interactorClazz ) {
         return this.interactorsConfiguration.get(interactorClazz);
     }
 
-    public void addInteractor( Class<? extends INetworkInteractor> interactorClazz )
-                                                        throws InstantiationException {
+    public void addInteractor( 
+    		Class<? extends INetworkInteractor> interactorClazz )
+            throws InstantiationException {
         this.interactors.add( interactorClazz );
     }
 
-    public void addInteractor( INetworkNode node, INetworkInteractor interactor ) {
+    public void addInteractor( INetworkNode node, 
+    		INetworkInteractor interactor ) {
         this.interactors.add( interactor.getClass() );
 
         if ( this.nodeInteractors.get(node) == null ) {
@@ -93,7 +107,8 @@ public final class InteractorsFactory implements IInteractorsFactory, IPackagesL
         this.nodeInteractors.get(node).add( interactor );
     }
 
-    public void setInteractors( Collection<Class<? extends INetworkInteractor>> interactors ) {
+    public void setInteractors( 
+    		Collection<Class<? extends INetworkInteractor>> interactors ) {
         this.interactors = interactors;
     }
 
@@ -101,7 +116,24 @@ public final class InteractorsFactory implements IInteractorsFactory, IPackagesL
         return this.interactors;
     }
 
-    public INetworkInteractor findInteractor( INetworkNode node, String serviceId ) throws InstantiationException {
+    public INetworkInteractor findInteractor( String serviceId, INetworkNode node ) 
+    	throws InstantiationException {
+    	for ( Class<? extends INetworkInteractor> interactor : this.getInteractors() ) {
+    		InteractionService meta = interactor.getAnnotation( InteractionService.class );
+    		if ( meta == null ) {
+    			continue;
+    		}
+    		
+    		if ( meta.id() != null && meta.id().toLowerCase().equals( serviceId ) ) {
+    			return this.createInteractor(node, interactor );
+    		}
+    	}
+    	
+    	return null;
+    }
+    
+    public INetworkInteractor findInteractor( INetworkNode node, String serviceId ) 
+    	throws InstantiationException {
         Collection<INetworkInteractor> interactors = this.findInteractors( node );
         for ( INetworkInteractor interactor : interactors ) {
             if ( interactor.getServiceID().equals( serviceId ) ) {
@@ -112,12 +144,14 @@ public final class InteractorsFactory implements IInteractorsFactory, IPackagesL
         return null;
     }
 
-    public Collection<INetworkInteractor> findInteractors( INetworkNode node ) throws InstantiationException {
+    public Collection<INetworkInteractor> findInteractors( INetworkNode node ) 
+    		throws InstantiationException {
         Collection<INetworkInteractor> result = new HashSet<INetworkInteractor>();
 
         for ( Class<? extends INetworkInteractor> interactorClazz : this.getInteractors() ) {
             boolean osSatisfied = false;
-            InteractionService interactorMeta = interactorClazz.getAnnotation( InteractionService.class );
+            InteractionService interactorMeta = interactorClazz.getAnnotation( 
+            														InteractionService.class );
             for ( PlatformType type : interactorMeta.platforms() ) {
                 if ( PlatformType.isInFamily( node.getPlatformType(), type ) ) {
                     osSatisfied = true;
@@ -192,7 +226,10 @@ public final class InteractorsFactory implements IInteractorsFactory, IPackagesL
         this.packages.add(path);
     }
 
-    protected INetworkInteractor createInteractor( INetworkNode node, Class<? extends INetworkInteractor> interactorClazz ) throws InstantiationException {
+    protected INetworkInteractor createInteractor( 
+    		INetworkNode node, 
+    		Class<? extends INetworkInteractor> interactorClazz ) 
+    			throws InstantiationException {
         try {
             INetworkInteractor interactorInstance = interactorClazz.getConstructor( INetworkNode.class ).newInstance( node );
             interactorInstance.setCredentialsProvider( this.getCredentialsProvider( interactorClazz ) );

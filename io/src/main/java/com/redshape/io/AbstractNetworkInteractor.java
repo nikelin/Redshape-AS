@@ -1,15 +1,14 @@
 package com.redshape.io;
 
-
-import java.util.Collection;
-
-import com.redshape.utils.config.IConfig;
-import com.redshape.io.annotations.InteractionService;
 import com.redshape.io.net.auth.ICredentials;
 import com.redshape.io.net.auth.ICredentialsProvider;
 import com.redshape.io.net.auth.IKeyedCredentials;
 import com.redshape.io.net.auth.IPasswordCredentials;
+import com.redshape.io.annotations.InteractionService;
 import com.redshape.utils.StringUtils;
+import com.redshape.utils.config.IConfig;
+
+import java.util.Collection;
 
 /**
  * Created by IntelliJ IDEA.

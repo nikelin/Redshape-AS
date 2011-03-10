@@ -1,25 +1,32 @@
 package com.redshape.io.interactors;
 
+import com.redshape.io.net.auth.ICredentials;
+import com.redshape.io.net.auth.IPasswordCredentials;
+import com.redshape.io.AbstractNetworkInteractor;
+import com.redshape.io.IFilesystemNode;
+import com.redshape.io.NetworkInteractionException;
+import com.redshape.io.annotations.InteractionService;
+import com.redshape.io.annotations.RequiredPort;
+import com.redshape.io.interactors.ssh.SSHFile;
+import com.redshape.io.INetworkNode;
+import com.redshape.io.PlatformType;
+import com.redshape.utils.StringUtils;
+import com.redshape.utils.config.ConfigException;
+import com.redshape.utils.config.IConfig;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.transport.TransportException;
 import net.schmizz.sshj.userauth.UserAuthException;
 import org.apache.log4j.Logger;
 
-import com.redshape.utils.config.ConfigException;
-import com.redshape.utils.config.IConfig;
-import com.redshape.io.AbstractNetworkInteractor;
-import com.redshape.io.IFilesystemNode;
-import com.redshape.io.INetworkNode;
-import com.redshape.io.NetworkInteractionException;
-import com.redshape.io.PlatformType;
-import com.redshape.io.annotations.InteractionService;
-import com.redshape.io.annotations.RequiredPort;
-import com.redshape.io.interactors.ssh.SSHFile;
-import com.redshape.io.net.auth.IPasswordCredentials;
-import com.redshape.utils.StringUtils;
-
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * @author nikelin
@@ -47,15 +54,22 @@ public class SSHInteractor extends AbstractNetworkInteractor<SSHClient> {
 
     @Override
     public void connect() throws NetworkInteractionException {
+    	this.connect( this.getPasswordCredentials() );
+    }
+    
+    @Override
+    public void connect( ICredentials credentials ) throws NetworkInteractionException {
         try {
             // Close previously opened connection if any
             this.close();
 
             this.connection = new SSHClient();
+            
             this.loadVerifiedHosts();
+            
             this.connection.setConnectTimeout( TIMEOUT );
             this.connection.connect( this.getConnectionUri(), this.getPort() );
-            this.authenticate();
+            this.authenticate( credentials );
 
             this.sftpClient = this.connection.newSFTPClient();
         } catch ( Throwable e ) {
@@ -64,17 +78,20 @@ public class SSHInteractor extends AbstractNetworkInteractor<SSHClient> {
         }
     }
 
-    protected void authenticate() throws NetworkInteractionException {
+    protected void authenticate( ICredentials credentials ) throws NetworkInteractionException {
         assert( this.isConnected() );
 
         try {
             try {
-                this.getConnection().loadKnownHosts();
                 this.getConnection().authPublickey( this.getKeyedCredentials().getUsername() );
             } catch ( Throwable e ) {
                 try {
-                    IPasswordCredentials credentials = this.getPasswordCredentials();
-                    this.getConnection().authPassword( credentials.getUsername(), credentials.getPassword() );
+                	if ( ! (credentials instanceof IPasswordCredentials ) ) { 
+                		throw new NetworkInteractionException("Wrong credentials provided");
+                	}
+                	
+                	log.info("Trying to authenticate with: " + credentials.getUsername() + "<>" + ( (IPasswordCredentials) credentials ).getPassword() );
+                    this.getConnection().authPassword( credentials.getUsername(), ( (IPasswordCredentials) credentials ).getPassword() );
                 } catch ( UserAuthException e1 ) {
                     if ( !this.isAnonymousAllowed() ) {
                         log.error( e1.getMessage(), e );
@@ -120,12 +137,17 @@ public class SSHInteractor extends AbstractNetworkInteractor<SSHClient> {
     public String getConnectionUri() {
         return StringUtils.IPToString( this.getNetworkNode().getNetworkPoint().getAddress() );
     }
-
-    protected void loadVerifiedHosts() throws ConfigException {
-        for ( String verifiedHash : this.getConfig().get("trusted").list() ) {
-            this.getConnection().addHostKeyVerifier( verifiedHash );
-        }
+    
+    protected void loadVerifiedHosts() throws ConfigException, IOException, FileNotFoundException {
+    	if ( this.getConfig() != null ) {
+	        for ( String verifiedHash : this.getConfig().get("trusted").list() ) {
+	            this.getConnection().addHostKeyVerifier( verifiedHash );
+	        }
+    	}
+    	
+    	this.getConnection().loadKnownHosts( new File( System.getProperty("user.home") + "/.ssh/known_hosts" ) );
     }
+    
 
     public SSHClient getRawConnection() {
         return this.connection;

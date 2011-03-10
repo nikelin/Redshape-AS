@@ -1,6 +1,5 @@
 package com.redshape.ui;
 
-import java.awt.Component;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.PrintWriter;
@@ -17,7 +16,6 @@ import com.redshape.ui.utils.UIConstants;
 import com.redshape.ui.utils.UIRegistry;
 import com.redshape.ui.widgets.IWidget;
 import com.redshape.ui.widgets.IWidgetsManager;
-import com.redshape.ui.widgets.WidgetsManager;
 
 import javax.swing.*;
 
@@ -30,6 +28,17 @@ import org.springframework.context.ApplicationContext;
 public abstract class AbstractApplication {
 	private static final Logger log = Logger.getLogger( AbstractApplication.class );
     
+	public static class AWTUnhandledExceptionsHandler {
+
+		public static void register() {
+			System.setProperty("sun.awt.exception.handler", AWTUnhandledExceptionsHandler.class.getName() );
+		}
+		
+		public void handle(Throwable e) {
+			Dispatcher.get().forwardEvent( UIEvents.Core.Error, e );
+		}
+	}
+	
 	private JFrame context;
 	private ApplicationContext applicationContext;
     private IComponentsRegistry registry;
@@ -71,6 +80,8 @@ public abstract class AbstractApplication {
     }
     
     protected void init() throws ApplicationException {
+    	AWTUnhandledExceptionsHandler.register();
+    	
     	Dispatcher.get().addListener(UIEvents.Core.Repaint, new IEventHandler() {
             @Override
             public void handle(AppEvent event) {
@@ -118,11 +129,9 @@ public abstract class AbstractApplication {
 		});
 		
 		Thread.currentThread().setUncaughtExceptionHandler( new Thread.UncaughtExceptionHandler() {
-			
 			@Override
 			public void uncaughtException(Thread t, Throwable e) {
-				// TODO Auto-generated method stub
-				
+				Dispatcher.get().forwardEvent( UIEvents.Core.Error, e );
 			}
 		} );
 		
@@ -169,7 +178,7 @@ public abstract class AbstractApplication {
     		component.init();
     		
     		if ( component.doRenderMenu() ) {
-	    		// @todo: move to entitity like MenuBuilder or elsewhere
+	    		// todo: move to entitity like MenuBuilder or elsewhere
 	    		UIRegistry.getMenu().add( this.createMenu( component ) );
     		}
     	}

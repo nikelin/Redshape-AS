@@ -1,11 +1,11 @@
 package com.redshape.io;
 
-
-import java.io.IOException;
-
 import com.redshape.io.net.auth.AuthenticatorException;
+import com.redshape.io.net.auth.ICredentials;
 import com.redshape.io.net.auth.ICredentialsProvider;
 import com.redshape.utils.config.IConfig;
+
+import java.io.IOException;
 
 /**
  * @author nikelin
@@ -26,6 +26,8 @@ public interface INetworkInteractor<T> {
 
     public void connect() throws NetworkInteractionException, AuthenticatorException;
 
+    public void connect( ICredentials auth ) throws NetworkInteractionException, AuthenticatorException;
+    
     public void close() throws NetworkInteractionException;
 
     // public void ping() throws NetworkInteractionException;

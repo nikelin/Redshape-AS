@@ -11,8 +11,9 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public class NetworkInteractionException extends IOException {
+	private static final long serialVersionUID = 9148204335399558919L;
 
-    public NetworkInteractionException() {
+	public NetworkInteractionException() {
         super();
     }
 

@@ -1,22 +1,22 @@
 package com.redshape.io.interactors;
 
+import com.redshape.io.net.auth.AuthenticatorException;
+import com.redshape.io.net.auth.ICredentials;
+import com.redshape.io.net.auth.impl.samba.NtlmCredentials;
+import com.redshape.io.AbstractNetworkInteractor;
+import com.redshape.io.IFilesystemNode;
+import com.redshape.io.NetworkInteractionException;
+import com.redshape.io.annotations.InteractionService;
+import com.redshape.io.annotations.RequiredPort;
+
+import com.redshape.io.interactors.samba.SambaAuthenticator;
+import com.redshape.io.interactors.samba.SambaFile;
+import com.redshape.io.INetworkNode;
+import com.redshape.io.PlatformType;
 import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbFile;
 
 import org.apache.log4j.Logger;
-
-import com.redshape.io.AbstractNetworkInteractor;
-import com.redshape.io.IFilesystemNode;
-import com.redshape.io.INetworkNode;
-import com.redshape.io.NetworkInteractionException;
-import com.redshape.io.PlatformType;
-import com.redshape.io.annotations.InteractionService;
-import com.redshape.io.annotations.RequiredPort;
-import com.redshape.io.interactors.samba.SambaAuthenticator;
-import com.redshape.io.interactors.samba.SambaFile;
-import com.redshape.io.net.auth.AuthenticatorException;
-import com.redshape.io.net.auth.IPasswordCredentials;
-import com.redshape.io.net.auth.impl.samba.NtlmCredentials;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -61,32 +61,23 @@ public class SambaInteractor extends AbstractNetworkInteractor<SmbFile> {
     }
 
     public void connect() throws NetworkInteractionException {
-        try {
-            this.getConnection().connect();
-        } catch ( Throwable e ) {
-            NetworkInteractionException exception;
-            if ( this.getAuthenticator().isAuthException() ) {
-                exception = new AuthenticatorException( this.getAuthenticator().getAuthException().getMessage() );
-            } else {
-                exception = new NetworkInteractionException();
-            }
-
-            log.error( exception.getMessage(), e );
-            throw exception;
-        }
+    	this.connect(null);
     }
 
-    synchronized protected SmbFile getConnection() throws AuthenticatorException, MalformedURLException {
+    synchronized protected SmbFile getConnection( ICredentials credentials ) throws AuthenticatorException, MalformedURLException  {
         if ( this.connection == null ) {
-            this.connection = this._createConnection();
+            this.connection = this._createConnection(credentials);
         }
 
         return this.connection;
     }
+    
+    synchronized protected SmbFile getConnection() throws AuthenticatorException, MalformedURLException {
+    	return this.getConnection( this.getPasswordCredentials() );
+    }
 
-    synchronized private SmbFile _createConnection() throws AuthenticatorException,
+    synchronized private SmbFile _createConnection( ICredentials credentials ) throws AuthenticatorException,
                                                             MalformedURLException {
-        IPasswordCredentials credentials = this.getPasswordCredentials();
         if ( credentials == null  ) {
             if ( !this.isAnonymousAllowed() ) {
                 throw new AuthenticatorException("Credentials not found");
@@ -130,5 +121,23 @@ public class SambaInteractor extends AbstractNetworkInteractor<SmbFile> {
     public SmbFile getRawConnection() {
         return this.connection;
     }
+
+	@Override
+	public void connect(ICredentials auth) throws NetworkInteractionException,
+			AuthenticatorException {
+        try {
+            this.getConnection(auth).connect();
+        } catch ( Throwable e ) {
+            NetworkInteractionException exception;
+            if ( this.getAuthenticator().isAuthException() ) {
+                exception = new AuthenticatorException( this.getAuthenticator().getAuthException().getMessage() );
+            } else {
+                exception = new NetworkInteractionException();
+            }
+
+            log.error( exception.getMessage(), e );
+            throw exception;
+        }	
+	}
 
 }

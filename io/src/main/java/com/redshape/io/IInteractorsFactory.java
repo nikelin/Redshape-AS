@@ -10,10 +10,15 @@ public interface IInteractorsFactory {
 
     public Collection< Class<? extends INetworkInteractor> > getInteractors();
 
-    public Collection<INetworkInteractor> findInteractors( INetworkNode node ) throws InstantiationException;
+    public Collection<INetworkInteractor> findInteractors( INetworkNode node ) 
+    	throws InstantiationException;
 
-    public INetworkInteractor findInteractor( INetworkNode node, String serviceID ) throws InstantiationException;
+    public INetworkInteractor findInteractor( INetworkNode node, String serviceID ) 
+    	throws InstantiationException;
 
     public void initialize() throws InstantiationException;
 
+    public INetworkInteractor findInteractor( String serviceId, INetworkNode node ) 
+    	throws InstantiationException;
+    
 }
