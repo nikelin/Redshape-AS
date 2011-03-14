@@ -17,11 +17,13 @@ public abstract class AbstractModelData implements IModelData {
         this.values.put(name, value);
     }
 
-    public <V> V get( String name ) {
+    @SuppressWarnings("unchecked")
+	public <V> V get( String name ) {
         return (V) this.values.get(name);
     }
 
-    public <V> Map<String, V> getAll() {
+    @SuppressWarnings("unchecked")
+	public <V> Map<String, V> getAll() {
         return (Map<String, V>) this.values;
     }
 

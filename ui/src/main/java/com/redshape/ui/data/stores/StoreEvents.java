@@ -15,6 +15,10 @@ public class StoreEvents extends EventType {
         super(code);
     }
 
+    public static final StoreEvents Backup = new StoreEvents("StoreEvents.Backup");
+    
+    public static final StoreEvents Restore = new StoreEvents("StoreEvents.Restore");
+    
     public static final StoreEvents Clean = new StoreEvents("StoreEvents.Clean");
 
     public static final StoreEvents Added = new StoreEvents("StoreEvents.Added");

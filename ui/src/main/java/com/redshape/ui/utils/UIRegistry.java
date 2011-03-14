@@ -1,6 +1,9 @@
 package com.redshape.ui.utils;
 
 import javax.swing.*;
+
+import org.springframework.context.ApplicationContext;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,6 +45,10 @@ public final class UIRegistry {
     @SuppressWarnings("unchecked")
 	public static <V extends JFrame> V getRootContext() {
         return (V) context;
+    }
+    
+    public static ApplicationContext getContext() {
+    	return get( UIConstants.System.SPRING_CONTEXT );
     }
 
 }

@@ -26,11 +26,17 @@ public class ListStore<V extends IModelData> extends EventDispatcher implements 
     private IDataLoader<V> loader;
     private IModelType type;
 
+    public ListStore( IModelType type ) {
+    	this( type, null );
+    }
+    
     public ListStore( IModelType type, IDataLoader<V> loader ) {
         this.loader = loader;
         this.type = type;
 
-    	this.bindLoader(loader);
+        if ( this.loader != null ) {
+        	this.bindLoader(loader);
+        }
     }
     
     @Override
@@ -72,7 +78,7 @@ public class ListStore<V extends IModelData> extends EventDispatcher implements 
     @Override
     public void add( V record ) {
         this.records.add(record);
-        this.forwardEvent( StoreEvents.Added );
+        this.forwardEvent( StoreEvents.Added, record );
     }
 
     @Override
@@ -99,6 +105,9 @@ public class ListStore<V extends IModelData> extends EventDispatcher implements 
 
     public void load() throws LoaderException {
         this.clear();
-        this.loader.load();
+        
+        if ( this.loader != null ) {
+        	this.loader.load();
+        }
     }
 }
