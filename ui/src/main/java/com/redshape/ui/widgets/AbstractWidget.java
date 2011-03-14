@@ -1,7 +1,5 @@
 package com.redshape.ui.widgets;
 
-import javax.swing.JLayeredPane;
-
 import com.redshape.ui.events.AppEvent;
 import com.redshape.ui.events.EventDispatcher;
 import com.redshape.ui.events.EventType;

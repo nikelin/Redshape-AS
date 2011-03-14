@@ -6,14 +6,29 @@ import com.redshape.utils.IFilter;
 public interface IWindowsManager<V> {
 	
 	/**
-	 * Create new window if given window class does not exists
-	 * in registry, elsewhere re-activate instance from registry.
+	 * Create or return exists window instance
 	 * 
-	 * @param <T>
-	 * @param window
+	 * @param clazz
 	 * @return
 	 */
-	public V open( Class<? extends V> clazz );
+	public <T extends V> T get( Class<T> clazz );
+	
+	/**
+	 * Create new window if given window class does not exists
+	 * in registry, elsewhere re-activate instance from registry
+	 * and bring it to front
+	 * 
+	 * @param clazz
+	 * @return
+	 */
+	public <T extends V> T open( Class<T> clazz );
+	
+	/**
+	 * Make exists window visible
+	 * 
+	 * @param window
+	 */
+	public void open( V window );
 	
 	/**
 	 * Make window closed

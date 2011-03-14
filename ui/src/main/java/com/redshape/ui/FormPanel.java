@@ -27,7 +27,7 @@ public class FormPanel extends JPanel {
 	private static final long serialVersionUID = -4833457094699494483L;
 	
 	private Map<String, FormField<?>> fields = new HashMap<String, FormField<?>>();
-    protected JComponent centerPane;
+	protected JComponent centerPane;
     protected JComponent buttonsPane;
     private IModelType type;
     private boolean typeWritable;
@@ -58,6 +58,14 @@ public class FormPanel extends JPanel {
 							this.createEditableComponent() 
 							: this.createReadableComponent() 
 					);
+    		}
+    	}
+    }
+    
+    public void enableButtons( boolean value ) {
+    	for ( Component component : this.buttonsPane.getComponents() ) {
+    		if ( component instanceof JButton ) {
+    			component.setEnabled(value);
     		}
     	}
     }

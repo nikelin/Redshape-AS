@@ -18,6 +18,7 @@ public class ComponentAction extends AbstractAction {
 	private IComponent component;
 	private IEventHandler listener;
 	private EventType event;
+	private boolean contextChange;
 	
 	public ComponentAction( String name, IComponent component ) {
 		this( name, component, (EventType) null);
@@ -26,6 +27,8 @@ public class ComponentAction extends AbstractAction {
 	public ComponentAction( String name, IComponent component, EventType event ) {
 		super( name );
 	
+		this.init();
+		
 		this.event = event;
 		this.component = component;
 	}
@@ -33,8 +36,22 @@ public class ComponentAction extends AbstractAction {
 	public ComponentAction( String name, IComponent component, IEventHandler listener ) {
 		super( name );
 	
+		this.init();
+		
 		this.listener = listener;
 		this.component = component;
+	}
+	
+	protected void init() {
+		this.doContextChange(true);
+	}
+	
+	public void doContextChange( boolean value ) {
+		this.contextChange = value;
+	}
+	
+	public boolean doContextChange() {
+		return this.contextChange;
 	}
 	
 	@Override
@@ -42,7 +59,7 @@ public class ComponentAction extends AbstractAction {
 		if ( this.listener != null ) {
 			this.listener.handle( new AppEvent( ComponentEvents.ActionPerformed, e, this.component ) );
 		} else {
-			Dispatcher.get().forwardEvent( this.event );
+			Dispatcher.get().forwardEvent( new AppEvent( this.event ), this.doContextChange() );
 		}
 	}
 

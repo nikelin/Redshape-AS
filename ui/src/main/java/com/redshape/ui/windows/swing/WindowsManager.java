@@ -11,13 +11,14 @@ import com.redshape.ui.UnhandledUIException;
 import com.redshape.ui.windows.IWindowsManager;
 import com.redshape.utils.IFilter;
 
-public class WindowsManager implements IWindowsManager<JFrame> {
+public class WindowsManager implements ISwingWindowsManager {
 	private Map<Class<? extends JFrame>, JFrame> registry = new HashMap<Class<? extends JFrame>, JFrame>();
 	private static final ClosedFilter closedFilter = new ClosedFilter();
 	
+	@SuppressWarnings("unchecked")
 	@Override
-	public JFrame open(Class<? extends JFrame> clazz) {
-		JFrame result = this.registry.get(clazz);
+	public <T extends JFrame> T get( Class<T> clazz ) {
+		T result = (T) this.registry.get(clazz);
 		if ( result != null ) {
 			result.setVisible(true);
 			return result;
@@ -30,7 +31,20 @@ public class WindowsManager implements IWindowsManager<JFrame> {
 		}
 		
 		this.registry.put( clazz, result);
-		result.setVisible(true);
+		
+		return (T) result;
+	}
+	
+	@Override
+	public void open( JFrame window ) {
+		window.setVisible(true);
+	}
+	
+	@Override
+	public <T extends JFrame> T open(Class<T> clazz) {
+		T result = this.get(clazz);
+		
+		this.open(result);
 		
 		return result;
 	}

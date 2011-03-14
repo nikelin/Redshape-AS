@@ -30,15 +30,17 @@ public abstract class AbstractMainWindow extends JFrame {
         this.setLayout( new BorderLayout() );
 
         this.add( (Component) UIRegistry.set( UIConstants.Area.EAST, this.createEastPanel() ), BorderLayout.EAST );
-        this.add( (Component) UIRegistry.set( UIConstants.Area.MENU, this.createMenu()), BorderLayout.NORTH );
+        this.add( this.buildNorthPanel(), BorderLayout.NORTH  );
         this.add( (Component) UIRegistry.set( UIConstants.Area.CENTER, this.createCenterPanel() ), BorderLayout.CENTER );
         this.add( (Component) UIRegistry.set( UIConstants.Area.WEST, this.createWestPanel() ), BorderLayout.WEST );
         this.add( (Component) UIRegistry.set( UIConstants.Area.SOUTH, this.createBottom() ), BorderLayout.SOUTH );
     }
-
+    
     abstract protected JPanel createEastPanel();
     
     abstract protected JPanel createWestPanel();
+    
+    abstract protected JPanel createNorthPanel();
     
     abstract protected JPanel createCenterPanel();
     
@@ -46,10 +48,18 @@ public abstract class AbstractMainWindow extends JFrame {
 
     abstract protected JPanel createBottom();
 
+    private JComponent buildNorthPanel() {
+    	Box box = Box.createVerticalBox();
+    	
+    	box.add( (Component) UIRegistry.set( UIConstants.Area.MENU, this.createMenu() ) );
+    	box.add( (Component) UIRegistry.set( UIConstants.Area.NORTH, this.createNorthPanel() ) );
+    	
+    	return box;
+    }
+    
     protected JMenuItem createMenuItem( String text, ActionListener listener ) {
         JMenuItem item = new JMenuItem(text);
         item.addActionListener(listener);
-
         return item;
     }
 

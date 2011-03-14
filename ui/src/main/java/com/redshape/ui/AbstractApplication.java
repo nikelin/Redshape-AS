@@ -153,7 +153,9 @@ public abstract class AbstractApplication {
 						JOptionPane.showMessageDialog( 
 							AbstractApplication.this.context, 
 							AbstractApplication.this.stackTraceAsString( exception ) );
-					} 
+					} else if ( JOptionPane.CANCEL_OPTION == option) {
+						Dispatcher.get().forwardEvent( UIEvents.Core.Exit );
+					}
 				} else if ( errorDescription instanceof String ){
 					JOptionPane.showMessageDialog( 
 						AbstractApplication.this.context,

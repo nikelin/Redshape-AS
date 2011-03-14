@@ -14,7 +14,7 @@ import java.util.Set;
  */
 public interface IController extends IEventHandler {
 
-    public Set getRegisteredEvents();
+    public Set<? extends EventType> getRegisteredEvents();
 
     public void addChild( IController controller );
 

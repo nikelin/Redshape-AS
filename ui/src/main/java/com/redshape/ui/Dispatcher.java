@@ -28,25 +28,29 @@ public final class Dispatcher extends EventDispatcher {
     
     @Override
     public void forwardEvent( AppEvent event ) {
+    	this.forwardEvent( event, true );
+    }
+    
+    public void forwardEvent( AppEvent event, boolean unloadActive ) {
         super.forwardEvent(event);
 
         for ( IController controller : this.controllers ) {
-            if ( controller.getRegisteredEvents().contains(event.getType()) ) {
-            	if ( this.activeController != null ) {
-            		if ( this.activeController != controller ) {
-            			this.activeController.unload();
-            		}
-            	} 
-            		
-            	this.forwardToController( controller, event );
-            	this.activeController = controller;
+            if ( controller.getRegisteredEvents().contains(event.getType()) ) {            		
+            	this.forwardToController( controller, event, unloadActive );
             }
         }
     }
 
-
     public void forwardToController( IController controller, AppEvent event ) {
-        controller.handle( event );
+    	this.forwardToController( controller, event, true);
+    }
+    
+    public void forwardToController( IController controller, AppEvent event, boolean unloadActive ) {
+        if ( unloadActive && this.activeController != null ) {
+        	this.activeController.unload();
+        }
+    	
+    	controller.handle( event );
         
         this.activeController = controller;
     }

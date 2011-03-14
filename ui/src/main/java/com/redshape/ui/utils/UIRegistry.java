@@ -4,6 +4,8 @@ import javax.swing.*;
 
 import org.springframework.context.ApplicationContext;
 
+import com.redshape.ui.windows.IWindowsManager;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,6 +47,11 @@ public final class UIRegistry {
     @SuppressWarnings("unchecked")
 	public static <V extends JFrame> V getRootContext() {
         return (V) context;
+    }
+    
+    @SuppressWarnings("unchecked")
+	public static <V extends IWindowsManager<?>> V getWindowsManager() {
+    	return (V) getContext().getBean( IWindowsManager.class );
     }
     
     public static ApplicationContext getContext() {

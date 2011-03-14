@@ -35,6 +35,11 @@ public abstract class AbstractComponent extends EventDispatcher implements IComp
 	}
 	
 	@Override
+	public void unload( Container container ) {
+		
+	}
+	
+	@Override
 	public boolean doRenderMenu() {
 		return this.doRenderMenu;
 	}
