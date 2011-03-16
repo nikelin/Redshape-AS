@@ -81,6 +81,8 @@ public abstract class AbstractApplication {
     
     protected void init() throws ApplicationException {
     	AWTUnhandledExceptionsHandler.register();
+
+    	this.initTrayIcon();
     	
     	Dispatcher.get().addListener(UIEvents.Core.Repaint, new IEventHandler() {
             @Override
@@ -185,6 +187,8 @@ public abstract class AbstractApplication {
     		}
     	}
     }
+    
+    abstract protected void initTrayIcon();
     
     private String stackTraceAsString( Throwable e ) {
     	final Writer writer = new StringWriter();

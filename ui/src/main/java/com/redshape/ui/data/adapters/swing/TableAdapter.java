@@ -40,6 +40,23 @@ public class TableAdapter<T extends IModelData> extends JTable {
 			return;
 		}
 		
+		this.store.addListener( StoreEvents.Removed, new IEventHandler() {
+			
+			@Override
+			public void handle(AppEvent event) {
+				TableAdapter.this.revalidate();
+				TableAdapter.this.repaint();
+			}
+		});
+		
+		this.store.addListener( StoreEvents.Added, new IEventHandler() {
+			@Override
+			public void handle(AppEvent event) {
+				TableAdapter.this.revalidate();
+				TableAdapter.this.repaint();
+			}
+		});
+		
 		this.store.addListener( StoreEvents.Loaded, new IEventHandler() {
 			@Override
 			public void handle(AppEvent event) {

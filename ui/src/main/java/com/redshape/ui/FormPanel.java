@@ -26,7 +26,7 @@ import java.util.Map;
 public class FormPanel extends JPanel {
 	private static final long serialVersionUID = -4833457094699494483L;
 	
-	private Map<String, FormField<?>> fields = new HashMap<String, FormField<?>>();
+	private Map<Object, FormField<?>> fields = new HashMap<Object, FormField<?>>();
 	protected JComponent centerPane;
     protected JComponent buttonsPane;
     private IModelType type;
@@ -145,7 +145,7 @@ public class FormPanel extends JPanel {
     }
     
     @SuppressWarnings("unchecked")
-	public <T> FormField<T> getField( String id ) {
+	public <T> FormField<T> getField( Object id ) {
         return (FormField<T>) this.fields.get(id);
     }
 
@@ -158,7 +158,7 @@ public class FormPanel extends JPanel {
         this.buttonsPane.setVisible(true);
     }
 
-    public <T> FormField<T> addField( String id, String label, JComponent component ) {
+    public <T> FormField<T> addField( Object id, String label, JComponent component ) {
         FormField<T> field = this.<T>createField(label, component );
         this.fields.put( id, field );
         this.centerPane.add( field.getLabel() );
