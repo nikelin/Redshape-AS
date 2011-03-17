@@ -21,7 +21,13 @@ public class ComponentAction extends AbstractAction {
 	private boolean contextChange;
 	
 	public ComponentAction( String name, IComponent component ) {
+		this( name, component, true );
+	}
+	
+	public ComponentAction( String name, IComponent component, boolean doContextChange ) {
 		this( name, component, (EventType) null);
+		
+		this.doContextChange(doContextChange);
 	}
 	
 	public ComponentAction( String name, IComponent component, EventType event ) {

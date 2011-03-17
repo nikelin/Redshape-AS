@@ -157,7 +157,11 @@ public class FormPanel extends JPanel {
         this.buttonsPane.add(button);
         this.buttonsPane.setVisible(true);
     }
-
+    
+    public void addRaw( JComponent component ) {
+    	this.centerPane.add( component );
+    }
+    
     public <T> FormField<T> addField( Object id, String label, JComponent component ) {
         FormField<T> field = this.<T>createField(label, component );
         this.fields.put( id, field );
