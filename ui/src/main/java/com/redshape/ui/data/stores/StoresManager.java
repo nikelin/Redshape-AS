@@ -3,7 +3,6 @@ package com.redshape.ui.data.stores;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.redshape.ui.data.IModelType;
 import com.redshape.ui.data.IStore;
 
 public class StoresManager implements IStoresManager {

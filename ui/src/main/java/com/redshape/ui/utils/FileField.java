@@ -2,7 +2,6 @@ package com.redshape.ui.utils;
 
 import java.awt.Dimension;
 import java.awt.FileDialog;
-import java.awt.event.ComponentEvent;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;

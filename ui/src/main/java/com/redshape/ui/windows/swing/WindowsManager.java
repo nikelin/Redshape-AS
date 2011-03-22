@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.swing.JFrame;
 
 import com.redshape.ui.UnhandledUIException;
-import com.redshape.ui.windows.IWindowsManager;
 import com.redshape.utils.IFilter;
 
 public class WindowsManager implements ISwingWindowsManager {

@@ -2,7 +2,6 @@ package com.redshape.ui.data;
 
 import com.redshape.ui.events.IEventDispatcher;
 import com.redshape.ui.data.loaders.LoaderException;
-import com.redshape.ui.data.stores.StoreEvents;
 
 import java.util.Collection;
 

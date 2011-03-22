@@ -2,7 +2,6 @@ package com.redshape.ui.data.loaders;
 
 import com.redshape.ui.events.IEventDispatcher;
 import com.redshape.ui.data.IModelData;
-import com.redshape.ui.data.IStore;
 
 /**
  * Created by IntelliJ IDEA.

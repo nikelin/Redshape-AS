@@ -1,7 +1,6 @@
 package com.redshape.ui.data.readers;
 
 import com.redshape.ui.data.IModelData;
-import com.redshape.ui.data.IModelType;
 
 import java.util.Collection;
 

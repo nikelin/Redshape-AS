@@ -6,8 +6,6 @@ import com.redshape.ui.data.IModelType;
 import com.redshape.ui.data.readers.IDataReader;
 import com.redshape.ui.data.readers.IListReader;
 import com.redshape.ui.data.readers.ReaderException;
-import net.sf.json.JSON;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -38,7 +36,7 @@ public class JSONDataReader<V extends IModelData> extends JSONReader<V> implemen
         }
 
         Collection<V> result = new HashSet<V>();
-        for ( Object item : (Collection) object ) {
+        for ( Object item : (Collection<?>) object ) {
             result.add( this._process(item) );
         }
 
@@ -55,12 +53,13 @@ public class JSONDataReader<V extends IModelData> extends JSONReader<V> implemen
         return this._process(object);
     }
 
+    @SuppressWarnings("unchecked")
     protected V _process( Object object ) throws ReaderException {
         if ( !(object instanceof Map) ) {
             throw new ReaderException("Data must be in a map view");
         }
 
-        final Map<Object, Object> dataObject = ( Map<Object, Object>) object;
+		final Map<Object, Object> dataObject = ( Map<Object, Object>) object;
         IModelData record = this.getType().createRecord();
         for ( IModelField field : this.getType().getFields() ) {
             if ( !dataObject.containsKey( field.getName() )

@@ -3,7 +3,6 @@ package com.redshape.ui.components;
 import java.util.Collection;
 
 import javax.swing.Action;
-import com.redshape.ui.events.IEventDispatcher;
 import com.redshape.ui.widgets.IWidget;
 
 public interface IComponent extends IWidget {

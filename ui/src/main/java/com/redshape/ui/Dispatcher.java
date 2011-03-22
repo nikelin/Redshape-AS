@@ -14,9 +14,7 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public final class Dispatcher extends EventDispatcher {
-
     private Set<IController> controllers = new HashSet<IController>();
-    private IController activeController;
 
     public static Dispatcher get() {
         return InstanceHolder.instance();
@@ -28,31 +26,17 @@ public final class Dispatcher extends EventDispatcher {
     
     @Override
     public void forwardEvent( AppEvent event ) {
-    	this.forwardEvent( event, true );
-    }
-    
-    public void forwardEvent( AppEvent event, boolean unloadActive ) {
         super.forwardEvent(event);
 
         for ( IController controller : this.controllers ) {
             if ( controller.getRegisteredEvents().contains(event.getType()) ) {            		
-            	this.forwardToController( controller, event, unloadActive );
+            	this.forwardToController( controller, event );
             }
         }
     }
-
-    public void forwardToController( IController controller, AppEvent event ) {
-    	this.forwardToController( controller, event, true);
-    }
     
-    public void forwardToController( IController controller, AppEvent event, boolean unloadActive ) {
-        if ( unloadActive && this.activeController != null ) {
-        	this.activeController.unload();
-        }
-    	
+    public void forwardToController( IController controller, AppEvent event ) {
     	controller.handle( event );
-        
-        this.activeController = controller;
     }
 
     public void addController( IController controller ) {

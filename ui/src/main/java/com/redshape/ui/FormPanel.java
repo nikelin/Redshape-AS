@@ -31,7 +31,8 @@ public class FormPanel extends JPanel {
     protected JComponent buttonsPane;
     private IModelType type;
     private boolean typeWritable;
-    private IModelData model;
+    @SuppressWarnings("unused")
+	private IModelData model;
     
     public FormPanel() {
     	this(null, false);

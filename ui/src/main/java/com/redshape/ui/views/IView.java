@@ -1,4 +1,4 @@
-package com.redshape.ui;
+package com.redshape.ui.views;
 
 import java.awt.Container;
 import java.io.Serializable;

@@ -1,9 +1,5 @@
 package com.redshape.ui.data.readers.json;
 
-import com.redshape.ui.data.IModelData;
-import com.redshape.ui.data.IModelType;
-import com.redshape.ui.data.readers.IDataReader;
-import com.redshape.ui.data.readers.IListReader;
 import com.redshape.ui.data.readers.IReader;
 import com.redshape.ui.data.readers.ReaderException;
 import net.sf.json.JSON;
@@ -11,7 +7,6 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +34,8 @@ public class JSONReader<V> implements IReader<String, V> {
         throw new ReaderException();
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public V process( String source ) throws ReaderException {
         JSON json = JSONSerializer.toJSON( source );
         if ( json.isArray() ) {
@@ -64,7 +60,8 @@ public class JSONReader<V> implements IReader<String, V> {
         return result;
     }
 
-    protected Collection<Object> processObject( JSONArray array ) {
+    @SuppressWarnings("deprecation")
+	protected Collection<Object> processObject( JSONArray array ) {
         return JSONArray.toList( array );
     }
 

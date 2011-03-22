@@ -19,5 +19,4 @@ apidocs/
 *.iml
 assemblies/
 build/
-pom.properties
-maven-archiver/
+*/maven-archiver/

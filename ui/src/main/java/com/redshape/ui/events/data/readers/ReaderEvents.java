@@ -1,4 +1,4 @@
-package com.redshape.ui.data.readers;
+package com.redshape.ui.events.data.readers;
 
 import com.redshape.ui.events.EventType;
 

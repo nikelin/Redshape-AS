@@ -8,13 +8,14 @@ import com.redshape.ui.Dispatcher;
 import com.redshape.ui.data.IModelData;
 import com.redshape.ui.data.IStore;
 import com.redshape.ui.data.loaders.LoaderException;
-import com.redshape.ui.data.stores.StoreEvents;
 import com.redshape.ui.events.AppEvent;
 import com.redshape.ui.events.IEventHandler;
 import com.redshape.ui.events.UIEvents;
+import com.redshape.ui.events.data.stores.StoreEvents;
 
 public class TableAdapter<T extends IModelData> extends JTable {
 	private static final long serialVersionUID = 5754270316365552129L;
+	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger( TableAdapter.class );
 	
 	private IStore<T> store;

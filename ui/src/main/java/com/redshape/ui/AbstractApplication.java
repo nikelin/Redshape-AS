@@ -41,7 +41,6 @@ public abstract class AbstractApplication {
 	
 	private JFrame context;
 	private ApplicationContext applicationContext;
-    private IComponentsRegistry registry;
 
     public AbstractApplication( ApplicationContext applicationContext, AbstractMainWindow context ) {
         this.context = context;

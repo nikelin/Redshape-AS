@@ -1,4 +1,4 @@
-package com.redshape.ui.components.events;
+package com.redshape.ui.events.components;
 
 import com.redshape.ui.events.UIEvents;
 

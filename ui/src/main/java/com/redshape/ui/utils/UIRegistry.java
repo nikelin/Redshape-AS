@@ -4,6 +4,8 @@ import javax.swing.*;
 
 import org.springframework.context.ApplicationContext;
 
+import com.redshape.ui.data.stores.IStoresManager;
+import com.redshape.ui.views.IViewsManager;
 import com.redshape.ui.windows.IWindowsManager;
 
 import java.util.HashMap;
@@ -47,6 +49,14 @@ public final class UIRegistry {
     @SuppressWarnings("unchecked")
 	public static <V extends JFrame> V getRootContext() {
         return (V) context;
+    }
+    
+    public static IStoresManager getStoresManager() {
+    	return getContext().getBean( IStoresManager.class );
+    }
+    
+    public static IViewsManager getViewsManager() {
+    	return getContext().getBean( IViewsManager.class );
     }
     
     @SuppressWarnings("unchecked")

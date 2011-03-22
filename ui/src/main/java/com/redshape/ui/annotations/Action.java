@@ -5,7 +5,6 @@
 
 package com.redshape.ui.annotations;
 
-import com.redshape.ui.events.UIEvents;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

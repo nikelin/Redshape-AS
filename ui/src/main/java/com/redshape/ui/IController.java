@@ -3,6 +3,8 @@ package com.redshape.ui;
 import com.redshape.ui.events.EventType;
 import com.redshape.ui.events.IEventHandler;
 import com.redshape.ui.events.AppEvent;
+import com.redshape.ui.views.IView;
+
 import java.util.Set;
 
 /**
@@ -17,11 +19,5 @@ public interface IController extends IEventHandler {
     public Set<? extends EventType> getRegisteredEvents();
 
     public void addChild( IController controller );
-
-    public void forwardToView( IView view, AppEvent event );
-    
-    public void forwardToView( IView view, AppEvent event, boolean unload );
-
-    public void unload();
 
 }

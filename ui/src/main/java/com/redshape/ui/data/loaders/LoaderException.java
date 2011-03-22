@@ -8,8 +8,9 @@ package com.redshape.ui.data.loaders;
  * To change this template use File | Settings | File Templates.
  */
 public class LoaderException extends Exception {
+	private static final long serialVersionUID = 8202624491435247164L;
 
-    public LoaderException() {
+	public LoaderException() {
         super();
     }
 

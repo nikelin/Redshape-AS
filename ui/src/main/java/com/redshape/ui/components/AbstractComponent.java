@@ -8,7 +8,6 @@ import java.util.List;
 import javax.swing.Action;
 
 import com.redshape.ui.events.EventDispatcher;
-import com.redshape.ui.utils.UIConstants;
 
 public abstract class AbstractComponent extends EventDispatcher implements IComponent {
 	private String name;

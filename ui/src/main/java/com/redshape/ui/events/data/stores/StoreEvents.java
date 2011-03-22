@@ -1,4 +1,4 @@
-package com.redshape.ui.data.stores;
+package com.redshape.ui.events.data.stores;
 
 import com.redshape.ui.events.EventType;
 

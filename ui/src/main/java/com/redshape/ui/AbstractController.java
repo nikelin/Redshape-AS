@@ -2,17 +2,18 @@ package com.redshape.ui;
 
 import com.redshape.ui.events.EventType;
 import com.redshape.ui.events.AppEvent;
-import com.redshape.ui.annotations.Action;
-import com.redshape.ui.events.UIEvents;
 import com.redshape.ui.utils.UIConstants;
 import com.redshape.ui.utils.UIRegistry;
+import com.redshape.ui.views.ViewException;
+import com.redshape.ui.annotations.Action;
 
-import java.awt.Container;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,10 +27,24 @@ public abstract class AbstractController implements IController {
 
     private Set<EventType> events = new HashSet<EventType>();
     private Set<IController> childs = new HashSet<IController>();
-    private Set<IView> initialized = new HashSet<IView>();
 
-    private IView activeView;
-
+    abstract protected void initEvents();
+    
+    abstract protected void initViews();
+    
+    protected AbstractController() {
+    	this.init();
+    }
+    
+    protected void init() {
+    	this.initEvents();
+    	this.initViews();
+    }
+    
+	protected ApplicationContext getContext() {
+		return UIRegistry.get( UIConstants.System.SPRING_CONTEXT );
+	}
+    
     protected void registerEvent( EventType type ) {
         this.events.add(type);
     }
@@ -45,44 +60,6 @@ public abstract class AbstractController implements IController {
     }
 
     @Override
-    public void forwardToView( IView view, AppEvent event ) {
-    	this.forwardToView( view, event, true );
-    }
-    
-    @Override
-    public void forwardToView( IView view, AppEvent event, boolean unload ) {
-    	if ( this.activeView != null && unload ) {
-            this.activeView.unload( UIRegistry.<Container>get( UIConstants.Area.CENTER ) );
-        }
-
-        if ( !this.initialized.contains(view) ) {
-            view.init();
-            this.initialized.add(view);
-        }
-
-        view.handle(event);
-        
-        view.render( UIRegistry.<Container>get( UIConstants.Area.CENTER ) );
-        
-        Dispatcher.get().forwardEvent( UIEvents.Core.Repaint );
-
-        this.activeView = view;
-    }
-
-    @Override
-    public void unload() {
-        if ( this.getActiveView() != null ) {
-            this.getActiveView().unload( UIRegistry.<Container>get( UIConstants.Area.CENTER ) );
-        }
-
-        Dispatcher.get().forwardEvent( UIEvents.Core.Repaint );
-    }
-
-    protected IView getActiveView() {
-        return this.activeView;
-    }
-
-    @Override
     public void handle( AppEvent event ) {
         for ( Method method : this.getClass().getMethods() ) {
             Action annotation = method.getAnnotation( Action.class );
@@ -95,8 +72,10 @@ public abstract class AbstractController implements IController {
                 try {
                     method.invoke( this, event );
                     break;
+                } catch ( InvocationTargetException e ) {
+                    throw new UnhandledUIException("View dispatching exception", e.getTargetException() );
                 } catch ( Throwable e ) {
-                    log.error( e.getMessage(), e );
+                	log.error( e.getMessage(), e );
                     break;
                 }
             }

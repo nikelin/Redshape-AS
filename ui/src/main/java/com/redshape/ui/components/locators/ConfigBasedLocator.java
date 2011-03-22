@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import com.redshape.ui.components.IComponent;
 import com.redshape.ui.widgets.IWidget;
 import com.redshape.utils.config.IConfig;
 

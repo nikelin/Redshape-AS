@@ -1,6 +1,7 @@
 package com.redshape.ui.components.locators;
 
 public class LocationException extends Exception {
+	private static final long serialVersionUID = -664191046159035395L;
 
 	public LocationException() {
 		super();
