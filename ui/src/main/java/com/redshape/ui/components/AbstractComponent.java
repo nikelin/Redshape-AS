@@ -1,5 +1,6 @@
 package com.redshape.ui.components;
 
+import com.redshape.ui.IController;
 import java.awt.Container;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,13 +9,21 @@ import java.util.List;
 import javax.swing.Action;
 
 import com.redshape.ui.events.EventDispatcher;
+import java.util.HashSet;
 
 public abstract class AbstractComponent extends EventDispatcher implements IComponent {
 	private String name;
 	private String title;
 	private boolean doRenderMenu;
+	private IComponent parent;
+	private Collection<IController> controllers = new HashSet<IController>();
+	private List<IComponent> children = new ArrayList<IComponent>();
 	private List<Action> actions = new ArrayList<Action>();
-	
+
+	public AbstractComponent() {
+		this(null, null);
+	}
+
 	public AbstractComponent( String name, String title ) {
 		this(name, title, true);
 	}
@@ -27,15 +36,15 @@ public abstract class AbstractComponent extends EventDispatcher implements IComp
 		this.name = name;
 		this.title = title;
 	}
-	
+
 	@Override
 	public void render( Container container ) {
-		
+		throw new UnsupportedOperationException();
 	}
 	
 	@Override
 	public void unload( Container container ) {
-		
+		throw new UnsupportedOperationException();
 	}
 	
 	@Override
@@ -86,6 +95,26 @@ public abstract class AbstractComponent extends EventDispatcher implements IComp
 	@Override
 	public void removeAction( Action action ) {
 		this.actions.remove(action);
+	}
+
+	@Override
+	public void addController( IController controller ) {
+		this.controllers.add(controller);
+	}
+
+	@Override
+	public Collection<IController> getControllers() {
+		return this.controllers;
+	}
+
+	@Override
+	public List<IComponent> getChildren() {
+		return this.children;
+	}
+
+	@Override
+	public void addChild( IComponent component ) {
+		this.children.add(component);
 	}
 	
 }

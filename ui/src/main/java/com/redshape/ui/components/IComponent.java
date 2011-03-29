@@ -1,15 +1,25 @@
 package com.redshape.ui.components;
 
+import com.redshape.ui.IController;
 import java.util.Collection;
 
 import javax.swing.Action;
 import com.redshape.ui.widgets.IWidget;
+import java.util.List;
 
 public interface IComponent extends IWidget {
 	
 	public boolean doRenderMenu();
 	
 	public void doRenderMenu( boolean value );
+
+	public void addController( IController controller );
+
+	public Collection<IController> getControllers();
+
+	public void addChild( IComponent component );
+
+	public List<IComponent> getChildren();
 	
 	public void addAction( Action action );
 	

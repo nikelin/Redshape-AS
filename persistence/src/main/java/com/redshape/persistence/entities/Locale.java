@@ -51,6 +51,7 @@ public class Locale extends AbstractEntity {
         return locale != null && locale.getAbbr().equals( this.getAbbr() );
     }
 
+    @Override
     public int hashCode() {
         return this.getAbbr().hashCode();
     }

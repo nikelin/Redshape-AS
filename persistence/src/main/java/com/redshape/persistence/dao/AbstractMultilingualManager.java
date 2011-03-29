@@ -1,14 +1,8 @@
 package com.redshape.persistence.dao;
 
 import com.redshape.persistence.dao.jpa.AbstractJPADAO;
-import com.redshape.persistence.entities.IEntity;
 import com.redshape.persistence.entities.IMultilingual;
 import com.redshape.persistence.entities.Locale;
-
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 /**
  * Created by IntelliJ IDEA.

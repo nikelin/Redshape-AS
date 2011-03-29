@@ -1,7 +1,6 @@
 package com.redshape.persistence.entities;
 
 import com.redshape.persistence.dao.ManagerException;
-import com.redshape.persistence.dao.AbstractMultilingualManager;
 
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;

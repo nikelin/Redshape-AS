@@ -111,7 +111,7 @@ public abstract class AbstractApplication {
     	            	component.revalidate();
     	            	component.repaint();
                 	}
-                	
+
                 	AbstractApplication.this.context.invalidate();
                 	AbstractApplication.this.context.repaint();
             	}
@@ -178,14 +178,35 @@ public abstract class AbstractApplication {
 		});
 		
         for ( IComponent component : this.getComponentsRegistry().getComponents() ) {
-    		component.init();
-    		
-    		if ( component.doRenderMenu() ) {
-	    		// todo: move to entitity like MenuBuilder or elsewhere
-	    		UIRegistry.getMenu().add( this.createMenu( component ) );
-    		}
+    		this.processComponent(component);
     	}
     }
+
+	protected void processComponent( IComponent component ) {
+		this.processComponent(null, component);
+	}
+
+	protected void processComponent( JMenu context, IComponent component ) {
+		component.init();
+
+		for ( IController controller : component.getControllers() ) {
+			Dispatcher.get().addController( controller );
+		}
+
+		JMenu menu = null;
+		if ( component.doRenderMenu() ) {
+			menu = this.createMenu(component);
+			if ( context == null ) {
+				UIRegistry.getMenu().add( menu );
+			} else {
+				context.add( menu );
+			}
+		}
+
+		for ( IComponent child : component.getChildren() ) {
+			this.processComponent( menu, child );
+		}
+	}
     
     abstract protected void initTrayIcon();
     
@@ -199,7 +220,6 @@ public abstract class AbstractApplication {
     }
 
     public void start() throws ApplicationException {
-    	
 		IWidgetsManager manager = this.getWidgetsManager(); 
 		for ( UIConstants.Area area : UIConstants.Area.values() ) {
 			Collection<IWidget> widgets = manager.getWidgets(area);

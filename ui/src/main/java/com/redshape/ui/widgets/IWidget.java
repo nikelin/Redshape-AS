@@ -15,10 +15,6 @@ public interface IWidget extends IEventDispatcher  {
 	
 	public void init();
 	
-	public void activate();
-	
-	public void deactivate();
-	
 	public void unload( Container component );
 	
 	public void render( Container component );

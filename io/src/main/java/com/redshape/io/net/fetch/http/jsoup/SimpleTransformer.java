@@ -5,19 +5,14 @@
 
 package com.redshape.io.net.fetch.http.jsoup;
 
-import java.io.StringWriter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import org.apache.log4j.Logger;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.XmlDeclaration;
 
 /**
  *
@@ -62,8 +57,6 @@ public class SimpleTransformer {
         org.w3c.dom.Node domNode = null;
         if ( node instanceof TextNode ) {
             domNode = doc.createTextNode( ( (TextNode) node ).text() );
-        } else if ( node instanceof XmlDeclaration ) {
-
         } else if ( node instanceof Element ) {
             domNode = doc.createElement( node.nodeName() );
 
