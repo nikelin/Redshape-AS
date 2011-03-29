@@ -12,18 +12,30 @@ import java.util.Map;
  */
 public abstract class AbstractModelData implements IModelData {
     private Map<String, Object> values = new HashMap<String, Object>();
-
+    private boolean isDirty;
+    
     public void set( String name, Object value ) {
         this.values.put(name, value);
+        this.makeDirty(true);
     }
 
+    @Override
+    public void makeDirty( boolean value ) {
+    	this.isDirty = value;
+    }
+    
+    @Override
+    public boolean isDirty() {
+    	return this.isDirty;
+    }
+    
     @SuppressWarnings("unchecked")
-	public <V> V get( String name ) {
+	protected <V> V get( String name ) {
         return (V) this.values.get(name);
     }
 
     @SuppressWarnings("unchecked")
-	public <V> Map<String, V> getAll() {
+	protected <V> Map<String, V> getAll() {
         return (Map<String, V>) this.values;
     }
 

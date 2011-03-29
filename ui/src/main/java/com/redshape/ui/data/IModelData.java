@@ -10,12 +10,9 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public interface IModelData {
-
-    public void set( String id, Object value );
-
-    public <V> V get( String id );
-
-    public <V> Map<String, V> getAll();
-
+	
+	public void makeDirty( boolean isDirty );
+	
+	public boolean isDirty();
 
 }
