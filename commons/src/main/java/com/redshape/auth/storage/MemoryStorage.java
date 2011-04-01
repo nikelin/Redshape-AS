@@ -10,22 +10,17 @@ import java.util.Map;
  *
  * @author nikelin
  */
-public class MemoryStorage<T extends IIdentity> implements AuthStorage<T> {
-    private long lifeTime;
-    private Map<Object, T> store = new HashMap<Object, T>();
+public class MemoryStorage implements AuthStorage {
+    private Map<Object, IIdentity> store = new HashMap<Object, IIdentity>();
 
-    public MemoryStorage setLifeTime( long time ) {
-        this.lifeTime = time;
-        return this;
-    }
-
-    public MemoryStorage save( Object id, T identity ) {
+    public MemoryStorage save( Object id, IIdentity identity ) {
         this.store.put( id, identity );
         return this;
     }
 
-    public T get( Object id ) {
-        return this.store.get(id);
+    @SuppressWarnings("unchecked")
+	public <T extends IIdentity> T get( Object id ) {
+        return (T) this.store.get(id);
     }
 
     public MemoryStorage remove( Object id ) {
@@ -33,7 +28,7 @@ public class MemoryStorage<T extends IIdentity> implements AuthStorage<T> {
         return this;
     }
 
-    public MemoryStorage remove( T identity ) {
+    public MemoryStorage remove( IIdentity identity ) {
         this.store.remove( identity );
         return this;
     }
@@ -42,8 +37,9 @@ public class MemoryStorage<T extends IIdentity> implements AuthStorage<T> {
         return this.store.containsKey(id);
     }
 
-    public Map<Object, T> getIdentities() {
-        return this.store;
+    @SuppressWarnings("unchecked")
+	public <T extends IIdentity> Map<Object, T> getIdentities() {
+        return (Map<Object, T>) this.store;
     }
 
 }

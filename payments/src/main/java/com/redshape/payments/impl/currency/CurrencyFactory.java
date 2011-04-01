@@ -13,7 +13,7 @@ import java.util.Map;
  * Time: 11:02:31 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class CurrencyFactory<T extends ICurrencyAmount, V extends Number> implements ICurrencyFactory<T, V> {
+public abstract class CurrencyFactory<T extends ICurrencyAmount<T, V>, V extends Number> implements ICurrencyFactory<T, V> {
     private static ICurrencyFactory defaultInstance;
     private static Map<Class<? extends ICurrencyFactory>, ICurrencyFactory> factories = new HashMap<Class<? extends ICurrencyFactory>, ICurrencyFactory>();
 

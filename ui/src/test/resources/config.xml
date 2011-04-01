@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<!-- Move to spring context -->
+<config>
+	<ui>
+	</ui>
+</config>

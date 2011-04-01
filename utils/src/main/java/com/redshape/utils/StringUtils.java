@@ -6,6 +6,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("restriction")
 public class StringUtils {
     public static List<String> camelCaseDelimiters = Arrays.asList( "_", "-" );
 
@@ -118,6 +119,13 @@ public class StringUtils {
         return builder.toString();
     }
 
+    public static String ucfirst( String value ) {
+    	return value.substring(0, 1).toUpperCase() + value.substring(1);
+    }
+    
+    public static String lcfirst( String value ) {
+    	return value.substring(0, 1).toLowerCase() + value.substring(1);
+    }
 
     public static byte[] stringToIP( String addrString ) {
         return IPAddressUtil.textToNumericFormatV4(addrString);

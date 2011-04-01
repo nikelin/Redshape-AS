@@ -32,7 +32,8 @@ public final class Search {
         currentEngine = engine;
     }
 
-    public static ISerializer getSerializer( Class<? extends ISerializer> serializerClazz ) throws InstantiationException {
+    @SuppressWarnings("rawtypes")
+	public static ISerializer getSerializer( Class<? extends ISerializer> serializerClazz ) throws InstantiationException {
         return SerializersFactory.getDefault().getSerializer(serializerClazz);
     }
 

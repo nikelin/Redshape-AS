@@ -18,6 +18,7 @@
         <module>protocols</module>
         <module>cmd</module>
         <module>servlet</module>
+	<module>search</module>
         <module>io</module>
         <module>utils</module>
     </modules>

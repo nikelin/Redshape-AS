@@ -11,7 +11,7 @@ import java.util.Map;
  * Time: 6:16:37 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface AuthStorage<T extends IIdentity> {
+public interface AuthStorage {
 
     /**
      * Сохранить сущность identity в хранилище с идентификатором id
@@ -19,7 +19,7 @@ public interface AuthStorage<T extends IIdentity> {
      * @param identity
      * @return
      */
-    public AuthStorage save( Object id, T identity );
+    public AuthStorage save( Object id, IIdentity identity );
 
     /**
      * Запросить сущность из хранилища
@@ -27,7 +27,7 @@ public interface AuthStorage<T extends IIdentity> {
      * @param id
      * @return
      */
-    public T get( Object id );
+    public <T extends IIdentity> T get( Object id );
 
     /**
      * Удалить сущность из хранилища
@@ -37,20 +37,13 @@ public interface AuthStorage<T extends IIdentity> {
      */
     public AuthStorage remove( Object id );
 
-    public AuthStorage remove( T identity );
+    public AuthStorage remove( IIdentity identity );
 
     /**
      * Получить все сущность из данного хранилища
      * @return
      */
-    public Map<Object, T> getIdentities();
-
-    /**
-     * Время жизни сущностей в хранилище
-     * @param time
-     * @return
-     */
-    public AuthStorage setLifeTime( long time );
+    public <T extends IIdentity> Map<Object, T> getIdentities();
 
     /**
      * Существует ли сущность в хранилище

@@ -71,7 +71,7 @@ public class TableModelAdapter<T extends IModelData> extends EventDispatcher
     }
 
     public Object getValueAt( int row, int col ) {
-        return this.store.getAt(row).<T>get(this.store.getType().getField(col).getName());
+        return this.store.getAt(row).get(this.store.getType().getField(col).getName());
     }
 
     public T getAt( int index ) {

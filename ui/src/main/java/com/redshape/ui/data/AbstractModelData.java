@@ -14,6 +14,7 @@ public abstract class AbstractModelData implements IModelData {
     private Map<String, Object> values = new HashMap<String, Object>();
     private boolean isDirty;
     
+    @Override
     public void set( String name, Object value ) {
         this.values.put(name, value);
         this.makeDirty(true);
@@ -30,7 +31,8 @@ public abstract class AbstractModelData implements IModelData {
     }
     
     @SuppressWarnings("unchecked")
-	protected <V> V get( String name ) {
+    @Override
+	public <V> V get( String name ) {
         return (V) this.values.get(name);
     }
 

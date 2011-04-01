@@ -85,7 +85,7 @@ public class FormPanel extends JPanel {
     	for ( IModelField field : this.type.getFields() ) {
     		FormField<?> formField = this.getField(field.getName());
     		if ( formField != null ) {
-    			formField.setValue( data.get( field.getName() ) );
+    			formField.setValue( data.<Object>get( field.getName() ) );
     		}
     	}
     }

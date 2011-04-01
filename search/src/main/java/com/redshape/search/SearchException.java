@@ -8,8 +8,9 @@ package com.redshape.search;
  * To change this template use File | Settings | File Templates.
  */
 public class SearchException extends Exception {
+	private static final long serialVersionUID = 5953408430033011706L;
 
-     public SearchException() {
+	public SearchException() {
          super();
      }
 

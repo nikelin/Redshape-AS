@@ -1,13 +1,5 @@
 package com.redshape.search.annotations;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-import com.redshape.search.ISearchable;
-
-=======
->>>>>>> refs/heads/2.0.0A
-=======
->>>>>>> refs/heads/2.0.0A
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 

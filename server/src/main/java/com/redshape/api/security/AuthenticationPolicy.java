@@ -61,7 +61,7 @@ public class AuthenticationPolicy extends AbstractPolicy<IApiRequest> {
                 resource.setApiKey( apiKey );
                 resource.setAddress( new IPAddress( socket.getInetAddress() ) );
 
-                AuthResult<IRequester> authResult = authenticator.authenticate( resource );
+                AuthResult authResult = authenticator.authenticate( resource );
                 switch ( authResult.getStatus() ) {
                     case INVALID_IDENTITY:
                        result.setException( new ServerException( ErrorCodes.EXCEPTION_INVALID_API_KEY ) );
@@ -77,7 +77,7 @@ public class AuthenticationPolicy extends AbstractPolicy<IApiRequest> {
                     break;
 
                     case SUCCESS:
-                        request.setIdentity(authResult.getIdentity());
+                        request.setIdentity(authResult.<IRequester>getIdentity());
                         result.markSuccessful();
                 }
             } else {

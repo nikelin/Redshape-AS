@@ -18,14 +18,14 @@ public interface AuthenticatorInterface<T extends IIdentity> {
      * @param identity
      * @return AuthResult
      */
-    public AuthResult<T> authenticate( T identity );
+    public AuthResult authenticate( T identity );
 
     /**
      * Установить хранилище для данного аутентификатора
      * @param store
      * @return AuthentificatorInterface
      */
-    public void setStorage( AuthStorage<T> store );
+    public void setStorage( AuthStorage store );
 
     /**
      * Проверить существование соответствия между переданным ID и сущность в хранилище

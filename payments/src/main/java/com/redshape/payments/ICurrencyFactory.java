@@ -7,7 +7,7 @@ package com.redshape.payments;
  * Time: 11:13:15 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface ICurrencyFactory<T extends ICurrencyAmount, V extends Number> {
+public interface ICurrencyFactory<T extends ICurrencyAmount<T, V>, V extends Number> {
 
     public ICurrencyAmount<T, V> createAmount( V amount );
 

@@ -5,7 +5,7 @@ package com.redshape.auth;
  *
  * @author nikelin
  */
-public class AuthResult<T extends IIdentity> {
+public class AuthResult {
     /**
      * Перечисление возможным статусов аутентификации
      */
@@ -20,7 +20,7 @@ public class AuthResult<T extends IIdentity> {
     }
 
     private Status status = Status.FAIL;
-    private T identity;
+    private IIdentity identity;
 
     public AuthResult( Status status ) {
         this(status, null);
@@ -30,13 +30,14 @@ public class AuthResult<T extends IIdentity> {
      * @param status Результат аутентификации
      * @param identity Аутентифицируемая сущность
      */
-    public AuthResult(Status status,  T identity ) {
+    public AuthResult(Status status, IIdentity identity ) {
        this.identity = identity;
        this.status = status;
     }
 
-    public T getIdentity() {
-       return this.identity;
+    @SuppressWarnings("unchecked")
+	public <T extends IIdentity> T getIdentity() {
+       return (T) this.identity;
     }
 
     public Status getStatus() {

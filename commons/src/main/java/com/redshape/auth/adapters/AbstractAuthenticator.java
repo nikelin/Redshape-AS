@@ -18,27 +18,27 @@ abstract public class AbstractAuthenticator<T extends IIdentity> implements Auth
     public static final int defaultSessionDuration = Constants.TIME_HOUR;
     private static final Class<? extends AuthStorage> defaultStorage = MemoryStorage.class;
 
-    private AuthStorage<T> storage;
+    private AuthStorage storage;
 
     private int sessionDuration = defaultSessionDuration;
 
     public AbstractAuthenticator() throws InstantiationException {
         try {
-            this.setStorage( (AuthStorage<T>) defaultStorage.newInstance() );
+            this.setStorage( defaultStorage.newInstance() );
         } catch ( Throwable e ) {
             throw new InstantiationException();
         }
     }
 
-    public AbstractAuthenticator( AuthStorage<T> storage ) {
+    public AbstractAuthenticator( AuthStorage storage ) {
         this.setStorage( storage );
     }
 
-    public void setStorage( AuthStorage<T> storage ) {
+    public void setStorage( AuthStorage storage ) {
         this.storage = storage;
     }
 
-    public AuthStorage<T> getStorage() {
+    public AuthStorage getStorage() {
         return this.storage;
     }
 
@@ -57,7 +57,7 @@ abstract public class AbstractAuthenticator<T extends IIdentity> implements Auth
     public T getIdentity( Object id ) {
         T user = null;
         if ( this.getStorage().isExists( id ) ) {
-            user = this.getStorage().get( id );
+            user = this.getStorage().<T>get( id );
         }
 
         return user;

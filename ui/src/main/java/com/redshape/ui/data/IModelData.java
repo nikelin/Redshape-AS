@@ -14,5 +14,9 @@ public interface IModelData {
 	public void makeDirty( boolean isDirty );
 	
 	public boolean isDirty();
+	
+	public <V> V get( String name );
+	
+	public void set( String name, Object value );
 
 }

@@ -9,7 +9,7 @@ import com.redshape.utils.CompareResult;
  * Time: 7:36:06 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface ICurrencyAmount<T extends ICurrencyAmount, V extends Number> {
+public interface ICurrencyAmount<T extends ICurrencyAmount<?, V>, V extends Number> {
 
     public Boolean isEnough( T amount );
 
