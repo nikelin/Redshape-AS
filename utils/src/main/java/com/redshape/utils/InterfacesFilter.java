@@ -12,17 +12,20 @@ import java.lang.annotation.Annotation;
 * To change this template use File | Settings | File Templates.
 */
 public class InterfacesFilter implements IFilter<Class<?>> {
-    private static final Logger log = Logger.getLogger( InterfacesFilter.class );
+    @SuppressWarnings("unused")
+	private static final Logger log = Logger.getLogger( InterfacesFilter.class );
 
     private Class<?>[] interfaces;
     private Class<? extends Annotation>[] annotations;
     private boolean allowNesting;
 
-    public InterfacesFilter( Class<?>[] interfaces ) {
+    @SuppressWarnings("unchecked")
+	public InterfacesFilter( Class<?>[] interfaces ) {
         this( interfaces, new Class[] {} );
     }
 
-    public InterfacesFilter( Class<?>[] interfaces, boolean allowNesting ) {
+    @SuppressWarnings("unchecked")
+	public InterfacesFilter( Class<?>[] interfaces, boolean allowNesting ) {
         this( interfaces, new Class[] {}, allowNesting );
     }
 

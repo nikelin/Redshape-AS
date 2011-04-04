@@ -56,25 +56,32 @@
 	 		<value>NORTH</value>
 	 	</constructor-arg>
 	 </bean>
-   	
-   	<!-- Widgets -->
 
-	<bean scope="singleton" id="objectUIBuilder" class="com.redshape.ui.bindings.ObjectUIBuilder"/>
+	<!-- UI Generators -->
 
-	<bean scope="singleton" id="propertyUIBuilder" class="com.redshape.ui.bindings.PropertyUIBuilder">
+	<bean scope="singleton" id="modelsBuilder" class="com.redshape.ui.bindings.ViewModelBuilder"/>
+
+	<bean scope="singleton" id="uiBuilder" class="com.redshape.ui.bindings.properties.PropertyUIBuilder">
 		<property name="renderers">
 			<map key-type="java.lang.Class" value-type="java.lang.Class">
 				<entry>
 					<key><value type="java.lang.Class">java.lang.String</value></key>
-					<value>com.redshape.ui.bindings.renderers.StringUI</value>
+					<value>com.redshape.ui.bindings.render.properties.StringUI</value>
 				</entry>
 				<entry>
 					<key><value type="java.lang.Class">java.lang.Boolean</value></key>
-					<value>com.redshape.ui.bindings.renderers.BooleanUI</value>
+					<value>com.redshape.ui.bindings.render.properties.BooleanUI</value>
 				</entry>
 			</map>
 		</property>
 	</bean>
+	
+	<bean scope="singleton" id="viewRendererBuilder" class="com.redshape.ui.bindings.render.SwingBuilder">
+		<constructor-arg><ref bean="modelsBuilder"/></constructor-arg>
+		<constructor-arg><ref bean="uiBuilder"/></constructor-arg>
+	</bean>
+
+   	<!-- Widgets -->
 
 	<bean scope="singleton" id="viewsManager" class="com.redshape.ui.views.ViewsManager">
 		<constructor-arg><ref bean="centerPlacement"/></constructor-arg>

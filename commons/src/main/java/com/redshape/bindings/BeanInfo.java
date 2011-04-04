@@ -6,10 +6,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -25,6 +27,7 @@ import com.redshape.bindings.annotations.MapKey;
 import com.redshape.bindings.annotations.MapValue;
 import com.redshape.bindings.types.BindableType;
 import com.redshape.bindings.types.IBindable;
+
 import com.redshape.utils.StringUtils;
 
 public class BeanInfo implements IBeanInfo {
@@ -34,8 +37,29 @@ public class BeanInfo implements IBeanInfo {
 	public static String READER_PART = "get";
 
 	private Class<?> beanClazz;
-	private Collection<AccessibleObject> members;
+	private List<AccessibleObject> members;
+	private static Map<Class<?>, BindableType> TYPE_MAPPINGS = new HashMap<Class<?>, BindableType>();
 
+	public static BindableType getTypeMapping( Class<?> type ) {
+		return TYPE_MAPPINGS.get( type );
+	}
+	
+	public static void addTypeMapping( Class<?> type, BindableType bindableType ) {
+		TYPE_MAPPINGS.put(type, bindableType);
+	}
+	
+	static {
+		addTypeMapping( Enum.class, BindableType.ENUM );
+		addTypeMapping( String.class, BindableType.STRING );
+		addTypeMapping( Integer.class, BindableType.NUMERIC );
+		addTypeMapping( Float.class, BindableType.NUMERIC );
+		addTypeMapping( Double.class, BindableType.NUMERIC );
+		addTypeMapping( Collection.class, BindableType.LIST );
+		addTypeMapping( Map.class, BindableType.MAP );
+		addTypeMapping( Boolean.class, BindableType.BOOLEAN );
+		addTypeMapping( Date.class, BindableType.DATE );
+	}
+	
 	public BeanInfo(Class<?> beanClazz) {
 		if (beanClazz == null) {
 			throw new IllegalArgumentException("null");
@@ -45,8 +69,13 @@ public class BeanInfo implements IBeanInfo {
 	}
 
 	@Override
-	public Collection<IBindable> getBindables() throws BindingException {
-		Collection<IBindable> result = new HashSet<IBindable>();
+	public Class<?> getType() {
+		return this.beanClazz;
+	}
+	
+	@Override
+	public List<IBindable> getBindables() throws BindingException {
+		List<IBindable> result = new ArrayList<IBindable>();
 
 		for (AccessibleObject member : this.getMembers()) {
 			Bindable bindable = member.getAnnotation(Bindable.class);
@@ -62,7 +91,7 @@ public class BeanInfo implements IBeanInfo {
 
 	protected IBindable processMember(Bindable bindable, Member member)
 			throws BindingException {
-		Class<?> type = this.getType((AccessibleObject) member);
+		Class<?> type = this.getType(bindable, (AccessibleObject) member);
 
 		BindableObject result = new BindableObject(this.findReader(type,
 				bindable, (AccessibleObject) member), this.findWriter(type,
@@ -85,6 +114,7 @@ public class BeanInfo implements IBeanInfo {
 			ElementType type = member.getAnnotation(ElementType.class);
 			if (type != null) {
 				object.setElementType(type.value());
+				object.setCollectionType( type.type() );
 			}
 			break;
 		case MAP:
@@ -136,7 +166,11 @@ public class BeanInfo implements IBeanInfo {
 		return fieldName;
 	}
 
-	protected Class<?> getType(AccessibleObject member) throws BindingException {
+	protected Class<?> getType( Bindable bindable, AccessibleObject member) throws BindingException {
+		if ( bindable.targetType().length != 0 ) {
+			return bindable.targetType()[0];
+		}
+		
 		if (member instanceof Field) {
 			return ((Field) member).getType();
 		} else if (member instanceof Method) {
@@ -145,7 +179,7 @@ public class BeanInfo implements IBeanInfo {
 			} else if (isReaderMember((Method) member)) {
 				return ((Method) member).getReturnType();
 			} else {
-				throw new BindingException("Unconventional accessor name");
+				throw new BindingException("Unconventional accessor name for : " + ( (Member) member).getName() );
 			}
 		} else {
 			throw new BindingException("Invalid binding annotation place");
@@ -157,20 +191,12 @@ public class BeanInfo implements IBeanInfo {
 		if (!bindable.type().equals(BindableType.NONE)) {
 			return bindable.type();
 		}
-
-		if (Map.class.isAssignableFrom(memberClazz)) {
-			return BindableType.MAP;
-		} else if (Collection.class.isAssignableFrom(memberClazz)
-				|| memberClazz.isArray()) {
+		
+		BindableType type = getTypeMapping( memberClazz );
+		if ( type != null ) {
+			return type;
+		} else if ( memberClazz.isArray() ) {
 			return BindableType.LIST;
-		} else if (String.class.isAssignableFrom(memberClazz)) {
-			return BindableType.STRING;
-		} else if (Number.class.isAssignableFrom(memberClazz)) {
-			return BindableType.NUMERIC;
-		} else if (Date.class.isAssignableFrom(memberClazz)) {
-			return BindableType.DATE;
-		} else if (Boolean.class.isAssignableFrom(memberClazz) ) {
-			return BindableType.BOOLEAN;
 		} else {
 			return BindableType.COMPOSITE;
 		}
@@ -291,6 +317,11 @@ public class BeanInfo implements IBeanInfo {
 	}
 
 	@SuppressWarnings("unchecked")
+	public <T> BeanConstructor<T> getConstructor() throws NoSuchMethodException {
+		return this.getConstructor( new Class[] {} );
+	}
+	
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T> BeanConstructor<T> getConstructor(Class<T>[] args) {
 		if (!this.isConstructable()) {
@@ -303,7 +334,7 @@ public class BeanInfo implements IBeanInfo {
 				continue;
 			}
 
-			if (constructor.getParameterTypes().equals(args)) {
+			if ( args.length == 0 || constructor.getParameterTypes().equals(args)) {
 				return new BeanConstructor<T>(constructor);
 			}
 		}
@@ -320,29 +351,28 @@ public class BeanInfo implements IBeanInfo {
 			}
 		}
 
-		return null;
+		throw new NoSuchMethodError("No suitable constructor was founded");
 	}
 
-	protected Collection<AccessibleObject> getMembers() {
+	protected List<AccessibleObject> getMembers() {
 		if (this.members != null) {
 			return this.members;
 		}
 
-		this.members = new HashSet<AccessibleObject>();
-		this.members.addAll(Arrays.asList(this.beanClazz.getDeclaredMethods()));
-		this.members.addAll(Arrays.asList(this.beanClazz.getDeclaredFields()));
-		this.members.addAll(Arrays.asList(this.beanClazz
-				.getDeclaredConstructors()));
+		this.members = new ArrayList<AccessibleObject>();
+		this.members.addAll(Arrays.asList(this.beanClazz.getMethods()));
+		this.members.addAll(Arrays.asList(this.beanClazz.getFields()));
+		this.members.addAll(Arrays.asList(this.beanClazz.getConstructors()));
 
 		return this.members;
 	}
 
 	public static boolean isWriterMember(Method method) {
-		return method.getName().startsWith("set");
+		return method.getName().startsWith("set") || method.getAnnotation( BindableWriter.class ) != null;
 	}
 
 	public static boolean isReaderMember(Method method) {
-		return method.getName().startsWith("get");
+		return method.getName().startsWith("get") || method.getAnnotation( BindableReader.class ) != null;
 	}
 
 	public static class Accessors {

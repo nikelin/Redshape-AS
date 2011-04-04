@@ -113,7 +113,18 @@ public abstract class AbstractComponent extends EventDispatcher implements IComp
 	}
 
 	@Override
+	public void setParent( IComponent component ) {
+		this.parent = component;
+	}
+	
+	@Override
+	public IComponent getParent() {
+		return this.parent;
+	}
+	
+	@Override
 	public void addChild( IComponent component ) {
+		component.setParent( this );
 		this.children.add(component);
 	}
 	

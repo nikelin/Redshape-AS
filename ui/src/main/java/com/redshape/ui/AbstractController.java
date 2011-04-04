@@ -4,7 +4,6 @@ import com.redshape.ui.events.EventType;
 import com.redshape.ui.events.AppEvent;
 import com.redshape.ui.utils.UIConstants;
 import com.redshape.ui.utils.UIRegistry;
-import com.redshape.ui.views.ViewException;
 import com.redshape.ui.annotations.Action;
 
 import java.lang.reflect.InvocationTargetException;

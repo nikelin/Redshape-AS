@@ -15,6 +15,8 @@ public @interface Bindable {
 	
 	public BindableType type() default BindableType.NONE;
 	
+	public Class<?>[] targetType() default {};
+	
 	public String name() default "";
 	
 }

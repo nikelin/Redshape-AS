@@ -36,7 +36,8 @@ public class JMSManagerFactory {
         }
     }
 
-    public JMSManager getManager( String className ) throws JMSException {
+    @SuppressWarnings("unchecked")
+	public JMSManager getManager( String className ) throws JMSException {
         try {
             return this.getManager( (Class<? extends JMSManager>) Class.forName( className ) );
         } catch ( Throwable e ) {

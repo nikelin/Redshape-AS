@@ -4,6 +4,7 @@ import com.redshape.bindings.accessors.AccessException;
 import com.redshape.bindings.accessors.IPropertyReader;
 import com.redshape.bindings.accessors.IPropertyWriter;
 import com.redshape.bindings.types.BindableType;
+import com.redshape.bindings.types.CollectionType;
 import com.redshape.bindings.types.IBindable;
 import com.redshape.bindings.types.IBindableCollection;
 import com.redshape.bindings.types.IBindableMap;
@@ -17,7 +18,11 @@ class BindableObject implements IBindable, IBindableMap, IBindableCollection {
 	private IPropertyReader reader;
 	private IPropertyWriter writer;
 
+	// Collection specific
+	private CollectionType collectionType;
 	private Class<?> elementType;
+	
+	// Map specific
 	private String keyName;
 	private Class<?> keyType;
 	private String valueName;
@@ -52,6 +57,26 @@ class BindableObject implements IBindable, IBindableMap, IBindableCollection {
 		return this.id;
 	}
 
+	@Override
+	public void setCollectionType( CollectionType type ) throws BindingException {
+		if ( !this.isCollection() ) {
+			throw new BindingException(
+				"Only collections allowed to have element type property!");
+		}
+		
+		this.collectionType = type;
+	}
+	
+	@Override
+	public CollectionType getCollectionType() throws BindingException  {
+		if ( !this.isCollection() ) {
+			throw new BindingException(
+				"Only collections allowed to have element type property!");
+		}
+		
+		return this.collectionType;
+	}
+	
 	@Override
 	public Class<?> getElementType() throws BindingException {
 		if (!this.isCollection()) {

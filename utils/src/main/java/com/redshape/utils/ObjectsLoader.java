@@ -17,8 +17,8 @@ public interface ObjectsLoader {
 
     public <T extends Object> T loadObject( T source, InputStream data ) throws ObjectsLoaderException;
 
-    public Iterable loadObjects( String path ) throws ObjectsLoaderException;
+    public Iterable<?> loadObjects( String path ) throws ObjectsLoaderException;
 
-    public Iterable loadObjects( File path ) throws ObjectsLoaderException;
+    public Iterable<?> loadObjects( File path ) throws ObjectsLoaderException;
 
 }

@@ -1,7 +1,5 @@
 package com.redshape.ui.data;
 
-import java.util.Map;
-
 /**
  * Created by IntelliJ IDEA.
  * User: nikelin

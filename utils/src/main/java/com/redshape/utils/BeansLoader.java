@@ -46,7 +46,8 @@ public class BeansLoader implements ObjectsLoader {
     	this.helper = helper;
     }
 
-    public <T extends Object> T loadObject( T object, File source ) throws ObjectsLoaderException {
+    @SuppressWarnings("unchecked")
+	public <T extends Object> T loadObject( T object, File source ) throws ObjectsLoaderException {
         log.info( source.getPath() );
         try {
             return (T) this.getLoader().unmarshal( new DomReader( this.buildDocument( source ) ), object );
@@ -56,7 +57,8 @@ public class BeansLoader implements ObjectsLoader {
         }
     }
 
-    public <T extends Object> T loadObject( T object, InputStream source ) throws ObjectsLoaderException {
+    @SuppressWarnings("unchecked")
+	public <T extends Object> T loadObject( T object, InputStream source ) throws ObjectsLoaderException {
         try {
             return (T) this.getLoader().unmarshal( new DomReader( this.buildDocument( source ) ), object );
         } catch ( Throwable e ) {

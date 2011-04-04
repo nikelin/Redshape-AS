@@ -19,8 +19,9 @@ import com.redshape.tasks.ITask;
  */
 @MappedSuperclass
 public abstract class AbstractPersistentTask extends AbstractEntity implements IPersistentTask {
+	private static final long serialVersionUID = 8243849896059027893L;
 
-    @Basic
+	@Basic
     @Column( name = "time" )
     private Long createdTime;
 

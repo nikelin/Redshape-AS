@@ -15,7 +15,8 @@ import java.util.*;
  * @date Apr 13, 2010
  */
 public abstract class AbstractJMSManager implements JMSManager {
-    private static final Logger log = Logger.getLogger( AbstractJMSManager.class );    
+    @SuppressWarnings("unused")
+	private static final Logger log = Logger.getLogger( AbstractJMSManager.class );    
 
     private Connection connection;
     private MessagingHandler handler;

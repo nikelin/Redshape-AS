@@ -4,9 +4,12 @@ import javax.swing.*;
 
 import org.springframework.context.ApplicationContext;
 
+import com.redshape.ui.bindings.render.IViewRenderer;
+import com.redshape.ui.bindings.render.IViewRendererBuilder;
 import com.redshape.ui.data.stores.IStoresManager;
 import com.redshape.ui.views.IViewsManager;
 import com.redshape.ui.windows.IWindowsManager;
+import com.redshape.utils.clonners.IObjectsCloner;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,6 +52,15 @@ public final class UIRegistry {
     @SuppressWarnings("unchecked")
 	public static <V extends JFrame> V getRootContext() {
         return (V) context;
+    }
+    
+    public static IObjectsCloner getObjectsClonner() {
+    	return getContext().getBean( IObjectsCloner.class );
+    }
+    
+    @SuppressWarnings("unchecked")
+	public static <V extends IViewRenderer<?>> IViewRendererBuilder<V> getViewRendererFacade() {
+    	return (IViewRendererBuilder<V>) getContext().getBean( IViewRendererBuilder.class );
     }
     
     public static IStoresManager getStoresManager() {

@@ -60,7 +60,7 @@ public class JSONReader<V> implements IReader<String, V> {
         return result;
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings({ "deprecation", "unchecked" })
 	protected Collection<Object> processObject( JSONArray array ) {
         return JSONArray.toList( array );
     }

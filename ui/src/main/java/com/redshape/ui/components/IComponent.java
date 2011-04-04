@@ -17,6 +17,10 @@ public interface IComponent extends IWidget {
 
 	public Collection<IController> getControllers();
 
+	public void setParent( IComponent component );
+	
+	public IComponent getParent();
+	
 	public void addChild( IComponent component );
 
 	public List<IComponent> getChildren();

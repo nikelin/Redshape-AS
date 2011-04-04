@@ -8,8 +8,11 @@ package com.redshape.utils;
  * To change this template use File | Settings | File Templates.
  */
 public class PackageLoaderException extends Exception {
+	private static final long serialVersionUID = 5900125090232239656L;
 
-    public PackageLoaderException() {}
+	public PackageLoaderException() {
+		this(null);
+	}
 
     public PackageLoaderException( String message ) {
         super(message);

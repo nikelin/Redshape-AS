@@ -3,7 +3,6 @@ package com.redshape.ui;
 import com.redshape.ui.data.IModelData;
 import com.redshape.ui.data.IModelField;
 import com.redshape.ui.data.IModelType;
-import com.redshape.ui.events.UIEvents;
 import com.redshape.ui.validators.IValidator;
 
 import javax.swing.*;

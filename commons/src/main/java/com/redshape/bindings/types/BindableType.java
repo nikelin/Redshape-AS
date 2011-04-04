@@ -9,5 +9,6 @@ public enum BindableType {
 	STRING,
 	COMPOSITE,
 	DATE,
+	ENUM,
 	NONE
 }
