@@ -2,15 +2,17 @@ package com.redshape.ui.bindings.properties;
 
 import javax.swing.JComponent;
 
+import com.redshape.ui.UIException;
+
 
 public interface IPropertyUI<D extends JComponent, E extends JComponent, T> {
 
-	public D renderDisplay();	
+	public D renderDisplay() throws UIException;	
 	
-	public E renderEditor();
+	public E renderEditor() throws UIException;
 	
-	public void setValue( T value );
+	public void setValue( T value ) throws UIException;
 	
-	public T getValue();
+	public T getValue() throws UIException;
 	
 }

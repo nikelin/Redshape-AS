@@ -11,6 +11,10 @@ public class StoresManager implements IStoresManager {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends IStore<?>> T getStore( Class<? extends T> clazz ) throws InstantiationException {
+		if ( clazz == null ) {
+			throw new IllegalArgumentException("null");
+		}
+		
 		T store = (T) this.stores.get(clazz);
 		if ( store != null ) {
 			return store;
@@ -22,6 +26,9 @@ public class StoresManager implements IStoresManager {
 	}
 	
 	protected IStore<?> createStoreInstance( Class<? extends IStore<?>> clazz ) throws InstantiationException {
+		if ( clazz == null ) {
+			throw new IllegalArgumentException("null");
+		}
 		
 		IStore<?> storeInstance;
 		try {

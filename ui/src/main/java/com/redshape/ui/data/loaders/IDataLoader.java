@@ -13,7 +13,5 @@ import com.redshape.ui.data.IModelData;
 public interface IDataLoader<T extends IModelData> extends IEventDispatcher {
 
     public void load() throws LoaderException;
-    
-    public void refresh() throws LoaderException;
 
 }

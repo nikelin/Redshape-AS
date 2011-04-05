@@ -98,10 +98,16 @@ public class ObjectUI extends JPanel implements Cloneable {
 		return null;
 	}
 	
+	protected JLabel createFieldLabel( IPropertyModel model ) {
+		JLabel fieldLabel = new JLabel( StringUtils.ucfirst( model.getTitle() ) );
+		fieldLabel.setAlignmentX( LEFT_ALIGNMENT );
+		return fieldLabel;
+	}
+	
 	public void addField( IPropertyModel model, JComponent component ) {
 		JPanel box = new JPanel();
 		box.setMinimumSize( new Dimension(500, 50 ) );
-		box.add( new JLabel( StringUtils.ucfirst( model.getTitle() ) ) );
+		box.add( this.createFieldLabel( model ) );
 		box.add( component );
 		
 		this.fields.put( model, component );

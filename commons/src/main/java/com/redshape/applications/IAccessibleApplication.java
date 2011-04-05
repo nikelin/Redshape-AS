@@ -1,7 +1,6 @@
 package com.redshape.applications;
 
 import com.redshape.api.requesters.IRequester;
-import com.redshape.io.net.IAddress;
 
 
 /**

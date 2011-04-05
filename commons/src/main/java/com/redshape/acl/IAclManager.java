@@ -1,7 +1,6 @@
 package com.redshape.acl;
 
 import java.util.Collection;
-import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,7 +9,7 @@ import java.util.Set;
  * Time: 4:21:38 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface IAclManager<T extends IAclSubjectPermission> {
+public interface IAclManager<T extends IAclSubjectPermission<?,?,?>> {
 
     public void grantAccess( IAclSubject<T> subject, IAclObject<? extends IAclPermission> object, IAclPermission permission ) throws AclException;
 

@@ -47,7 +47,7 @@ public class PluginSourcesFactory {
             String[] fileNameParts = file.getName().split(".");
             String extension = fileNameParts[ fileNameParts.length - 1];
 
-            Class<? extends PluginSource> clazz = this.archiveTypes.get(extension);
+            Class<? extends PluginSource> clazz = archiveTypes.get(extension);
             if ( clazz == null ) {
                 throw new PluginLoaderException("Unrecognized plugin archive type.");
             }
@@ -67,7 +67,7 @@ public class PluginSourcesFactory {
     }
 
     public PluginSourcesFactory addArchiveSourceType( String extension, Class<? extends PluginSource> sourceClass ) {
-        this.archiveTypes.put( extension, sourceClass );
+        archiveTypes.put( extension, sourceClass );
         return this;
     }
 

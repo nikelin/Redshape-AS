@@ -1,6 +1,7 @@
 package com.redshape.ui.data;
 
 import com.redshape.ui.events.IEventDispatcher;
+import com.redshape.ui.data.loaders.IDataLoader;
 import com.redshape.ui.data.loaders.LoaderException;
 
 import java.util.Collection;
@@ -31,5 +32,7 @@ public interface IStore<V extends IModelData> extends IEventDispatcher {
     public void load() throws LoaderException;
     
     public void clear();
+    
+    public void setLoader( IDataLoader<V> loader );
 
 }

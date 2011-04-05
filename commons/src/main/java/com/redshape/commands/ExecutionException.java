@@ -8,8 +8,11 @@ package com.redshape.commands;
  * To change this template use File | Settings | File Templates.
  */
 public class ExecutionException extends Exception {
+	private static final long serialVersionUID = -6865452739736849516L;
 
-    public ExecutionException() {}
+	public ExecutionException() {
+		this(null);
+	}
 
     public ExecutionException( String message ) {
         super(message);

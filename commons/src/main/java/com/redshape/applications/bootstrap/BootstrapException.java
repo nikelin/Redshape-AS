@@ -10,8 +10,9 @@ import com.redshape.applications.ApplicationException;
  * To change this template use File | Settings | File Templates.
  */
 public class BootstrapException extends ApplicationException {
+	private static final long serialVersionUID = 1735342636881160038L;
 
-    public BootstrapException() {
+	public BootstrapException() {
     	super();
     }
 

@@ -48,7 +48,8 @@ public class AuthenticatorFactory {
     	return this.packagesLoader;
     }
 
-    public <T extends IIdentity> AuthenticatorInterface<T> getAdapter( Class<T> clazz ) {
+    @SuppressWarnings("unchecked")
+	public <T extends IIdentity> AuthenticatorInterface<T> getAdapter( Class<T> clazz ) {
         AuthenticatorInterface<T> adapter = (AuthenticatorInterface<T>) this.adapters.get(clazz);
         if ( adapter != null ) {
         	return adapter;
@@ -65,12 +66,20 @@ public class AuthenticatorFactory {
         this.adapters.put( clazz, adapter );
     }
 
-    private void initialize() {
+    @SuppressWarnings("unchecked")
+	private void initialize() {
         try {
             /**
              * @FIXME: move part of logic to initialize()
              */
-	        for ( Class<? extends AuthenticatorInterface> adapterClass : this.getPackagesLoader().<AuthenticatorInterface>getClasses("com.redshape.auth.adapters", new InterfacesFilter(new Class[] { AuthenticatorInterface.class }, new Class[] { TargetIdentity.class } ) ) ) {
+	        for ( Class<? extends AuthenticatorInterface<?>> 
+	        			adapterClass : this.getPackagesLoader()
+		    							   .<AuthenticatorInterface<?>>getClasses(
+		    									   "com.redshape.auth.adapters", 
+		    									   new InterfacesFilter(
+		    											   new Class[] { AuthenticatorInterface.class },
+		    											   new Class[] { TargetIdentity.class } 
+		    									   ) ) ) {
 	        	try {;
                     this.adapters.put( adapterClass.getAnnotation(TargetIdentity.class).identity(), adapterClass.newInstance() );
 	        	} catch ( Throwable e ) {

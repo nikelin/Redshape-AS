@@ -21,10 +21,12 @@ public class EnumUI extends AbstractUI<JLabel, JComboBox, Enum<?>>{
 		return new JLabel();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected JComboBox createEditor() {
 		JComboBox box = new JComboBox();
 		
+		@SuppressWarnings("rawtypes")
 		EnumSet<?> items = EnumSet.allOf( (Class<? extends Enum>) this.getDescriptor().getType() );
 		for ( Object item : items ) {
 			box.addItem( item );
@@ -34,14 +36,13 @@ public class EnumUI extends AbstractUI<JLabel, JComboBox, Enum<?>>{
 			@Override
 			public Component getListCellRendererComponent(JList list, Object value,
 					int index, boolean isSelected, boolean cellHasFocus) {
-				return new JLabel( String.valueOf( ( (Enum) value).name() ) );
+				return new JLabel( String.valueOf( ( (Enum<?>) value).name() ) );
 			}
 		});
 		
 		return box;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void updateValue() {
 		this.editor.setSelectedItem( this.getValue() );

@@ -8,8 +8,9 @@ package com.redshape.acl;
  * To change this template use File | Settings | File Templates.
  */
 public class AclException extends Exception {
+	private static final long serialVersionUID = -6367258819272631108L;
 
-    public AclException() {
+	public AclException() {
         super();
     }
 

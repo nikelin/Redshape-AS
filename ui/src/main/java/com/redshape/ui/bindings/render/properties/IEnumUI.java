@@ -1,7 +1,6 @@
 package com.redshape.ui.bindings.render.properties;
 
 import java.awt.Component;
-import java.util.EnumSet;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -14,8 +13,8 @@ import com.redshape.utils.IEnum;
 
 public class IEnumUI extends AbstractUI<JLabel, JComboBox, IEnum<?>> {
 
-	public IEnumUI(IBindable descriptor) {
-		super(descriptor);
+	public IEnumUI( IBindable bindable ) {
+		super(bindable);
 	}
 
 	@Override
@@ -23,7 +22,7 @@ public class IEnumUI extends AbstractUI<JLabel, JComboBox, IEnum<?>> {
 		return new JLabel();
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	protected JComboBox createEditor() {
 		JComboBox box = new JComboBox();
@@ -43,7 +42,6 @@ public class IEnumUI extends AbstractUI<JLabel, JComboBox, IEnum<?>> {
 		return box;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void updateValue() {
 		this.editor.setSelectedItem( this.getValue() );

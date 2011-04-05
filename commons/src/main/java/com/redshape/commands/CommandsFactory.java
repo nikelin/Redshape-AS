@@ -103,8 +103,14 @@ public class CommandsFactory {
         }
     }
 
-    private void processPackage( String path )  throws PackageLoaderException {
-        Class<? extends ICommand>[] tasks = this.getPackagesLoader().<ICommand>getClasses(path, new InterfacesFilter( new Class[] { ICommand.class }, new Class[] { Command.class } ) );
+    @SuppressWarnings("unchecked")
+	private void processPackage( String path )  throws PackageLoaderException {
+        Class<? extends ICommand>[] tasks = this.getPackagesLoader()
+        										.<ICommand>getClasses(path, 
+        												new InterfacesFilter( 
+        													new Class[] { ICommand.class }, 
+        													new Class[] { Command.class } 
+        												) );
         for ( Class<? extends ICommand> task : tasks ) {
             this.taskClasses.put( task.getAnnotation(Command.class), task );
         }

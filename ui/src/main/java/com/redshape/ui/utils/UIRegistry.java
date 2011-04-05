@@ -6,6 +6,7 @@ import org.springframework.context.ApplicationContext;
 
 import com.redshape.ui.bindings.render.IViewRenderer;
 import com.redshape.ui.bindings.render.IViewRendererBuilder;
+import com.redshape.ui.data.providers.IProvidersFactory;
 import com.redshape.ui.data.stores.IStoresManager;
 import com.redshape.ui.views.IViewsManager;
 import com.redshape.ui.windows.IWindowsManager;
@@ -61,6 +62,10 @@ public final class UIRegistry {
     @SuppressWarnings("unchecked")
 	public static <V extends IViewRenderer<?>> IViewRendererBuilder<V> getViewRendererFacade() {
     	return (IViewRendererBuilder<V>) getContext().getBean( IViewRendererBuilder.class );
+    }
+    
+    public static IProvidersFactory getProvidersFactory() {
+    	return getContext().getBean( IProvidersFactory.class );
     }
     
     public static IStoresManager getStoresManager() {

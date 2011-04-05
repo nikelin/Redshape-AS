@@ -3,7 +3,7 @@ package com.redshape.acl;
 /**
  * @param <T extends IAclSubjectPermission>
  */
-public interface IAclSubject<T extends IAclSubjectPermission> {
+public interface IAclSubject<T extends IAclSubjectPermission<?,?,?>> {
 
     /**
          * Get integer identifier of ACL object

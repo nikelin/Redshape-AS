@@ -158,7 +158,7 @@ public class Bootstrap implements IBootstrap {
         action.markProcessed();
     }
 
-    private boolean isAllProcessed() {
+	private boolean isAllProcessed() {
         for ( IBootstrapAction action : this.getActions() ) {
             if ( !action.isError() && !action.isProcessed() ) {
                 return false;
@@ -168,7 +168,7 @@ public class Bootstrap implements IBootstrap {
         return true;
     }
 
-    private boolean hasDependers( Object id ) {
+	private boolean hasDependers( Object id ) {
         for ( IBootstrapAction actionObject : this.getActions() ) {
             if ( actionObject.getDependencies().contains( id ) ) {
                 return true;

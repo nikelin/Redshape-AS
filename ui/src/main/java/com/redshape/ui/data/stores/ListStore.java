@@ -111,4 +111,10 @@ public class ListStore<V extends IModelData> extends EventDispatcher implements 
         	this.loader.load();
         }
     }
+
+	@Override
+	public void setLoader(IDataLoader<V> loader) {
+		this.loader = loader;
+		this.bindLoader(loader);
+	}
 }

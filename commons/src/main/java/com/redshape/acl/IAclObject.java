@@ -1,7 +1,6 @@
 package com.redshape.acl;
 
 import java.util.Collection;
-import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.

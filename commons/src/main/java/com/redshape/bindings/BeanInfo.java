@@ -28,6 +28,7 @@ import com.redshape.bindings.annotations.MapValue;
 import com.redshape.bindings.types.BindableType;
 import com.redshape.bindings.types.IBindable;
 
+import com.redshape.utils.IEnum;
 import com.redshape.utils.StringUtils;
 
 public class BeanInfo implements IBeanInfo {
@@ -197,6 +198,9 @@ public class BeanInfo implements IBeanInfo {
 			return type;
 		} else if ( memberClazz.isArray() ) {
 			return BindableType.LIST;
+		} else if ( IEnum.class.isAssignableFrom( memberClazz )
+					|| Enum.class.isAssignableFrom( memberClazz ) ) {
+			return BindableType.ENUM;
 		} else {
 			return BindableType.COMPOSITE;
 		}

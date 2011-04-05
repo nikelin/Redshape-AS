@@ -6,10 +6,13 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JComponent;
+
 import com.redshape.ui.UIException;
 import com.redshape.ui.bindings.IViewModelBuilder;
 import com.redshape.ui.bindings.properties.IPropertyUIBuilder;
 import com.redshape.ui.bindings.render.components.ObjectUI;
+import com.redshape.ui.bindings.views.IChoiceModel;
+import com.redshape.ui.bindings.views.ICollectionModel;
 import com.redshape.ui.bindings.views.IComposedModel;
 import com.redshape.ui.bindings.views.IDefferedModel;
 import com.redshape.ui.bindings.views.IPropertyModel;
@@ -60,13 +63,21 @@ public class ViewRenderer implements ISwingRenderer {
 	protected void process( ObjectUI parent, IViewModel<?> model ) throws UIException {
 		if ( model instanceof IDefferedModel ) {
 			this.deffered.add( new DefferedItem( parent, parent.getComponentCount(), (IDefferedModel) model ) );
+		} else if ( model instanceof IChoiceModel ) {
+			this.process( parent, (IChoiceModel) model );
 		} else if ( model instanceof IPropertyModel ) {
 			this.process( parent, (IPropertyModel) model );
+		} else if ( model instanceof ICollectionModel ) {
+			this.process( parent, (ICollectionModel) model );
 		} else if ( model instanceof IComposedModel ) {
 			this.process( ( JComponent) parent, (IComposedModel) model );
 		} else {
 			throw new UIException("Unsupported view type");
 		}
+	}
+	
+	protected void process( ObjectUI parent, ICollectionModel model ) throws UIException {
+		// TODO: to be implemented
 	}
 	
 	protected void process( ObjectUI parent, IDefferedModel model ) throws UIException {
@@ -79,6 +90,14 @@ public class ViewRenderer implements ISwingRenderer {
 	protected void process( ObjectUI parent, IPropertyModel model ) throws UIException {
 		try {
 			parent.addField( model, this.getUIBuilder().createRenderer( model.getDescriptor() ).renderEditor() );
+		} catch ( InstantiationException e ) {
+			throw new UIException( e.getMessage(), e );
+		}
+	}
+	
+	protected void process( ObjectUI parent, IChoiceModel model ) throws UIException {
+		try {
+			parent.addField( model, this.getUIBuilder().createListRenderer( this, model.getDescriptor() ).renderEditor() );
 		} catch ( InstantiationException e ) {
 			throw new UIException( e.getMessage(), e );
 		}

@@ -8,4 +8,18 @@ package com.redshape.plugins;
  * To change this template use File | Settings | File Templates.
  */
 public class PluginUnloadException extends Exception {
+	private static final long serialVersionUID = 3940171114658956363L;
+
+	public PluginUnloadException() {
+		this(null);
+	}
+	
+	public PluginUnloadException( String message ) {
+		this(message, null);
+	}
+	
+	public PluginUnloadException( String message, Throwable e ) {
+		super(message, e);
+	}
+	
 }

@@ -10,6 +10,8 @@ import com.redshape.bindings.BindingException;
 import com.redshape.bindings.IBeanInfo;
 import com.redshape.bindings.types.IBindable;
 import com.redshape.ui.UIException;
+import com.redshape.ui.bindings.views.ChoiceModel;
+import com.redshape.ui.bindings.views.CollectionModel;
 import com.redshape.ui.bindings.views.ComposedModel;
 import com.redshape.ui.bindings.views.DefferedModel;
 import com.redshape.ui.bindings.views.IComposedModel;
@@ -99,10 +101,27 @@ public class ViewModelBuilder implements IViewModelBuilder {
 	}
 	
 	protected IViewModel<?> processBindable( IBindable bindable ) throws UIException {
-		if ( bindable.isComposite() ) {
+		if ( bindable.isCollection() ) {
+			return this.processCollection( bindable );
+		} else if ( bindable.isComposite() ) {
 			return this.createDefferedView( bindable.getId(), bindable.getName(), bindable.getType() );
 		} else {
 			return this.processProperty(bindable);
+		}
+	}
+	
+	protected IViewModel<?> processCollection( IBindable bindable ) throws UIException {
+		try {
+			switch ( bindable.asCollectionObject().getCollectionType() ) {
+			case CHOICE:
+				return new ChoiceModel(bindable);
+			case LIST:
+				return new CollectionModel( bindable );
+			default:
+				throw new UIException("Unsupported collection type!");
+			}
+		} catch ( BindingException e  ) {
+			throw new UIException("Binding exception", e);
 		}
 	}
 	

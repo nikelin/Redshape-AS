@@ -13,6 +13,16 @@ import java.util.Map;
 public abstract class AbstractModelData implements IModelData {
     private Map<String, Object> values = new HashMap<String, Object>();
     private boolean isDirty;
+    private Object relatedObject;
+    
+    public void setRelatedObject( Object relatedObject ) {
+    	this.relatedObject = relatedObject;
+    }
+    
+    @SuppressWarnings("unchecked")
+	public <V> V getRelatedObject() {
+    	return (V) this.relatedObject;
+    }
     
     @Override
     public void set( String name, Object value ) {

@@ -8,8 +8,13 @@ package com.redshape.auth.adapters;
  * To change this template use File | Settings | File Templates.
  */
 public class AuthenticatorException extends Exception {
+	private static final long serialVersionUID = 2360236975649688241L;
 
-    public AuthenticatorException( String message ) {
+	public AuthenticatorException() {
+		this(null);
+	}
+	
+	public AuthenticatorException( String message ) {
         super(message);
     }
 

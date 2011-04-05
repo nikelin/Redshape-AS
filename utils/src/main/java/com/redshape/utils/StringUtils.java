@@ -120,11 +120,11 @@ public class StringUtils {
     }
 
     public static String ucfirst( String value ) {
-    	return value.substring(0, 1).toUpperCase() + value.substring(1);
+    	return value.substring(0, 1).toUpperCase().concat( value.substring(1) );
     }
     
     public static String lcfirst( String value ) {
-    	return value.substring(0, 1).toLowerCase() + value.substring(1);
+    	return value.substring(0, 1).toLowerCase().concat( value.substring(1) );
     }
 
     public static byte[] stringToIP( String addrString ) {

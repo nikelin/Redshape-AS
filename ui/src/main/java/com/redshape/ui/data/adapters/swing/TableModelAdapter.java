@@ -22,7 +22,7 @@ import java.util.HashSet;
  * To change this template use File | Settings | File Templates.
  */
 public class TableModelAdapter<T extends IModelData> extends EventDispatcher
-													 implements TableModel, IStore<T> {
+													 implements TableModel {
     private IStore<T> store;
     private Collection<TableModelListener> listeners = new HashSet<TableModelListener>();
     
@@ -113,10 +113,5 @@ public class TableModelAdapter<T extends IModelData> extends EventDispatcher
     public void forwardEvent( AppEvent event ) {
         this.store.forwardEvent( event );
     }
-
-	@Override
-	public void removeAt(int index) {
-		this.store.removeAt(index);
-	}
 
 }

@@ -8,8 +8,9 @@ package com.redshape.applications;
  * To change this template use File | Settings | File Templates.
  */
 public class ApplicationException extends Exception {
+	private static final long serialVersionUID = -4311623864906387180L;
 
-    public ApplicationException() {
+	public ApplicationException() {
     	super();
     }
 

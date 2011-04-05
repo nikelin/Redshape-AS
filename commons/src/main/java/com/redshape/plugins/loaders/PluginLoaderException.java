@@ -8,8 +8,9 @@ package com.redshape.plugins.loaders;
  * To change this template use File | Settings | File Templates.
  */
 public class PluginLoaderException extends Exception {
+	private static final long serialVersionUID = 2695731928486258626L;
 
-    public PluginLoaderException() {}
+	public PluginLoaderException() {}
 
     public PluginLoaderException( String message ) {
         super(message);

@@ -13,7 +13,7 @@ import java.util.*;
  */
 public abstract class AbstractCommand implements ICommand {
     private Map<String, String> properties = new HashMap<String, String>();
-    private Set<IBootstrapAction> bootstrapActions = new HashSet(); 
+    private Set<IBootstrapAction> bootstrapActions = new HashSet<IBootstrapAction>(); 
 
     public Map<String, String> getProperties() {
         return this.properties;

@@ -37,13 +37,13 @@ public class ComboBoxAdapter<T extends IModelData> extends JComboBox {
 			@Override
 			public Component getListCellRendererComponent(JList arg0, Object arg1,
 					int arg2, boolean arg3, boolean arg4) {
-				return ComboBoxAdapter.this.createDisplayComponent( (T) arg1);
+				return ComboBoxAdapter.this.createDisplayComponent( arg1 != null ? (T) arg1 : null );
 			}
 		});
 	}
 	
 	protected Component createDisplayComponent( T record ) {
-		return new JLabel( record.toString() );
+		return new JLabel( String.valueOf(record) );
 	}
 	
 	protected void bindStore() {

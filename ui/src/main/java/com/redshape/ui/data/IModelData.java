@@ -9,6 +9,10 @@ package com.redshape.ui.data;
  */
 public interface IModelData {
 	
+	public void setRelatedObject( Object object );
+	
+	public <V> V getRelatedObject();
+	
 	public void makeDirty( boolean isDirty );
 	
 	public boolean isDirty();

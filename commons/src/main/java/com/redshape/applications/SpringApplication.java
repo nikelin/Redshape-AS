@@ -3,7 +3,6 @@ package com.redshape.applications;
 import org.apache.log4j.Logger;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.redshape.applications.bootstrap.IBootstrap;
 import com.redshape.utils.config.IConfig;

@@ -15,13 +15,13 @@ public class StringUI extends AbstractUI<JLabel, JTextField, String> {
 	
 	@Override
 	protected void updateValue() {
-		if ( this.editor != null ) {
-			this.editor.setText( this.getValue() );
+		if ( this.getEditor() != null ) {
+			this.getEditor().setText( this.getValue() );
 			Dispatcher.get().forwardEvent( UIEvents.Core.Repaint, this.editor );
 		}
 		
-		if ( this.display != null ) {
-			this.display.setText( this.getValue() );
+		if ( this.getDisplay() != null ) {
+			this.getDisplay().setText( this.getValue() );
 			Dispatcher.get().forwardEvent( UIEvents.Core.Repaint, this.display );
 		}
 	}
