@@ -221,5 +221,10 @@ class BindableObject implements IBindable, IBindableMap, IBindableCollection {
 	public boolean isWritable() {
 		return this.getWriter() != null;
 	}
+	
+	@Override
+	public String toString() {
+		return this.getId();
+	}
 
 }

@@ -21,6 +21,7 @@ import org.apache.log4j.Logger;
 
 import com.redshape.bindings.BeanConstructor;
 import com.redshape.bindings.BeanInfo;
+import com.redshape.bindings.BindingException;
 import com.redshape.bindings.IBeanInfo;
 import com.redshape.bindings.types.IBindable;
 import com.redshape.ui.UnhandledUIException;
@@ -204,8 +205,27 @@ public class ObjectUI extends JPanel implements Cloneable {
 		}
 	}
 	
-	public void updateInstance( Object object ) {
+	public <T> T updateInstance( T object ) throws BindingException {
+		IBeanInfo beanInfo = this.model.getDescriptor();
 		
+		for ( IPropertyModel model : this.fields.keySet() ) {
+			model.getDescriptor().write(
+				object,
+				this.getValue( model )
+			);
+		}
+		
+		for ( ObjectUI nestedUI : this.childs ) {
+			IComposedModel nestedModel = nestedUI.getModel();
+			
+			for ( IBindable bindable : beanInfo.getBindables() ) {
+				if ( bindable.getId().equals( nestedModel.getId() ) ) {
+					bindable.write( object, nestedUI.updateInstance( bindable.read(object) ) );
+				}
+			}
+		}
+		
+		return object;
 	}
 	
 	protected IBeanInfo createBeanInfo( Class<?> type ) {

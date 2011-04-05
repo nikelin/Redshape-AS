@@ -1,5 +1,7 @@
 package com.redshape.ui.data;
 
+import java.io.Serializable;
+
 /**
  * Created by IntelliJ IDEA.
  * User: nikelin
@@ -7,7 +9,7 @@ package com.redshape.ui.data;
  * Time: 19:28
  * To change this template use File | Settings | File Templates.
  */
-public interface IModelField {
+public interface IModelField extends Serializable {
 
 	public boolean isTransient();
 	

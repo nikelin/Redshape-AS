@@ -1,6 +1,8 @@
 package com.redshape.utils;
 
-public interface IEnum<T> {
+import java.io.Serializable;
+
+public interface IEnum<T> extends Serializable {
 	
 	public String name();
 	

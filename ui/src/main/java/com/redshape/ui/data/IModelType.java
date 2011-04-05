@@ -1,5 +1,6 @@
 package com.redshape.ui.data;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
@@ -9,7 +10,7 @@ import java.util.Collection;
  * Time: 13:14
  * To change this template use File | Settings | File Templates.
  */
-public interface IModelType {
+public interface IModelType extends Serializable {
 
     public int count();
     

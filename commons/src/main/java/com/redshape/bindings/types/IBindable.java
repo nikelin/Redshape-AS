@@ -1,9 +1,11 @@
 package com.redshape.bindings.types;
 
+import java.io.Serializable;
+
 import com.redshape.bindings.BindingException;
 import com.redshape.bindings.accessors.AccessException;
 
-public interface IBindable {
+public interface IBindable extends Serializable {
 	
 	public boolean isComposite();
 	

@@ -1,6 +1,7 @@
 package com.redshape.ui.bindings.render.properties;
 
 import java.awt.Component;
+import java.io.Serializable;
 import java.util.EnumSet;
 
 import javax.swing.JComboBox;
@@ -32,13 +33,7 @@ public class EnumUI extends AbstractUI<JLabel, JComboBox, Enum<?>>{
 			box.addItem( item );
 		}
 		
-		box.setRenderer( new ListCellRenderer() {
-			@Override
-			public Component getListCellRendererComponent(JList list, Object value,
-					int index, boolean isSelected, boolean cellHasFocus) {
-				return new JLabel( String.valueOf( ( (Enum<?>) value).name() ) );
-			}
-		});
+		box.setRenderer( new RenderGuy() );
 		
 		return box;
 	}
@@ -46,6 +41,14 @@ public class EnumUI extends AbstractUI<JLabel, JComboBox, Enum<?>>{
 	@Override
 	protected void updateValue() {
 		this.editor.setSelectedItem( this.getValue() );
+	}
+	
+	public static class RenderGuy implements ListCellRenderer, Serializable {
+		@Override
+		public Component getListCellRendererComponent(JList list, Object value,
+				int index, boolean isSelected, boolean cellHasFocus) {
+			return new JLabel( String.valueOf( ( (Enum<?>) value).name() ) );
+		}
 	}
 
 }

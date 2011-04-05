@@ -5,9 +5,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import org.apache.log4j.Logger;
+
 
 public class DeepClonner implements IObjectsCloner {
-
+	private static final Logger log = Logger.getLogger( DeepClonner.class );
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T clone(T orig) throws CloneNotSupportedException {
@@ -28,6 +31,7 @@ public class DeepClonner implements IObjectsCloner {
 
 			return clone;
 		} catch ( Throwable e ) {
+			log.error( e.getMessage(), e );
 			throw new CloneNotSupportedException();
 		}
 	}

@@ -12,6 +12,8 @@ import com.redshape.ui.events.UIEvents;
 
 public abstract class AbstractUI<D extends JComponent, E extends JComponent, T> 
 							implements IPropertyUI<D, E, T> {
+	private static final long serialVersionUID = -8771377848383565907L;
+	
 	protected D display;
 	protected E editor;
 	private T value;

@@ -1,6 +1,7 @@
 package com.redshape.ui.data.adapters.swing;
 
 import java.awt.Component;
+import java.io.Serializable;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -32,14 +33,7 @@ public class ComboBoxAdapter<T extends IModelData> extends JComboBox {
 	}
 	
 	protected void init() {
-		this.setRenderer(new ListCellRenderer() {
-			@SuppressWarnings("unchecked")
-			@Override
-			public Component getListCellRendererComponent(JList arg0, Object arg1,
-					int arg2, boolean arg3, boolean arg4) {
-				return ComboBoxAdapter.this.createDisplayComponent( arg1 != null ? (T) arg1 : null );
-			}
-		});
+		this.setRenderer(new RenderGuy());
 	}
 	
 	protected Component createDisplayComponent( T record ) {
@@ -66,6 +60,17 @@ public class ComboBoxAdapter<T extends IModelData> extends JComboBox {
 				ComboBoxAdapter.this.removeItem( event.<T>getArg(0) );
 			}
 		});
+	}
+	
+	public class RenderGuy implements ListCellRenderer, Serializable {
+		private static final long serialVersionUID = -8638619364348233293L;
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public Component getListCellRendererComponent(JList arg0, Object arg1,
+				int arg2, boolean arg3, boolean arg4) {
+			return ComboBoxAdapter.this.createDisplayComponent( arg1 != null ? (T) arg1 : null );
+		}
 	}
 	
 }

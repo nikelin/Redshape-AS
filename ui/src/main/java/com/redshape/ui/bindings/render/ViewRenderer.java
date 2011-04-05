@@ -11,12 +11,16 @@ import com.redshape.ui.UIException;
 import com.redshape.ui.bindings.IViewModelBuilder;
 import com.redshape.ui.bindings.properties.IPropertyUIBuilder;
 import com.redshape.ui.bindings.render.components.ObjectUI;
+import com.redshape.ui.bindings.views.ChoiceModel;
+import com.redshape.ui.bindings.views.CollectionModel;
+import com.redshape.ui.bindings.views.DefferedModel;
 import com.redshape.ui.bindings.views.IChoiceModel;
 import com.redshape.ui.bindings.views.ICollectionModel;
 import com.redshape.ui.bindings.views.IComposedModel;
 import com.redshape.ui.bindings.views.IDefferedModel;
 import com.redshape.ui.bindings.views.IPropertyModel;
 import com.redshape.ui.bindings.views.IViewModel;
+import com.redshape.ui.bindings.views.PropertyModel;
 
 public class ViewRenderer implements ISwingRenderer {
 	private IViewModelBuilder modelsBuilder;
@@ -44,7 +48,7 @@ public class ViewRenderer implements ISwingRenderer {
 		
 		this.processDeffered(ui);
 		
-		return ui;
+		return ui; 
 	}
 	
 	protected void processDeffered( ObjectUI ui ) throws UIException {
@@ -60,14 +64,16 @@ public class ViewRenderer implements ISwingRenderer {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	protected void process( ObjectUI parent, IViewModel<?> model ) throws UIException {
-		if ( model instanceof IDefferedModel ) {
+		Class<? extends IViewModel<?>> modelClazz = ( Class<? extends IViewModel<?>> ) model.getClass();
+		if ( modelClazz.equals( DefferedModel.class ) ) {
 			this.deffered.add( new DefferedItem( parent, parent.getComponentCount(), (IDefferedModel) model ) );
-		} else if ( model instanceof IChoiceModel ) {
+		} else if ( modelClazz.equals( ChoiceModel.class ) ) {
 			this.process( parent, (IChoiceModel) model );
-		} else if ( model instanceof IPropertyModel ) {
+		} else if ( modelClazz.equals( PropertyModel.class ) ) {
 			this.process( parent, (IPropertyModel) model );
-		} else if ( model instanceof ICollectionModel ) {
+		} else if ( modelClazz.equals( CollectionModel.class ) ) {
 			this.process( parent, (ICollectionModel) model );
 		} else if ( model instanceof IComposedModel ) {
 			this.process( ( JComponent) parent, (IComposedModel) model );

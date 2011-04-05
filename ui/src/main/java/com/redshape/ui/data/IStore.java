@@ -4,6 +4,7 @@ import com.redshape.ui.events.IEventDispatcher;
 import com.redshape.ui.data.loaders.IDataLoader;
 import com.redshape.ui.data.loaders.LoaderException;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
@@ -13,7 +14,7 @@ import java.util.Collection;
  * Time: 18:54
  * To change this template use File | Settings | File Templates.
  */
-public interface IStore<V extends IModelData> extends IEventDispatcher {
+public interface IStore<V extends IModelData> extends IEventDispatcher, Serializable {
 
     public IModelType getType();
 

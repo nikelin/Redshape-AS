@@ -1,6 +1,7 @@
 package com.redshape.ui.bindings.render.properties;
 
 import java.awt.Component;
+import java.io.Serializable;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -12,6 +13,7 @@ import com.redshape.utils.EnumUtils;
 import com.redshape.utils.IEnum;
 
 public class IEnumUI extends AbstractUI<JLabel, JComboBox, IEnum<?>> {
+	private static final long serialVersionUID = 5479414921873691099L;
 
 	public IEnumUI( IBindable bindable ) {
 		super(bindable);
@@ -31,20 +33,22 @@ public class IEnumUI extends AbstractUI<JLabel, JComboBox, IEnum<?>> {
 			box.addItem(item);
 		}
 		
-		box.setRenderer( new ListCellRenderer() {
-			@Override
-			public Component getListCellRendererComponent(JList list, Object value,
-					int index, boolean isSelected, boolean cellHasFocus) {
-				return new JLabel( String.valueOf( ( (IEnum<?>) value).name() ) );
-			}
-		});
+		box.setRenderer( new RenderGuy() );
 		
 		return box;
 	}
 
 	@Override
 	protected void updateValue() {
-		this.editor.setSelectedItem( this.getValue() );
+		this.getEditor().setSelectedItem( this.getValue() );
+	}
+	
+	protected static class RenderGuy implements ListCellRenderer, Serializable {
+		@Override
+		public Component getListCellRendererComponent(JList list, Object value,
+				int index, boolean isSelected, boolean cellHasFocus) {
+			return new JLabel( String.valueOf( ( (IEnum<?>) value).name() ) );
+		}
 	}
 
 }

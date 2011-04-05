@@ -33,5 +33,10 @@ public abstract class AbstractView<T> implements IViewModel<T> {
 	public String getTitle() {
 		return this.title;
 	}
+	
+	@Override
+	public String toString() {
+		return this.id;
+	}
 
 }
