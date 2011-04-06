@@ -1,6 +1,7 @@
 package com.redshape.bindings;
 
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
@@ -299,19 +300,24 @@ public class BeanInfo implements IBeanInfo {
 
 	@Override
 	public boolean isConstructable() {
-		if (Modifier.isAbstract(this.beanClazz.getModifiers())) {
+		Class<?> type = this.beanClazz;
+		if ( type.isArray() ) {
+			type = type.getComponentType();
+		}
+		
+		if (Modifier.isAbstract(type.getModifiers())) {
 			return false;
 		}
 
-		for (Constructor<?> constructor : this.beanClazz.getConstructors()) {
+		for (Constructor<?> constructor : type.getConstructors()) {
 			if (Modifier.isPublic(constructor.getModifiers())) {
 				return true;
 			}
 		}
 
-		for (Method method : this.beanClazz.getMethods()) {
+		for (Method method : type.getMethods()) {
 			if (Modifier.isPublic(method.getModifiers())
-					&& method.getReturnType().equals(this.beanClazz)
+					&& method.getReturnType().equals(type)
 					&& Modifier.isStatic(method.getModifiers())) {
 				return true;
 			}
@@ -332,19 +338,23 @@ public class BeanInfo implements IBeanInfo {
 			return null;
 		}
 
-		for (Constructor<T> constructor : (Constructor<T>[]) this.beanClazz
-				.getConstructors()) {
+		Class<?> type = this.beanClazz;
+		if ( type.isArray() ) {
+			type = type.getComponentType();
+		}
+		
+		for (Constructor<T> constructor : (Constructor<T>[]) type.getConstructors()) {
 			if (!Modifier.isPublic(constructor.getModifiers())) {
 				continue;
 			}
 
-			if ( args.length == 0 || constructor.getParameterTypes().equals(args)) {
+			if ( args.length == 0 || constructor.getParameterTypes().equals(args) ) {
 				return new BeanConstructor<T>(constructor);
 			}
 		}
 
-		for (Method method : this.beanClazz.getMethods()) {
-			if (!method.getReturnType().equals(this.beanClazz)
+		for (Method method : type.getMethods()) {
+			if (!method.getReturnType().equals(type)
 					|| !Modifier.isPublic(method.getModifiers())
 					&& !Modifier.isStatic(method.getModifiers())) {
 				continue;
@@ -364,9 +374,9 @@ public class BeanInfo implements IBeanInfo {
 		}
 
 		this.members = new ArrayList<AccessibleObject>();
-		this.members.addAll(Arrays.asList(this.beanClazz.getMethods()));
-		this.members.addAll(Arrays.asList(this.beanClazz.getFields()));
-		this.members.addAll(Arrays.asList(this.beanClazz.getConstructors()));
+		this.members.addAll(Arrays.asList(this.beanClazz.getDeclaredMethods()));
+		this.members.addAll(Arrays.asList(this.beanClazz.getDeclaredFields()));
+		this.members.addAll(Arrays.asList(this.beanClazz.getDeclaredConstructors()));
 
 		return this.members;
 	}
@@ -402,6 +412,77 @@ public class BeanInfo implements IBeanInfo {
 			return Accessors.readers;
 		}
 
+		protected boolean isCollection( Class<?> type ) {
+			return Collection.class.isAssignableFrom(type);
+		}
+		
+		protected boolean isConsistentArray( Class<?> origType, Class<?> type ) {
+			if ( origType.isArray() ) {
+				if ( type.isArray() ) {
+					return origType.isAssignableFrom(origType);
+				} else {
+					return origType.getComponentType().isAssignableFrom( type );
+				}
+			} else if ( isCollection(origType) ) {
+				return true;
+			}
+			
+			return false;
+		}
+		
+		protected boolean isConsistentScalar( Class<?> origType, Class<?> type) {
+			return origType.isAssignableFrom(type);
+		}
+		
+		protected boolean isConsistent( Class<?> orig, Class<?> type ) {
+			return this.isConsistentScalar( orig, type)
+				|| this.isConsistentArray( orig, type ) ;
+		}
+		
+		protected boolean isTypeScalar( Class<?> type ) {
+			return !type.isArray() && !Collection.class.isAssignableFrom(type);
+		}
+		
+		protected Object prepareValue( Class<?> targetType, Object value ) {
+			Class<?> valueClazz = value.getClass();
+			
+			boolean isTargetArray = targetType.isArray();
+			boolean isTargetCollection = this.isCollection(targetType);
+			boolean isValueArray = valueClazz.isArray();
+			boolean isValueCollection = this.isCollection( valueClazz );
+			
+			if ( !this.isTypeScalar(valueClazz) ) {
+				if ( isValueArray ) {
+					if ( isTargetArray ) {
+						return value;
+					} 
+					
+					if ( isTargetCollection ) {
+						return Arrays.asList(value);
+					}
+				} else if ( isValueCollection ) {
+					final Collection<?> asCollection = (Collection<?>) value;
+					if ( isTargetArray ) {
+						return asCollection.toArray( new Object[asCollection.size()] );
+					} else if ( isTargetCollection ) {
+						return asCollection;
+					}
+				}
+			} else {
+				if ( isTargetArray ) {
+					Object array = Array.newInstance( valueClazz, 1 );
+					Array.set(array, 0, value);
+					return array;
+				} else if ( isTargetCollection ) {
+					Object array = Array.newInstance( valueClazz, 1 );
+					Array.set(array, 0 , value);
+					return Arrays.asList( array );
+				}
+			}
+			
+			return value;
+		}
+		
 		public static class Writers extends Accessors {
 			private Writers() {
 			}
@@ -427,19 +508,22 @@ public class BeanInfo implements IBeanInfo {
 				}
 
 				@Override
-				public boolean isConsistent(Class<?> type) {
-					return this.field.getType().isAssignableFrom(type);
+				public boolean isConsistent( Class<?> type ) {
+					return super.isConsistent( this.field.getType(), type);
 				}
 
 				@Override
 				public void write(Object context, Object value)
 						throws AccessException {
-					if (!this.isConsistent(value.getClass())) {
-						throw new AccessException("Inconsistent value given");
+					if ( !this.isConsistent( value.getClass() ) ) {
+						throw new AccessException("Inconsistent value: " 
+								+ value.getClass().getCanonicalName() 
+								+ " not assignable to " 
+								+ this.field.getType().getCanonicalName() );
 					}
 
 					try {
-						this.field.set(context, value);
+						this.field.set(context, this.prepareValue( this.field.getType(), value ) );
 					} catch (Throwable e) {
 						throw new AccessException(e.getMessage(), e);
 					}
@@ -454,24 +538,33 @@ public class BeanInfo implements IBeanInfo {
 				public MethodWriter(Method method) {
 					this.method = method;
 				}
-
+				
 				@Override
-				public boolean isConsistent(Class<?> type) {
-					return this.method.getParameterTypes().length != 0
-							&& this.method.getParameterTypes()[0].equals(type);
+				public boolean isConsistent( Class<?> type ) {
+					if ( this.method.getParameterTypes().length == 0 ) {
+						return false;
+					}
+					
+					return super.isConsistent( this.method.getParameterTypes()[0], type);
 				}
 
 				@Override
-				public void write(Object context, Object value)
-						throws AccessException {
-					if (!this.isConsistent(value.getClass())) {
-						throw new AccessException("Inconsistent value given");
+				public void write(Object context, Object value) throws AccessException {
+					if ( !this.isConsistent( value.getClass() ) ) {
+						throw new AccessException("Inconsistent value: " 
+								+ value.getClass().getCanonicalName() 
+								+ " not assignable to " 
+								+ this.method.getParameterTypes()[0].getCanonicalName() );
 					}
-
+					
 					try {
-						this.method.invoke(context, value);
-					} catch (Throwable e) {
-						throw new AccessException(e.getMessage(), e);
+						this.method.invoke( context, 
+								this.prepareValue( 
+									this.method.getParameterTypes()[0],
+									value
+								) );
+					} catch ( Throwable e ) {
+						throw new AccessException( e.getMessage(), e );
 					}
 				}
 			}
@@ -545,6 +638,14 @@ public class BeanInfo implements IBeanInfo {
 			}
 		}
 
+	}
+	
+	@Override
+	public String toString() {
+		if ( this.beanClazz == null ) {
+			return "<null>";
+		}
+		return this.beanClazz.getCanonicalName();
 	}
 
 }

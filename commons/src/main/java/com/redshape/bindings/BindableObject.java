@@ -161,7 +161,7 @@ class BindableObject implements IBindable, IBindableMap, IBindableCollection {
 			throw new AccessException("Object is write-only");
 		}
 		
-		return this.getReader().read(context);
+		return this.getReader().<T>read(context);
 	}
 
 	@Override

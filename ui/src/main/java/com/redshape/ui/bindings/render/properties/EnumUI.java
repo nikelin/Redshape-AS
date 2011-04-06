@@ -12,7 +12,8 @@ import javax.swing.ListCellRenderer;
 import com.redshape.bindings.types.IBindable;
 
 public class EnumUI extends AbstractUI<JLabel, JComboBox, Enum<?>>{
-	
+	private static final long serialVersionUID = 1L;
+
 	public EnumUI( IBindable bindable ) {
 		super(bindable);
 	}
@@ -44,6 +45,11 @@ public class EnumUI extends AbstractUI<JLabel, JComboBox, Enum<?>>{
 	}
 	
 	public static class RenderGuy implements ListCellRenderer, Serializable {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		@Override
 		public Component getListCellRendererComponent(JList list, Object value,
 				int index, boolean isSelected, boolean cellHasFocus) {

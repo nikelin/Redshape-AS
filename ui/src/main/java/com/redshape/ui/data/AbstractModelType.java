@@ -10,7 +10,9 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public abstract class AbstractModelType implements IModelType {
-    private Map<String, IModelField> values = new HashMap<String, IModelField>();
+	private static final long serialVersionUID = 2639761182581273129L;
+	
+	private Map<String, IModelField> values = new HashMap<String, IModelField>();
     private List<String> order = new ArrayList<String>();
 
     public IModelField getField( int index ) {
@@ -65,7 +67,9 @@ public abstract class AbstractModelType implements IModelType {
     }
 
     public class ModelTypeField implements IModelField {
-        private String name;
+		private static final long serialVersionUID = 1867419046675566804L;
+		
+		private String name;
         private String format;
         private String title;
         private Class<?> type;

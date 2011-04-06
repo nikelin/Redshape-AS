@@ -17,9 +17,9 @@ import javax.persistence.*;
  * To change this template use File | Settings | File Templates.
  */
 @MappedSuperclass
-public abstract class AbstractAclSubjectPermission<T extends IEntity & IAclSubjectPermission,
-                                                   V extends IEntity & IAclSubject,
-                                                   Q extends IEntity & IAclObject>
+public abstract class AbstractAclSubjectPermission<T extends IEntity & IAclSubjectPermission<?, V, Q>,
+                                                   V extends IEntity & IAclSubject<T>,
+                                                   Q extends IEntity & IAclObject<?>>
                     extends AbstractEntity implements IAclSubjectPermission<AclPermission, V, Q> {
 
     @ManyToOne

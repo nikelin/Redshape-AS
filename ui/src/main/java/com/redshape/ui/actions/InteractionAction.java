@@ -1,13 +1,16 @@
 package com.redshape.ui.actions;
 
 import java.awt.event.ActionEvent;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.AbstractAction;
 
 import com.redshape.ui.Dispatcher;
+import com.redshape.ui.UnhandledUIException;
 import com.redshape.ui.events.AppEvent;
 import com.redshape.ui.events.EventType;
 import com.redshape.ui.events.IEventHandler;
+import com.redshape.utils.IFunction;
 
 public class InteractionAction extends AbstractAction {
 	private static final long serialVersionUID = 323352518927504082L;
@@ -38,6 +41,22 @@ public class InteractionAction extends AbstractAction {
 		} else {
 			this.handler.handle( new AppEvent() );
 		}
+	}
+	
+	public static <T, V> InteractionAction createAction( String name, 
+					final T context, final IFunction<T, V> fn ) {
+		return new InteractionAction(name, 
+			new IEventHandler() {				
+				@Override
+				public void handle(AppEvent event) {
+					try {
+						fn.invoke( context, event );
+					} catch ( InvocationTargetException e ) {
+						throw new UnhandledUIException( e.getMessage(), e );
+					}
+				}
+			}
+		);
 	}
 	
 }

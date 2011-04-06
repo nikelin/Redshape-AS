@@ -8,6 +8,7 @@ import com.redshape.ui.Dispatcher;
 import com.redshape.ui.events.UIEvents;
 
 public class StringUI extends AbstractUI<JLabel, JTextField, String> {
+	private static final long serialVersionUID = -870134475160003776L;
 
 	public StringUI( IBindable bindable ) {
 		super(bindable);

@@ -2,10 +2,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.redshape.protocols</groupId>
-    <version>${project.parent.version}</version>
+    <version>1.0.0A</version>
     <artifactId>core</artifactId>
     <packaging>jar</packaging>
     
+    <name>Protocols API Core</name>
+
     <parent>
     	<artifactId>protocols-parent</artifactId>
     	<groupId>com.redshape.protocols</groupId>
@@ -16,5 +18,13 @@
     	<finalName>protocols-core</finalName>
     	<sourceDirectory>src/main/java</sourceDirectory>
     </build>
+    
+    <dependencies>
+    	<dependency>
+    		<artifactId>commons</artifactId>
+    		<groupId>com.redshape</groupId>
+    		<version>${project.version}</version>
+    	</dependency>
+    </dependencies>
 
 </project>

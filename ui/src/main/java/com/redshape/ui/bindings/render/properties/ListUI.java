@@ -8,7 +8,8 @@ import com.redshape.ui.bindings.render.IViewRenderer;
 import com.redshape.ui.data.adapters.swing.ComboBoxAdapter;
 
 public class ListUI extends AbstractListUI<JComboBox, JComboBox, Object> {
-	
+	private static final long serialVersionUID = -461201665686274716L;
+
 	public ListUI( IViewRenderer<?> renderer, IBindable descriptor) {
 		super(renderer, descriptor);
 	}	

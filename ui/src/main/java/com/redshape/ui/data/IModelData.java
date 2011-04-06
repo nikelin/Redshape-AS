@@ -2,6 +2,8 @@ package com.redshape.ui.data;
 
 import java.io.Serializable;
 
+import com.redshape.ui.events.IEventDispatcher;
+
 /**
  * Created by IntelliJ IDEA.
  * User: nikelin
@@ -9,7 +11,7 @@ import java.io.Serializable;
  * Time: 13:08
  * To change this template use File | Settings | File Templates.
  */
-public interface IModelData extends Serializable {
+public interface IModelData extends Serializable, IEventDispatcher {
 	
 	public void setRelatedObject( Object object );
 	

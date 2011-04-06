@@ -6,7 +6,8 @@ import javax.swing.JTextField;
 import com.redshape.bindings.types.IBindable;
 
 public class NumericUI extends AbstractUI<JLabel, JTextField, Number> {
-	
+	private static final long serialVersionUID = -5716529017245176653L;
+
 	public NumericUI( IBindable bindable ) {
 		super(bindable);
 	}

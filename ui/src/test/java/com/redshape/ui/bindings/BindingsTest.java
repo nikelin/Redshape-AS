@@ -52,6 +52,8 @@ public class BindingsTest extends AbstractContextAwareTest<Object> {
 	}
 	
 	public static class SuchLikeEnum implements IEnum<SuchLikeEnum> {
+		private static final long serialVersionUID = -5965430052457355767L;
+
 		private String code;
 		
 		public static final SuchLikeEnum E1 = new SuchLikeEnum("E1?");
@@ -141,6 +143,7 @@ public class BindingsTest extends AbstractContextAwareTest<Object> {
 		ISwingRenderer renderer = UIRegistry.<ISwingRenderer>getViewRendererFacade()
 											.createRenderer( TestMock.class );
 		
+		UIRegistry.getProvidersFactory().registerProvider(TestMock2.class, StoreTest.class );
 		UIRegistry.getProvidersFactory().registerProvider(Z.class, StoreTest.class );
 		
 		UIRegistry.getProvidersFactory().registerLoader( 
@@ -155,7 +158,7 @@ public class BindingsTest extends AbstractContextAwareTest<Object> {
 			}
 			
 			private ModelDataTest createRecord( String name ) {
-				ModelDataTest dataTest = new ModelDataTest();
+				ModelDataTest dataTest = new ModelDataTest(name);
 				dataTest.setRelatedObject( new Z(name) );
 				
 				return dataTest;
@@ -184,7 +187,7 @@ public class BindingsTest extends AbstractContextAwareTest<Object> {
 		( (JTextField) ui.getNested("y").getField("name") ).setText( yNameValue );
 		
 		TestMock mock = ui.createInstance();
-		assertEquals( "b", mock.device.name );
+		assertEquals( "a", mock.device.name );
 		assertEquals( xValue, mock.x );
 		assertEquals( SuchLikeEnum.E1, mock.suchLikeEnumeration );
 		assertEquals( X.A, mock.enumeration );

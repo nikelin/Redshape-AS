@@ -11,7 +11,7 @@ public abstract class AbstractDataLoader<T extends IModelData>
 
 	@Override
 	public void load() throws LoaderException {
-		try {
+		try { 
 			this.forwardEvent( LoaderEvents.BeforeLoad );
 			this.forwardEvent( LoaderEvents.Loaded, this.doLoad() );
 		} catch ( LoaderException e ) {

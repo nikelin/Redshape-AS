@@ -13,7 +13,11 @@ import java.util.Collection;
  * Time: 4:50:57 PM
  * To change this template use File | Settings | File Templates.
  */
-public class AclManager<T extends IAclSubjectPermission & IEntity> implements IAclManager<T> {
+public class AclManager<T extends IAclSubjectPermission<
+										IAclPermission,
+										IAclSubject<T>, 
+										IAclObject<? extends IAclPermission>> & IEntity> 
+			implements IAclManager<T> {
 	
     @Override
     synchronized public void grantAccess( IAclSubject<T> subject, IAclObject<? extends IAclPermission> object, IAclPermission permission ) throws AclException {
@@ -65,7 +69,7 @@ public class AclManager<T extends IAclSubjectPermission & IEntity> implements IA
     @Override
     // @FIXME: due to dao refactoring
     public T getSubjectPermission( IAclSubject<T> subject, IAclObject<? extends IAclPermission> object, IAclPermission permission ) throws AclException {
-        return null;
+        return (T) null;
     }
 
     @Override

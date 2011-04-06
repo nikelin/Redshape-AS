@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <name>Applications Server</name>
+    
+    <parent>
+        <artifactId>as</artifactId>
+        <groupId>com.redshape</groupId>
+        <version>1.0.0A</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.redshape</groupId>
+    <version>1.0.0A</version>
+    <artifactId>server</artifactId>
+    <packaging>jar</packaging>
+
+    <dependencies>
+    	<dependency>
+    		<groupId>com.redshape.protocols</groupId>
+    		<artifactId>vanilla</artifactId>
+    		<version>${project.version}</version>
+    	</dependency>
+
+        <dependency>
+    		<groupId>com.redshape.protocols</groupId>
+    		<artifactId>http</artifactId>
+    		<version>${project.version}</version>
+    	</dependency>
+    
+    	<dependency>
+    		<groupId>com.redshape.protocols</groupId>
+    		<artifactId>vanilla</artifactId>
+    		<version>${project.version}</version>
+    	</dependency>
+    
+    	<dependency>
+    		<groupId>com.redshape</groupId>
+    		<artifactId>persistence</artifactId>
+    		<version>${project.version}</version>
+    	</dependency>
+    
+        <dependency>
+            <groupId>com.redshape</groupId>
+            <artifactId>tasks</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+             <artifactId>slf4j-log4j12</artifactId>
+            <version>1.4.2</version>
+        </dependency>
+
+       <dependency>
+           <groupId>net.sf.json-lib</groupId>
+           <artifactId>json-lib</artifactId>
+           <version>2.3</version>
+           <classifier>jdk15</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>xmlbeans</groupId>
+            <artifactId>xmlbeans</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.1</version>
+        </dependency>
+
+       <dependency>
+           <groupId>net.sf.ehcache</groupId>
+           <artifactId>ehcache-core</artifactId>
+           <version>2.1.0</version>
+       </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.7</version>
+        </dependency>
+    </dependencies>
+
+</project>

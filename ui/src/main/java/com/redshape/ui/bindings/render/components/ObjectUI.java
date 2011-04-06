@@ -11,6 +11,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -27,6 +28,7 @@ import com.redshape.bindings.types.IBindable;
 import com.redshape.ui.UnhandledUIException;
 import com.redshape.ui.bindings.views.IComposedModel;
 import com.redshape.ui.bindings.views.IPropertyModel;
+import com.redshape.ui.data.IModelData;
 import com.redshape.ui.utils.UIRegistry;
 import com.redshape.utils.StringUtils;
 
@@ -136,12 +138,23 @@ public class ObjectUI extends JPanel implements Cloneable {
 	
 	protected Object getValue( IPropertyModel model ) {
 		JComponent component = this.fields.get(model);
-		if ( component instanceof JTextField ) {
+		if ( component instanceof JComboBox ) {
+			return this.getValue( model, (JComboBox) component );
+		} else if ( component instanceof JTextField ) {
 			return this.getValue( model, (JTextField) component );
 		} else if ( component instanceof JCheckBox ){
 			return this.getValue( model, (JCheckBox) component );
 		} else {
 			throw new IllegalArgumentException();
+		}
+	}
+	
+	protected Object getValue( IPropertyModel model, JComboBox box ) {
+		Object value = box.getSelectedItem();
+		if ( value instanceof IModelData ) {
+			return ( (IModelData) value ).getRelatedObject();
+		} else {
+			return value;
 		}
 	}
 	

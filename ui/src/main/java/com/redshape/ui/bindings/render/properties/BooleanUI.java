@@ -7,6 +7,7 @@ import com.redshape.ui.Dispatcher;
 import com.redshape.ui.events.UIEvents;
 
 public class BooleanUI extends AbstractUI<JCheckBox, JCheckBox, Boolean> {
+	private static final long serialVersionUID = 7808900171495441614L;
 
 	public BooleanUI( IBindable bindable ) {
 		super(bindable);

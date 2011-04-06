@@ -3,11 +3,11 @@ package com.redshape.ui.data.adapters.swing;
 import com.redshape.ui.events.AppEvent;
 import com.redshape.ui.events.EventDispatcher;
 import com.redshape.ui.events.IEventHandler;
-import com.redshape.ui.events.data.stores.StoreEvents;
 import com.redshape.ui.data.IModelData;
 import com.redshape.ui.data.IModelType;
 import com.redshape.ui.data.IStore;
 import com.redshape.ui.data.loaders.LoaderException;
+import com.redshape.ui.data.stores.StoreEvents;
 
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;

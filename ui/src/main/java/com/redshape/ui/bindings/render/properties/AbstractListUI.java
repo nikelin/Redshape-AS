@@ -2,6 +2,7 @@ package com.redshape.ui.bindings.render.properties;
 
 import javax.swing.JComponent;
 
+import com.redshape.bindings.BindingException;
 import com.redshape.bindings.types.IBindable;
 import com.redshape.ui.UIException;
 import com.redshape.ui.bindings.render.IViewRenderer;
@@ -15,6 +16,8 @@ import com.redshape.ui.utils.UIRegistry;
 public abstract class AbstractListUI<D extends JComponent, 
 							E extends JComponent, 
 							T> extends AbstractUI<D, E, T> {
+	private static final long serialVersionUID = -2887352384241715674L;
+	
 	private IViewRenderer<?> renderingContext;
 	
 	public AbstractListUI( IViewRenderer<?> renderingContext, IBindable descriptor) {
@@ -34,7 +37,7 @@ public abstract class AbstractListUI<D extends JComponent,
 	@SuppressWarnings("unchecked")
 	protected IStore<?> getProvider() throws UIException {
 		try {
-			IStore<IModelData> store = this.getProvidersFactory().provide( this.getDescriptor().getType() );
+			IStore<IModelData> store = this.getProvidersFactory().provide( this.getDescriptor().asCollectionObject().getElementType() );
 			if ( store == null ) {
 				throw new UIException("Related store not found");
 			}
@@ -42,7 +45,8 @@ public abstract class AbstractListUI<D extends JComponent,
 			IDataLoader<IModelData> loader = this.getProvidersFactory()
 												 .<IModelData>getLoader(
 														 this.getRenderingContext(), 
-														 (Class<? extends IStore<IModelData>>) store.getClass() );
+														 (Class<? extends IStore<IModelData>>) 
+														 store.getClass() );
 			if ( loader != null ) {
 				store.setLoader( loader );
 				store.load();
@@ -53,6 +57,8 @@ public abstract class AbstractListUI<D extends JComponent,
 			throw new UIException("Provider exception", e );
 		} catch ( LoaderException e ) {
 			throw new UIException("Data loader exception", e );
+		} catch ( BindingException e ) {
+			throw new UIException("Binding exception", e);
 		}
 	}
 }

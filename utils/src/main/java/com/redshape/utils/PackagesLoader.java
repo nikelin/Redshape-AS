@@ -32,7 +32,8 @@ public class PackagesLoader {
         return this.getClasses( pkgName, new InterfacesFilter( new Class[] {} ) );
     }
 
-    public <T> Class<T>[] getClasses( String pkgName, IFilter filter ) throws PackageLoaderException {
+    @SuppressWarnings("unchecked")
+	public <T> Class<T>[] getClasses( String pkgName, IFilter<?> filter ) throws PackageLoaderException {
         Set<Class<T>> classes = new HashSet<Class<T>>();
         for ( String path : System.getProperty("java.class.path").split(":") ) {
             try {
@@ -65,7 +66,7 @@ public class PackagesLoader {
             String folderName = this.convertToFolderName( pkgName );
 
             JarFile file = new JarFile( path );
-            Enumeration entries = file.entries();
+            Enumeration<JarEntry> entries = file.entries();
             List<URL> targetEntries = new ArrayList<URL>() ;
             while( entries.hasMoreElements() ) {
                 JarEntry testing = (JarEntry) entries.nextElement();

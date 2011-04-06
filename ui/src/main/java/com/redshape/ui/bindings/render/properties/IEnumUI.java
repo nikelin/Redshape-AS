@@ -44,6 +44,8 @@ public class IEnumUI extends AbstractUI<JLabel, JComboBox, IEnum<?>> {
 	}
 	
 	protected static class RenderGuy implements ListCellRenderer, Serializable {
+		private static final long serialVersionUID = -5743380825040772169L;
+
 		@Override
 		public Component getListCellRendererComponent(JList list, Object value,
 				int index, boolean isSelected, boolean cellHasFocus) {

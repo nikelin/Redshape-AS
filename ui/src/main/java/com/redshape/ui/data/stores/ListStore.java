@@ -3,10 +3,10 @@ package com.redshape.ui.data.stores;
 import com.redshape.ui.events.AppEvent;
 import com.redshape.ui.events.EventDispatcher;
 import com.redshape.ui.events.IEventHandler;
-import com.redshape.ui.events.data.stores.StoreEvents;
 import com.redshape.ui.data.IModelData;
 import com.redshape.ui.data.IModelType;
 import com.redshape.ui.data.IStore;
+import com.redshape.ui.data.ModelEvent;
 import com.redshape.ui.data.loaders.IDataLoader;
 import com.redshape.ui.data.loaders.LoaderEvents;
 import com.redshape.ui.data.loaders.LoaderException;
@@ -16,14 +16,13 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: nikelin
- * Date: 10.01.11
- * Time: 22:34
- * To change this template use File | Settings | File Templates.
+ * @author nikelin
  */
-public class ListStore<V extends IModelData> extends EventDispatcher implements IStore<V> {
-    private List<V> records = new ArrayList<V>();
+public class ListStore<V extends IModelData> extends EventDispatcher 
+										implements IStore<V> {
+	private static final long serialVersionUID = 1006177585211430914L;
+	
+	private List<V> records = new ArrayList<V>();
     private IDataLoader<V> loader;
     private IModelType type;
 
@@ -46,6 +45,15 @@ public class ListStore<V extends IModelData> extends EventDispatcher implements 
     	this.forwardEvent( StoreEvents.Clean );
     }
 
+    protected void bindRecord( final V record ) {
+    	record.addListener(ModelEvent.CHANGED, new IEventHandler() {
+			@Override
+			public void handle(AppEvent event) {
+				ListStore.this.forwardEvent( StoreEvents.Changed, event.getArg(0), record );
+			}
+		});
+    }
+    
     protected void bindLoader( IDataLoader<V> loader ) {
         loader.addListener(LoaderEvents.Loaded, new IEventHandler() {
             @Override
@@ -78,6 +86,7 @@ public class ListStore<V extends IModelData> extends EventDispatcher implements 
 
     @Override
     public void add( V record ) {
+    	this.bindRecord(record);
         this.records.add(record);
         this.forwardEvent( StoreEvents.Added, record );
     }

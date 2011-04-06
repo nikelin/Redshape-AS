@@ -10,22 +10,47 @@ import javax.swing.ListCellRenderer;
 
 import com.redshape.ui.data.IModelData;
 import com.redshape.ui.data.IStore;
+import com.redshape.ui.data.stores.StoreEvents;
 import com.redshape.ui.events.AppEvent;
 import com.redshape.ui.events.IEventHandler;
-import com.redshape.ui.events.data.stores.StoreEvents;
+import com.redshape.utils.IFilter;
 
+/**
+ * Combobox adapter to support direct data store items rendering
+ * 
+ * @author nikelin
+ * @param <T>
+ */
 public class ComboBoxAdapter<T extends IModelData> extends JComboBox {
 	private static final long serialVersionUID = -1398304640662810901L;
 
 	private IStore<T> store;
+	private IFilter<T> filter;
 	
+	/**
+	 * Binds to given store without any records filtering.
+	 * 
+	 * @param store
+	 */
 	public ComboBoxAdapter( IStore<T> store ) {
+		this(store, null);
+	}
+	
+	/**
+	 * Binds to store and display only that records which
+	 * are admitted thought given filter.
+	 * 
+	 * @param store
+	 * @param filter
+	 */
+	public ComboBoxAdapter( IStore<T> store, IFilter<T> filter ) {
 		super();
 		
 		if ( store == null ) {
 			throw new IllegalArgumentException("null");
 		}
 		
+		this.filter = filter;
 		this.store = store;
 		
 		this.init();
@@ -38,6 +63,16 @@ public class ComboBoxAdapter<T extends IModelData> extends JComboBox {
 	
 	protected Component createDisplayComponent( T record ) {
 		return new JLabel( String.valueOf(record) );
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public void addItem( Object item ) {
+		if ( this.filter != null && !this.filter.filter( (T) item ) ) {
+			return;
+		}
+		
+		super.addItem(item);
 	}
 	
 	protected void bindStore() {
