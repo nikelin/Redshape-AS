@@ -1,10 +1,10 @@
 package com.redshape.plugins.info;
 
-import com.redshape.utils.BeansLoader;
+import com.redshape.utils.serializing.beans.BeansLoader;
 import com.redshape.plugins.PluginInfo;
 import com.redshape.plugins.loaders.PluginLoaderException;
-import com.redshape.utils.ObjectsLoader;
-import com.redshape.utils.ObjectsLoaderException;
+import com.redshape.utils.serializing.ObjectsLoader;
+import com.redshape.utils.serializing.ObjectsLoaderException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;

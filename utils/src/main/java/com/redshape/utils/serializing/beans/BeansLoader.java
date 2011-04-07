@@ -23,7 +23,7 @@ public class BeansLoader extends AbstractBeansSerializer implements ObjectsLoade
     @SuppressWarnings("unchecked")
 	public <T extends Object> T loadObject( T object, File source ) throws ObjectsLoaderException {
         try {
-            return (T) this.getLoader().unmarshal( new DomReader( this.buildDocument( source ) ), object );
+            return (T) this.getLoader().fromXML( new FileInputStream( source ) );
         } catch ( Throwable e ) {
             log.error( e.getMessage(), e );
             throw new ObjectsLoaderException();
@@ -33,12 +33,21 @@ public class BeansLoader extends AbstractBeansSerializer implements ObjectsLoade
     @SuppressWarnings("unchecked")
 	public <T extends Object> T loadObject( T object, InputStream source ) throws ObjectsLoaderException {
         try {
-            return (T) this.getLoader().unmarshal( new DomReader( this.buildDocument( source ) ), object );
+            return (T) this.getLoader().fromXML(source);
         } catch ( Throwable e ) {
             log.error( e.getMessage(), e );
             throw new ObjectsLoaderException();
         }
     }
+
+	public Iterable<?> loadObjects( InputStream stream ) throws ObjectsLoaderException {
+        try {
+            return (Iterable<?>) this.getLoader().fromXML( stream );
+        } catch ( Throwable e ) {
+            e.printStackTrace();
+            throw new ObjectsLoaderException();
+        }
+	}
 
     public Iterable<?> loadObjects( String path ) throws ObjectsLoaderException {
         try {

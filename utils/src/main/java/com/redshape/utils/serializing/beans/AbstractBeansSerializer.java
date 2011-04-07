@@ -21,11 +21,11 @@ import java.io.InputStream;
  */
 public class AbstractBeansSerializer {
     private XStream loader;
-    private XMLHelper helper;
+    private XMLHelper xmlHelper;
     private ResourcesLoader resourcesLoader;
 
-        public XMLHelper getXMLHelper() {
-    	return this.helper;
+	public XMLHelper getXmlHelper() {
+    	return this.xmlHelper;
     }
 
     protected ResourcesLoader getResourcesLoader() {
@@ -36,8 +36,8 @@ public class AbstractBeansSerializer {
     	this.resourcesLoader = loader;
     }
 
-    public void setXMLHelper( XMLHelper helper ) {
-    	this.helper = helper;
+    public void setXmlHelper( XMLHelper helper ) {
+    	this.xmlHelper = helper;
     }
 
     protected XStream getLoader() {
@@ -53,11 +53,11 @@ public class AbstractBeansSerializer {
     }
 
     protected Document buildDocument( InputStream stream ) throws Throwable {
-        return this.getXMLHelper().buildDocument(stream);
+        return this.getXmlHelper().buildDocument(stream);
     }
 
     protected Document buildDocument( File file ) throws Throwable {
-        return this.getXMLHelper().buildDocument(file);
+        return this.getXmlHelper().buildDocument(file);
     }
 
 }

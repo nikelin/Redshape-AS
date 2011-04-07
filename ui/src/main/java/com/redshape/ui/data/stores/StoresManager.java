@@ -1,6 +1,8 @@
 package com.redshape.ui.data.stores;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import com.redshape.ui.data.IStore;
@@ -39,10 +41,17 @@ public class StoresManager implements IStoresManager {
 		
 		return storeInstance;
 	}
+
+	@Override
+	public <T extends IStore<?>> void register( T store ) {
+		this.stores.put( (Class<T>) store.getClass(), store );
+	}
 	
 	@Override
-	public Iterable<IStore<?>> list() {
-		return this.stores.values();
+	public Collection<IStore<?>> list() {
+		Collection<IStore<?>> result = new HashSet<IStore<?>>();
+		result.addAll( this.stores.values() );
+		return result;
 	}
 	
 	

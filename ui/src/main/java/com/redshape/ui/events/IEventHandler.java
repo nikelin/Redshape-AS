@@ -2,6 +2,8 @@ package com.redshape.ui.events;
 
 import com.redshape.ui.events.AppEvent;
 
+import java.io.Serializable;
+
 /**
  * Created by IntelliJ IDEA.
  * User: nikelin
@@ -9,7 +11,7 @@ import com.redshape.ui.events.AppEvent;
  * Time: 21:46
  * To change this template use File | Settings | File Templates.
  */
-public interface IEventHandler {
+public interface IEventHandler extends Serializable {
 
     public void handle( AppEvent event );
 

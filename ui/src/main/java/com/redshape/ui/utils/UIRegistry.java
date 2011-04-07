@@ -2,6 +2,7 @@ package com.redshape.ui.utils;
 
 import javax.swing.*;
 
+import com.redshape.ui.state.IUIStateManager;
 import org.springframework.context.ApplicationContext;
 
 import com.redshape.ui.bindings.render.IViewRenderer;
@@ -75,6 +76,10 @@ public final class UIRegistry {
     public static IViewsManager getViewsManager() {
     	return getContext().getBean( IViewsManager.class );
     }
+
+	public static IUIStateManager getStateManager() {
+		return getContext().getBean( IUIStateManager.class );
+	}
     
     @SuppressWarnings("unchecked")
 	public static <V extends IWindowsManager<?>> V getWindowsManager() {

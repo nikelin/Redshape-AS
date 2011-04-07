@@ -1,9 +1,11 @@
 package com.redshape.ui.widgets;
 
 import java.awt.Container;
+import java.io.Serializable;
+
 import com.redshape.ui.events.IEventDispatcher;
 
-public interface IWidget extends IEventDispatcher  {
+public interface IWidget extends IEventDispatcher, Serializable {
 
 	public String getTitle();
 	

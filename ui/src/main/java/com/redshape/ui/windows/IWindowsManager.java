@@ -72,4 +72,6 @@ public interface IWindowsManager<V> {
 	
 	public boolean isRegistered( V window );
 
+    public Collection<V> list();
+
 }

@@ -115,6 +115,11 @@ public class WindowsManager implements ISwingWindowsManager {
 		
 		return result;
 	}
+
+	@Override
+	public Collection<JFrame> list() {
+		return this.registry.values();
+	}
 	
 	private static class ClosedFilter implements IFilter<JFrame> {
 		@Override
