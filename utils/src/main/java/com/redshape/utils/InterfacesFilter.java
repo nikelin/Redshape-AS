@@ -11,39 +11,39 @@ import java.lang.annotation.Annotation;
 * Time: 1:48:24 PM
 * To change this template use File | Settings | File Templates.
 */
-public class InterfacesFilter implements IFilter<Class<?>> {
+public class InterfacesFilter<T> implements IFilter<Class<T>> {
     @SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger( InterfacesFilter.class );
 
-    private Class<?>[] interfaces;
+    private Class<T>[] interfaces;
     private Class<? extends Annotation>[] annotations;
     private boolean allowNesting;
 
-    @SuppressWarnings("unchecked")
-	public InterfacesFilter( Class<?>[] interfaces ) {
+	@SuppressWarnings("unchecked")
+	public InterfacesFilter( Class<T>[] interfaces ) {
         this( interfaces, new Class[] {} );
     }
 
     @SuppressWarnings("unchecked")
-	public InterfacesFilter( Class<?>[] interfaces, boolean allowNesting ) {
+	public InterfacesFilter( Class<T>[] interfaces, boolean allowNesting ) {
         this( interfaces, new Class[] {}, allowNesting );
     }
 
-    public InterfacesFilter( Class<?>[] interfaces, Class<? extends Annotation>[] annotations ) {
+    public InterfacesFilter( Class<T>[] interfaces, Class<? extends Annotation>[] annotations ) {
         this( interfaces, annotations, true );
     }
 
-    public InterfacesFilter( Class<?>[] interfaces, Class<? extends Annotation>[] annotations, boolean allowNesting ) {
+    public InterfacesFilter( Class<T>[] interfaces, Class<? extends Annotation>[] annotations, boolean allowNesting ) {
         this.interfaces = interfaces;
         this.annotations = annotations;
         this.allowNesting = allowNesting;
     }
 
-    public boolean filter( Class<?> filterable ) {
+    public boolean filter( Class<T> filterable ) {
         return this.filter( filterable, this.allowNesting );
     }
 
-    public boolean filter( Class<?> filterable, boolean allowNesting ) {
+    public boolean filter( Class<T> filterable, boolean allowNesting ) {
         for ( Class<? extends Annotation> annon : this.annotations ) {
             Class<?> parent = filterable;
             boolean found;
@@ -56,7 +56,7 @@ public class InterfacesFilter implements IFilter<Class<?>> {
             }
         }
 
-        for ( Class<?> interfaceClass : this.interfaces ) {
+        for ( Class<T> interfaceClass : this.interfaces ) {
             if ( !interfaceClass.isAssignableFrom( filterable ) ) {
                 return false;
             }

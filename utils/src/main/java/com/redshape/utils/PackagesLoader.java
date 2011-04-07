@@ -10,12 +10,10 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /**
-* Created by IntelliJ IDEA.
-* User: nikelin
-* Date: Feb 22, 2010
-* Time: 12:47:32 PM
-* To change this template use File | Settings | File Templates.
-*/
+ * @author nikelin
+ * 
+ * x
+ */ 
 public class PackagesLoader {
     private static final Logger log = Logger.getLogger( PackagesLoader.class );
     private ResourcesLoader resourcesLoader;
@@ -28,12 +26,13 @@ public class PackagesLoader {
         return this.resourcesLoader;
     }
 
-    public <T> Class<T>[] getClasses( String pkgName ) throws PackageLoaderException {
-        return this.getClasses( pkgName, new InterfacesFilter( new Class[] {} ) );
+    @SuppressWarnings("unchecked")
+	public <T> Class<T>[] getClasses( String pkgName ) throws PackageLoaderException {
+        return this.getClasses( pkgName, new InterfacesFilter<T>( new Class[] {} ) );
     }
 
     @SuppressWarnings("unchecked")
-	public <T> Class<T>[] getClasses( String pkgName, IFilter<?> filter ) throws PackageLoaderException {
+	public <T> Class<T>[] getClasses( String pkgName, IFilter<Class<T>> filter ) throws PackageLoaderException {
         Set<Class<T>> classes = new HashSet<Class<T>>();
         for ( String path : System.getProperty("java.class.path").split(":") ) {
             try {
@@ -49,11 +48,12 @@ public class PackagesLoader {
         return classes.toArray(new Class[classes.size()]);
     }
 
-    public <T> Class<T>[] getClasses( String path, String pkgName ) throws PackageLoaderException {
-        return this.getClasses(path, pkgName, new InterfacesFilter(new Class[]{}));
+    @SuppressWarnings("unchecked")
+	public <T> Class<T>[] getClasses( String path, String pkgName ) throws PackageLoaderException {
+        return this.getClasses(path, pkgName, new InterfacesFilter<T>(new Class[]{}));
     }
 
-    public <T> Class<T>[] getClasses( String path, String pkgName, IFilter filter ) throws PackageLoaderException {
+    public <T> Class<T>[] getClasses( String path, String pkgName, IFilter<Class<T>> filter ) throws PackageLoaderException {
         if ( path.endsWith(".jar") ) {
             return this.getClassesFromJar( path, pkgName, filter );
         } else {
@@ -61,7 +61,8 @@ public class PackagesLoader {
         }
     }
 
-    protected <T> Class<T>[] getClassesFromJar( String path, String pkgName, IFilter filter ) throws PackageLoaderException {
+    @SuppressWarnings("unchecked")
+	protected <T> Class<T>[] getClassesFromJar( String path, String pkgName, IFilter<Class<T>> filter ) throws PackageLoaderException {
         try {
             String folderName = this.convertToFolderName( pkgName );
 
@@ -69,13 +70,12 @@ public class PackagesLoader {
             Enumeration<JarEntry> entries = file.entries();
             List<URL> targetEntries = new ArrayList<URL>() ;
             while( entries.hasMoreElements() ) {
-                JarEntry testing = (JarEntry) entries.nextElement();
+                JarEntry testing = entries.nextElement();
 
                 if ( testing.getName().contains(folderName) &&
-                        !testing.isDirectory() ) {
-                    if ( testing.getName().endsWith(".class") ) {
-                        targetEntries.add( new URL("jar", path + "!/", testing.getName() ) );
-                    }
+                        !testing.isDirectory() 
+                        	&& testing.getName().endsWith(".class") ) {
+                    targetEntries.add( new URL("jar", path + "!/", testing.getName() ) );
                 }
             }
 
@@ -103,7 +103,8 @@ public class PackagesLoader {
         }
     }
 
-    protected <T> Class<T>[] getClassesFromIdle( String path, String pkgName, IFilter filter ) throws PackageLoaderException {
+    @SuppressWarnings("unchecked")
+	protected <T> Class<T>[] getClassesFromIdle( String path, String pkgName, IFilter<Class<T>> filter ) throws PackageLoaderException {
         try {
             List<Class<T>> classes = new ArrayList<Class<T>>();
             String folderName = this.convertToFolderName( pkgName);
@@ -114,7 +115,7 @@ public class PackagesLoader {
             }
 
             if ( folder.getPath().endsWith(".jar") ) {
-                classes.addAll( (List) Arrays.asList( this.getClassesFromJar( path, pkgName, filter ) ) );
+                classes.addAll( Arrays.<Class<T>>asList( this.getClassesFromJar( path, pkgName, filter ) ) );
             } else {
                 classes.addAll( this.<T>getClassesFromIdleFolder( path + File.separator + pkgName.replace(".", "/"), pkgName, filter ) );
             }
@@ -128,7 +129,8 @@ public class PackagesLoader {
         }
     }
 
-    protected <T> Collection<Class<T>> getClassesFromIdleFolder( String folder, String pkgName, IFilter filter )
+    @SuppressWarnings("unchecked")
+	protected <T> Collection<Class<T>> getClassesFromIdleFolder( String folder, String pkgName, IFilter<Class<T>> filter )
                                                                         throws ClassNotFoundException {
         Collection<Class<T>> classes = new HashSet<Class<T>>();
         File folderFile = new File( folder );
@@ -138,11 +140,7 @@ public class PackagesLoader {
             File clsFile = new File( folder + File.separator + clsEntries[i] );
 
             if ( clsFile.isDirectory() ) {
-                try {
-                    classes.addAll( this.<T>getClassesFromIdleFolder( folder + File.separator + clsEntries[i], pkgName + "." + clsEntries[i], filter ) );
-                } finally {
-                    continue;
-                }
+                classes.addAll( this.<T>getClassesFromIdleFolder( folder + File.separator + clsEntries[i], pkgName + "." + clsEntries[i], filter ) );
             }
 
             String className = clsEntries[i].substring( 0, clsEntries[i].indexOf(".") );
