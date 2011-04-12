@@ -16,10 +16,13 @@ import java.util.Collection;
 import java.util.List;
 
 /**
+ * Simple list-based store implementation
+ *
  * @author nikelin
  */
-public class ListStore<V extends IModelData> extends EventDispatcher 
-										implements IStore<V> {
+public class ListStore<V extends IModelData>
+						extends EventDispatcher
+						implements IStore<V> {
 	private static final long serialVersionUID = 1006177585211430914L;
 	
 	private List<V> records = new ArrayList<V>();
@@ -120,6 +123,10 @@ public class ListStore<V extends IModelData> extends EventDispatcher
         	this.loader.load();
         }
     }
+
+	public void setRecords( List<V> records ) {
+		this.records = records;
+	}
 
 	@Override
 	public void setLoader(IDataLoader<V> loader) {

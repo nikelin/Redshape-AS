@@ -71,11 +71,11 @@ public abstract class AbstractModelData extends EventDispatcher
     		return;
     	}
     	
-    	do {
+    	while ( iterator.hasNext() ) {
     		this.processChildModel(name, (IModelData) testObject);
     		
     		testObject = iterator.next();
-    	} while ( iterator.hasNext() );
+    	}
     }
     
     protected void processChildModel( final String name, final IModelData model ) {

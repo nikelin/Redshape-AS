@@ -1,5 +1,6 @@
 package com.redshape.bindings;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -7,14 +8,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import org.apache.commons.collections.ListUtils;
+import org.apache.commons.collections.functors.UniquePredicate;
 import org.apache.log4j.Logger;
 
 import com.redshape.bindings.accessors.AccessException;
@@ -39,7 +36,12 @@ public class BeanInfo implements IBeanInfo {
 	public static String READER_PART = "get";
 
 	private Class<?> beanClazz;
-	private List<AccessibleObject> members;
+
+	private Collection<AccessibleObject> members;
+
+	private Map<AccessibleObject, Map<Class<? extends Annotation>, Annotation>> annotations =
+					new HashMap<AccessibleObject, Map<Class<? extends Annotation>, Annotation>>();
+
 	private static Map<Class<?>, BindableType> TYPE_MAPPINGS = new HashMap<Class<?>, BindableType>();
 
 	public static BindableType getTypeMapping( Class<?> type ) {
@@ -80,7 +82,7 @@ public class BeanInfo implements IBeanInfo {
 		List<IBindable> result = new ArrayList<IBindable>();
 
 		for (AccessibleObject member : this.getMembers()) {
-			Bindable bindable = member.getAnnotation(Bindable.class);
+			Bindable bindable = this.getAnnotation(member, Bindable.class);
 			if (bindable == null) {
 				continue;
 			}
@@ -113,20 +115,20 @@ public class BeanInfo implements IBeanInfo {
 			AccessibleObject member) throws BindingException {
 		switch (object.getMetaType()) {
 		case LIST:
-			ElementType type = member.getAnnotation(ElementType.class);
+			ElementType type = this.getAnnotation(member, ElementType.class);
 			if (type != null) {
 				object.setElementType(type.value());
 				object.setCollectionType( type.type() );
 			}
 			break;
 		case MAP:
-			MapKey key = member.getAnnotation(MapKey.class);
+			MapKey key = this.getAnnotation(member, MapKey.class);
 			if (key != null) {
 				object.setKeyType(key.value());
 				object.setKeyName(key.name());
 			}
 
-			MapValue value = member.getAnnotation(MapValue.class);
+			MapValue value = this.getAnnotation(member, MapValue.class);
 			if (value != null) {
 				object.setValueType(value.value());
 				object.setValueName(value.name());
@@ -210,7 +212,7 @@ public class BeanInfo implements IBeanInfo {
 	// FIXME: Refactor to remove duplicate code
 	protected IPropertyReader findReader(Class<?> type, Bindable bindable,
 			AccessibleObject member) throws BindingException {
-		if (member.getAnnotation(BindableReader.class) != null) {
+		if (this.getAnnotation(member, BindableReader.class) != null) {
 			return Accessors.getReaders().createReader((Member) member);
 		}
 
@@ -218,8 +220,7 @@ public class BeanInfo implements IBeanInfo {
 
 		IPropertyReader reader = null;
 		for (AccessibleObject object : this.getMembers()) {
-			BindableReader annotation = object
-					.getAnnotation(BindableReader.class);
+			BindableReader annotation = this.getAnnotation(object, BindableReader.class);
 			if (annotation == null) {
 				continue;
 			}
@@ -255,7 +256,7 @@ public class BeanInfo implements IBeanInfo {
 	// FIXME: Refactor to remove duplicate code
 	protected IPropertyWriter findWriter(Class<?> type, Bindable bindable,
 			AccessibleObject member) throws BindingException {
-		if (member.getAnnotation(BindableWriter.class) != null) {
+		if (this.getAnnotation(member, BindableWriter.class) != null) {
 			return Accessors.getWriters().createWriter((Member) member);
 		}
 
@@ -263,8 +264,7 @@ public class BeanInfo implements IBeanInfo {
 
 		IPropertyWriter writer = null;
 		for (AccessibleObject object : this.getMembers()) {
-			BindableWriter annotation = object
-					.getAnnotation(BindableWriter.class);
+			BindableWriter annotation = this.getAnnotation(object, BindableWriter.class);
 			if (annotation == null) {
 				continue;
 			}
@@ -368,25 +368,87 @@ public class BeanInfo implements IBeanInfo {
 		throw new NoSuchMethodError("No suitable constructor was founded");
 	}
 
-	protected List<AccessibleObject> getMembers() {
-		if (this.members != null) {
+	protected <T extends Annotation> T getAnnotation( AccessibleObject object, Class<T> annotationClazz ) {
+		if ( !this.annotations.containsKey(object ) ) {
+			return null;
+		}
+
+		return (T) this.annotations.get( object ).get( annotationClazz );
+	}
+
+	protected void registerAnnotation( AccessibleObject object, Annotation annotation ) {
+		if ( !this.annotations.containsKey( annotation ) ) {
+			this.annotations.put( object, new HashMap<Class<? extends Annotation>, Annotation>() );
+		}
+
+		this.annotations.get(object).put( annotation.annotationType(), annotation );
+	}
+
+	protected boolean isRegisteredAnnotation( AccessibleObject object, Annotation annotation ) {
+		return this.annotations.get(object) != null
+				&& this.annotations.get(object).get(annotation.annotationType()) != null;
+	}
+
+	protected void processAnnotations() {
+		Class<?> contextClass = this.beanClazz;
+		do {
+			for ( AccessibleObject superClassObject : extractMembers( contextClass ) ) {
+				for ( Annotation annotation : superClassObject.getDeclaredAnnotations() ) {
+					if ( !this.isRegisteredAnnotation( superClassObject, annotation ) ) {
+						this.registerAnnotation( superClassObject, annotation );
+					}
+				}
+			}
+
+			contextClass = contextClass.getSuperclass();
+		} while ( contextClass != null );
+
+		for ( Class<?> interfaceClass : this.beanClazz.getInterfaces() ) {
+			for ( AccessibleObject interfaceMember : extractMembers(interfaceClass) ) {
+				for ( Annotation annotation : interfaceMember.getDeclaredAnnotations() ) {
+					if ( !this.isRegisteredAnnotation( interfaceMember, annotation ) ) {
+						this.registerAnnotation( interfaceMember, annotation );
+					}
+				}
+			}
+		}
+	}
+
+	protected Collection<AccessibleObject> getMembers() {
+		return this.getMembers( false );
+	}
+
+	protected Collection<AccessibleObject> getMembers( boolean forceRescan ) {
+		if (this.members != null && !forceRescan ) {
 			return this.members;
 		}
 
-		this.members = new ArrayList<AccessibleObject>();
-		this.members.addAll(Arrays.asList(this.beanClazz.getDeclaredMethods()));
-		this.members.addAll(Arrays.asList(this.beanClazz.getDeclaredFields()));
-		this.members.addAll(Arrays.asList(this.beanClazz.getDeclaredConstructors()));
+		this.members = extractMembers( this.beanClazz );
+
+		this.processAnnotations();
 
 		return this.members;
 	}
 
-	public static boolean isWriterMember(Method method) {
-		return method.getName().startsWith("set") || method.getAnnotation( BindableWriter.class ) != null;
+	private static Collection<AccessibleObject> extractMembers( Class<?> clazz ) {
+		List<AccessibleObject> members = new ArrayList<AccessibleObject>();
+		members.addAll(Arrays.asList( clazz.getMethods()) );
+		members.addAll(Arrays.asList( clazz.getFields() ) );
+
+		List<AccessibleObject> declaredMembers = new ArrayList<AccessibleObject>();
+		declaredMembers.addAll( Arrays.asList( clazz.getDeclaredMethods() ) );
+		declaredMembers.addAll( Arrays.asList( clazz.getDeclaredFields() ) );
+
+		return ListUtils.union( members, declaredMembers );
 	}
 
-	public static boolean isReaderMember(Method method) {
-		return method.getName().startsWith("get") || method.getAnnotation( BindableReader.class ) != null;
+	public boolean isWriterMember(Method method) {
+		return method.getName().startsWith("set") || this.getAnnotation(method, BindableWriter.class) != null;
+	}
+
+
+	public boolean isReaderMember(Method method) {
+		return method.getName().startsWith("get") || this.getAnnotation(method, BindableReader.class) != null;
 	}
 
 	public static class Accessors {

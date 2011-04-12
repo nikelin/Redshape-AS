@@ -16,22 +16,64 @@ import java.util.Collection;
  */
 public interface IStore<V extends IModelData> extends IEventDispatcher, Serializable {
 
+	/**
+	 *  Return current store records model type
+	 * @return
+	 */
     public IModelType getType();
 
+	/**
+	 * Return count of records withing given store
+	 * @return
+	 */
     public int count();
 
+	/**
+	 * Add new data record to store
+	 * @param record
+	 */
     public void add( V record );
 
+	/**
+	 * Remove given record from this store
+	 * @param record
+	 * @fires StoreEvents.Remove
+	 */
     public void remove( V record );
-    
+
+	/**
+	 * Remove record from store by its position in list
+	 * @param index
+	 * @files StoreEvents.Remove
+	 */
     public void removeAt( int index );
 
+	/**
+	 * Return record from store by it's position in list
+	 * @param index
+	 * @return
+	 */
     public V getAt( int index );
 
+	/**
+	 * Return store records list
+	 * @return
+	 */
     public Collection<V> getList();
 
+	/**
+	 * Method which delegate load invoke to related data loader
+	 * and provides ability to intercept loading request.
+	 * @throws LoaderException
+	 * @files StoreEvent.Losad
+	 */
     public void load() throws LoaderException;
-    
+
+	/**
+	 * Removes all records from the store
+	 *
+	 * @files StoreEvent.Resmove
+	 */
     public void clear();
     
     public void setLoader( IDataLoader<V> loader );

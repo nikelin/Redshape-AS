@@ -30,7 +30,12 @@ public class ProvidersFactory implements IProvidersFactory {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends IModelData> IStore<T> provide( Class<?> type ) throws InstantiationException {
-		return (IStore<T>) this.getStoresManager().getStore( this.providers.get(type) );
+		Class<? extends IStore<T>> storeClass = (Class<? extends IStore<T>>) this.providers.get(type);
+		if ( storeClass == null ) {
+			return null;
+		}
+
+		return this.getStoresManager().getStore( storeClass );
 	}
 
 	@Override

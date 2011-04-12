@@ -46,15 +46,15 @@ public class ComboBoxAdapter<T extends IModelData> extends JComboBox {
 	public ComboBoxAdapter( IStore<T> store, IFilter<T> filter ) {
 		super();
 		
-		if ( store == null ) {
-			throw new IllegalArgumentException("null");
-		}
-		
+
 		this.filter = filter;
 		this.store = store;
 		
 		this.init();
-		this.bindStore();
+
+		if ( this.store != null ) {
+			this.bindStore();
+		}
 	}
 	
 	protected void init() {

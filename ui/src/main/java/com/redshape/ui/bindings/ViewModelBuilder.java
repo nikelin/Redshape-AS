@@ -8,6 +8,7 @@ import java.util.Map;
 import com.redshape.bindings.BeanInfo;
 import com.redshape.bindings.BindingException;
 import com.redshape.bindings.IBeanInfo;
+import com.redshape.bindings.types.CollectionType;
 import com.redshape.bindings.types.IBindable;
 import com.redshape.ui.UIException;
 import com.redshape.ui.bindings.views.ChoiceModel;
@@ -112,7 +113,12 @@ public class ViewModelBuilder implements IViewModelBuilder {
 	
 	protected IViewModel<?> processCollection( IBindable bindable ) throws UIException {
 		try {
-			switch ( bindable.asCollectionObject().getCollectionType() ) {
+			CollectionType collectionType = bindable.asCollectionObject().getCollectionType();
+			if ( collectionType == null ) {
+				collectionType = CollectionType.CHOICE;
+			}
+
+			switch ( collectionType ) {
 			case CHOICE:
 				return new ChoiceModel(bindable);
 			case LIST:

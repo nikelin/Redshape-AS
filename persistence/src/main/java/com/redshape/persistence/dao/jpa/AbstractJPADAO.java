@@ -183,7 +183,7 @@ public abstract class AbstractJPADAO<T extends IEntity> extends JpaDaoSupport im
     @Override
     public List<T> executeNamedQuery( final String queryName, final Map<String, Object> params, final int limit, final int offset ) throws DAOException {
         IQueryHolder queryHolder = this.getQueryHolder();
-        if ( queryHolder.isQueryExists(queryName) ) {
+        if ( queryHolder != null && queryHolder.isQueryExists(queryName) ) {
             try {
                 return this.executeQuery( queryHolder.findQuery(queryName), params, limit, offset );
             } catch ( QueryBuilderException e ) {
@@ -217,12 +217,13 @@ public abstract class AbstractJPADAO<T extends IEntity> extends JpaDaoSupport im
     	if ( concreteHolder != null ) {
     		return concreteHolder;
     	}
-    	
-        Class<? extends IQueryHolder> value = this.getEntityClass()
-                                                  .getAnnotation(QueryHolder.class)
-                                                  .value();
 
-        
+	    QueryHolder holder = this.getEntityClass().getAnnotation(QueryHolder.class);
+	    if ( holder == null ) {
+		    return null;
+	    }
+
+	    Class<? extends IQueryHolder> value = holder.value();
         try {
             concreteHolder = value.newInstance();
             concreteHolder.init();
