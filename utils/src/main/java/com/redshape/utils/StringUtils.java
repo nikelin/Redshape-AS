@@ -57,11 +57,11 @@ public class StringUtils {
     }
 
     /**
-* Camelize input string
-* @param name Input string
-* @param ucfirst Make first character uppercased
-* @return String
-*/
+	* Camelize input string
+	* @param name Input string
+	* @param ucfirst Make first character uppercased
+	* @return String
+	*/
     public static String toCamelCase( String name, boolean ucfirst ) {
         StringBuilder result = new StringBuilder();
 
@@ -120,14 +120,26 @@ public class StringUtils {
     }
 
     public static String ucfirst( String value ) {
+		if ( value.isEmpty() ) {
+			return value;
+		}
+
     	return value.substring(0, 1).toUpperCase().concat( value.substring(1) );
     }
     
     public static String lcfirst( String value ) {
+		if ( value.isEmpty() ) {
+			return value;
+		}
+
     	return value.substring(0, 1).toLowerCase().concat( value.substring(1) );
     }
 
     public static byte[] stringToIP( String addrString ) {
+		if ( addrString.isEmpty() ) {
+			throw new IllegalArgumentException("Empty address given");
+		}
+
         return IPAddressUtil.textToNumericFormatV4(addrString);
     }
 

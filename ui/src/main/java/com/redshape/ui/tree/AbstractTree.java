@@ -1,10 +1,10 @@
 package com.redshape.ui.tree;
 
-import com.redshape.ui.data.IModelData;
-import com.redshape.ui.data.IStore;
-import com.redshape.ui.data.stores.StoreEvents;
-import com.redshape.ui.events.AppEvent;
-import com.redshape.ui.events.IEventHandler;
+import com.redshape.ui.tree.traverse.ITreeWalker;
+import com.redshape.ui.tree.traverse.ITreeWalkingCollector;
+import com.redshape.ui.tree.traverse.impl.DefaultWalker;
+import com.redshape.ui.tree.traverse.impl.DefaultWalkingCollector;
+import com.redshape.utils.IFilter;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -12,8 +12,8 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Collection;
 import java.util.Enumeration;
-import java.util.Iterator;
 
 /**
  * Abstract tree which provides most commons operations over the nodes.
@@ -23,11 +23,40 @@ import java.util.Iterator;
  * @package com.api.deployer.ui.components
  */
 public abstract class AbstractTree extends JTree {
+	private ITreeWalker walker;
+	private ITreeWalkingCollector collector;
 
 	public AbstractTree() {
 		super( new DefaultMutableTreeNode(), true );
 
+		this.setCollector( new DefaultWalkingCollector() );
+		this.setWalker( new DefaultWalker() );
+
 		this.init();
+	}
+
+	protected void setWalker( ITreeWalker walker ) {
+		this.walker = walker;
+	}
+
+	protected void setCollector( ITreeWalkingCollector collector ) {
+		this.collector = collector;
+	}
+
+	public void walk( IFilter<?> filter ) {
+		this.walk( this.getRoot(), filter );
+	}
+
+	public void walk( DefaultMutableTreeNode context, IFilter<?> filter ) {
+		this.walker.walk( context, filter );
+	}
+
+	public <T> Collection<T> collect( IFilter<T> filter ) {
+		return this.<T>collect( this.getRoot(), filter );
+	}
+
+	public <T> Collection<T> collect( DefaultMutableTreeNode node, IFilter<T> filter ) {
+		return this.collector.<T>collect( node, filter );
 	}
 
 	protected void init() {

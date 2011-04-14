@@ -102,7 +102,7 @@ public class ObjectUI extends JPanel implements Cloneable {
 	}
 	
 	protected JLabel createFieldLabel( IPropertyModel model ) {
-		JLabel fieldLabel = new JLabel( StringUtils.ucfirst( model.getTitle() ) );
+		JLabel fieldLabel = new JLabel( StringUtils.ucfirst( model.getTitle().isEmpty() ? model.getId() : model.getTitle() )  );
 		fieldLabel.setAlignmentX( LEFT_ALIGNMENT );
 		return fieldLabel;
 	}
@@ -174,7 +174,11 @@ public class ObjectUI extends JPanel implements Cloneable {
 			} else if ( Long.class.equals( type ) ) {
 				return Long.valueOf( value );
 			} else if ( Number.class.isAssignableFrom( type ) ) {
-				return Integer.valueOf( value );
+				if ( value.isEmpty() ) {
+					return 0;
+				} else {
+					return Integer.valueOf( value );
+				}
 			}
 		break;
 		}

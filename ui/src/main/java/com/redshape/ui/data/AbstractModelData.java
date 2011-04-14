@@ -42,6 +42,10 @@ public abstract class AbstractModelData extends EventDispatcher
     }
     
     protected void processValue( String name, Object value ) {
+		if ( value == null ) {
+			return;
+		}
+
     	if ( value instanceof IModelData ) {
     		this.processChildModel( name, (IModelData) value);
     	} else if ( value instanceof Collection ) {
