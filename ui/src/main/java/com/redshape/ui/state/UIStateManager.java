@@ -7,6 +7,7 @@ import com.redshape.ui.events.AppEvent;
 import com.redshape.ui.events.EventDispatcher;
 import com.redshape.ui.events.IEventHandler;
 import com.redshape.ui.events.UIEvents;
+import com.redshape.ui.utils.Settings;
 import com.redshape.ui.utils.UIRegistry;
 import com.redshape.ui.windows.IWindowsManager;
 import com.redshape.utils.serializing.ObjectsFlusher;
@@ -64,6 +65,12 @@ public class UIStateManager extends EventDispatcher implements IUIStateManager {
 				@Override
 				public void handle(AppEvent event) {
 					UIStateManager.this.init();
+
+					try {
+						UIStateManager.this.restore();
+					} catch ( StateException e ) {
+						log.error("Initial restoration failed...", e );
+					}
 				}
 			}
         );
@@ -104,6 +111,7 @@ public class UIStateManager extends EventDispatcher implements IUIStateManager {
     protected void init() {
 		this.initialized = true;
 
+		this.enableFeature( UIStateFeature.SettingsBackup );
         this.enableFeature( UIStateFeature.StoragesBackup );
 
 		if ( this.isPeriodicEnabled() ) {
@@ -192,8 +200,8 @@ public class UIStateManager extends EventDispatcher implements IUIStateManager {
     public synchronized void restore(Integer revision) throws StateException {
         try {
             this._applyRestored(
-                this.getLoader().<Map<UIStateFeature, Collection<?>>>loadObject(
-                    new HashMap<UIStateFeature, Collection<?>>(),
+                this.getLoader().<Map<UIStateFeature, Object>>loadObject(
+                    new HashMap<UIStateFeature, Object>(),
                     this.openInputStream(revision)
             )   );
 			this.closeInputStream();
@@ -205,11 +213,18 @@ public class UIStateManager extends EventDispatcher implements IUIStateManager {
         }
     }
 
-    protected void _applyRestored( Map<UIStateFeature, Collection<?>> data ) {
+    protected void _applyRestored( Map<UIStateFeature, Object> data ) {
         for ( UIStateFeature feature : data.keySet() ) {
             switch ( feature ) {
             case SettingsBackup:
-                log.warn("Settings restoration not implemented yet...");
+				final Settings settings = (Settings) data.get( UIStateFeature.SettingsBackup );
+				if ( settings == null ) {
+					continue;
+				}
+
+				UIRegistry.setSettings(settings);
+
+				Dispatcher.get().forwardEvent( UIEvents.Core.Refresh.Settings );
             break;
             case StoragesBackup:
                 final Collection<IStore<?>> stores = (Collection<IStore<?>>) data.get(feature);
@@ -220,6 +235,8 @@ public class UIStateManager extends EventDispatcher implements IUIStateManager {
 				for ( IStore<?> store : stores ) {
 					UIRegistry.getStoresManager().register(store);
 				}
+
+				Dispatcher.get().forwardEvent( UIEvents.Core.Refresh.Stores );
             break;
             }
         }
@@ -283,8 +300,8 @@ public class UIStateManager extends EventDispatcher implements IUIStateManager {
         return this.periodicInterval;
     }
 
-    protected Map<UIStateFeature, Collection<?>> collectItems() {
-        Map<UIStateFeature, Collection<?>> result = new HashMap<UIStateFeature, Collection<?>>();
+    protected Map<UIStateFeature, Object> collectItems() {
+        Map<UIStateFeature, Object> result = new HashMap<UIStateFeature, Object>();
 
         if ( this.isFeatureEnabled( UIStateFeature.StoragesBackup ) ) {
             result.put( UIStateFeature.StoragesBackup, UIRegistry.getStoresManager().list() );
@@ -292,7 +309,7 @@ public class UIStateManager extends EventDispatcher implements IUIStateManager {
 
         if ( this.isFeatureEnabled( UIStateFeature.SettingsBackup ) ) {
             log.warn("Settings backup not implemented yet...");
-            result.put( UIStateFeature.SettingsBackup, new HashSet<Object>() );
+            result.put( UIStateFeature.SettingsBackup, UIRegistry.getSettings() );
         }
 
         return result;

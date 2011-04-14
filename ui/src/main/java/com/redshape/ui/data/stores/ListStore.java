@@ -1,5 +1,6 @@
 package com.redshape.ui.data.stores;
 
+import com.redshape.ui.Dispatcher;
 import com.redshape.ui.events.AppEvent;
 import com.redshape.ui.events.EventDispatcher;
 import com.redshape.ui.events.IEventHandler;
@@ -10,6 +11,7 @@ import com.redshape.ui.data.ModelEvent;
 import com.redshape.ui.data.loaders.IDataLoader;
 import com.redshape.ui.data.loaders.LoaderEvents;
 import com.redshape.ui.data.loaders.LoaderException;
+import com.redshape.ui.events.UIEvents;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,10 +39,24 @@ public class ListStore<V extends IModelData>
         this.loader = loader;
         this.type = type;
 
-        if ( this.loader != null ) {
-        	this.bindLoader(loader);
-        }
+		this.init();
     }
+
+	protected void init() {
+		if ( this.loader != null ) {
+			this.bindLoader(loader);
+		}
+
+		Dispatcher.get().addListener(
+			UIEvents.Core.Refresh.Stores,
+			new IEventHandler() {
+				@Override
+				public void handle(AppEvent event) {
+					ListStore.this.forwardEvent( StoreEvents.Refresh );
+				}
+			}
+		);
+	}
     
     @Override
     public void clear() {
@@ -49,6 +65,13 @@ public class ListStore<V extends IModelData>
     }
 
     protected void bindRecord( final V record ) {
+		record.addListener( ModelEvent.REMOVED, new IEventHandler() {
+			@Override
+			public void handle(AppEvent event) {
+				ListStore.this.remove( record );
+			}
+		});
+
     	record.addListener(ModelEvent.CHANGED, new IEventHandler() {
 			@Override
 			public void handle(AppEvent event) {

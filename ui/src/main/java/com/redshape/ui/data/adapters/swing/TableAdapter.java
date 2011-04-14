@@ -36,17 +36,12 @@ public class TableAdapter<T extends IModelData> extends JTable {
 		return this.store;
 	}
 	
-	protected void bindStore() {		
-		if ( this.initialized ) {
-			return;
-		}
-		
+	protected void bindStore() {
 		this.store.addListener( StoreEvents.Removed, new IEventHandler() {
-			
 			@Override
 			public void handle(AppEvent event) {
 				TableAdapter.this.revalidate();
-				TableAdapter.this.repaint();
+				Dispatcher.get().forwardEvent( UIEvents.Core.Repaint, TableAdapter.this );
 			}
 		});
 		
@@ -54,7 +49,7 @@ public class TableAdapter<T extends IModelData> extends JTable {
 			@Override
 			public void handle(AppEvent event) {
 				TableAdapter.this.revalidate();
-				TableAdapter.this.repaint();
+				Dispatcher.get().forwardEvent(UIEvents.Core.Repaint, TableAdapter.this);
 			}
 		});
 		
@@ -62,6 +57,13 @@ public class TableAdapter<T extends IModelData> extends JTable {
 			@Override
 			public void handle(AppEvent event) {
 				Dispatcher.get().forwardEvent( new AppEvent( UIEvents.Core.Repaint, TableAdapter.this ) );
+			}
+		});
+
+		this.store.addListener( StoreEvents.Refresh, new IEventHandler() {
+			@Override
+			public void handle(AppEvent event) {
+				Dispatcher.get().forwardEvent( UIEvents.Core.Repaint, TableAdapter.this );
 			}
 		});
 		

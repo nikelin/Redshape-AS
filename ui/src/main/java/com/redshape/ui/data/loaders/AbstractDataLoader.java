@@ -1,6 +1,6 @@
 package com.redshape.ui.data.loaders;
 
-import java.util.List;
+import java.util.Collection;
 
 import com.redshape.ui.data.IModelData;
 import com.redshape.ui.events.EventDispatcher;
@@ -21,6 +21,6 @@ public abstract class AbstractDataLoader<T extends IModelData>
 		}
 	}
 	
-	protected abstract List<T> doLoad() throws LoaderException;
+	protected abstract Collection<T> doLoad() throws LoaderException;
 
 }

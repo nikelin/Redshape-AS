@@ -35,11 +35,9 @@ public class TableColumnModelAdapter extends DefaultTableColumnModel {
 		TableColumn column = new TableColumn( index, DEFAULT_WIDTH);
 		column.setHeaderValue( field.getTitle() );
 		column.setCellRenderer( new TableCellRenderer() {
-			
 			@Override
 			public Component getTableCellRendererComponent(JTable table, Object value,
 					boolean isSelected, boolean hasFocus, int row, int column) {
-				// TODO Auto-generated method stub
 				return new JLabel( String.valueOf( value ) );
 			}
 		});

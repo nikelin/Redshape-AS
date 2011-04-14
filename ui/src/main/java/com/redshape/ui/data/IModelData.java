@@ -25,4 +25,6 @@ public interface IModelData extends Serializable, IEventDispatcher {
 	
 	public void set( String name, Object value );
 
+	public void remove();
+
 }

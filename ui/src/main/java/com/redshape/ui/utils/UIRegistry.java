@@ -27,6 +27,19 @@ public final class UIRegistry {
     private static Map<UIConstants.Attribute, Object> values = new HashMap<UIConstants.Attribute, Object>();
     private static JFrame context;
     private static JMenuBar menu;
+	private static Settings settings;
+
+	public static void setSettings( Settings settings ) {
+		UIRegistry.settings = settings;
+	}
+
+	public static Settings getSettings() {
+		if ( UIRegistry.settings == null ) {
+			UIRegistry.settings = new Settings();
+		}
+
+		return UIRegistry.settings;
+	}
 
     @SuppressWarnings("unchecked")
 	public static <V> V set( UIConstants.Attribute id, Object value ) {

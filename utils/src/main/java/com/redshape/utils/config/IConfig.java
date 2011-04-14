@@ -1,45 +1,32 @@
 package com.redshape.utils.config;
 
+import java.io.Serializable;
 
 /**
 * XMLConfig handler
 *
 * @author nikelin
 */
-public interface IConfig {
+public interface IConfig extends Serializable {
 
     /**
-         * Set writable mode for current node
-         * @param value 
-         */
-    public void makeWritable( boolean value );
-
-    public boolean isWritable();
-
-    public void set( String value ) throws ConfigException;
-
-    public void attribute( String name, String value ) throws ConfigException;
-
-    public IConfig createChild( String name ) throws ConfigException;
-
-    /**
-        * Neither node exists or not
-        * @return
-        */
+    * Neither node exists or not
+    * @return
+    */
     public boolean isNull();
 
     /**
-        * Get child context
-        * @param name
-        * @return
-        */
+    * Get child context
+    * @param name
+    * @return
+    */
     public IConfig get( String name ) throws ConfigException;
 
     /**
-        * Get ancestors of current node
-        *
-        * @return T[]
-        */
+    * Get ancestors of current node
+    *
+    * @return T[]
+    */
     public <T extends IConfig> T[] childs();
 
     /**
@@ -49,15 +36,15 @@ public interface IConfig {
     public boolean hasChilds();
 
     /**
-        * Get ancestors values
-        * @return
-        */
+    * Get ancestors values
+    * @return
+    */
     public String[] list();
 
     /**
-        * Get specified ancestors nodes values
-        * @return
-        */
+    * Get specified ancestors nodes values
+    * @return
+    */
     public String[] list( String name );
 
     /**
@@ -67,28 +54,30 @@ public interface IConfig {
     public String name();
 
     /**
-        * Read and return all names of the children
-        *
-        * @return String[]
-        */
+    * Read and return all names of the children
+    *
+    * @return String[]
+    */
     public String[] names();
 
     /**
-        * Get named attribute value
-        * @param name
-        * @return String
-        */
+    * Get named attribute value
+    * @param name
+    * @return String
+    */
     public String attribute( String name );
 
     /**
-        * Get value of current node
-        * @return String
-        */
+    * Get value of current node
+    * @return String
+    */
     public String value();
 
     public IConfig parent() throws ConfigException;
 
     // @todo: Move to serializer
     public String serialize() throws ConfigException;
+    
+	public <V> V getRawElement();
 
 }

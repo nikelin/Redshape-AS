@@ -1,15 +1,16 @@
 package com.redshape.utils.config;
 
+import com.redshape.utils.helpers.XMLHelper;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.redshape.utils.helpers.XMLHelper;
-
 import java.io.*;
 import java.util.Vector;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
 * Created by IntelliJ IDEA.
@@ -18,12 +19,18 @@ import java.util.Vector;
 * Time: 12:47:45 AM
 * To change this template use File | Settings | File Templates.
 */
-public class XMLConfig implements IConfig {
+public class XMLConfig implements IWritableConfig {
     private static final Logger log = Logger.getLogger( XMLConfig.class );
     private XMLHelper xmlHelper;
     private Element node;
     private boolean isWritable;
 
+    protected XMLConfig( String root, XMLHelper helper ) throws ConfigException {
+    	this.xmlHelper = helper;
+    	
+    	this.initEmpty(root);
+    }
+    
     public XMLConfig( XMLHelper helper, String file ) throws ConfigException {
         this.xmlHelper = helper;
 
@@ -35,9 +42,25 @@ public class XMLConfig implements IConfig {
 
         this.init(file);
     }
+    
+    public XMLConfig( XMLHelper helper, InputStream stream ) throws ConfigException {
+    	this.xmlHelper = helper;
+    	
+    	this.init(stream);
+    }
 
     protected XMLConfig( Element element ) {
         this.init(element);
+    }
+    
+    private void initEmpty( String rootNode ) throws ConfigException {
+    	try {
+    		Document doc = this.getXmlHelper().buildEmptyDocument();
+    		this.node = doc.createElement(rootNode);
+    		doc.appendChild(this.node);
+    	} catch ( ParserConfigurationException e ) {
+    		throw new ConfigException("Document building exception", e );
+    	}
     }
 
     /**
@@ -45,6 +68,10 @@ public class XMLConfig implements IConfig {
          * they helps to make surviving of logic in a spring environment of IoC.
          */
     private void init( String data ) throws ConfigException {
+        this.node = this.buildDocument(data).getDocumentElement();
+    }
+    
+    private void init( InputStream data ) throws ConfigException {
         this.node = this.buildDocument(data).getDocumentElement();
     }
 
@@ -65,26 +92,43 @@ public class XMLConfig implements IConfig {
         return this.xmlHelper;
     }
 
-    public boolean isWritable() {
+    /* (non-Javadoc)
+	 * @see com.api.commons.config.IWritableConfig#isWritable()
+	 */
+    @Override
+	public boolean isWritable() {
         return this.isWritable;
     }
 
-    public void makeWritable( boolean value ) {
+    /* (non-Javadoc)
+	 * @see com.api.commons.config.IWritableConfig#makeWritable(boolean)
+	 */
+    @Override
+	public IWritableConfig makeWritable( boolean value ) {
         this.isWritable = value;
+        return this;
     }
 
     public IConfig parent() throws ConfigException {
         return new XMLConfig( (Element) this.node.getParentNode() );
     }
 
-    public void set( String value ) throws ConfigException {
-        assert !this.isNull() && this.isWritable();
-
+    /* (non-Javadoc)
+	 * @see com.api.commons.config.IWritableConfig#set(java.lang.String)
+	 */
+    @Override
+	public IWritableConfig set( String value ) throws ConfigException {
         this.node.setTextContent( value );
         this.node.setNodeValue( value );
+        
+        return this;
     }
 
     public IConfig get( String name ) throws ConfigException {
+    	if ( this.node == null ) {
+    		return new XMLConfig( (Element) null );
+    	}
+    	
         NodeList list = this.node.getElementsByTagName(name);
         if ( list.getLength() == 0 ) {
             return new XMLConfig( (Element) null );
@@ -93,15 +137,14 @@ public class XMLConfig implements IConfig {
         }
     }
 
-    public void attribute( String name, String value ) {
-        assert !this.isNull() && this.isWritable();
-        
+    @Override
+	public IWritableConfig attribute( String name, String value ) {
         this.node.setAttribute(name, value);
+        return this;
     }
 
-    public IConfig createChild( String name ) {
-        assert !this.isNull() && this.isWritable();
-
+    @Override
+	public IWritableConfig createChild( String name ) {
         Element child;
         this.node.appendChild( child = this.node.getOwnerDocument().createElement( name ) );
 
@@ -144,9 +187,10 @@ public class XMLConfig implements IConfig {
         return this.node.getNodeName();
     }
 
-    public <T extends IConfig> T[] childs() {
+    @SuppressWarnings("unchecked")
+	public <T extends IConfig> T[] childs() {
         if ( !this.hasChilds() ) {
-            return (T[]) new XMLConfig[] {};
+            return (T[]) new IWritableConfig[] {};
         }
 
         Vector<T> result = new Vector<T>();
@@ -181,6 +225,14 @@ public class XMLConfig implements IConfig {
         return values.toArray( new String[values.size()] );
     }
 
+    protected Document buildDocument( InputStream stream ) throws ConfigException {
+    	try {
+    		return this.getXmlHelper().buildDocument(stream);
+    	} catch ( Throwable e ) {
+    		throw new ConfigException("Cannot read from stream", e);
+    	}
+    }
+    
     protected Document buildDocument( String file ) throws ConfigException {
         try {
             return this.getXmlHelper().buildDocument(file);
@@ -200,21 +252,37 @@ public class XMLConfig implements IConfig {
         }
     }
 
-    public void remove() throws ConfigException {
+    @Override
+	public IWritableConfig remove() throws ConfigException {
         if ( !this.isWritable() ) {
             throw new ConfigException("Cannot remove node in context of read-only config object");
         }
 
+        IWritableConfig parent = (IWritableConfig) this.parent();
+        
         this.node.getOwnerDocument().removeChild( this.node );
+        
+        return parent;
     }
 
     private String _value( Node node ) {
-        return node.getTextContent();
+        return node == null ? null : node.getTextContent();
     }
 
     @Override
     public String toString() {
         return this.value();
+    }
+    
+    @Override
+    public IWritableConfig append( IConfig config ) {
+    	if ( this.getRawElement() == null ) { 
+    		return null; 
+		}
+    	
+    	Node node = this.<Element>getRawElement().getOwnerDocument().importNode(config.<Node>getRawElement(), true);
+    	
+    	return new XMLConfig( (Element) this.<Element>getRawElement().appendChild(node) ); 
     }
 
     @Override
@@ -227,15 +295,27 @@ public class XMLConfig implements IConfig {
         }
     }
 
+    @SuppressWarnings("unchecked")
+	public <V> V getRawElement() {
+    	return (V) this.node;
+    }
+    
     public Document toDomDocument() {
         assert !this.isNull();
         
         return this.node.getOwnerDocument();
     }
 
+    public static XMLConfig createEmpty( String rootNode ) throws ConfigException {
+    	return new XMLConfig( rootNode, new XMLHelper() );
+    }
+    
     public static void writeConfig( File file, XMLConfig config ) throws IOException, ConfigException {
         BufferedWriter writer = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(file) ) );
-        writer.write( config.serialize() );
+       
+        String result = config.serialize();
+        
+        writer.write( result );
         writer.close();
     }
 }

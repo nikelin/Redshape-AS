@@ -17,14 +17,14 @@ import com.redshape.ui.events.IEventHandler;
  * Time: 23:53
  * To change this template use File | Settings | File Templates.
  */
-public abstract class AbstractModelData extends EventDispatcher 
+public abstract class AbstractModelData extends EventDispatcher
 										implements IModelData {
 	private static final long serialVersionUID = -843642018276791545L;
 	
 	private Map<String, Object> values = new HashMap<String, Object>();
     private boolean isDirty;
     private Object relatedObject;
-    
+
     public void setRelatedObject( Object relatedObject ) {
     	this.relatedObject = relatedObject;
     }
@@ -104,6 +104,11 @@ public abstract class AbstractModelData extends EventDispatcher
     public boolean isDirty() {
     	return this.isDirty;
     }
+
+	@Override
+	public void remove() {
+		this.forwardEvent( ModelEvent.REMOVED );
+	}
     
     @SuppressWarnings("unchecked")
     @Override

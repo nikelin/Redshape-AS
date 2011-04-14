@@ -8,11 +8,13 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
+import com.redshape.ui.Dispatcher;
 import com.redshape.ui.data.IModelData;
 import com.redshape.ui.data.IStore;
 import com.redshape.ui.data.stores.StoreEvents;
 import com.redshape.ui.events.AppEvent;
 import com.redshape.ui.events.IEventHandler;
+import com.redshape.ui.events.UIEvents;
 import com.redshape.utils.IFilter;
 
 /**
@@ -86,6 +88,14 @@ public class ComboBoxAdapter<T extends IModelData> extends JComboBox {
 			@Override
 			public void handle(AppEvent event) {
 				ComboBoxAdapter.this.addItem( event.<T>getArg(0) );
+			}
+		});
+
+		this.store.addListener( StoreEvents.Refresh, new IEventHandler() {
+			@Override
+			public void handle(AppEvent event) {
+				ComboBoxAdapter.this.revalidate();
+				Dispatcher.get().forwardEvent(UIEvents.Core.Repaint, ComboBoxAdapter.this );
 			}
 		});
 		

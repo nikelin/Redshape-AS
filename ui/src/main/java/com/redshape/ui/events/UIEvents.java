@@ -1,11 +1,7 @@
 package com.redshape.ui.events;
 
 /**
- * Created by IntelliJ IDEA.
- * User: nikelin
- * Date: 03.01.11
- * Time: 23:00
- * To change this template use File | Settings | File Templates.
+ * @author nikelin
  */
 public class UIEvents extends EventType {
 
@@ -17,6 +13,16 @@ public class UIEvents extends EventType {
         protected Core( String code ) {
             super(code);
         }
+
+		public static class Refresh extends Core {
+
+			protected Refresh( String code ) {
+				super(code);
+			}
+
+			public static final Refresh Settings = new Refresh("Core.Refresh.Settings");
+			public static final Refresh Stores = new Refresh("Core.Refresh.Stores");
+		}
 
         public static Core Exit = new Core("Core.Exit");
         public static Core Error = new Core("Core.Error");

@@ -13,6 +13,7 @@ import javax.swing.tree.TreePath;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Enumeration;
+import java.util.Iterator;
 
 /**
  * Abstract tree which provides most commons operations over the nodes.
@@ -59,6 +60,12 @@ public abstract class AbstractTree extends JTree {
 
 	protected DefaultMutableTreeNode createNode( Object object ) {
 		return new DefaultMutableTreeNode(object);
+	}
+
+	public void removeNodes() {
+		for ( Enumeration<DefaultMutableTreeNode> iterator = this.getRoot().children(); iterator.hasMoreElements(); ) {
+			this.removeNode( iterator.nextElement() );
+		}
 	}
 
 	protected void insertNode( DefaultMutableTreeNode node ) {

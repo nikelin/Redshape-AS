@@ -1,0 +1,9 @@
+(:module com.api)
+
+(:define loop ( counter action limit )
+    (begin
+        (if
+            (not (eq counter limit) )
+            (begin (action) (loop (+ 1 counter) action limit) )
+            ()
+        ) ) )

@@ -1,10 +1,13 @@
-package com.redshape.ui.tree;
+package com.redshape.ui.data.adapters.swing;
 
 import com.redshape.ui.data.IModelData;
 import com.redshape.ui.data.IStore;
 import com.redshape.ui.data.stores.StoreEvents;
 import com.redshape.ui.events.AppEvent;
 import com.redshape.ui.events.IEventHandler;
+import com.redshape.ui.tree.AbstractTree;
+
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  * Adapter to binds tree withing specified store
@@ -44,33 +47,44 @@ public abstract class AbstractDataTree<V extends IModelData, T extends IStore<V>
 
 	protected void bindStore() {
 		this.getStore().addListener(
-				StoreEvents.Changed,
-				new IEventHandler() {
-					@Override
-					public void handle(AppEvent event) {
-						AbstractDataTree.this.onRecordChanged(event);
-					}
+			StoreEvents.Refresh,
+			new IEventHandler() {
+				@Override
+				public void handle(AppEvent event) {
+					AbstractDataTree.this.removeNodes();
+					AbstractDataTree.this.initNodes();
 				}
+			}
 		);
 
 		this.getStore().addListener(
-				StoreEvents.Removed,
-				new IEventHandler() {
-					@Override
-					public void handle(AppEvent event) {
-						AbstractDataTree.this.onRecordRemove(event);
-					}
+			StoreEvents.Changed,
+			new IEventHandler() {
+				@Override
+				public void handle(AppEvent event) {
+					AbstractDataTree.this.onRecordChanged(event);
 				}
+			}
 		);
 
 		this.getStore().addListener(
-				StoreEvents.Removed,
-				new IEventHandler() {
-					@Override
-					public void handle(AppEvent event) {
-						AbstractDataTree.this.onRecordAdd(event);
-					}
+			StoreEvents.Removed,
+			new IEventHandler() {
+				@Override
+				public void handle(AppEvent event) {
+					AbstractDataTree.this.onRecordRemove(event);
 				}
+			}
+		);
+
+		this.getStore().addListener(
+			StoreEvents.Added,
+			new IEventHandler() {
+				@Override
+				public void handle(AppEvent event) {
+					AbstractDataTree.this.onRecordAdd(event);
+				}
+			}
 		);
 	}
 

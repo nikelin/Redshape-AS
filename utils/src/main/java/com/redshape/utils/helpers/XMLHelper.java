@@ -1,11 +1,10 @@
 package com.redshape.utils.helpers;
 
+import com.redshape.utils.ResourcesLoader;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
-
-import com.redshape.utils.ResourcesLoader;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -19,12 +18,10 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 
 /**
-* Created by IntelliJ IDEA.
-* User: nikelin
-* Date: Feb 4, 2010
-* Time: 5:57:37 PM
-* To change this template use File | Settings | File Templates.
-*/
+ * 
+ * @author nikelin
+ *
+ */
 public final class XMLHelper {
     private static final Logger log = Logger.getLogger( XMLHelper.class );
 
@@ -116,6 +113,10 @@ public final class XMLHelper {
     public Document buildDocument( File file ) throws IOException, SAXException, ParserConfigurationException {
         return _buildDocument( domBuilder, file );
     }
+    
+    public Document buildEmptyDocument() throws ParserConfigurationException {
+    	return factory.newDocumentBuilder().newDocument();
+    }
 
     public String parseToXml( Document document ) throws TransformerException {
         StreamResult result = new StreamResult(new StringWriter());
@@ -133,7 +134,8 @@ public final class XMLHelper {
         return builder;
     }
 
-    protected Document _buildDocument( DocumentBuilder builder, Object source ) throws IOException, SAXException, ParserConfigurationException {
+    @SuppressWarnings("deprecation")
+	protected Document _buildDocument( DocumentBuilder builder, Object source ) throws IOException, SAXException, ParserConfigurationException {
         Document doc = null;
         if ( File.class.isAssignableFrom( source.getClass() ) ) {
             doc = builder.parse( (File) source );

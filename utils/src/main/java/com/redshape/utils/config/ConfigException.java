@@ -10,11 +10,15 @@ package com.redshape.utils.config;
 public class ConfigException extends Exception {
 
     public ConfigException() {
-        super();
+        this(null);
     }
 
     public ConfigException( String message ) {
-        super(message);
+        this(message, null);
     }
+
+	public ConfigException( String message, Throwable e ) {
+		super(message, e);
+	}
 
 }

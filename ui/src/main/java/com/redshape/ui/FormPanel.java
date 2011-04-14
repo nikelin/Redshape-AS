@@ -194,8 +194,9 @@ public class FormPanel extends JPanel {
 			});
         }
         
-        public void setValidator( IValidator<T> validator ) {
+        public FormField<T> setValidator( IValidator<T> validator ) {
         	this.validator = validator;
+			return this;
         }
         
         public boolean isDataValid() {
@@ -209,7 +210,7 @@ public class FormPanel extends JPanel {
         	return false;
         }
         
-        public void setValue( Object value ) {
+        public FormField<T> setValue( Object value ) {
         	if ( this.getComponent() instanceof JTextComponent ) {
         		( (JTextComponent) this.getComponent() ).setText( String.valueOf( value ) );
         	} else if ( this.getComponent() instanceof JCheckBox ) {
@@ -219,6 +220,8 @@ public class FormPanel extends JPanel {
         	}
         	
         	this.getComponent().revalidate();
+
+			return this;
         }
         
         @SuppressWarnings("unchecked")
@@ -238,12 +241,14 @@ public class FormPanel extends JPanel {
             return (T) object;
         }
         
-        public void markInvalid() {
+        public FormField<T> markInvalid() {
         	this.getComponent().setBackground( new Color( 255, 0, 0 ) );
+			return this;
         }
         
-        public void markValid() {
+        public FormField<T> markValid() {
         	this.getComponent().setBackground( new Color( 255, 255, 255 ) );
+			return this;
         }
 
         public JLabel getLabel() {

@@ -27,6 +27,10 @@ public class TableModelAdapter<T extends IModelData> extends EventDispatcher
     private Collection<TableModelListener> listeners = new HashSet<TableModelListener>();
     
     public TableModelAdapter( IStore<T> store ) {
+		if ( store == null ) {
+			throw new IllegalArgumentException("null");
+		}
+
         this.store = store;
     }
 
