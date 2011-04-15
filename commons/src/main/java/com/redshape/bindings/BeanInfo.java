@@ -369,7 +369,7 @@ public class BeanInfo implements IBeanInfo {
 	}
 
 	protected <T extends Annotation> T getAnnotation( AccessibleObject object, Class<T> annotationClazz ) {
-		if ( !this.annotations.containsKey(object ) ) {
+		if ( !this.annotations.containsKey(object) ) {
 			return null;
 		}
 
@@ -377,7 +377,7 @@ public class BeanInfo implements IBeanInfo {
 	}
 
 	protected void registerAnnotation( AccessibleObject object, Annotation annotation ) {
-		if ( !this.annotations.containsKey( annotation ) ) {
+		if ( !this.annotations.containsKey( object ) ) {
 			this.annotations.put( object, new HashMap<Class<? extends Annotation>, Annotation>() );
 		}
 
