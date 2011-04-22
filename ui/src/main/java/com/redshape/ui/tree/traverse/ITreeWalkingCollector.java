@@ -15,6 +15,6 @@ import java.util.Collection;
  */
 public interface ITreeWalkingCollector {
 
-	public <T> Collection<T> collect( DefaultMutableTreeNode node, IFilter<T> filter );
+	public <T> Collection<T> collect( DefaultMutableTreeNode node, IFilter<DefaultMutableTreeNode> filter );
 
 }

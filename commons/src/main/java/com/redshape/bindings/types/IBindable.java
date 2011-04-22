@@ -1,6 +1,8 @@
 package com.redshape.bindings.types;
 
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.util.Collection;
 
 import com.redshape.bindings.BindingException;
 import com.redshape.bindings.accessors.AccessException;
@@ -32,5 +34,7 @@ public interface IBindable extends Serializable {
 	public IBindableMap asMapObject() throws BindingException;
 	
 	public IBindableCollection asCollectionObject() throws BindingException;
+
+	public Collection<Annotation> getAnnotations();
 	
 }

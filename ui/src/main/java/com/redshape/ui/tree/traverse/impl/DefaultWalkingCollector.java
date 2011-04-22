@@ -19,19 +19,18 @@ import java.util.HashSet;
 public class DefaultWalkingCollector implements ITreeWalkingCollector {
 
 	@Override
-	public <T> Collection<T> collect( DefaultMutableTreeNode node, IFilter<T> filter ) {
+	public <T> Collection<T> collect( DefaultMutableTreeNode node, IFilter<DefaultMutableTreeNode> filter ) {
 		Collection<T> result = new HashSet<T>();
 		for ( Enumeration<DefaultMutableTreeNode> iterator = node.children();
 			  iterator.hasMoreElements(); ) {
 			DefaultMutableTreeNode childNode = iterator.nextElement();
 
-			T object = (T) childNode.getUserObject();
-			if ( filter.filter( object ) ) {
-				result.add( object );
+			if ( filter.filter( childNode ) ) {
+				result.add( (T) childNode.getUserObject() );
 			}
 
 			if ( childNode.getChildCount() != 0 ) {
-				this.collect( childNode, filter );
+				result.addAll( this.<T>collect( childNode, filter ) );
 			}
 		}
 

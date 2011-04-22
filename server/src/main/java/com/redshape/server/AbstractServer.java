@@ -153,7 +153,7 @@ public abstract class AbstractServer<T, V> implements IServer<T, V> {
     public ApplicationResult checkPolicy( Class<T> protocolContext, PolicyType type, V data ) {
         ApplicationResult result = new ApplicationResult();
 
-        log.info("Initiation validation procedure for object " + (data != null ? data.getClass().getCanonicalName() : "<null>") + " in context of " + type.name() );
+        log.info("Initiation annotations procedure for object " + (data != null ? data.getClass().getCanonicalName() : "<null>") + " in context of " + type.name() );
 
         if ( this.getPolicies( protocolContext, type) == null || this.getPolicies(protocolContext, type).isEmpty() ) {
             log.info("There is no policies applied to " + this.getClass().getCanonicalName() + " server.");

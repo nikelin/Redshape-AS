@@ -25,6 +25,7 @@ public abstract class AbstractModelData extends EventDispatcher
     private boolean isDirty;
     private Object relatedObject;
 
+	@Override
     public void setRelatedObject( Object relatedObject ) {
     	this.relatedObject = relatedObject;
     }

@@ -2,6 +2,8 @@ package com.redshape.ui.utils;
 
 import javax.swing.*;
 
+import com.redshape.ui.notifications.INotificationsManager;
+import com.redshape.ui.notifications.NotificationsManager;
 import com.redshape.ui.state.IUIStateManager;
 import org.springframework.context.ApplicationContext;
 
@@ -28,6 +30,7 @@ public final class UIRegistry {
     private static JFrame context;
     private static JMenuBar menu;
 	private static Settings settings;
+	private static INotificationsManager notificationsManager;
 
 	public static void setSettings( Settings settings ) {
 		UIRegistry.settings = settings;
@@ -89,6 +92,19 @@ public final class UIRegistry {
     public static IViewsManager getViewsManager() {
     	return getContext().getBean( IViewsManager.class );
     }
+
+	public static INotificationsManager getNotificationsManager() {
+		if ( notificationsManager != null ) {
+			return notificationsManager;
+		}
+
+		notificationsManager = getContext().getBean( INotificationsManager.class );;
+		if ( notificationsManager == null ) {
+			notificationsManager = new NotificationsManager();
+		}
+
+		return notificationsManager;
+	}
 
 	public static IUIStateManager getStateManager() {
 		return getContext().getBean( IUIStateManager.class );

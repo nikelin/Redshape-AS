@@ -55,7 +55,7 @@ public class ViewRenderer implements ISwingRenderer {
 		for ( DefferedItem item : this.deffered ) {
 			IDefferedModel model = item.getModel();
 			ObjectUI nestedUI = this.process( 
-				(JComponent) item.getParent(), 
+				item.getParent(),
 				this.getModelsBuilder().createUI( model.getDescriptor().getType(), model.getId(), model.getTitle(), false ),
 				false
 			);

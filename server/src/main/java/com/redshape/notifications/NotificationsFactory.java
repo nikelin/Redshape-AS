@@ -41,7 +41,7 @@ public class NotificationsFactory implements INotificationsFactory {
     public void registerNotification( Class<? extends INotification> notification ) throws InstantiationException {
         Notification notificationAnnotation = notification.getClass().getAnnotation( Notification.class );
         if ( notificationAnnotation == null ) {
-            throw new InstantiationException("Transport does not provides ID annotation.");
+            throw new InstantiationException("Transport does not provides ID annotations.");
         }
 
         this.registerNotification( notification, notificationAnnotation.name() );

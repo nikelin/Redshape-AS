@@ -10,8 +10,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
+import com.redshape.validators.BeansValidator;
+import com.redshape.validators.IValidator;
+import com.redshape.validators.result.IResultsList;
 import org.apache.commons.collections.ListUtils;
-import org.apache.commons.collections.functors.UniquePredicate;
 import org.apache.log4j.Logger;
 
 import com.redshape.bindings.accessors.AccessException;
@@ -36,6 +38,7 @@ public class BeanInfo implements IBeanInfo {
 	public static String READER_PART = "get";
 
 	private Class<?> beanClazz;
+	private IValidator<Object, IResultsList> beanValidator;
 
 	private Collection<AccessibleObject> members;
 
@@ -69,7 +72,22 @@ public class BeanInfo implements IBeanInfo {
 			throw new IllegalArgumentException("null");
 		}
 
+		this.beanValidator = new BeansValidator( this );
 		this.beanClazz = beanClazz;
+	}
+
+	protected IValidator<Object, IResultsList> getValidator() {
+		return this.beanValidator;
+	}
+
+	@Override
+	public boolean isValid(Object instance) throws BindingException {
+		return this.beanValidator.isValid(instance);
+	}
+
+	@Override
+	public IResultsList validate(Object instance) throws BindingException {
+		return this.beanValidator.validate( instance );
 	}
 
 	@Override
@@ -97,9 +115,12 @@ public class BeanInfo implements IBeanInfo {
 			throws BindingException {
 		Class<?> type = this.getType(bindable, (AccessibleObject) member);
 
-		BindableObject result = new BindableObject(this.findReader(type,
-				bindable, (AccessibleObject) member), this.findWriter(type,
-				bindable, (AccessibleObject) member));
+		IPropertyReader reader = this.findReader(type, bindable, (AccessibleObject) member);
+		IPropertyWriter writer = this.findWriter(type, bindable, (AccessibleObject) member);
+
+		BindableObject result = new BindableObject(reader, writer);
+
+		result.setAnnotations( this.getAnnotations( (AccessibleObject) member, reader, writer ) );
 		result.setId(this.getBindableId(bindable, member));
 		result.setName(bindable.name());
 		result.setType(type);
@@ -107,6 +128,25 @@ public class BeanInfo implements IBeanInfo {
 				(AccessibleObject) member));
 
 		this.postProcessObject(result, (AccessibleObject) member);
+
+		return result;
+	}
+
+	protected Collection<Annotation> getAnnotations( AccessibleObject bean, IPropertyReader reader,
+													 IPropertyWriter writer ) {
+		Collection<Annotation> result = new HashSet<Annotation>();
+
+		if ( this.annotations.get(bean) != null ) {
+			result.addAll( this.annotations.get( bean ).values() );
+		}
+
+		if ( this.annotations.get( reader ) != null ) {
+			result.addAll( this.annotations.get( reader ).values() );
+		}
+
+		if ( this.annotations.get( writer ) != null ) {
+			result.addAll( this.annotations.get( writer ).values() );
+		}
 
 		return result;
 	}
@@ -151,7 +191,7 @@ public class BeanInfo implements IBeanInfo {
 				throw new BindingException("Unconventional accessor name");
 			}
 		} else {
-			throw new BindingException("Invalid binding annotation place");
+			throw new BindingException("Invalid binding annotations place");
 		}
 
 		return StringUtils.lcfirst(result);
@@ -186,7 +226,7 @@ public class BeanInfo implements IBeanInfo {
 				throw new BindingException("Unconventional accessor name for : " + ( (Member) member).getName() );
 			}
 		} else {
-			throw new BindingException("Invalid binding annotation place");
+			throw new BindingException("Invalid binding annotations place");
 		}
 	}
 
@@ -570,6 +610,11 @@ public class BeanInfo implements IBeanInfo {
 				}
 
 				@Override
+				public AccessibleObject getObject() {
+					return this.field;
+				}
+
+				@Override
 				public boolean isConsistent( Class<?> type ) {
 					return super.isConsistent( this.field.getType(), type);
 				}
@@ -599,6 +644,11 @@ public class BeanInfo implements IBeanInfo {
 
 				public MethodWriter(Method method) {
 					this.method = method;
+				}
+
+				@Override
+				public AccessibleObject getObject() {
+					return this.method;
 				}
 				
 				@Override
@@ -658,6 +708,11 @@ public class BeanInfo implements IBeanInfo {
 				}
 
 				@Override
+				public AccessibleObject getObject() {
+					return this.field;
+				}
+
+				@Override
 				public boolean isConsistent(Class<?> type) {
 					return type.isAssignableFrom(this.field.getType());
 				}
@@ -680,6 +735,11 @@ public class BeanInfo implements IBeanInfo {
 
 				public MethodReader(Method method) {
 					this.method = method;
+				}
+
+				@Override
+				public AccessibleObject getObject() {
+					return this.method;
 				}
 
 				@Override

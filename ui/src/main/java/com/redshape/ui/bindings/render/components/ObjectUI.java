@@ -7,15 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.Border;
 
 import org.apache.log4j.Logger;
@@ -58,7 +50,7 @@ public class ObjectUI extends JPanel implements Cloneable {
 	protected void buildUI() {
 		JPanel panel = new JPanel();
 		panel.setLayout( new BoxLayout( panel, BoxLayout.Y_AXIS ) );
-		panel.add( this.contentPane = this.createContentPane() );
+		panel.add( new JScrollPane( this.contentPane = this.createContentPane() ) );
 		panel.add( this.buttonsPane = this.createButtonsPane() );
 		this.add( panel );
 	}

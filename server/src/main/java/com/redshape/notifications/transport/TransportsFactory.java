@@ -47,7 +47,7 @@ public class TransportsFactory implements ITransportsFactory {
     public void registerTransport( ITransport transport ) throws TransportException {
         Transporter transporter = transport.getClass().getAnnotation( Transporter.class );
         if ( transporter == null ) {
-            throw new TransportException("Transport does not provides ID annotation.");
+            throw new TransportException("Transport does not provides ID annotations.");
         }
 
         this.registerTransport( transport, transporter.name() );

@@ -87,12 +87,10 @@ public abstract class AbstractApplication {
             @Override
             public void handle(AppEvent event) {
             	if ( event.getArg(0) != null && ( event.getArg(0) instanceof JComponent ) ) {
-            		log.info("Partial repainting for component: " + event.getArg(0) );
             		JComponent component = event.getArg(0);
             		component.revalidate();
             		component.repaint();
             	} else if ( event.getArg(0) != null && ( event.getArg(0) instanceof UIConstants.Attribute ) ) {
-            		log.info("Partial repainting for attribute: " + event.getArg(0) );
             		Object registryObject = UIRegistry.get( event.<UIConstants.Attribute>getArg(0) );
             		// TODO: java.awt.Component needs to be repainted to...
             		if ( registryObject instanceof JComponent ) {
@@ -101,7 +99,6 @@ public abstract class AbstractApplication {
             			component.repaint();
             		}
             	} else {
-            		log.info("Full repaint...");
                 	for ( UIConstants.Area area : UIConstants.Area.values() ) {
                 		JComponent component = UIRegistry.get( area );
                 		if ( component == null ) {
@@ -151,19 +148,13 @@ public abstract class AbstractApplication {
 							JOptionPane.ERROR_MESSAGE );
 					
 					if ( JOptionPane.YES_OPTION == option ) {
-						JOptionPane.showMessageDialog( 
-							AbstractApplication.this.context, 
-							AbstractApplication.this.stackTraceAsString( exception ) );
+						UIRegistry.getNotificationsManager().error(
+								AbstractApplication.this.stackTraceAsString( exception ) );
 					} else if ( JOptionPane.CANCEL_OPTION == option) {
 						Dispatcher.get().forwardEvent( UIEvents.Core.Exit );
 					}
 				} else if ( errorDescription instanceof String ){
-					JOptionPane.showMessageDialog( 
-						AbstractApplication.this.context,
-						String.valueOf( event.getArg(0) ),
-						"Error!",
-						JOptionPane.ERROR_MESSAGE
-					);
+					UIRegistry.getNotificationsManager().error( String.valueOf( event.getArg(0) ) );
 				} else {
 					JOptionPane.showMessageDialog(
 						AbstractApplication.this.context,

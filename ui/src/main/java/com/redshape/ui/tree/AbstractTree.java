@@ -51,11 +51,11 @@ public abstract class AbstractTree extends JTree {
 		this.walker.walk( context, filter );
 	}
 
-	public <T> Collection<T> collect( IFilter<T> filter ) {
+	public <T> Collection<T> collect( IFilter<DefaultMutableTreeNode> filter ) {
 		return this.<T>collect( this.getRoot(), filter );
 	}
 
-	public <T> Collection<T> collect( DefaultMutableTreeNode node, IFilter<T> filter ) {
+	public <T> Collection<T> collect( DefaultMutableTreeNode node, IFilter<DefaultMutableTreeNode> filter ) {
 		return this.collector.<T>collect( node, filter );
 	}
 
@@ -112,6 +112,13 @@ public abstract class AbstractTree extends JTree {
 			if ( node.getUserObject().equals( value ) ) {
 				return node;
 			}
+
+			if ( node.getChildCount() != 0 ) {
+				node = this.findNode( node, value );
+				if ( node != null ) {
+					return node;
+				}
+			}
 		}
 
 		return null;
@@ -127,14 +134,11 @@ public abstract class AbstractTree extends JTree {
 	}
 
 	public void removeNode( DefaultMutableTreeNode node ) {
-		TreePath path = this.getSelectionModel().getSelectionPath();
-		if ( path.getPathCount() == 0 ) {
-			return;
-		}
+		this.removeNode( this.getRoot(), node );
+	}
 
-		this.getRoot().remove(
-				((DefaultMutableTreeNode) path.getLastPathComponent() ) );
-
+	public void removeNode( DefaultMutableTreeNode parent, DefaultMutableTreeNode node ) {
+		parent.remove( node );
 	}
 
 	public final static class ContextHandler extends MouseAdapter {

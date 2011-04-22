@@ -3,7 +3,7 @@ package com.redshape.ui;
 import com.redshape.ui.data.IModelData;
 import com.redshape.ui.data.IModelField;
 import com.redshape.ui.data.IModelType;
-import com.redshape.ui.validators.IValidator;
+import com.redshape.validators.IValidator;
 
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
@@ -138,19 +138,36 @@ public class FormPanel extends JPanel {
     	
     	for ( FormField<?> field : this.fields.values() ) {
     		result.add( (FormField<T>) field );
-    	}    	this.setLayout( new GridLayout( 0, 1 ) );
+    	}
 
-    	
+		this.setLayout( new GridLayout( 0, 1 ) );
+
     	return result;
     }
-    
+
+	public void removeFields() {
+		for ( int i = 0; i < this.fields.size(); i++ ) {
+			this.removeField( this.fields.get(i) );
+		}
+	}
+
+	public void removeField( String id ) {
+		this.removeField( this.fields.get(id) );
+	}
+
+	public void removeField( FormField<?> field ) {
+		this.centerPane.remove( field.getLabel() );
+		this.centerPane.remove( field.getComponent() );
+		this.fields.remove( field.getId() );
+	}
+
     @SuppressWarnings("unchecked")
 	public <T> FormField<T> getField( Object id ) {
         return (FormField<T>) this.fields.get(id);
     }
 
-    protected <T> FormField<T> createField( String label, JComponent field ) {
-        return new FormField<T>(label, field);
+    protected <T> FormField<T> createField( Object id, String label, JComponent field ) {
+        return new FormField<T>(id, label, field);
     }
 
     public void addButton( JButton button ) {
@@ -163,7 +180,7 @@ public class FormPanel extends JPanel {
     }
     
     public <T> FormField<T> addField( Object id, String label, JComponent component ) {
-        FormField<T> field = this.<T>createField(label, component );
+        FormField<T> field = this.<T>createField( id, label, component );
         this.fields.put( id, field );
         this.centerPane.add( field.getLabel() );
         this.centerPane.add( field.getComponent() );
@@ -176,15 +193,21 @@ public class FormPanel extends JPanel {
 		
 		private JLabel labelComponent;
         private JComponent field;
-        private IValidator<T> validator;
+        private IValidator<T, ?> validator;
+		private Object id;
 
-        public FormField( String label, JComponent field ) {
+        public FormField( Object id, String label, JComponent field ) {
+			this.id = id;
             this.labelComponent = new JLabel( label );
             this.field = field;
             
             this.init();
         }
-        
+
+		public Object getId() {
+			return this.id;
+		}
+
         protected void init() {
         	this.field.addKeyListener( new KeyAdapter() {
 				@Override
@@ -194,7 +217,7 @@ public class FormPanel extends JPanel {
 			});
         }
         
-        public FormField<T> setValidator( IValidator<T> validator ) {
+        public FormField<T> setValidator( IValidator<T, ?> validator ) {
         	this.validator = validator;
 			return this;
         }

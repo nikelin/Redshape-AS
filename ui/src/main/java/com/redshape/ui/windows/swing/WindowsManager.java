@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import com.redshape.ui.UnhandledUIException;
 import com.redshape.utils.IFilter;
 
+// rework
 public class WindowsManager implements ISwingWindowsManager {
 	private Map<Class<? extends JFrame>, JFrame> registry = new HashMap<Class<? extends JFrame>, JFrame>();
 	private static final ClosedFilter closedFilter = new ClosedFilter();

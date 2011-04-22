@@ -88,6 +88,13 @@ public abstract class AbstractDataTree<V extends IModelData, T extends IStore<V>
 		);
 	}
 
+	public V getSelectedRecord() {
+		return (V) ( (DefaultMutableTreeNode) this.getSelectionModel()
+												  .getSelectionPath()
+												  .getLastPathComponent() )
+						.getUserObject();
+	}
+
 	abstract public void addRecord( V record );
 
 	abstract public void removeRecord( V record );

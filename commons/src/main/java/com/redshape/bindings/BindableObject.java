@@ -9,6 +9,10 @@ import com.redshape.bindings.types.IBindable;
 import com.redshape.bindings.types.IBindableCollection;
 import com.redshape.bindings.types.IBindableMap;
 
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.HashSet;
+
 class BindableObject implements IBindable, IBindableMap, IBindableCollection {
 	private String id;
 	private String name;
@@ -21,6 +25,7 @@ class BindableObject implements IBindable, IBindableMap, IBindableCollection {
 	// Collection specific
 	private CollectionType collectionType;
 	private Class<?> elementType;
+	private Collection<Annotation> annotations = new HashSet<Annotation>();
 	
 	// Map specific
 	private String keyName;
@@ -31,6 +36,15 @@ class BindableObject implements IBindable, IBindableMap, IBindableCollection {
 	public BindableObject(IPropertyReader reader, IPropertyWriter writer) {
 		this.reader = reader;
 		this.writer = writer;
+	}
+
+	public void setAnnotations( Collection<Annotation> annotations ) {
+		this.annotations = annotations;
+	}
+
+	@Override
+	public Collection<Annotation> getAnnotations() {
+		return this.annotations;
 	}
 
 	protected IPropertyReader getReader() {
@@ -166,6 +180,10 @@ class BindableObject implements IBindable, IBindableMap, IBindableCollection {
 
 	@Override
 	public void write(Object context, Object value) throws AccessException {
+		if ( value == null ) {
+			return;
+		}
+
 		if ( !this.isWritable() ) {
 			throw new AccessException("Object is read-only");
 		}
