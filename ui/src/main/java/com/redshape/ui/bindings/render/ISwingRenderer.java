@@ -1,7 +1,7 @@
 package com.redshape.ui.bindings.render;
 
-import javax.swing.JComponent;
+import java.awt.*;
 
-public interface ISwingRenderer extends IViewRenderer<JComponent> {
+public interface ISwingRenderer extends IViewRenderer<Container> {
 
 }

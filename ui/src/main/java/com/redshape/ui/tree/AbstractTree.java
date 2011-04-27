@@ -7,9 +7,8 @@ import com.redshape.ui.tree.traverse.impl.DefaultWalkingCollector;
 import com.redshape.utils.IFilter;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
+import javax.swing.tree.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
@@ -31,6 +30,29 @@ public abstract class AbstractTree extends JTree {
 
 		this.setCollector( new DefaultWalkingCollector() );
 		this.setWalker( new DefaultWalker() );
+
+        this.setCellRenderer( new DefaultTreeCellRenderer() {
+
+            @Override
+            public Component getTreeCellRendererComponent(
+                JTree tree, Object value, boolean sel, boolean expanded,
+                boolean leaf, int root, boolean hasFocus ) {
+                Component result = super.getTreeCellRendererComponent( tree, value, sel, expanded,
+                        leaf, root, hasFocus );
+
+                if ( leaf ) {
+                     this.setIcon( UIManager.getIcon("Tree.closeIcon") );
+                } else {
+                    if ( expanded ) {
+                        this.setIcon( UIManager.getIcon("Tree.closeIcon") );
+                    } else {
+                         this.setIcon( UIManager.getIcon("Tree.closeIcon") );
+                    }
+                }
+
+                return result;
+            }
+        });
 
 		this.init();
 	}

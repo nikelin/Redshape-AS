@@ -1,5 +1,6 @@
 package com.redshape.ui.bindings.render;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +44,7 @@ public class ViewRenderer implements ISwingRenderer {
 	}
 	
 	@Override
-	public ObjectUI render( JComponent parent, Class<?> type ) throws UIException {
+	public ObjectUI render( Container parent, Class<?> type ) throws UIException {
 		ObjectUI ui = this.process( parent, this.getModelsBuilder().createUI(type) );
 		
 		this.processDeffered(ui);
@@ -95,7 +96,7 @@ public class ViewRenderer implements ISwingRenderer {
 	
 	protected void process( ObjectUI parent, IPropertyModel model ) throws UIException {
 		try {
-			parent.addField( model, this.getUIBuilder().createRenderer( model.getDescriptor() ).renderEditor() );
+			parent.addField( model, this.getUIBuilder().createRenderer( model.getDescriptor() ) );
 		} catch ( InstantiationException e ) {
 			throw new UIException( e.getMessage(), e );
 		}
@@ -103,17 +104,17 @@ public class ViewRenderer implements ISwingRenderer {
 	
 	protected void process( ObjectUI parent, IChoiceModel model ) throws UIException {
 		try {
-			parent.addField( model, this.getUIBuilder().createListRenderer( this, model.getDescriptor() ).renderEditor() );
+			parent.addField( model, this.getUIBuilder().createListRenderer( this, model.getDescriptor() ) );
 		} catch ( InstantiationException e ) {
 			throw new UIException( e.getMessage(), e );
 		}
 	}
 
-	protected ObjectUI process( JComponent parent, IComposedModel model ) throws UIException {
+	protected ObjectUI process( Container parent, IComposedModel model ) throws UIException {
 		return this.process( parent, model, true );
 	}
 	
-	protected ObjectUI process( JComponent parent, IComposedModel model, boolean updateParent ) throws UIException {
+	protected ObjectUI process( Container parent, IComposedModel model, boolean updateParent ) throws UIException {
 		if ( this.rendered.containsKey( model.getDescriptor().getType() ) ) {
 			return this.rendered.get( model.getDescriptor().getType() );
 		}

@@ -17,5 +17,7 @@ public @interface Bindable {
 	public Class<?>[] targetType() default {};
 	
 	public String name() default "";
+
+    public BindableAttributes[] attributes() default {};
 	
 }

@@ -26,7 +26,9 @@ public class ListStore<V extends IModelData>
 						extends EventDispatcher
 						implements IStore<V> {
 	private static final long serialVersionUID = 1006177585211430914L;
-	
+
+    private Object lock = new Object();
+
 	private List<V> records = new ArrayList<V>();
     private IDataLoader<V> loader;
     private IModelType type;
@@ -60,8 +62,10 @@ public class ListStore<V extends IModelData>
     
     @Override
     public void clear() {
-    	this.records.clear();
-    	this.forwardEvent( StoreEvents.Clean );
+        synchronized (lock) {
+            this.records.clear();
+            this.forwardEvent( StoreEvents.Clean );
+        }
     }
 
     protected void bindRecord( final V record ) {
@@ -112,9 +116,11 @@ public class ListStore<V extends IModelData>
 
     @Override
     public void add( V record ) {
-    	this.bindRecord(record);
-        this.records.add(record);
-        this.forwardEvent( StoreEvents.Added, record );
+        synchronized ( lock ) {
+            this.bindRecord(record);
+            this.records.add(record);
+            this.forwardEvent( StoreEvents.Added, record, this.count() );
+        }
     }
 
     @Override
@@ -124,15 +130,17 @@ public class ListStore<V extends IModelData>
 
     @Override
     public void remove( V item ) {
-        this.records.remove(item);
-        this.forwardEvent( StoreEvents.Removed, item );
+        synchronized ( lock ) {
+            int index = this.records.indexOf(item);
+            this.records.remove(item);
+            this.forwardEvent( StoreEvents.Removed, item, index );
+        }
     }
 
     @Override
     public void removeAt( int index ) {
-    	V item;
+        V item;
         this.remove( item = this.records.get(index) );
-        this.forwardEvent( StoreEvents.Removed, item );
     }
 
     protected IDataLoader<V> getLoader() {
@@ -140,10 +148,12 @@ public class ListStore<V extends IModelData>
     }
 
     public void load() throws LoaderException {
-        this.clear();
-        
-        if ( this.loader != null ) {
-        	this.loader.load();
+        synchronized( lock ) {
+            this.clear();
+
+            if ( this.loader != null ) {
+                this.loader.load();
+            }
         }
     }
 

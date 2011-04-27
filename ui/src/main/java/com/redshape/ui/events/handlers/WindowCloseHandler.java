@@ -17,6 +17,7 @@ public class WindowCloseHandler implements IEventHandler {
 	@Override
 	public void handle(AppEvent event) {
 		UIRegistry.<ISwingWindowsManager>getWindowsManager().close( this.window );
+        this.window.setVisible(false);
 	}
 	
 }

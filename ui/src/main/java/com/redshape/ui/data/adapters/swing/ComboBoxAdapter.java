@@ -76,33 +76,51 @@ public class ComboBoxAdapter<T extends IModelData> extends JComboBox {
 		
 		super.addItem(item);
 	}
+
+    protected void onRecordAdd( T record ) {
+        this.addItem( record );
+        this.setEnabled(true);
+        Dispatcher.get().forwardEvent( UIEvents.Core.Repaint, this );
+    }
+
+    protected void onStoreRefresh() {
+        this.revalidate();
+        this.repaint();
+        Dispatcher.get().forwardEvent(UIEvents.Core.Repaint, this );
+    }
+
+    protected void onRecordRemoved( T record ) {
+        this.removeItem( record );
+        Dispatcher.get().forwardEvent( UIEvents.Core.Repaint, ComboBoxAdapter.this );
+    }
 	
 	protected void bindStore() {
 		if ( 0 != this.store.count() ) {
 			for ( T item : this.store.getList() ) {
 				this.addItem( item );
 			}
-		}
+		} else {
+            this.setEnabled(false);
+        }
 		
 		this.store.addListener(StoreEvents.Added, new IEventHandler() {
 			@Override
 			public void handle(AppEvent event) {
-				ComboBoxAdapter.this.addItem( event.<T>getArg(0) );
+				ComboBoxAdapter.this.onRecordAdd( event.<T>getArg(0) );
 			}
 		});
 
 		this.store.addListener( StoreEvents.Refresh, new IEventHandler() {
 			@Override
 			public void handle(AppEvent event) {
-				ComboBoxAdapter.this.revalidate();
-				Dispatcher.get().forwardEvent(UIEvents.Core.Repaint, ComboBoxAdapter.this );
+				ComboBoxAdapter.this.onStoreRefresh();
 			}
 		});
 		
 		this.store.addListener(StoreEvents.Removed, new IEventHandler() {
 			@Override
 			public void handle(AppEvent event) {
-				ComboBoxAdapter.this.removeItem( event.<T>getArg(0) );
+				ComboBoxAdapter.this.onRecordRemoved( event.<T>getArg(0) );
 			}
 		});
 	}

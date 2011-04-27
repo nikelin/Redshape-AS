@@ -3,47 +3,50 @@ package com.redshape.ui.bindings.render.properties;
 import java.awt.Component;
 import java.io.Serializable;
 
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.ListCellRenderer;
+import javax.swing.*;
 
 import com.redshape.bindings.types.IBindable;
+import com.redshape.ui.UIException;
+import com.redshape.ui.bindings.properties.IPropertyUI;
 import com.redshape.utils.EnumUtils;
 import com.redshape.utils.IEnum;
 
-public class IEnumUI extends AbstractUI<JLabel, JComboBox, IEnum<?>> {
+public class IEnumUI extends JComboBox implements IPropertyUI<IEnum<?>> {
 	private static final long serialVersionUID = 5479414921873691099L;
 
+    private IBindable descriptor;
+
 	public IEnumUI( IBindable bindable ) {
-		super(bindable);
+		this.descriptor = bindable;
+
+        this.init();
 	}
 
-	@Override
-	protected JLabel createDisplay() {
-		return new JLabel();
-	}
+    @Override
+    public JComponent asComponent() {
+        return this;
+    }
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	protected JComboBox createEditor() {
-		JComboBox box = new JComboBox();
-		
-		for ( IEnum<?> item : EnumUtils.allOf( (Class<? extends IEnum>) this.getDescriptor().getType() ) ) {
-			box.addItem(item);
+	protected void init() {
+		for ( IEnum<?> item : EnumUtils.allOf((Class<? extends IEnum>) this.descriptor.getType()) ) {
+			this.addItem(item);
 		}
 		
-		box.setRenderer( new RenderGuy() );
-		
-		return box;
+		this.setRenderer(new RenderGuy());
 	}
 
-	@Override
-	protected void updateValue() {
-		this.getEditor().setSelectedItem( this.getValue() );
-	}
-	
-	protected static class RenderGuy implements ListCellRenderer, Serializable {
+    @Override
+    public void setValue(IEnum<?> value) throws UIException {
+        this.setSelectedItem( value );
+    }
+
+    @Override
+    public IEnum<?> getValue() throws UIException {
+        return (IEnum<?>) this.getSelectedItem();
+    }
+
+    protected static class RenderGuy implements ListCellRenderer, Serializable {
 		private static final long serialVersionUID = -5743380825040772169L;
 
 		@Override

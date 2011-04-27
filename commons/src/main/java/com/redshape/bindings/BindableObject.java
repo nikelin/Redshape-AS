@@ -3,6 +3,7 @@ package com.redshape.bindings;
 import com.redshape.bindings.accessors.AccessException;
 import com.redshape.bindings.accessors.IPropertyReader;
 import com.redshape.bindings.accessors.IPropertyWriter;
+import com.redshape.bindings.annotations.BindableAttributes;
 import com.redshape.bindings.types.BindableType;
 import com.redshape.bindings.types.CollectionType;
 import com.redshape.bindings.types.IBindable;
@@ -18,6 +19,8 @@ class BindableObject implements IBindable, IBindableMap, IBindableCollection {
 	private String name;
 	private Class<?> type;
 	private BindableType metaType;
+
+    private Collection<BindableAttributes> attributes = new HashSet<BindableAttributes>();
 
 	private IPropertyReader reader;
 	private IPropertyWriter writer;
@@ -37,6 +40,24 @@ class BindableObject implements IBindable, IBindableMap, IBindableCollection {
 		this.reader = reader;
 		this.writer = writer;
 	}
+
+    public void setAttributes( Collection<BindableAttributes> attributes ) {
+        this.attributes = attributes;
+    }
+
+    @Override
+    public Collection<BindableAttributes> getAttributes() {
+        return this.attributes;
+    }
+
+    @Override
+    public boolean hasAttribute( BindableAttributes attribute ) {
+        return this.attributes.contains(attribute);
+    }
+
+    public void addAttribute( BindableAttributes attribute ) {
+        this.attributes.add(attribute);
+    }
 
 	public void setAnnotations( Collection<Annotation> annotations ) {
 		this.annotations = annotations;

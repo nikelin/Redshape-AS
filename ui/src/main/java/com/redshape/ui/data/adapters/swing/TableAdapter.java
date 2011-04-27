@@ -69,5 +69,9 @@ public class TableAdapter<T extends IModelData> extends JTable {
 		
 		this.initialized = true;
 	}
+
+    public T getSelectedRecord() {
+        return this.store.getAt( this.getSelectedRow() );
+    }
 	
 }

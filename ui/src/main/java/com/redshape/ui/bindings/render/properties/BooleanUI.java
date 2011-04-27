@@ -1,34 +1,34 @@
 package com.redshape.ui.bindings.render.properties;
 
-import javax.swing.JCheckBox;
+import javax.swing.*;
 
 import com.redshape.bindings.types.IBindable;
 import com.redshape.ui.Dispatcher;
+import com.redshape.ui.UIException;
+import com.redshape.ui.bindings.properties.IPropertyUI;
 import com.redshape.ui.events.UIEvents;
 
-public class BooleanUI extends AbstractUI<JCheckBox, JCheckBox, Boolean> {
+public class BooleanUI extends JCheckBox implements IPropertyUI<Boolean> {
 	private static final long serialVersionUID = 7808900171495441614L;
+    private IBindable descriptor;
 
 	public BooleanUI( IBindable bindable ) {
-		super(bindable);
+		this.descriptor = bindable;
 	}
-	
-	@Override
-	protected JCheckBox createDisplay() {
-		return new JCheckBox((String)null, false);
-	}
-	
-	@Override
-	protected JCheckBox createEditor() {
-		return new JCheckBox();
-	}
-	
-	@Override
-	protected void updateValue() {
-		if ( this.display != null ) {
-			this.display.setSelected( this.getValue() );
-			Dispatcher.get().forwardEvent( UIEvents.Core.Repaint, this.display );
-		}
-	}
+
+    @Override
+    public JComponent asComponent() {
+        return this;
+    }
+
+    @Override
+    public void setValue(Boolean value) throws UIException {
+        this.setSelected(value);
+    }
+
+    @Override
+    public Boolean getValue() throws UIException {
+        return this.isSelected();
+    }
 	
 }

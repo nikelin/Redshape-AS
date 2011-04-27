@@ -6,9 +6,14 @@ import java.util.Collection;
 
 import com.redshape.bindings.BindingException;
 import com.redshape.bindings.accessors.AccessException;
+import com.redshape.bindings.annotations.BindableAttributes;
 
 public interface IBindable extends Serializable {
-	
+
+    public boolean hasAttribute( BindableAttributes attribute );
+
+    public Collection<BindableAttributes> getAttributes();
+
 	public boolean isComposite();
 	
 	public boolean isReadable();

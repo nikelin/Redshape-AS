@@ -8,6 +8,7 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import com.redshape.bindings.BindingException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -139,7 +140,7 @@ public class BindingsTest extends AbstractContextAwareTest<Object> {
 	}
 	
 	@Test
-	public void testMain() throws UIException, NoSuchMethodException, InstantiationException {
+	public void testMain() throws UIException, NoSuchMethodException, BindingException, InstantiationException {
 		ISwingRenderer renderer = UIRegistry.<ISwingRenderer>getViewRendererFacade()
 											.createRenderer( TestMock.class );
 		

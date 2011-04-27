@@ -1,5 +1,6 @@
 package com.redshape.ui.windows;
 
+import java.awt.*;
 import java.util.Collection;
 import com.redshape.utils.IFilter;
 
@@ -73,5 +74,7 @@ public interface IWindowsManager<V> {
 	public boolean isRegistered( V window );
 
     public Collection<V> list();
+
+    public Window getFocusedWindow();
 
 }

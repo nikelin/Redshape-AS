@@ -50,8 +50,8 @@ public class ServersInit extends AbstractBootstrapAction {
         try {
             this.initProtocols();
 
-            IConfig serverConfigNodes = this.getConfig().get("servers").get("instances");
-            log.info(" Current servers to be initialized: " + Arrays.asList( serverConfigNodes.names() ) );
+            IConfig serverConfigNodes = this.getConfig().get("software").get("instances");
+            log.info(" Current software to be initialized: " + Arrays.asList( serverConfigNodes.names() ) );
             for ( final IConfig serverConfigNode : serverConfigNodes.childs() ) {
                 if ( serverConfigNode.get("status").value().equals("on") ) {
                     new Thread() {

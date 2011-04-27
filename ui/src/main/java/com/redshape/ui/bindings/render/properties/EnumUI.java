@@ -4,47 +4,46 @@ import java.awt.Component;
 import java.io.Serializable;
 import java.util.EnumSet;
 
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.ListCellRenderer;
+import javax.swing.*;
 
 import com.redshape.bindings.types.IBindable;
+import com.redshape.ui.UIException;
+import com.redshape.ui.bindings.properties.IPropertyUI;
 
-public class EnumUI extends AbstractUI<JLabel, JComboBox, Enum<?>>{
-	private static final long serialVersionUID = 1L;
+public class EnumUI extends JComboBox implements IPropertyUI<Enum<?>> {
+    private IBindable descriptor;
 
 	public EnumUI( IBindable bindable ) {
-		super(bindable);
-	}
-	
-	@Override
-	protected JLabel createDisplay() {
-		return new JLabel();
+		this.descriptor = bindable;
+
+        this.init();
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	protected JComboBox createEditor() {
-		JComboBox box = new JComboBox();
-		
-		@SuppressWarnings("rawtypes")
-		EnumSet<?> items = EnumSet.allOf( (Class<? extends Enum>) this.getDescriptor().getType() );
+    @Override
+    public JComponent asComponent() {
+        return this;
+    }
+
+	protected void init() {
+		EnumSet<?> items = EnumSet.allOf( (Class<? extends Enum>) this.descriptor.getType() );
 		for ( Object item : items ) {
-			box.addItem( item );
+			this.addItem(item);
 		}
 		
-		box.setRenderer( new RenderGuy() );
-		
-		return box;
+		this.setRenderer(new RenderGuy());
 	}
 
-	@Override
-	protected void updateValue() {
-		this.editor.setSelectedItem( this.getValue() );
-	}
-	
-	public static class RenderGuy implements ListCellRenderer, Serializable {
+    @Override
+    public void setValue(Enum<?> value) throws UIException {
+        this.setSelectedItem( value );
+    }
+
+    @Override
+    public Enum<?> getValue() throws UIException {
+        return (Enum<?>) this.getSelectedItem();
+    }
+
+    public static class RenderGuy implements ListCellRenderer, Serializable {
 		/**
 		 * 
 		 */

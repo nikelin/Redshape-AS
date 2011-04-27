@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
+import com.redshape.bindings.annotations.*;
 import com.redshape.validators.BeansValidator;
 import com.redshape.validators.IValidator;
 import com.redshape.validators.result.IResultsList;
@@ -19,18 +20,23 @@ import org.apache.log4j.Logger;
 import com.redshape.bindings.accessors.AccessException;
 import com.redshape.bindings.accessors.IPropertyReader;
 import com.redshape.bindings.accessors.IPropertyWriter;
-import com.redshape.bindings.annotations.Bindable;
-import com.redshape.bindings.annotations.BindableReader;
-import com.redshape.bindings.annotations.BindableWriter;
-import com.redshape.bindings.annotations.ElementType;
-import com.redshape.bindings.annotations.MapKey;
-import com.redshape.bindings.annotations.MapValue;
 import com.redshape.bindings.types.BindableType;
 import com.redshape.bindings.types.IBindable;
 
 import com.redshape.utils.IEnum;
 import com.redshape.utils.StringUtils;
 
+/**
+ * Bindables processor
+ *
+ * @todo Rework to supports multi-writers/readers in a case of conversion accessors
+ *
+ * @author nikelin
+ * @package com.redshape.bindings
+ * @see IBindable
+ * @see IBeanInfo
+ * @see Bindable
+ */
 public class BeanInfo implements IBeanInfo {
 	private static final Logger log = Logger.getLogger(BeanInfo.class);
 
@@ -119,6 +125,10 @@ public class BeanInfo implements IBeanInfo {
 		IPropertyWriter writer = this.findWriter(type, bindable, (AccessibleObject) member);
 
 		BindableObject result = new BindableObject(reader, writer);
+
+        for ( BindableAttributes attribute : bindable.attributes() ) {
+            result.addAttribute( attribute );
+        }
 
 		result.setAnnotations( this.getAnnotations( (AccessibleObject) member, reader, writer ) );
 		result.setId(this.getBindableId(bindable, member));
@@ -653,6 +663,10 @@ public class BeanInfo implements IBeanInfo {
 				
 				@Override
 				public boolean isConsistent( Class<?> type ) {
+                    if ( this.method.getAnnotation(IgnoreViolations.class) != null ) {
+                        return true;
+                    }
+
 					if ( this.method.getParameterTypes().length == 0 ) {
 						return false;
 					}
@@ -744,6 +758,10 @@ public class BeanInfo implements IBeanInfo {
 
 				@Override
 				public boolean isConsistent(Class<?> type) {
+                    if ( this.method.getAnnotation(IgnoreViolations.class) != null ) {
+                        return true;
+                    }
+
 					return type.isAssignableFrom(this.method.getReturnType());
 				}
 

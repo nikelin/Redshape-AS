@@ -9,11 +9,17 @@ public abstract class AbstractDataLoader<T extends IModelData>
 									extends EventDispatcher
 									implements IDataLoader<T> {
 
+    @Override
+    public Collection<T> preProcess( Collection<T> results ) {
+        return results;
+    }
+
 	@Override
 	public void load() throws LoaderException {
 		try { 
 			this.forwardEvent( LoaderEvents.BeforeLoad );
-			this.forwardEvent( LoaderEvents.Loaded, this.doLoad() );
+
+			this.forwardEvent( LoaderEvents.Loaded, this.preProcess( this.doLoad() ) );
 		} catch ( LoaderException e ) {
 			throw e;
 		} catch ( Throwable e ) {

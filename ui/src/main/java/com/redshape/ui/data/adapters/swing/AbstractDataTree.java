@@ -8,6 +8,7 @@ import com.redshape.ui.events.IEventHandler;
 import com.redshape.ui.tree.AbstractTree;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 
 /**
  * Adapter to binds tree withing specified store
@@ -88,14 +89,26 @@ public abstract class AbstractDataTree<V extends IModelData, T extends IStore<V>
 		);
 	}
 
+    public DefaultMutableTreeNode getSelectedNode() {
+        TreePath path = this.getSelectionModel()
+                  .getSelectionPath();
+        if ( path == null ) {
+            return null;
+        }
+
+        return ( DefaultMutableTreeNode ) path.getLastPathComponent();
+    }
+
 	public V getSelectedRecord() {
-		return (V) ( (DefaultMutableTreeNode) this.getSelectionModel()
-												  .getSelectionPath()
-												  .getLastPathComponent() )
-						.getUserObject();
+        DefaultMutableTreeNode node = this.getSelectedNode();
+        if ( node == null ) {
+            return null;
+        }
+
+		return (V) node.getUserObject();
 	}
 
-	abstract public void addRecord( V record );
+	abstract public DefaultMutableTreeNode addRecord( V record );
 
 	abstract public void removeRecord( V record );
 

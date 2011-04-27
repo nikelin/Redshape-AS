@@ -1,38 +1,44 @@
 package com.redshape.ui.bindings.render.properties;
 
-import javax.swing.JLabel;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 import com.redshape.bindings.types.IBindable;
+import com.redshape.ui.UIException;
+import com.redshape.ui.bindings.properties.IPropertyUI;
 
-public class NumericUI extends AbstractUI<JLabel, JTextField, Number> {
+public class NumericUI extends JTextField implements IPropertyUI<Number> {
 	private static final long serialVersionUID = -5716529017245176653L;
 
+    private IBindable descriptor;
+
 	public NumericUI( IBindable bindable ) {
-		super(bindable);
-	}
-	
-	@Override
-	protected JLabel createDisplay() {
-		return new JLabel();
+		this.descriptor = bindable;
 	}
 
-	@Override
-	protected JTextField createEditor() {
-		return new JTextField();
-	}
+    @Override
+    public JComponent asComponent() {
+        return this;
+    }
 
-	@Override
-	protected void updateValue() {
-		if ( this.display != null ) {
-			this.display.setText( String.valueOf( this.getValue() ) );
-		}
-		
-		if ( this.editor != null ) {
-			this.editor.setText( String.valueOf( this.getValue() ) );
-		}
-	}
+    @Override
+    public void setValue(Number value) throws UIException {
+        this.setText( value.toString() );
+    }
 
-	
-	
+    @Override
+    public Number getValue() throws UIException {
+        try {
+            return Integer.valueOf( this.getText() );
+        } catch ( NumberFormatException e ) {
+            try {
+                return Long.valueOf( this.getText() );
+            } catch ( NumberFormatException e1 ) {
+                try {
+                    return Double.valueOf( this.getText() );
+                } catch ( NumberFormatException e2 ) {
+                    throw new UIException();
+                }
+            }
+        }
+    }
 }

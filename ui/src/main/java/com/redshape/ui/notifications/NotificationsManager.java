@@ -1,5 +1,6 @@
 package com.redshape.ui.notifications;
 
+import com.redshape.ui.events.IEventHandler;
 import com.redshape.ui.utils.UIRegistry;
 import com.redshape.ui.windows.IWindowsManager;
 import com.redshape.ui.windows.swing.ISwingWindowsManager;
@@ -19,7 +20,25 @@ public class NotificationsManager implements INotificationsManager {
 		ERROR
 	}
 
-	protected void showNotify( String message, Level level, NotificationType type ) {
+    @Override
+    public String request( String message ) {
+        return JOptionPane.showInputDialog( UIRegistry.<JFrame>getRootContext(), message );
+    }
+
+    @Override
+    public void ask(String message, IEventHandler yesCase, IEventHandler noCase) {
+        if ( JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog( UIRegistry.<JFrame>getRootContext(), message ) ) {
+            if ( yesCase != null ) {
+                yesCase.handle( null );
+            }
+        } else {
+            if ( noCase != null ) {
+                noCase.handle( null );
+            }
+        }
+    }
+
+    protected void showNotify( String message, Level level, NotificationType type ) {
 		switch ( type ) {
 			case POPUP:
 				this.showPopupNotify(message, level);
@@ -57,7 +76,7 @@ public class NotificationsManager implements INotificationsManager {
 		}
 
 		JOptionPane.showMessageDialog(
-			UIRegistry.<JFrame>getRootContext(),
+			UIRegistry.<ISwingWindowsManager>getWindowsManager().getFocusedWindow(),
 			message,
 			messageSubject,
 			messageType

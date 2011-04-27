@@ -10,18 +10,18 @@ import com.redshape.ui.bindings.render.IViewRenderer;
 
 public class PropertyUIBuilder implements IPropertyUIBuilder {
 	private static final Logger log = Logger.getLogger( PropertyUIBuilder.class );
-	private Map<Class<?>, Class<? extends IPropertyUI<?, ?, ?>>>
-					renderers = new HashMap<Class<?>, Class<? extends IPropertyUI<?, ?, ?>>>();
-	private Class<? extends IPropertyUI<?,?,?>> listRenderer;
+	private Map<Class<?>, Class<? extends IPropertyUI<?>>>
+					renderers = new HashMap<Class<?>, Class<? extends IPropertyUI<?>>>();
+	private Class<? extends IPropertyUI<?>> listRenderer;
 	
-	public void setListRenderer( Class<? extends IPropertyUI<?,?,?>> renderer ) {
+	public void setListRenderer( Class<? extends IPropertyUI<?>> renderer ) {
 		this.listRenderer = renderer;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <T> IPropertyUI<?, ?, T> createListRenderer( IViewRenderer<?> renderingContext, IBindable descriptor ) throws InstantiationException {
+	public <T> IPropertyUI<T> createListRenderer( IViewRenderer<?> renderingContext, IBindable descriptor ) throws InstantiationException {
 		try {
-			return (IPropertyUI<?,?,T>) this.listRenderer
+			return (IPropertyUI<T>) this.listRenderer
 											.getConstructor( IViewRenderer.class, IBindable.class )
 											.newInstance( renderingContext,descriptor );
 		} catch ( Throwable e ) {
@@ -32,7 +32,7 @@ public class PropertyUIBuilder implements IPropertyUIBuilder {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> IPropertyUI<?, ?, T> createRenderer(IBindable descriptor) throws InstantiationException {
+	public <T> IPropertyUI<T> createRenderer(IBindable descriptor) throws InstantiationException {
 		try {
 			Class<?> type = descriptor.getType();
 			if ( type.isArray() ) {
@@ -44,7 +44,7 @@ public class PropertyUIBuilder implements IPropertyUIBuilder {
 					continue;
 				}
 				
-				IPropertyUI<?, ?, T> ui = (IPropertyUI<?, ?, T>) this.renderers.get( renderable )
+				IPropertyUI<T> ui = (IPropertyUI<T>) this.renderers.get( renderable )
 																			   .getConstructor( IBindable.class )
 																			   .newInstance(descriptor);
 				
@@ -62,11 +62,11 @@ public class PropertyUIBuilder implements IPropertyUIBuilder {
 
 	@Override
 	public <T> void registerRenderer(Class<T> type,
-			Class<? extends IPropertyUI<?, ?, T>> renderer) {
+			Class<? extends IPropertyUI<T>> renderer) {
 		this.renderers.put( type, renderer );
 	}
 	
-	public void setRenderers( Map<Class<?>, Class<? extends IPropertyUI<?, ?, ?>>> renderers ) {
+	public void setRenderers( Map<Class<?>, Class<? extends IPropertyUI<?>>> renderers ) {
 		this.renderers = renderers;
 	}
 

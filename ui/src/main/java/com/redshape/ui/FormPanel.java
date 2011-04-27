@@ -36,8 +36,12 @@ public class FormPanel extends JPanel {
     public FormPanel() {
     	this(null, false);
     }
-    
+
     public FormPanel( IModelType type, boolean writable ) {
+        this( null, type, writable );
+    }
+
+    public FormPanel( IModelData data, IModelType type, boolean writable ) {
         super();
 
         this.type = type;
@@ -46,6 +50,10 @@ public class FormPanel extends JPanel {
         this.buildUI();
         this.configUI();
         this.init();
+
+        if ( data != null ) {
+            this.setModel(data);
+        }
     }
     
     protected void init() {
@@ -84,7 +92,7 @@ public class FormPanel extends JPanel {
     	for ( IModelField field : this.type.getFields() ) {
     		FormField<?> formField = this.getField(field.getName());
     		if ( formField != null ) {
-    			formField.setValue( data.<Object>get( field.getName() ) );
+    			formField.setValue( String.valueOf( data.<Object>get( field.getName() ) ) );
     		}
     	}
     }
@@ -146,9 +154,10 @@ public class FormPanel extends JPanel {
     }
 
 	public void removeFields() {
-		for ( int i = 0; i < this.fields.size(); i++ ) {
-			this.removeField( this.fields.get(i) );
-		}
+        FormField<?>[] fields = this.fields.values().toArray( new FormField<?>[ this.fields.size() ]);
+        for ( int i = 0; i < fields.length; i++ ) {
+            this.removeField( fields[i] );
+        }
 	}
 
 	public void removeField( String id ) {
@@ -239,7 +248,7 @@ public class FormPanel extends JPanel {
         	} else if ( this.getComponent() instanceof JCheckBox ) {
         		( (JCheckBox) this.getComponent() ).setSelected( (Boolean) value );
         	} else if ( this.getComponent() instanceof JComboBox ) {
-        		( (JComboBox) this.getComponent() ).setSelectedIndex( (Integer) value );
+        		( (JComboBox) this.getComponent() ).setSelectedItem( value );
         	}
         	
         	this.getComponent().revalidate();
