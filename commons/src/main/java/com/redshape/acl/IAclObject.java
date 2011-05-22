@@ -12,12 +12,6 @@ import java.util.Collection;
 public interface IAclObject<T extends IAclPermission> {
 
     /**
-         * Get id of current object
-         * @return
-         */
-    public Integer getId();
-
-    /**
          * Get all permissions applicable to current object
          * @return
          */

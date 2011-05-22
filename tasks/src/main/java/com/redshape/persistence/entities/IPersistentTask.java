@@ -23,10 +23,6 @@ public interface IPersistentTask extends ITask, IEntity {
 
     public void setLastExecutionTime( Long timestamp );
 
-    public void setId( Integer id );
-
-    public Integer getId();
-
     public boolean isCompleted();    
 
 }

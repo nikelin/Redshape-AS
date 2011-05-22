@@ -14,11 +14,13 @@ public interface IDAO<T extends IEntity> {
 
     public List<T> executeNamedQuery(String queryName, Map<String, Object> keyValues, int offset, int limit) throws DAOException;
 
-    public void save(T object) throws DAOException;
+    public T save(T object) throws DAOException;
 
     public void save(Collection<T> object) throws DAOException;
 
-    public void update(T object) throws DAOException;
+    public void persist( T record ) throws DAOException;
+    
+    public T update(T object) throws DAOException;
 
     public void update(Collection<T> object) throws DAOException;
 

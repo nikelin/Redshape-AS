@@ -16,6 +16,11 @@
     <groupId>com.redshape</groupId>
     <artifactId>commons</artifactId>
 
+	<properties>
+		<project.build.sourceEncoding>utf8</project.build.sourceEncoding>
+	</properties>
+	
+
     <build>
         <finalName>commons</finalName>
 

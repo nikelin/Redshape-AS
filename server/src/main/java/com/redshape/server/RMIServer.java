@@ -30,8 +30,6 @@ public class RMIServer extends AbstractServer {
     private ServerState state;
 
     /**
-     * Индикатор активности SSL-защиты для текущего сервера
-     *
      * @var boolean
      */
     private boolean sslEnabled;

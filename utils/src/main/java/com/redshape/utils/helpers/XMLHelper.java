@@ -136,6 +136,10 @@ public final class XMLHelper {
 
     @SuppressWarnings("deprecation")
 	protected Document _buildDocument( DocumentBuilder builder, Object source ) throws IOException, SAXException, ParserConfigurationException {
+    	if ( source == null ) {
+    		throw new IllegalArgumentException("Source must not be null");
+    	}
+    	
         Document doc = null;
         if ( File.class.isAssignableFrom( source.getClass() ) ) {
             doc = builder.parse( (File) source );

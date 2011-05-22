@@ -1,8 +1,13 @@
 package com.redshape.persistence.entities;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.util.Collection;
+
 import javax.persistence.*;
 
 import org.apache.log4j.*;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author nikelin
@@ -14,11 +19,10 @@ public abstract class AbstractEntity implements IEntity {
     private static final Logger log = Logger.getLogger( AbstractEntity.class );
 
     @Id @GeneratedValue( strategy = GenerationType.AUTO )
-    private Integer id;
+    private Long id;
 
     @Transient
     private Integer entityLockVersion = 0;
-
 
     public Integer getEntityLockVersion() {
         return this.entityLockVersion;
@@ -29,12 +33,12 @@ public abstract class AbstractEntity implements IEntity {
     }
 
     @Override
-    public Integer getId() {
+    public Long getId() {
         return this.id;
     }
 
     @Override
-    public void setId( Integer id ) {
+    public void setId( Long id ) {
         this.id = id;
     }
 
@@ -65,4 +69,10 @@ public abstract class AbstractEntity implements IEntity {
         return this.getId() != null && e.getId() != null && this.getId().equals( e.getId() );
     }
 
+    protected boolean isCollectionMember( Field field ) {
+    	return field.getAnnotation( ManyToOne.class ) != null
+    			|| field.getAnnotation( OneToOne.class ) != null
+    				|| field.getAnnotation( ManyToMany.class ) != null;
+    }
+    
 }

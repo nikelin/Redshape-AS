@@ -6,9 +6,6 @@ import com.redshape.auth.storage.AuthStorage;
 
 import java.util.Map;
 
-/**
- * Интерфейс для аутентификаторов системы
- */
 public interface AuthenticatorInterface<T extends IIdentity> {
 
     public boolean isAuthExpired( T identity );

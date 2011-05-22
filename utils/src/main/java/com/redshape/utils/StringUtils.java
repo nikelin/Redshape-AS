@@ -3,8 +3,11 @@ package com.redshape.utils;
 import sun.net.util.IPAddressUtil;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+
 
 @SuppressWarnings("restriction")
 public class StringUtils {
@@ -49,7 +52,12 @@ public class StringUtils {
     }
 
     public static String getFileExtension( String name ) {
-        return name.substring( name.lastIndexOf(".") + 1, name.length() );
+    	int index = name.lastIndexOf(".");
+    	if ( index != -1 ) {
+    		return name.substring( index + 1, name.length() );
+    	} else {
+    		return "";
+    	}
     }
 
     public static String toCamelCase( String name ) {
@@ -152,5 +160,7 @@ public class StringUtils {
         return StringUtils.join( result, "." );
     }
 
-
+    public static String formatDate( String format, Date date ) {
+    	return new SimpleDateFormat(format).format(date);
+    }
 }

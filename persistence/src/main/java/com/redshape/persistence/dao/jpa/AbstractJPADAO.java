@@ -18,12 +18,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.persistence.Table;
 import org.apache.log4j.Logger;
 import org.springframework.orm.jpa.JpaCallback;
 import org.springframework.orm.jpa.support.JpaDaoSupport;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -38,11 +41,12 @@ public abstract class AbstractJPADAO<T extends IEntity> extends JpaDaoSupport im
     public AbstractJPADAO( Class<T> entityClass) {
         this.entityClass = entityClass;
     }
-    
 
-    @Override
-    @Transactional
-    /** @TODO: rewrite with native Hibernate batchUpdate **/
+    @PersistenceContext( unitName="persistenceManager", type = PersistenceContextType.EXTENDED )
+	protected EntityManager em;
+
+	@Override
+    @Transactional( propagation = Propagation.REQUIRED )
     public void save( Collection<T> list ) throws DAOException {
         for ( T record : list ) {
             this.save(record);
@@ -50,37 +54,47 @@ public abstract class AbstractJPADAO<T extends IEntity> extends JpaDaoSupport im
     }
 
     @Override
-    @Transactional
-    public void save(T object) throws DAOException {
-        this.getJpaTemplate().merge(object);
-        this.getJpaTemplate().flush();
+    @Transactional( propagation = Propagation.REQUIRED )
+    public T save(T object) throws DAOException {
+        object = em.merge(object);
+        em.flush();
+        return object;
     }
 
     @Override
-    @Transactional
-    public void update(T object) throws DAOException {
-        this.getJpaTemplate().merge( object );
+    @Transactional( propagation = Propagation.REQUIRED )
+    public T update(T object) throws DAOException {
+        em.refresh(object);
+        return object;
     }
 
     @Override
-    @Transactional
+    @Transactional( propagation = Propagation.REQUIRED )
     public void update(Collection<T> list ) throws DAOException {
         for ( T item : list ) {
             this.update( item );
         }
     }
-
+    
     @Override
     @Transactional
+    public void persist( T record ) throws DAOException {
+    	em.persist(record);
+    	em.flush();
+    }
+
+    @Override
+    @Transactional( propagation = Propagation.REQUIRED )
     public void removeAll() throws DAOException {
         this.executeUpdate("delete from " + this.getEntityName());
     }
 
     @Override
-    @Transactional
+    @Transactional( propagation = Propagation.REQUIRED )
     public void remove(IEntity object) throws DAOException {
         try {
-            this.getJpaTemplate().remove(object);
+        	em.remove(object);
+        	em.flush();
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
             throw new DAOException(e.getMessage());
@@ -112,16 +126,9 @@ public abstract class AbstractJPADAO<T extends IEntity> extends JpaDaoSupport im
     @Override
     public T findById( final Long id ) throws DAOException {
         try {
-            return this.getJpaTemplate().execute(
-            		new JpaCallback<T>() {
-            			public T doInJpa( EntityManager em ) {
-            					return (T) em.createQuery( "from " + getEntityName( AbstractJPADAO.this.getEntityClass() ) + " where id=" + id )
-                                      .getSingleResult();
-            			}
-            		}
-    		);
+            return em.find( this.getEntityClass(), id );
         } catch ( Throwable e ) {
-            throw new DAOException();
+            throw new DAOException( e.getMessage(), e );
         }
     }
 
@@ -202,7 +209,7 @@ public abstract class AbstractJPADAO<T extends IEntity> extends JpaDaoSupport im
 	                if (limit > 0 ) {
 	                    query.setMaxResults(limit);
 	                }
-	
+	                
 	                return query.getResultList();
         		} catch ( Throwable e ) {
         			log.error( e.getMessage(), e );

@@ -11,6 +11,4 @@ public interface IAclPermission {
 
     public String getName();
 
-    public Integer getId();
-
 }
