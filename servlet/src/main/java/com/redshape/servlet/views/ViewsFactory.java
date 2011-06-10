@@ -8,7 +8,6 @@ package com.redshape.servlet.views;
  * To change this template use File | Settings | File Templates.
  */
 public class ViewsFactory implements IViewsFactory {
-    private static IViewsFactory defaultInstance = new ViewsFactory();
     public String basePath;
     public String extension;
 
@@ -26,14 +25,6 @@ public class ViewsFactory implements IViewsFactory {
 
     public String getExtension() {
         return this.extension;
-    }
-
-    public static IViewsFactory getDefault() {
-        return defaultInstance;
-    }
-
-    public static void setDefault( IViewsFactory instance ) {
-        defaultInstance = instance;
     }
 
     public IView createView( String viewPath ) {

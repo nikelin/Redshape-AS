@@ -14,7 +14,8 @@ import java.util.Map;
  */
 public class DispatchersFactory implements IDispatchersFactory {
     private static IDispatchersFactory defaultInstance = new DispatchersFactory();
-    private Map<Class<? extends IHttpDispatcher>, IHttpDispatcher> dispatchers = new HashMap();
+    private Map<Class<? extends IHttpDispatcher>, IHttpDispatcher> dispatchers 
+    			= new HashMap<Class<? extends IHttpDispatcher>, IHttpDispatcher>();
 
     public static IDispatchersFactory getDefault() {
         return defaultInstance;

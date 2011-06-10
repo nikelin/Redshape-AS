@@ -1,11 +1,9 @@
 package com.redshape.bindings;
 
-import java.lang.annotation.Annotation;
 import java.util.List;
 
 import com.redshape.bindings.types.IBindable;
 import com.redshape.validators.result.IResultsList;
-import com.redshape.validators.result.ValidationResult;
 
 public interface IBeanInfo {
 

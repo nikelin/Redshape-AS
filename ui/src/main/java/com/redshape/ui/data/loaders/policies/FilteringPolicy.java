@@ -3,9 +3,9 @@ package com.redshape.ui.data.loaders.policies;
 import com.redshape.ui.data.IModelData;
 import com.redshape.ui.data.loaders.IDataLoader;
 import com.redshape.ui.data.loaders.LoaderException;
-import com.redshape.ui.events.AppEvent;
-import com.redshape.ui.events.EventType;
-import com.redshape.ui.events.IEventHandler;
+import com.redshape.ui.application.events.AppEvent;
+import com.redshape.ui.application.events.EventType;
+import com.redshape.ui.application.events.IEventHandler;
 import com.redshape.utils.IFilter;
 
 import java.util.ArrayList;
@@ -17,7 +17,9 @@ import java.util.Collection;
  * @package com.redshape.ui.data.loaders.policies
  */
 public class FilteringPolicy<T extends IModelData> implements IDataLoader<T>, IDataLoaderPolicy<T> {
-    private IDataLoader<T> loader;
+	private static final long serialVersionUID = -7424112622054272996L;
+	
+	private IDataLoader<T> loader;
     private IFilter<T> filter;
 
     public FilteringPolicy( IDataLoader<T> loader, IFilter<T> filter ) {

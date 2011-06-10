@@ -158,26 +158,6 @@ public class Bootstrap implements IBootstrap {
         action.markProcessed();
     }
 
-	private boolean isAllProcessed() {
-        for ( IBootstrapAction action : this.getActions() ) {
-            if ( !action.isError() && !action.isProcessed() ) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-	private boolean hasDependers( Object id ) {
-        for ( IBootstrapAction actionObject : this.getActions() ) {
-            if ( actionObject.getDependencies().contains( id ) ) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     private boolean isDependenciesResolved( IBootstrapAction action ) {
         for ( Object id : action.getDependencies() ) {
             if ( !this.getAction( id ).isProcessed() ) {

@@ -2,19 +2,20 @@ package com.redshape.ui.utils;
 
 import javax.swing.*;
 
-import com.redshape.ui.notifications.INotificationsManager;
-import com.redshape.ui.notifications.NotificationsManager;
-import com.redshape.ui.state.IUIStateManager;
+import com.redshape.ui.application.notifications.INotificationsManager;
+import com.redshape.ui.application.notifications.NotificationsManager;
+import com.redshape.ui.data.state.IUIStateManager;
 import org.springframework.context.ApplicationContext;
 
-import com.redshape.ui.bindings.render.IViewRenderer;
-import com.redshape.ui.bindings.render.IViewRendererBuilder;
+import com.redshape.ui.data.bindings.render.IViewRenderer;
+import com.redshape.ui.data.bindings.render.IViewRendererBuilder;
 import com.redshape.ui.data.providers.IProvidersFactory;
 import com.redshape.ui.data.stores.IStoresManager;
 import com.redshape.ui.views.IViewsManager;
 import com.redshape.ui.windows.IWindowsManager;
 import com.redshape.utils.clonners.IObjectsCloner;
 
+import java.awt.MenuBar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +29,7 @@ import java.util.Map;
 public final class UIRegistry {
     private static Map<UIConstants.Attribute, Object> values = new HashMap<UIConstants.Attribute, Object>();
     private static JFrame context;
-    private static JMenuBar menu;
+    private static MenuBar menu;
 	private static Settings settings;
 	private static INotificationsManager notificationsManager;
 
@@ -55,11 +56,11 @@ public final class UIRegistry {
         return (V) values.get(id);
     }
 
-    public static JMenuBar getMenu() {
+    public static MenuBar getMenu() {
     	return UIRegistry.menu;
     }
     
-    public static void setMenu( JMenuBar menu ) {
+    public static void setMenu( MenuBar menu ) {
     	UIRegistry.menu = menu;
     }
     

@@ -3,10 +3,14 @@ package com.redshape.utils;
 import sun.net.util.IPAddressUtil;
 
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 
 @SuppressWarnings("restriction")
@@ -25,11 +29,21 @@ public class StringUtils {
     }
 
     public static String reverseSentence( String sentence ) {
-        StringBuilder builder = new StringBuilder();
-        for ( String sentencePart : sentence.split(" ") ) {
-            builder.append(sentencePart);
+    	return reverseSentence( sentence, " ");
+    }
+    
+    public static String reverseSentence( String sentence, String delimiter ) {
+    	StringBuilder builder = new StringBuilder();
+        String[] parts = sentence.split( Pattern.quote( delimiter ) );
+        for ( int i = parts.length - 1; i >= 0; i--) {
+            builder.append( parts[i] );
+            
+            if ( i != 0 ) {
+            	builder.append( delimiter );
+            }
         }
-        return builder.reverse().toString();
+        
+        return builder.toString();
     }
 
     public static String reverse( String input ) {
@@ -162,5 +176,14 @@ public class StringUtils {
 
     public static String formatDate( String format, Date date ) {
     	return new SimpleDateFormat(format).format(date);
+    }
+
+    public static String stackTraceAsString( Throwable e ) {
+    	final Writer writer = new StringWriter();
+    	final PrintWriter printer = new PrintWriter(writer);
+
+    	e.printStackTrace(printer);
+
+    	return writer.toString();
     }
 }

@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Map;
 
 import com.redshape.ui.Dispatcher;
-import com.redshape.ui.events.UIEvents;
+import com.redshape.ui.application.events.UIEvents;
 import com.redshape.ui.utils.UIConstants;
 import com.redshape.ui.utils.UIRegistry;
 

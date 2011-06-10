@@ -1,6 +1,6 @@
 package com.redshape.validators.impl;
 
-import com.redshape.validators.AnnotatedObject;
+import com.redshape.utils.AnnotatedObject;
 import com.redshape.validators.IValidator;
 import com.redshape.validators.annotations.Range;
 import com.redshape.validators.result.ValidationResult;
@@ -20,12 +20,12 @@ public class RangeValidator implements IValidator<AnnotatedObject, ValidationRes
 			return true;
 		}
 
-		int maxCompare = value.<Comparable>getContext().compareTo( annotation.max() );
+		int maxCompare = value.<Comparable<Integer>>getContext().compareTo( annotation.max() );
 		if ( maxCompare > 0 ) {
 			return false;
 		}
 
-		int minCompare = value.<Comparable>getContext().compareTo( annotation.min() );
+		int minCompare = value.<Comparable<Integer>>getContext().compareTo( annotation.min() );
 		if ( minCompare < 0 ) {
 			return false;
 		}

@@ -3,9 +3,9 @@ package com.redshape.ui.data.adapters.swing;
 import com.redshape.ui.data.IModelData;
 import com.redshape.ui.data.IStore;
 import com.redshape.ui.data.stores.StoreEvents;
-import com.redshape.ui.events.AppEvent;
-import com.redshape.ui.events.IEventHandler;
-import com.redshape.ui.tree.AbstractTree;
+import com.redshape.ui.application.events.AppEvent;
+import com.redshape.ui.application.events.IEventHandler;
+import com.redshape.ui.data.tree.AbstractTree;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
@@ -18,6 +18,8 @@ import javax.swing.tree.TreePath;
  * @package com.redshape.ui.tree
  */
 public abstract class AbstractDataTree<V extends IModelData, T extends IStore<V>> extends AbstractTree {
+	private static final long serialVersionUID = 8411276418247350658L;
+	
 	private T store;
 
 	public AbstractDataTree( T store ) {
@@ -50,6 +52,8 @@ public abstract class AbstractDataTree<V extends IModelData, T extends IStore<V>
 		this.getStore().addListener(
 			StoreEvents.Refresh,
 			new IEventHandler() {
+				private static final long serialVersionUID = 8361609184675101608L;
+
 				@Override
 				public void handle(AppEvent event) {
 					AbstractDataTree.this.removeNodes();
@@ -61,6 +65,8 @@ public abstract class AbstractDataTree<V extends IModelData, T extends IStore<V>
 		this.getStore().addListener(
 			StoreEvents.Changed,
 			new IEventHandler() {
+				private static final long serialVersionUID = 2706575877331395592L;
+
 				@Override
 				public void handle(AppEvent event) {
 					AbstractDataTree.this.onRecordChanged(event);
@@ -71,6 +77,8 @@ public abstract class AbstractDataTree<V extends IModelData, T extends IStore<V>
 		this.getStore().addListener(
 			StoreEvents.Removed,
 			new IEventHandler() {
+				private static final long serialVersionUID = -1081979334021755797L;
+
 				@Override
 				public void handle(AppEvent event) {
 					AbstractDataTree.this.onRecordRemove(event);
@@ -81,6 +89,8 @@ public abstract class AbstractDataTree<V extends IModelData, T extends IStore<V>
 		this.getStore().addListener(
 			StoreEvents.Added,
 			new IEventHandler() {
+				private static final long serialVersionUID = 1794740860804739905L;
+
 				@Override
 				public void handle(AppEvent event) {
 					AbstractDataTree.this.onRecordAdd(event);
@@ -99,6 +109,7 @@ public abstract class AbstractDataTree<V extends IModelData, T extends IStore<V>
         return ( DefaultMutableTreeNode ) path.getLastPathComponent();
     }
 
+	@SuppressWarnings("unchecked")
 	public V getSelectedRecord() {
         DefaultMutableTreeNode node = this.getSelectedNode();
         if ( node == null ) {

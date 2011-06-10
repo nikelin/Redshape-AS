@@ -1,13 +1,10 @@
 package com.redshape.persistence.entities;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Member;
-import java.util.Collection;
 
 import javax.persistence.*;
 
 import org.apache.log4j.*;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author nikelin
@@ -67,6 +64,11 @@ public abstract class AbstractEntity implements IEntity {
 
     public boolean equals( IEntity e ) {
         return this.getId() != null && e.getId() != null && this.getId().equals( e.getId() );
+    }
+    
+    @Override
+    public void onDelete() {
+    	
     }
 
     protected boolean isCollectionMember( Field field ) {

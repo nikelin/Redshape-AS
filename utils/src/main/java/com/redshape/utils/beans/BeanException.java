@@ -8,8 +8,9 @@ package com.redshape.utils.beans;
  * To change this template use File | Settings | File Templates.
  */
 public class BeanException extends RuntimeException {
+	private static final long serialVersionUID = 867505721529125159L;
 
-    public BeanException() {
+	public BeanException() {
         super();
     }
 

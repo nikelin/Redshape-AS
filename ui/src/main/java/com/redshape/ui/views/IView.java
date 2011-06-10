@@ -3,7 +3,7 @@ package com.redshape.ui.views;
 import java.awt.Container;
 import java.io.Serializable;
 
-import com.redshape.ui.events.IEventHandler;
+import com.redshape.ui.application.events.IEventHandler;
 
 /**
  * Created by IntelliJ IDEA.

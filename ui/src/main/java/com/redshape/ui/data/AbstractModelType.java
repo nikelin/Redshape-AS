@@ -14,8 +14,24 @@ public abstract class AbstractModelType implements IModelType {
 	
 	private Map<String, IModelField> values = new HashMap<String, IModelField>();
     private List<String> order = new ArrayList<String>();
+    
+    private Class<? extends IModelData> type;
+    
+    public AbstractModelType( Class<? extends IModelData> type ) {
+    	this.type = type;
+    }
+    
+    @Override
+	public boolean isInstance(Class<? extends IModelData> type) {
+		return this.type.isAssignableFrom(type);
+	}
 
-    public IModelField getField( int index ) {
+	@Override
+	public boolean isInstance(IModelData type) {
+		return this.isInstance( type.getClass() );
+	}
+
+	public IModelField getField( int index ) {
         return this.values.get( this.order.get(index) );
     }
 

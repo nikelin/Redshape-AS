@@ -6,7 +6,8 @@ package com.redshape.struct;
  * @author nikelin
  */
 public class TreeNodeException extends Exception {
-	
+	private static final long serialVersionUID = 6464373233377951827L;
+
 	public TreeNodeException() {
 		super();
 	}

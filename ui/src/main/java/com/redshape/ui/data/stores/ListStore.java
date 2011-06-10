@@ -1,9 +1,9 @@
 package com.redshape.ui.data.stores;
 
 import com.redshape.ui.Dispatcher;
-import com.redshape.ui.events.AppEvent;
-import com.redshape.ui.events.EventDispatcher;
-import com.redshape.ui.events.IEventHandler;
+import com.redshape.ui.application.events.AppEvent;
+import com.redshape.ui.application.events.EventDispatcher;
+import com.redshape.ui.application.events.IEventHandler;
 import com.redshape.ui.data.IModelData;
 import com.redshape.ui.data.IModelType;
 import com.redshape.ui.data.IStore;
@@ -11,10 +11,12 @@ import com.redshape.ui.data.ModelEvent;
 import com.redshape.ui.data.loaders.IDataLoader;
 import com.redshape.ui.data.loaders.LoaderEvents;
 import com.redshape.ui.data.loaders.LoaderException;
-import com.redshape.ui.events.UIEvents;
+import com.redshape.ui.application.events.UIEvents;
+import com.redshape.utils.IFilter;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -52,12 +54,19 @@ public class ListStore<V extends IModelData>
 		Dispatcher.get().addListener(
 			UIEvents.Core.Refresh.Stores,
 			new IEventHandler() {
+				private static final long serialVersionUID = -177894475768338821L;
+
 				@Override
 				public void handle(AppEvent event) {
 					ListStore.this.forwardEvent( StoreEvents.Refresh );
 				}
 			}
 		);
+	}
+	
+	@Override
+	public boolean isEmpty() {
+		return this.count() == 0;
 	}
     
     @Override
@@ -70,6 +79,8 @@ public class ListStore<V extends IModelData>
 
     protected void bindRecord( final V record ) {
 		record.addListener( ModelEvent.REMOVED, new IEventHandler() {
+			private static final long serialVersionUID = 1393458864711926241L;
+
 			@Override
 			public void handle(AppEvent event) {
 				ListStore.this.remove( record );
@@ -77,6 +88,8 @@ public class ListStore<V extends IModelData>
 		});
 
     	record.addListener(ModelEvent.CHANGED, new IEventHandler() {
+			private static final long serialVersionUID = -8662467432503234458L;
+
 			@Override
 			public void handle(AppEvent event) {
 				ListStore.this.forwardEvent( StoreEvents.Changed, event.getArg(0), record );
@@ -86,7 +99,9 @@ public class ListStore<V extends IModelData>
     
     protected void bindLoader( IDataLoader<V> loader ) {
         loader.addListener(LoaderEvents.Loaded, new IEventHandler() {
-            @Override
+			private static final long serialVersionUID = 6612096418407552533L;
+
+			@Override
             public void handle( AppEvent type) {
             	ListStore.this.clear();
             	
@@ -115,6 +130,51 @@ public class ListStore<V extends IModelData>
     }
 
     @Override
+	public V findRecord(IFilter<V> filter) {
+    	if ( filter == null ) {
+    		throw new IllegalArgumentException("null");
+    	}
+    	
+    	for ( V record : this.getList() ) {
+    		if ( filter.filter(record) ) {
+    			return record;
+    		}
+    	}
+    	
+    	return null;
+	}
+
+	@Override
+	public Collection<V> find(IFilter<V> filter) {
+		if ( filter == null ) {
+			throw new IllegalArgumentException("null");
+		}
+		
+		Collection<V> result = new HashSet<V>();
+		for ( V record : this.getList() ) {
+			if ( filter.filter( record ) ) {
+				result.add( record );
+			}
+		}
+		
+		return result;
+	}
+
+	@Override
+	public boolean filter(IFilter<V> filter) {
+		if ( filter == null ) {
+			throw new IllegalArgumentException("null");
+		}
+		
+		boolean result = !this.isEmpty();
+		for ( V record : this.getList() ) {
+			result = result && filter.filter( record );
+		}
+		
+		return result;
+	}
+
+	@Override
     public void add( V record ) {
         synchronized ( lock ) {
             this.bindRecord(record);
@@ -139,8 +199,7 @@ public class ListStore<V extends IModelData>
 
     @Override
     public void removeAt( int index ) {
-        V item;
-        this.remove( item = this.records.get(index) );
+        this.remove( this.records.get(index) );
     }
 
     protected IDataLoader<V> getLoader() {

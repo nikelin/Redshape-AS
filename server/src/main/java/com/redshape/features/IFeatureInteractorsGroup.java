@@ -9,14 +9,14 @@ import java.util.Set;
  * Time: 3:19:53 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface IFeatureInteractorsGroup {
+public interface IFeatureInteractorsGroup<T extends IFeatureInteractor<T>> {
 
-    public <T extends IFeatureInteractor> Set<T> getInteractors();
+    public Set<T> getInteractors();
 
-    public void setInteractors( Set<IFeatureInteractor> interactors );
+    public void setInteractors( Set<T> interactors );
 
-    public void addInteractor( IFeatureInteractor interactor );
+    public void addInteractor( T interactor );
 
-    public void removeInteractor( IFeatureInteractor interactor );
+    public void removeInteractor( T interactor );
 
 }

@@ -1,6 +1,7 @@
 package com.redshape.ui.data;
 
 public class ModelDataTest extends AbstractModelData {
+	private static final long serialVersionUID = -398827689028004031L;
 
 	public ModelDataTest() {
 		this(null);

@@ -1,6 +1,6 @@
 package com.redshape.ui.data.readers;
 
-import com.redshape.ui.events.EventType;
+import com.redshape.ui.application.events.EventType;
 
 /**
  * Created by IntelliJ IDEA.

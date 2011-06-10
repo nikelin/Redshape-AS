@@ -1,6 +1,5 @@
 package com.redshape.servlet.core;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 

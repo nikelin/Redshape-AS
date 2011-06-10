@@ -8,8 +8,9 @@ package com.redshape.servlet.views.render;
  * To change this template use File | Settings | File Templates.
  */
 public class RenderException extends Exception {
+	private static final long serialVersionUID = -5345627128392178068L;
 
-    public RenderException() {
+	public RenderException() {
         super();
     }
 

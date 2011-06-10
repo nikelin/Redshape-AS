@@ -4,9 +4,7 @@ import com.redshape.utils.config.ConfigException;
 import com.redshape.utils.config.IConfig;
 import com.redshape.utils.config.IWritableConfig;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -15,9 +13,10 @@ import java.util.Map;
  * @package com.redshape.ui.utils
  */
 public class Settings implements IWritableConfig {
+	private static final long serialVersionUID = -6125512203291653333L;
+	
 	private String name;
 	private String value;
-	private boolean writable;
 	private boolean nulled;
 	private Settings parent;
 	private Map<String, IConfig> children = new HashMap<String, IConfig>();
@@ -77,7 +76,6 @@ public class Settings implements IWritableConfig {
 
 	@Override
 	public IWritableConfig makeWritable(boolean value) {
-		this.writable = value;
 		return this;
 	}
 
@@ -124,6 +122,7 @@ public class Settings implements IWritableConfig {
 		return this.createNulledNode();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends IConfig> T[] childs() {
 		return  (T[]) this.children.values().toArray( new IConfig[this.children.size()] );
@@ -192,6 +191,7 @@ public class Settings implements IWritableConfig {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <V> V getRawElement() {
 		return (V) this;

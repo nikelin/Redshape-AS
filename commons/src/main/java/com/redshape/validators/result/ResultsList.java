@@ -1,6 +1,5 @@
 package com.redshape.validators.result;
 
-import java.lang.annotation.Annotation;
 import java.util.HashSet;
 
 /**
@@ -10,6 +9,8 @@ import java.util.HashSet;
  */
 public class ResultsList extends HashSet<IValidationResult>
 						 implements IResultsList {
+	private static final long serialVersionUID = 3441164189894402471L;
+	
 	private String name;
 	private boolean success;
 
@@ -28,23 +29,21 @@ public class ResultsList extends HashSet<IValidationResult>
 	}
 
 	@Override
-	public Annotation getSubject() {
-		throw new UnsupportedOperationException("Operation not supports in current validator implementation");
-	}
-
-	@Override
 	public void markValid( boolean value ) {
 		this.success = value;
 	}
 
-	@Override
 	public String getName() {
 		return this.name;
 	}
 
 	@Override
 	public boolean isValid() {
-		boolean result = true;
+		boolean result = this.success;
+		if ( !result ) {
+			return result;
+		}
+		
 		for ( IValidationResult item : this ) {
 			result = result && item.isValid();
 		}

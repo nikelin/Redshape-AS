@@ -1,6 +1,6 @@
 package com.redshape.validators.impl;
 
-import com.redshape.validators.AnnotatedObject;
+import com.redshape.utils.AnnotatedObject;
 import com.redshape.validators.IValidator;
 import com.redshape.validators.annotations.Length;
 import com.redshape.validators.result.ValidationResult;

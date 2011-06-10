@@ -1,6 +1,6 @@
 package com.redshape.validators.impl;
 
-import com.redshape.validators.AnnotatedObject;
+import com.redshape.utils.AnnotatedObject;
 import com.redshape.validators.IValidator;
 import com.redshape.validators.result.ValidationResult;
 
@@ -17,9 +17,9 @@ public class NotEmptyAnnotationValidator implements IValidator<AnnotatedObject, 
 	@Override
 	public boolean isValid(AnnotatedObject value) {
 		if( value.getContext() instanceof Collection ) {
-			return !value.<Collection>getContext().isEmpty();
+			return !value.<Collection<?>>getContext().isEmpty();
 		} else if ( value.getContext() instanceof Map ) {
-			return !value.<Map>getContext().isEmpty();
+			return !value.<Map<?,?>>getContext().isEmpty();
 		} else {
 			return true;
 		}

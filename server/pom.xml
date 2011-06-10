@@ -21,31 +21,25 @@
     	<dependency>
     		<groupId>com.redshape.protocols</groupId>
     		<artifactId>vanilla</artifactId>
-    		<version>${project.version}</version>
+    		<version>1.0.0A</version>
     	</dependency>
 
         <dependency>
     		<groupId>com.redshape.protocols</groupId>
     		<artifactId>http</artifactId>
-    		<version>${project.version}</version>
-    	</dependency>
-    
-    	<dependency>
-    		<groupId>com.redshape.protocols</groupId>
-    		<artifactId>vanilla</artifactId>
-    		<version>${project.version}</version>
+    		<version>1.0.0A</version>
     	</dependency>
     
     	<dependency>
     		<groupId>com.redshape</groupId>
     		<artifactId>persistence</artifactId>
-    		<version>${project.version}</version>
+    		<version>1.0.0A</version>
     	</dependency>
     
         <dependency>
             <groupId>com.redshape</groupId>
             <artifactId>tasks</artifactId>
-            <version>${project.version}</version>
+            <version>1.0.0A</version>
         </dependency>
 
         <dependency>

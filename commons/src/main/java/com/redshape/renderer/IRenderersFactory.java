@@ -9,27 +9,27 @@ package com.redshape.renderer;
  */
 public interface IRenderersFactory {
 
-    /**
-         * String which represent factory ID in configuration
-         *
-         * @return Strng
-         */
+	/**
+     * String which represent factory ID in configuration
+     *
+     * @return Strng
+     */
     String getFactoryId();
 
     /**
-         * Get renderer for specified class entity
-         * @param clazz
-         * @param <T>
-         * @return
-         * @throws RendererException
-         */
+     * Get renderer for specified class entity
+     * @param clazz
+     * @param <T>
+     * @return
+     * @throws RendererException
+     */
     <T extends IRenderer> T getRenderer( Class<T> clazz ) throws RendererException;
 
     /**
-         * Bind renderer entity to specified renderable entity
-         * @param rendererClazz
-         * @param renderer
-         */
+     * Bind renderer entity to specified renderable entity
+     * @param rendererClazz
+     * @param renderer
+     */
     void addRenderer( Class<? extends IRenderer> rendererClazz, IRenderer renderer );
 
     IRenderer forEntity( Object object ) throws RendererException;

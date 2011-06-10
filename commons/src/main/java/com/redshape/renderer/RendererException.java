@@ -1,8 +1,9 @@
 package com.redshape.renderer;
 
 public class RendererException extends Throwable {
+	private static final long serialVersionUID = -5951570218329123262L;
 
-    public RendererException() {
+	public RendererException() {
     	super();
     }
 

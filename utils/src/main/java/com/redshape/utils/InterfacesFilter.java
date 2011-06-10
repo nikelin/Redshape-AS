@@ -39,6 +39,7 @@ public class InterfacesFilter<T> implements IFilter<Class<T>> {
         this.allowNesting = allowNesting;
     }
 
+    @Override
     public boolean filter( Class<T> filterable ) {
         return this.filter( filterable, this.allowNesting );
     }

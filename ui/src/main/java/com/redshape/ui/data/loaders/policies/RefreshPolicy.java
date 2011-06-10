@@ -1,12 +1,12 @@
 package com.redshape.ui.data.loaders.policies;
 
-import com.redshape.ui.UnhandledUIException;
+import com.redshape.ui.application.UnhandledUIException;
 import com.redshape.ui.data.IModelData;
 import com.redshape.ui.data.loaders.IDataLoader;
 import com.redshape.ui.data.loaders.LoaderException;
-import com.redshape.ui.events.AppEvent;
-import com.redshape.ui.events.EventType;
-import com.redshape.ui.events.IEventHandler;
+import com.redshape.ui.application.events.AppEvent;
+import com.redshape.ui.application.events.EventType;
+import com.redshape.ui.application.events.IEventHandler;
 import org.apache.log4j.Logger;
 
 import java.util.Collection;
@@ -21,13 +21,15 @@ import java.util.TimerTask;
  * To change this template use File | Settings | File Templates.
  */
 public class RefreshPolicy<T extends IModelData> implements IDataLoader<T>, IDataLoaderPolicy<T> {
-    private static final Logger log = Logger.getLogger(RefreshPolicy.class);
+	private static final long serialVersionUID = -1235475449895087975L;
 
-    private IDataLoader loader;
+	private static final Logger log = Logger.getLogger(RefreshPolicy.class);
+
+    private IDataLoader<T> loader;
     private Integer interval;
     private Timer timer = new Timer();
 
-    public RefreshPolicy( IDataLoader loader, Integer refreshInterval ) {
+    public RefreshPolicy( IDataLoader<T> loader, Integer refreshInterval ) {
         this.loader = loader;
         this.interval = refreshInterval;
 

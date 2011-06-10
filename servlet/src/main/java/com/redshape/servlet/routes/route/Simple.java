@@ -1,6 +1,5 @@
 package com.redshape.servlet.routes.route;
 
-import com.redshape.servlet.core.HttpRequest;
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.routes.IRoute;
 
@@ -18,7 +17,7 @@ public class Simple implements IRoute {
     private String inputURI;
     private String controller;
     private String action;
-    private Map<String, Object> parameters = new HashMap();
+    private Map<String, Object> parameters = new HashMap<String, Object>();
 
     public Simple( String inputURI, String controller, String action, Map<String, Object> parameters ) {
         this.inputURI = inputURI;

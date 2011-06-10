@@ -1,6 +1,6 @@
 package com.redshape.ui.data.loaders;
 
-import com.redshape.ui.events.IEventDispatcher;
+import com.redshape.ui.application.events.IEventDispatcher;
 import com.redshape.ui.data.IModelData;
 
 import java.io.Serializable;

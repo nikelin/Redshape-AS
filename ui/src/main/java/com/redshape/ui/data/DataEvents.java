@@ -1,6 +1,6 @@
 package com.redshape.ui.data;
 
-import com.redshape.ui.events.EventType;
+import com.redshape.ui.application.events.EventType;
 
 public class DataEvents extends EventType {
 

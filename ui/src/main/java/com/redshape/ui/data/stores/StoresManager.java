@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import com.redshape.ui.data.IModelData;
 import com.redshape.ui.data.IStore;
 
 public class StoresManager implements IStoresManager {
@@ -39,13 +40,43 @@ public class StoresManager implements IStoresManager {
 
 		return result;
 	}
-
+	
+	@Override
+	public <T extends IStore<?>, V extends IModelData> T findByType(
+			Class<? extends V> type) {
+		T result = null;
+		for ( StoreContext context : this.contexts ) {
+			result = this.findByTypeWithinContext(type, context);
+			if ( result != null ) {
+				break;
+			}
+		}
+		
+		if ( result != null ) {
+			return result;
+		} else {
+			return this.findByTypeWithinContext(type, this.globalContext );
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
+	private <T extends IStore<?>, V extends IModelData> T findByTypeWithinContext(
+			Class<? extends V> type, StoreContext context ) {
+		for ( IStore<?> store : context.list() ) {
+			if ( store.getType().isInstance( type ) ) {
+				return (T) store;
+			}
+		}
+		
+		return null;
+	}
+
 	@Override
 	public <T extends IStore<?>> T getStore( Class<? extends T> clazz ) throws InstantiationException {
 		return this.getStore( this, clazz );
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T extends IStore<?>> T getStore( Object context, Class<? extends T> clazz ) throws InstantiationException {
 		if ( clazz == null ) {
 			throw new IllegalArgumentException("null");
@@ -119,10 +150,12 @@ public class StoresManager implements IStoresManager {
 			return this.context;
 		}
 
+		@SuppressWarnings("unchecked")
 		public <T extends IStore<?>> T getItem( Class<? extends T> clazz ) {
 			return (T) this.items.get(clazz);
 		}
 
+		@SuppressWarnings("unchecked")
 		public void addItem( IStore<?> store ) {
 			this.items.put( (Class<? extends IStore<?>>) store.getClass(), store );
 		}

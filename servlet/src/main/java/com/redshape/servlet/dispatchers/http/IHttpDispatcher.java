@@ -1,5 +1,8 @@
 package com.redshape.servlet.dispatchers.http;
 
+import org.springframework.context.ApplicationContextAware;
+
+import com.redshape.servlet.actions.exceptions.AbstractPageException;
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.core.IHttpResponse;
 import com.redshape.servlet.dispatchers.DispatchException;
@@ -12,8 +15,8 @@ import com.redshape.servlet.dispatchers.DispatchException;
  * Time: 11:14 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface IHttpDispatcher {
-
-    public void dispatch( IHttpRequest request, IHttpResponse response ) throws DispatchException;
+public interface IHttpDispatcher extends ApplicationContextAware {
+	
+    public void dispatch( IHttpRequest request, IHttpResponse response ) throws AbstractPageException, DispatchException;
 
 }

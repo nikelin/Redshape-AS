@@ -2,9 +2,6 @@ package com.redshape.servlet.dispatchers;
 
 import com.redshape.servlet.dispatchers.http.IHttpDispatcher;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-
 /**
  * Created by IntelliJ IDEA.
  * User: nikelin

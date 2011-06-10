@@ -1,6 +1,6 @@
 package com.redshape.ui.components;
 
-import com.redshape.ui.IController;
+import com.redshape.ui.application.IController;
 import java.awt.Container;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,10 +8,12 @@ import java.util.List;
 
 import javax.swing.Action;
 
-import com.redshape.ui.events.EventDispatcher;
+import com.redshape.ui.application.events.EventDispatcher;
 import java.util.HashSet;
 
 public abstract class AbstractComponent extends EventDispatcher implements IComponent {
+	private static final long serialVersionUID = -80720655173889647L;
+	
 	private String name;
 	private String title;
 	private boolean doRenderMenu;

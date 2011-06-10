@@ -15,6 +15,8 @@ import java.util.Collection;
 import java.util.HashSet;
 
 class BindableObject implements IBindable, IBindableMap, IBindableCollection {
+	private static final long serialVersionUID = 848980700172296050L;
+	
 	private String id;
 	private String name;
 	private Class<?> type;
@@ -206,7 +208,9 @@ class BindableObject implements IBindable, IBindableMap, IBindableCollection {
 		}
 
 		if ( !this.isWritable() ) {
-			throw new AccessException("Object is read-only");
+			throw new AccessException("Object " + 
+							( this.getId() == null 
+										? "<null>" : this.getId() ) + " is read-only");
 		}
 		
 		if (!this.getWriter().isConsistent(value.getClass())) {

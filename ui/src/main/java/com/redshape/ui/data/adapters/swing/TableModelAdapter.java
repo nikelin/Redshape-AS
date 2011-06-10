@@ -1,8 +1,8 @@
 package com.redshape.ui.data.adapters.swing;
 
-import com.redshape.ui.events.AppEvent;
-import com.redshape.ui.events.EventDispatcher;
-import com.redshape.ui.events.IEventHandler;
+import com.redshape.ui.application.events.AppEvent;
+import com.redshape.ui.application.events.EventDispatcher;
+import com.redshape.ui.application.events.IEventHandler;
 import com.redshape.ui.data.IModelData;
 import com.redshape.ui.data.IModelType;
 import com.redshape.ui.data.IStore;

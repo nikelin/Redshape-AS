@@ -3,13 +3,14 @@ package com.redshape.ui.data.loaders;
 import java.util.Collection;
 
 import com.redshape.ui.data.IModelData;
-import com.redshape.ui.events.EventDispatcher;
+import com.redshape.ui.application.events.EventDispatcher;
 
 public abstract class AbstractDataLoader<T extends IModelData>
 									extends EventDispatcher
 									implements IDataLoader<T> {
+	private static final long serialVersionUID = 7205617290953493540L;
 
-    @Override
+	@Override
     public Collection<T> preProcess( Collection<T> results ) {
         return results;
     }

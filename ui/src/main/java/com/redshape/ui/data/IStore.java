@@ -1,8 +1,9 @@
 package com.redshape.ui.data;
 
-import com.redshape.ui.events.IEventDispatcher;
+import com.redshape.ui.application.events.IEventDispatcher;
 import com.redshape.ui.data.loaders.IDataLoader;
 import com.redshape.ui.data.loaders.LoaderException;
+import com.redshape.utils.IFilter;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -16,6 +17,33 @@ import java.util.Collection;
  */
 public interface IStore<V extends IModelData> extends IEventDispatcher, Serializable {
 
+	/**
+	 * Find record by applying specified filter on each record
+	 * within underlying collection.
+	 * The first record which will satisfy filter would be returned. 
+	 * @param filter
+	 * @return
+	 */
+	public V findRecord( IFilter<V> filter );
+	
+	/**
+	 * Find record by applying specified filter on each record
+	 * within underlying collection and return all records which satisfy filter.
+	 * 
+	 * @param filter
+	 * @return
+	 */
+	public Collection<V> find( IFilter<V> filter );
+	
+	/**
+	 * Apply filter on each record within underlying collection and return true
+	 * if filter would be satisfied on all collection range and false otherwise.
+	 * 
+	 * @param filter
+	 * @return
+	 */
+	public boolean filter( IFilter<V> filter );
+	
 	/**
 	 *  Return current store records model type
 	 * @return
@@ -33,6 +61,14 @@ public interface IStore<V extends IModelData> extends IEventDispatcher, Serializ
 	 * @param record
 	 */
     public void add( V record );
+    
+    /**
+     * Return true if any records present in the
+     * collection.
+     * 
+     * @return
+     */
+    public boolean isEmpty();
 
 	/**
 	 * Remove given record from this store

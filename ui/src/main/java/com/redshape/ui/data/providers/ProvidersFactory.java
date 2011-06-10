@@ -31,11 +31,15 @@ public class ProvidersFactory implements IProvidersFactory {
 	@Override
 	public <T extends IModelData> IStore<T> provide( Class<?> type ) throws InstantiationException {
 		Class<? extends IStore<T>> storeClass = (Class<? extends IStore<T>>) this.providers.get(type);
-		if ( storeClass == null ) {
-			return null;
+		if ( storeClass != null ) {
+			return this.getStoresManager().getStore( storeClass );
 		}
 
-		return this.getStoresManager().getStore( storeClass );
+		if ( IModelData.class.isAssignableFrom( type ) ) {
+			return this.getStoresManager().findByType( type.asSubclass(IModelData.class) );
+		}
+		
+		return null;
 	}
 
 	@Override

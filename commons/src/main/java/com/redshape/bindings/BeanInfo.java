@@ -11,9 +11,10 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 
 import com.redshape.bindings.annotations.*;
-import com.redshape.validators.BeansValidator;
 import com.redshape.validators.IValidator;
+import com.redshape.validators.common.BeansValidator;
 import com.redshape.validators.result.IResultsList;
+
 import org.apache.commons.collections.ListUtils;
 import org.apache.log4j.Logger;
 
@@ -103,15 +104,20 @@ public class BeanInfo implements IBeanInfo {
 	
 	@Override
 	public List<IBindable> getBindables() throws BindingException {
+		Collection<String> processed = new HashSet<String>(); 
 		List<IBindable> result = new ArrayList<IBindable>();
-
+		
 		for (AccessibleObject member : this.getMembers()) {
 			Bindable bindable = this.getAnnotation(member, Bindable.class);
 			if (bindable == null) {
 				continue;
 			}
-
-			result.add(this.processMember(bindable, (Member) member));
+				
+			IBindable item = this.processMember(bindable, (Member) member);
+			if ( !processed.contains( item.getId() ) ) {
+				result.add( item );
+				processed.add( item.getId() );
+			}
 		}
 
 		return result;
@@ -418,6 +424,7 @@ public class BeanInfo implements IBeanInfo {
 		throw new NoSuchMethodError("No suitable constructor was founded");
 	}
 
+	@SuppressWarnings("unchecked")
 	protected <T extends Annotation> T getAnnotation( AccessibleObject object, Class<T> annotationClazz ) {
 		if ( !this.annotations.containsKey(object) ) {
 			return null;
@@ -480,6 +487,7 @@ public class BeanInfo implements IBeanInfo {
 		return this.members;
 	}
 
+	@SuppressWarnings("unchecked")
 	private static Collection<AccessibleObject> extractMembers( Class<?> clazz ) {
 		List<AccessibleObject> members = new ArrayList<AccessibleObject>();
 		members.addAll(Arrays.asList( clazz.getMethods()) );

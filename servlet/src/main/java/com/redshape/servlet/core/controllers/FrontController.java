@@ -1,5 +1,6 @@
 package com.redshape.servlet.core.controllers;
 
+import com.redshape.servlet.actions.exceptions.AbstractPageException;
 import com.redshape.servlet.core.controllers.plugins.IPlugin;
 import com.redshape.servlet.core.HttpRequest;
 import com.redshape.servlet.core.HttpResponse;
@@ -10,6 +11,7 @@ import com.redshape.servlet.dispatchers.http.IHttpDispatcher;
 import com.redshape.servlet.routes.IHttpRouter;
 import com.redshape.servlet.views.ILayout;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,23 +26,28 @@ import java.util.Set;
  * Time: 11:46 PM
  * To change this template use File | Settings | File Templates.
  */
-public final class FrontController {
-    private static final Logger log = Logger.getLogger( FrontController.class );
+public class FrontController {
+    @SuppressWarnings("unused")
+	private static final Logger log = Logger.getLogger( FrontController.class );
 
+    @Autowired( required = true )
     private ILayout layout;
+    
     private IHttpDispatcher dispatcher;
     private IHttpRouter router;
+    
     private Set<IPlugin> plugins = new HashSet<IPlugin>();
 
     private enum DispatchingStage {
         PRE_DISPATCH,
         POST_DISPATCH
     };
-
-    public static FrontController getInstance() {
-        return InstanceHandler.createInstance();
+    
+    public FrontController( IHttpDispatcher dispatcher, IHttpRouter router ) {
+    	this.dispatcher = dispatcher;
+    	this.router = router;
     }
-
+  
     public void setLayout( ILayout layout ) {
         this.layout = layout;
     }
@@ -60,7 +67,7 @@ public final class FrontController {
     public IHttpRouter getRouter() {
         return this.router;
     }
-
+    
     public void setRouter( IHttpRouter router ) {
         this.router = router;
     }
@@ -74,18 +81,13 @@ public final class FrontController {
     }
 
     public void dispatch( HttpServlet servlet, HttpServletRequest request, HttpServletResponse response )
-                                                throws DispatchException {
+                                                throws DispatchException, AbstractPageException {
         HttpRequest routedRequest = this.getRouter().route(request);
         HttpResponse wrappedResponse = new HttpResponse( response );
 
         this._invokePlugins( DispatchingStage.PRE_DISPATCH, routedRequest, wrappedResponse );
 
-        try {
-            this.getDispatcher().dispatch( routedRequest, wrappedResponse );
-        } catch ( DispatchException e ) {
-            log.error( e.getMessage(), e );
-            throw new DispatchException();
-        }
+        this.getDispatcher().dispatch( routedRequest, wrappedResponse );
 
         this._invokePlugins( DispatchingStage.POST_DISPATCH, routedRequest, wrappedResponse );
     }
@@ -101,19 +103,6 @@ public final class FrontController {
                 break;
             }
         }
-    }
-
-    public static class InstanceHandler {
-        private static FrontController instance;
-
-        synchronized public static FrontController createInstance() {
-            if ( instance == null ) {
-                instance = new FrontController();
-            }
-
-            return instance;
-        }
-
     }
 
 }

@@ -2,6 +2,8 @@ package com.redshape.validators;
 
 import org.apache.log4j.Logger;
 
+import com.redshape.utils.AnnotatedObject;
+
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +29,7 @@ public final class ValidatorsFacade {
 		return InstanceHolder.instance;
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T> IValidator<T, ?> getValidator( Class<? extends IValidator<T,?>> clazz ) {
 		if ( this.validators.containsKey(clazz) ) {
 			return (IValidator<T, ?>) this.validators.get( clazz );
@@ -44,6 +47,7 @@ public final class ValidatorsFacade {
 		return validator;
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T extends AnnotatedObject> IValidator<T,?> getAnnotationValidator( Class<? extends Annotation> annotation) {
 		return (IValidator<T, ?>) this.annotationValidators.get( annotation );
 	}

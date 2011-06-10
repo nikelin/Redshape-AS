@@ -10,7 +10,7 @@ import java.util.Map;
 
 import javax.swing.*;
 
-import com.redshape.ui.UnhandledUIException;
+import com.redshape.ui.application.UnhandledUIException;
 import com.redshape.ui.utils.UIRegistry;
 import com.redshape.utils.IFilter;
 

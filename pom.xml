@@ -21,6 +21,7 @@
 		<module>search</module>
         <module>io</module>
         <module>utils</module>
+        <module>shaper</module>
     </modules>
 
     <properties>
@@ -47,6 +48,29 @@
             <name>Java.net Repository</name>
             <url>http://download.java.net/maven/2</url>
         </repository>
+        <repository>
+			<id>sf-snashots</id>
+			<url>http://oss.sonatype.org/content/repositories/sourceforge-snapshots</url>
+		</repository>
+
+        <repository>
+        	<id>sf-releases</id>
+        	<url>http://oss.sonatype.org/content/repositories/sourceforge-releases/</url>
+        	<name>Sonatype SF Releases</name>
+        </repository>
+        
+        <repository>
+        	<id>ibiblio</id>
+        	<url>http://mirrors.ibiblio.org/pub/mirrors/maven2/</url>
+        	<name>iBiblio Central</name>
+        </repository>
+
+        	<repository>
+        <id>terracotta-releases</id>
+        <url>http://www.terracotta.org/download/reflector/releases</url>
+        <releases><enabled>true</enabled></releases>
+        <snapshots><enabled>true</enabled></snapshots>
+    </repository>
     </repositories>
     
 

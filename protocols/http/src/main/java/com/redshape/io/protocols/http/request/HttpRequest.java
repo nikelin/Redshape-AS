@@ -20,7 +20,7 @@ public class HttpRequest implements IHttpRequest {
     private static final Logger log = Logger.getLogger( HttpRequest.class );
 
     private String uri;
-    private com.redshape.io.net.adapters.socket.client.ISocketAdapter socket;
+    private ISocketAdapter socket;
     private Map<String, RequestHeader> headers = new HashMap<String, RequestHeader>();
     private Map<String, String> parameters = new HashMap<String, String>();
     private HttpMethod method;

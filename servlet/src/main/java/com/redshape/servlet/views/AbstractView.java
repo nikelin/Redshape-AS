@@ -18,7 +18,7 @@ public abstract class AbstractView implements IView {
     private String viewPath;
     private String basePath;
     private IViewRenderer renderer;
-    private Map<String, Object> parameters = new HashMap();
+    private Map<String, Object> parameters = new HashMap<String, Object>();
     private String extension;
 
     public AbstractView( String basePath, String viewPath, String extension ) {
@@ -61,7 +61,8 @@ public abstract class AbstractView implements IView {
         this.parameters.put( name, value );
     }
 
-    public <T> T getAttribute( String name ) {
+    @SuppressWarnings("unchecked")
+	public <T> T getAttribute( String name ) {
         return (T) this.parameters.get(name);
     }
 
@@ -84,5 +85,15 @@ public abstract class AbstractView implements IView {
     public String getViewPath() {
         return this.viewPath;
     }
+
+	@Override
+	public void setAttribute(ViewAttributes name, Object value) {
+		this.setAttribute( name.name() , value);
+	}
+
+	@Override
+	public <T> T getAttribute(ViewAttributes name ) {
+		return this.getAttribute( name.name() );
+	}
 
 }

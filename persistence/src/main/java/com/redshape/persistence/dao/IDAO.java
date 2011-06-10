@@ -26,7 +26,9 @@ public interface IDAO<T extends IEntity> {
 
     public void removeAll() throws DAOException;
 
-    public void remove(IEntity object) throws DAOException;
+    public void remove(T object) throws DAOException;
+    
+    public void remove( Collection<T> object) throws DAOException;
 
     public T findById(Long id) throws DAOException;
 

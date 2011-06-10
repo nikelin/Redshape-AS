@@ -12,6 +12,7 @@
 
     <groupId>com.redshape</groupId>
     <artifactId>tasks</artifactId>
+    <version>1.0.0A</version>
     <packaging>jar</packaging>
 
     <build>
@@ -24,6 +25,7 @@
     		<groupId>com.redshape</groupId>
     		<version>1.0.0A</version>
     	</dependency>
+    	
         <dependency>
             <artifactId>junit</artifactId>
             <groupId>junit</groupId>
@@ -35,7 +37,6 @@
             <artifactId>quartz</artifactId>
             <version>1.5.2</version>
         </dependency>
-        
         
         <dependency>
           <groupId>org.apache.activemq</groupId>

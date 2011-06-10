@@ -14,20 +14,24 @@ import java.util.*;
 public abstract class AbstractRenderersFactory implements IRenderersFactory {
     private static final Logger log = Logger.getLogger( AbstractRenderersFactory.class );
 
-    private static Map<Class<? extends IRenderersFactory>,  IRenderersFactory> factories = new HashMap<
-												   												Class<? extends IRenderersFactory>, 
-												   												IRenderersFactory
-												   										     >();
+    private static Map<Class<? extends IRenderersFactory>, 
+    				   IRenderersFactory> factories 
+											= new HashMap<
+   												Class<? extends IRenderersFactory>, 
+   												IRenderersFactory
+   										     >();
 
-    private Map<Class<?>, Class<? extends IRenderer> > entities = new HashMap< 
-																		Class<?>, 
-	    			 													Class<? extends IRenderer>
-																>();
+    private Map<Class<?>, Class<? extends IRenderer> > entities 
+    										= new HashMap< 
+												Class<?>, 
+												Class<? extends IRenderer>
+											>();
     
-    private Map<Class<? extends IRenderer>, IRenderer> renderers = new HashMap< 
-    																	Class<? extends IRenderer>, 
-    																	IRenderer
-																	>();
+    private Map<Class<? extends IRenderer>, IRenderer> renderers 
+    										= new HashMap< 
+												Class<? extends IRenderer>, 
+												IRenderer
+											>();
     
     @Autowired( required = true )
     private ResourcesLoader resourcesLoader;
@@ -143,7 +147,8 @@ public abstract class AbstractRenderersFactory implements IRenderersFactory {
 		}
 	}
 
-    protected Class<? extends IRenderer>[] getRenderersClasses( String id ) throws PackageLoaderException {
+    @SuppressWarnings("unchecked")
+	protected Class<? extends IRenderer>[] getRenderersClasses( String id ) throws PackageLoaderException {
         try {
             Set<Class<? extends IRenderer>> renderers = new HashSet();
 

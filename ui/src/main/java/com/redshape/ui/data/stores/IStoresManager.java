@@ -1,10 +1,20 @@
 package com.redshape.ui.data.stores; 
 
+import com.redshape.ui.data.IModelData;
 import com.redshape.ui.data.IStore;
 import java.util.Collection;
 
 public interface IStoresManager {
 
+	/**
+	 * Return store which handle records with given type
+	 * 
+	 * @param type
+	 * @param <T>
+	 * @return
+	 */
+	public <T extends IStore<?>, V extends IModelData> T findByType( Class<? extends V> type );
+	
 	/**
 	 * Return store registered within specified context
 	 * @param context

@@ -3,10 +3,7 @@ package com.redshape.ui.data.adapters.swing;
 import com.redshape.ui.Dispatcher;
 import com.redshape.ui.data.IModelData;
 import com.redshape.ui.data.IStore;
-import com.redshape.ui.data.stores.StoreEvents;
-import com.redshape.ui.events.AppEvent;
-import com.redshape.ui.events.IEventHandler;
-import com.redshape.ui.events.UIEvents;
+import com.redshape.ui.application.events.UIEvents;
 
 import javax.swing.*;
 import javax.swing.event.ListDataEvent;
@@ -18,10 +15,12 @@ import javax.swing.event.ListDataListener;
  * @package com.redshape.ui.data.adapters.swing
  */
 public class ListAdapter<T extends IModelData> extends JList {
-    private IStore<T> store;
+	private static final long serialVersionUID = -6733654825153275566L;
+	
+	private IStore<T> store;
 
     public ListAdapter( IStore<T> store ) {
-        super( new ListModelAdapter(store) );
+        super( new ListModelAdapter<T>(store) );
 
         this.store = store;
         this.init();

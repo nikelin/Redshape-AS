@@ -2,7 +2,7 @@ package com.redshape.ui.data;
 
 import java.io.Serializable;
 
-import com.redshape.ui.events.IEventDispatcher;
+import com.redshape.ui.application.events.IEventDispatcher;
 
 /**
  * Created by IntelliJ IDEA.

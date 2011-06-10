@@ -107,7 +107,7 @@ public class CommandsFactory {
 	private void processPackage( String path )  throws PackageLoaderException {
         Class<? extends ICommand>[] tasks = this.getPackagesLoader()
         										.<ICommand>getClasses(path, 
-        												new InterfacesFilter( 
+        												new InterfacesFilter<ICommand>( 
         													new Class[] { ICommand.class }, 
         													new Class[] { Command.class } 
         												) );

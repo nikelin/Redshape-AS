@@ -1,14 +1,12 @@
 package com.redshape.ui.data.adapters.swing;
 
-import com.redshape.ui.Dispatcher;
-import com.redshape.ui.UnhandledUIException;
+import com.redshape.ui.application.UnhandledUIException;
 import com.redshape.ui.data.IModelData;
 import com.redshape.ui.data.IStore;
 import com.redshape.ui.data.loaders.LoaderException;
 import com.redshape.ui.data.stores.StoreEvents;
-import com.redshape.ui.events.AppEvent;
-import com.redshape.ui.events.IEventHandler;
-import com.redshape.ui.events.UIEvents;
+import com.redshape.ui.application.events.AppEvent;
+import com.redshape.ui.application.events.IEventHandler;
 
 import javax.swing.*;
 import javax.swing.event.ListDataEvent;
@@ -22,7 +20,9 @@ import java.util.HashSet;
  * @package com.redshape.ui.data.adapters.swing
  */
 public class ListModelAdapter<T extends IModelData> extends DefaultListModel {
-    private IStore<T> store;
+	private static final long serialVersionUID = -1496426415629688805L;
+	
+	private IStore<T> store;
     private Collection<ListDataListener> listeners = new HashSet<ListDataListener>();
 
     public ListModelAdapter( IStore<T> store ) {
@@ -76,7 +76,9 @@ public class ListModelAdapter<T extends IModelData> extends DefaultListModel {
         }
 
         this.store.addListener( StoreEvents.Changed, new IEventHandler() {
-            @Override
+			private static final long serialVersionUID = -6079645314129172752L;
+
+			@Override
             public void handle(AppEvent event) {
                 ListModelAdapter.this.onRecordChanged( event.<T>getArg(0),
                                                        event.<Integer>getArg(1) );
@@ -84,7 +86,9 @@ public class ListModelAdapter<T extends IModelData> extends DefaultListModel {
         });
 
         this.store.addListener( StoreEvents.Added, new IEventHandler() {
-            @Override
+			private static final long serialVersionUID = 4593398769371945808L;
+
+			@Override
             public void handle(AppEvent event) {
                 ListModelAdapter.this.onRecordAdded( event.<T>getArg(0),
                                                      event.<Integer>getArg(1) );
@@ -92,7 +96,9 @@ public class ListModelAdapter<T extends IModelData> extends DefaultListModel {
         });
 
         this.store.addListener( StoreEvents.Removed, new IEventHandler() {
-            @Override
+			private static final long serialVersionUID = 3911306137829179844L;
+
+			@Override
             public void handle(AppEvent event) {
                 ListModelAdapter.this.onRecordRemoved( event.<T>getArg(0),
                                                        event.<Integer>getArg(1) );

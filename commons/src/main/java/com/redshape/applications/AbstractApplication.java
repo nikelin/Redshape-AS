@@ -7,7 +7,6 @@ import com.redshape.utils.ResourcesLoader;
 import com.redshape.utils.config.IConfig;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.*;
 import java.util.HashMap;
@@ -57,10 +56,8 @@ public abstract class AbstractApplication implements IApplication, ISingletonApp
     
     private IConfig config;
     
-    @Autowired( required = true )
     private ResourcesLoader resourcesLoader;
     
-    @Autowired( required = true )
     private PackagesLoader packagesLoader;
 
     private boolean pidCheckup;

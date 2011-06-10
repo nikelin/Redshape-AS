@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.redshape.ui.events.AppEvent;
-import com.redshape.ui.events.EventDispatcher;
-import com.redshape.ui.events.IEventHandler;
+import com.redshape.ui.application.events.AppEvent;
+import com.redshape.ui.application.events.EventDispatcher;
+import com.redshape.ui.application.events.IEventHandler;
 
 /**
  * Created by IntelliJ IDEA.
@@ -87,6 +87,8 @@ public abstract class AbstractModelData extends EventDispatcher
     	model.addListener( 
 			ModelEvent.CHANGED, 
 			new IEventHandler() {
+				private static final long serialVersionUID = 8396714245364287214L;
+
 				@Override
 				public void handle(AppEvent event) {
 					AbstractModelData.this.forwardEvent( ModelEvent.CHANGED, name, model );

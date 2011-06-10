@@ -16,8 +16,12 @@ public interface IView {
 
     public void setExtension( String value );
 
+    public void setAttribute( ViewAttributes name, Object value );
+    
     public void setAttribute( String name, Object value );
 
+    public <T> T getAttribute( ViewAttributes name );
+    
     public <T> T getAttribute( String name );
 
     public void setBasePath( String path );

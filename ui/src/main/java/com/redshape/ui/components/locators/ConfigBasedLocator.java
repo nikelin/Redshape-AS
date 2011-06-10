@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import com.redshape.ui.widgets.IWidget;
+import com.redshape.ui.views.widgets.IWidget;
 import com.redshape.utils.config.IConfig;
 
 public class ConfigBasedLocator<T extends IWidget> implements IComponentsLocator<T> {

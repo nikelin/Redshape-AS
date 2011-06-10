@@ -8,13 +8,18 @@ package com.redshape.servlet.dispatchers;
  * To change this template use File | Settings | File Templates.
  */
 public class DispatchException extends Exception {
+	private static final long serialVersionUID = 9148190945138130478L;
 
-    public DispatchException() {
-        super();
+	public DispatchException() {
+        this(null);
     }
 
     public DispatchException( String message ) {
-        super( message );
+        this( message, null );
+    }
+    
+    public DispatchException( String message, Throwable e ) {
+    	super(message, e);
     }
 
 }

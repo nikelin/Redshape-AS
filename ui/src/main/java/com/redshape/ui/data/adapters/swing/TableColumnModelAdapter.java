@@ -1,12 +1,8 @@
 package com.redshape.ui.data.adapters.swing;
 
-import java.awt.Component;
 import javax.swing.DefaultCellEditor;
-import javax.swing.JLabel;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableColumnModel;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import com.redshape.ui.data.IModelField;
@@ -34,13 +30,6 @@ public class TableColumnModelAdapter extends DefaultTableColumnModel {
 	private TableColumn adaptField( int index, IModelField field ) {
 		TableColumn column = new TableColumn( index, DEFAULT_WIDTH);
 		column.setHeaderValue( field.getTitle() );
-		column.setCellRenderer( new TableCellRenderer() {
-			@Override
-			public Component getTableCellRendererComponent(JTable table, Object value,
-					boolean isSelected, boolean hasFocus, int row, int column) {
-				return new JLabel( String.valueOf( value ) );
-			}
-		});
 		
 		column.setCellEditor( new DefaultCellEditor( new JTextField() ) );
 		

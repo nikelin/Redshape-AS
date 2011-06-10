@@ -7,11 +7,11 @@ package com.redshape.features;
  * Time: 9:52:24 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface IFeatureAccess<T extends IFeatureInteractor> {
+public interface IFeatureAccess<T extends IFeatureInteractor<T>> {
 
     public void setInteractor( T interactor );
 
-    public <T extends IFeatureInteractor> T getInteractor();
+    public T getInteractor();
 
     public String getFeatureName();
 

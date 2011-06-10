@@ -12,9 +12,9 @@ import com.redshape.ui.Dispatcher;
 import com.redshape.ui.data.IModelData;
 import com.redshape.ui.data.IStore;
 import com.redshape.ui.data.stores.StoreEvents;
-import com.redshape.ui.events.AppEvent;
-import com.redshape.ui.events.IEventHandler;
-import com.redshape.ui.events.UIEvents;
+import com.redshape.ui.application.events.AppEvent;
+import com.redshape.ui.application.events.IEventHandler;
+import com.redshape.ui.application.events.UIEvents;
 import com.redshape.utils.IFilter;
 
 /**
@@ -104,6 +104,8 @@ public class ComboBoxAdapter<T extends IModelData> extends JComboBox {
         }
 		
 		this.store.addListener(StoreEvents.Added, new IEventHandler() {
+			private static final long serialVersionUID = 882471310689793174L;
+
 			@Override
 			public void handle(AppEvent event) {
 				ComboBoxAdapter.this.onRecordAdd( event.<T>getArg(0) );
@@ -111,6 +113,8 @@ public class ComboBoxAdapter<T extends IModelData> extends JComboBox {
 		});
 
 		this.store.addListener( StoreEvents.Refresh, new IEventHandler() {
+			private static final long serialVersionUID = -3661096688247159237L;
+
 			@Override
 			public void handle(AppEvent event) {
 				ComboBoxAdapter.this.onStoreRefresh();
@@ -118,6 +122,8 @@ public class ComboBoxAdapter<T extends IModelData> extends JComboBox {
 		});
 		
 		this.store.addListener(StoreEvents.Removed, new IEventHandler() {
+			private static final long serialVersionUID = -7094208270522137221L;
+
 			@Override
 			public void handle(AppEvent event) {
 				ComboBoxAdapter.this.onRecordRemoved( event.<T>getArg(0) );

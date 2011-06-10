@@ -21,7 +21,7 @@
     	<dependency>
     		<artifactId>core</artifactId>
     		<groupId>com.redshape.protocols</groupId>
-    		<version>${project.version}</version>
+    		<version>1.0.0A</version>
     	</dependency>
     </dependencies>
     

@@ -76,7 +76,7 @@ public class AuthenticatorFactory {
 	        			adapterClass : this.getPackagesLoader()
 		    							   .<AuthenticatorInterface<?>>getClasses(
 		    									   "com.redshape.auth.adapters", 
-		    									   new InterfacesFilter(
+		    									   new InterfacesFilter<AuthenticatorInterface<?>>(
 		    											   new Class[] { AuthenticatorInterface.class },
 		    											   new Class[] { TargetIdentity.class } 
 		    									   ) ) ) {

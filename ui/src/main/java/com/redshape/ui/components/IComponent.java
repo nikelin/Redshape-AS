@@ -1,10 +1,11 @@
 package com.redshape.ui.components;
 
-import com.redshape.ui.IController;
+import com.redshape.ui.application.IController;
 import java.util.Collection;
 
 import javax.swing.Action;
-import com.redshape.ui.widgets.IWidget;
+
+import com.redshape.ui.views.widgets.IWidget;
 import java.util.List;
 
 public interface IComponent extends IWidget {

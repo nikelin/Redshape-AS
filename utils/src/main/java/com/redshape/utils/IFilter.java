@@ -10,5 +10,5 @@ package com.redshape.utils;
 public interface IFilter<T> {
 
     public boolean filter( T filterable );
-
+    
 }

@@ -16,6 +16,10 @@ public interface IModelType extends Serializable {
     
     public int nonTransientCount();
 
+    public boolean isInstance( Class<? extends IModelData> type );
+    
+    public boolean isInstance( IModelData type );
+    
     public IModelField getField( int index );
 
     public IModelField getField( String name );
