@@ -2,6 +2,7 @@ package com.redshape.servlet.form.render.impl.fields;
 
 import java.util.Map;
 
+import com.redshape.i18n.impl.StandardI18NFacade;
 import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.fields.InputField;
 import com.redshape.servlet.form.render.IFormFieldRenderer;
@@ -22,7 +23,7 @@ public class InputFieldRenderer implements IFormFieldRenderer<InputField> {
 		
 		
 		if ( field.getValue() != null ) {
-			builder.append("value=\"").append( field.getValue() ).append("\" ");
+			builder.append("value=\"").append( StandardI18NFacade._( field.getValue() ) ).append("\" ");
 		}
 		
 		Map<String, Object> params = field.getAttributes();

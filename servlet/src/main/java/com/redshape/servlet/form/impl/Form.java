@@ -64,7 +64,9 @@ public class Form extends AbstractFormItem implements IForm {
 			throw new InvalidDataException();
 		}
 		
-		this.getProcessHandler().process( this );
+		if ( this.getProcessHandler() != null ) {
+			this.getProcessHandler().process( this );
+		}
 	}
 	
 	@Override

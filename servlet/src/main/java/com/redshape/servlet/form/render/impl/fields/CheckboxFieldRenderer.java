@@ -20,7 +20,7 @@ public class CheckboxFieldRenderer implements IFormFieldRenderer<CheckboxField> 
 			builder.append("id=\"").append( field.getId() ).append("\" ");
 		}
 		
-		if ( field.getValue() ) {
+		if ( field.getValue() != null && field.getValue() ) {
 			builder.append("checked=\"checked\" ");
 		}
 		

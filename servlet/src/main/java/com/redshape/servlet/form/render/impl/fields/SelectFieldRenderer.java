@@ -2,6 +2,7 @@ package com.redshape.servlet.form.render.impl.fields;
 
 import java.util.Map;
 
+import com.redshape.i18n.impl.StandardI18NFacade;
 import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.fields.SelectField;
 import com.redshape.servlet.form.render.IFormFieldRenderer;
@@ -30,7 +31,7 @@ public class SelectFieldRenderer implements IFormFieldRenderer<SelectField<?>> {
 		Map<String, ?> options = field.getOptions();
 		for ( String key : options.keySet() ) {
 			builder.append("<option name=\"").append(key).append("\"> ")
-				   .append( options.get(key) )
+				   .append( StandardI18NFacade._( String.valueOf( options.get(key) ) ) )
 				   .append("</option> ");
 		}
 		

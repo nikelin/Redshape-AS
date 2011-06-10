@@ -76,6 +76,10 @@ public class FrontController {
         this.plugins.add( plugin );
     }
 
+    public void setPlugins( Set<IPlugin> plugins ) {
+    	this.plugins = plugins;
+    }
+    
     public Set<IPlugin> getPlugins() {
         return this.plugins;
     }

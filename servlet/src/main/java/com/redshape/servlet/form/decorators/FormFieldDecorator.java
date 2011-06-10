@@ -1,5 +1,6 @@
 package com.redshape.servlet.form.decorators;
 
+import com.redshape.i18n.impl.StandardI18NFacade;
 import com.redshape.servlet.form.IFormField;
 import com.redshape.servlet.form.IFormItem;
 
@@ -16,7 +17,7 @@ public class FormFieldDecorator extends AbstractDecorator {
 		
 		String label = ( (IFormField<?>) item ).getLabel();
 		if ( label != null ) {
-			builder.append("<dt>").append( label ).append("</dt>");
+			builder.append("<dt>").append( StandardI18NFacade._( label ) ).append("</dt>");
 		}
 		
 		builder.append("<dd>").append( data ).append("</dd>");

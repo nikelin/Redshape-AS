@@ -1,5 +1,6 @@
 package com.redshape.servlet.form.decorators;
 
+import com.redshape.i18n.impl.StandardI18NFacade;
 import com.redshape.servlet.form.IForm;
 import com.redshape.servlet.form.IFormItem;
 
@@ -16,7 +17,7 @@ public class LegendDecorator extends AbstractDecorator {
 	    this.buildAttributes(builder);
 	   	builder.append(">");
 		builder.append("<legend>")
-		       .append( ( (IForm) item).getLegend() )
+		       .append( StandardI18NFacade._( ( (IForm) item).getLegend() ) )
 		       .append("</legend>");
 		
 		builder.append(data);

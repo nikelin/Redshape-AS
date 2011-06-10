@@ -1,5 +1,6 @@
 package com.redshape.servlet.views;
 
+import com.redshape.i18n.impl.StandardI18NFacade;
 import com.redshape.servlet.core.Constants;
 import com.redshape.servlet.views.render.IViewRenderer;
 import com.redshape.servlet.views.render.RenderException;
@@ -63,7 +64,12 @@ public abstract class AbstractView implements IView {
 
     @SuppressWarnings("unchecked")
 	public <T> T getAttribute( String name ) {
-        return (T) this.parameters.get(name);
+        T object = (T) this.parameters.get(name);
+        if ( object instanceof String ) {
+        	object = (T) StandardI18NFacade._( (String) object );
+        }
+        
+        return object;
     }
 
     public void setRenderer( IViewRenderer renderer ) {
