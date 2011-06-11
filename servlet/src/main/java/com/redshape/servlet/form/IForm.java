@@ -23,6 +23,8 @@ public interface IForm extends IFormItem {
 	
 	public String getMethod();
 	
+	public IForm findContext( String name );
+	
 	public <T> IFormField<T> findField( String name );
 	
 	public void addField( IFormField<?> field );
@@ -39,6 +41,8 @@ public interface IForm extends IFormItem {
 	
 	public List<IFormItem> getItems();
 
+	public IFormRenderer getRenderer();
+	
 	public void setRenderer( IFormRenderer renderer );
 	
 }

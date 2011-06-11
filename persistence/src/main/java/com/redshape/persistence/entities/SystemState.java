@@ -4,7 +4,6 @@ import com.redshape.persistence.dao.ManagerException;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,8 +14,7 @@ import java.util.List;
  */
 @javax.persistence.Entity( name = "system_state" )
 public class SystemState extends AbstractEntity {
-    @Transient
-    private static SystemState instance = null;
+	private static final long serialVersionUID = -2852778677252545358L;
 
     @Basic
     @Column( name = "version" )

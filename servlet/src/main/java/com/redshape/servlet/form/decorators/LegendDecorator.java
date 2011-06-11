@@ -12,6 +12,10 @@ public class LegendDecorator extends AbstractDecorator {
 			return data;
 		}
 		
+		if ( item instanceof IForm && ( (IForm) item ).getContext() != null ) {
+			this.setAttributes( item.getAttributes() );
+		}
+		
 		StringBuilder builder = new StringBuilder();
 		builder.append("<fieldset ");
 	    this.buildAttributes(builder);

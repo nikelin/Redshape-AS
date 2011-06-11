@@ -33,10 +33,6 @@ public class StandardFormFieldBuilder implements IFormFieldBuilder {
 	private String label;
 	private Object value;
 	
-	public StandardFormFieldBuilder() {
-		this.decorators.add( new FormFieldDecorator() );
-	}
-	
 	@Override
 	public IFormFieldBuilder withLabel( String label ) {
 		this.label = label;
@@ -170,6 +166,7 @@ public class StandardFormFieldBuilder implements IFormFieldBuilder {
 		}
 		
 		field.setId( this.id );
+		field.clearDecorators();
 		field.setDecorators( this.decorators.toArray( new IDecorator[ this.decorators.size() ] ) );
 		field.setLabel( this.label );
 		field.setName( this.name );

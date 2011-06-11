@@ -9,8 +9,8 @@ import com.redshape.servlet.form.decorators.ComposedDecorator;
 import com.redshape.servlet.form.decorators.FormFieldDecorator;
 import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.decorators.LegendDecorator;
+import com.redshape.servlet.form.decorators.Placement;
 import com.redshape.servlet.form.decorators.TagDecorator;
-import com.redshape.servlet.form.decorators.TagDecorator.Placement;
 import com.redshape.servlet.form.decorators.builders.IDecoratorBuilder;
 
 public class StandardDecoratorBuilder implements IDecoratorBuilder {

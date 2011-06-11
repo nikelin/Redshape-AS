@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.redshape.servlet.form.decorators.IDecorator;
-import com.redshape.servlet.form.decorators.TagDecorator;
+import com.redshape.servlet.form.decorators.Placement;
 
 public interface IDecoratorBuilder {
 
@@ -18,7 +18,7 @@ public interface IDecoratorBuilder {
 	
 	public IDecorator withComposedDecorator( List<IDecorator> decorators );
 	
-	public IDecorator withTagDecorator( String tagName, TagDecorator.Placement placement );
+	public IDecorator withTagDecorator( String tagName, Placement placement );
 	
 	public IDecorator withLegendDecorator();
 	

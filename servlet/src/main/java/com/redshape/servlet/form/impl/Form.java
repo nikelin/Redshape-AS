@@ -1,6 +1,7 @@
 package com.redshape.servlet.form.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,15 +15,23 @@ import com.redshape.servlet.form.IFormField;
 import com.redshape.servlet.form.IFormItem;
 import com.redshape.servlet.form.IFormProcessHandler;
 import com.redshape.servlet.form.InvalidDataException;
+import com.redshape.servlet.form.RenderMode;
 import com.redshape.servlet.form.decorators.LegendDecorator;
 import com.redshape.servlet.form.impl.internal.SubFormItem;
 import com.redshape.servlet.form.render.IFormRenderer;
 import com.redshape.utils.Commons;
+import com.redshape.utils.StringUtils;
 
 public class Form extends AbstractFormItem implements IForm {
 	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger( Form.class );
 	private static final long serialVersionUID = 5015229816321663639L;
+	
+	public enum FormState {
+		RENDERED,
+		VALIDATED,
+		PROCESSED
+	}
 	
 	public Form(String id) {
 		this(id, id);
@@ -32,6 +41,7 @@ public class Form extends AbstractFormItem implements IForm {
 		super(id, name );
 	}
 
+	private FormState state;
 	private String action;
 	private String method;
 	private String legend;
@@ -79,33 +89,33 @@ public class Form extends AbstractFormItem implements IForm {
 		return this.findField( this, path );
 	}
 	
+	@Override
+	public IForm findContext( String path ) {
+		return this.findContext( path.split("\\.") );
+	}
+	
 	protected IForm findContext( String[] path ) {
-		IForm result = null;
-		  
-		if ( path.length == 2 ) {
-			if ( path[0].equals( Commons.select( this.getId(), this.getName() ) ) ) {
-				return this;
-			}
+		Integer index = this.itemsDict.get( path[0] );
+		if ( index == null ) {
+			return null;
 		}
 		
-		int offset = 0;
-		int limit = path.length == 1 ? 1 : path.length - 1;
-		while ( offset != limit ) {
-			String pathNode = path[offset++];
-			Integer index = this.itemsDict.get( pathNode );
-			if ( index == null ) {
-				throw new IllegalArgumentException();
-			}
-			
-			IFormItem item = this.items.get( index );
-			if ( item instanceof IForm ) {
-				result = (IForm) item;
-			} else {
-				break;
-			}
+		IFormItem item = this.items.get( index );
+		if ( item == null ) {
+			throw new IllegalStateException();
 		}
 		
-		return result;
+		if (  !( item instanceof IForm ) ) {
+			throw new IllegalArgumentException("Illegal path");
+		}
+		
+		final IForm form = (IForm) item;
+		if ( path.length == 1 ) {
+			return form;
+		}
+		
+		return form.findContext( 
+				StringUtils.join( Arrays.copyOfRange( path, 1, path.length ), "." ) );
 	}
 	
 	protected <T> IFormField<T> findField( IForm context, String[] name ) {
@@ -152,15 +162,28 @@ public class Form extends AbstractFormItem implements IForm {
 
 	@Override
 	public String render() {
+		return this.render( RenderMode.FULL );
+	}
+	
+	@Override
+	public String render( RenderMode mode ) {
+		if ( this.state != null && this.state.equals( FormState.RENDERED ) ) {
+			if ( !this.hasAttribute("forceRender") ) { 
+				return "";
+			}
+		}
+		
 		if ( this.renderer == null ) {
-			throw new IllegalArgumentException("<null>");
+			throw new IllegalStateException("<null>");
 		}
 		
 		if ( this.getLegend() != null && !this.hasDecorator( LegendDecorator.class) ) {
 			this.setDecorator( new LegendDecorator() );
 		}
 		
-		return this.renderer.render(this);
+		String data = this.renderer.render(this, mode);
+		this.state = FormState.RENDERED;
+		return data;
 	}
 
 	@Override
@@ -212,8 +235,17 @@ public class Form extends AbstractFormItem implements IForm {
 	}
 
 	@Override
+	public IFormRenderer getRenderer() {
+		return this.renderer;
+	}
+	
+	@Override
 	public void addSubForm(IForm form, String name) {
 		form.setContext(this);
+		if ( form.getRenderer() == null ) {
+			form.setRenderer( this.renderer );
+		}
+		
 		this.items.add( new SubFormItem( form, name  ) );
 		this.itemsDict.put( name, this.items.size() - 1 );
 	}

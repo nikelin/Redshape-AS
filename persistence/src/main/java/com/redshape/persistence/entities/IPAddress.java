@@ -12,13 +12,14 @@ import java.net.UnknownHostException;
 
 @javax.persistence.Entity(name = "ip_addresses")
 @Table(
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"address"})
-        }
+    uniqueConstraints = {
+            @UniqueConstraint(columnNames = {"address"})
+    }
 )
 public class IPAddress extends AbstractEntity implements IAddress {
-
-    @Basic
+	private static final long serialVersionUID = 1892270074179886288L;
+	
+	@Basic
     private InetAddress inetAddress;
 
     public IPAddress( String address ) throws UnknownHostException {

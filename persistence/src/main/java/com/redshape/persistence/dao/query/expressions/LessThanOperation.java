@@ -11,11 +11,13 @@ public class LessThanOperation implements IExpression {
         this.right = right;
     }
 
-    public <T extends IStatement> T getLeftOperand() {
+    @SuppressWarnings("unchecked")
+	public <T extends IStatement> T getLeftOperand() {
         return (T) this.left;
     }
 
-    public <T extends IStatement> T getRightOperand() {
+    @SuppressWarnings("unchecked")
+	public <T extends IStatement> T getRightOperand() {
         return (T) this.right;
     }
 }

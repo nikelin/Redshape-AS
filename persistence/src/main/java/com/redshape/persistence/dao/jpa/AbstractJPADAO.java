@@ -20,13 +20,11 @@ import java.util.List;
 import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 import javax.persistence.Query;
 import javax.persistence.Table;
 import org.apache.log4j.Logger;
-import org.springframework.beans.BeanUtils;
 
 /**
  *
@@ -175,7 +173,6 @@ public abstract class AbstractJPADAO<T extends IEntity> implements IJPADAO<T>{
 		}
     }
 
-    @SuppressWarnings("unchecked")
 	protected void remove( T object, boolean isCollection ) throws DAOException {
     	try {
     		if ( !isCollection ) {

@@ -21,8 +21,13 @@ public abstract class AbstractDecorator implements IDecorator {
 		}
 	}
 	
-	protected Object getAttribute( String name ) {
-		return this.attributes.get(name);
+	protected boolean hasAttribute( String name ) {
+		return this.attributes.containsKey(name);
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected <T> T getAttribute( String name ) {
+		return (T) this.attributes.get(name);
 	}
 	
 	protected Set<String> getAttributeNames() {

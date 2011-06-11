@@ -55,6 +55,25 @@ public interface IFormItem extends Serializable {
 	public String render();
 	
 	/**
+	 * Return string representation of current form item after
+	 * applying all decorators associated with them.
+	 * 
+	 * As a rule this method must delegate logic of rendering process
+	 * to the external rendering entity such like IFormItemRenderer<?>.
+	 * 
+	 * @param mode
+	 * @return
+	 */
+	public String render( RenderMode mode );
+	
+	/**
+	 * Check that specified attribute presents in 
+	 * the related collection
+	 * @return
+	 */
+	public boolean hasAttribute( String name );
+	
+	/**
 	 * Return field attributes map.
 	 * 
 	 * @return

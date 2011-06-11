@@ -3,13 +3,16 @@ package com.redshape.servlet.core;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
+import org.apache.poi.util.StringUtil;
 
 import net.sf.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -75,8 +78,10 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
 		    for (String param : data.split("&")) {
 	            String[] paramParts = param.split("=");
 	
+	            String value = paramParts.length > 1 ? paramParts[1] : null;
+	            
 	            this.parameters.put( paramParts[0], 
-	            		paramParts.length > 1 ? paramParts[1] : null );
+	            		value != null ? StringEscapeUtils.escapeHtml( URLDecoder.decode( value, "UTF-8" ) ) : null );
 	        }
     	}
     	

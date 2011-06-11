@@ -3,7 +3,9 @@ package com.redshape.servlet.form.render.impl;
 import java.util.Map;
 
 import com.redshape.servlet.form.IForm;
+import com.redshape.servlet.form.IFormField;
 import com.redshape.servlet.form.IFormItem;
+import com.redshape.servlet.form.RenderMode;
 import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.render.IFormRenderer;
 import com.redshape.utils.Commons;
@@ -11,7 +13,7 @@ import com.redshape.utils.Commons;
 public class StandardFormRenderer implements IFormRenderer {
 	
 	@Override
-	public String render(IForm form) {
+	public String render(IForm form, RenderMode mode) {
 		StringBuilder builder = new StringBuilder();
 		
 		if ( form.getContext() == null ) {
@@ -38,7 +40,9 @@ public class StandardFormRenderer implements IFormRenderer {
 		}
 		
 		for ( IFormItem item : form.getItems() ) {
-			builder.append( item.render() ).append("\n");
+			if ( this.isAllowed( item, mode ) ) {
+				builder.append( item.render() ).append("\n");
+			}
 		}
 		
 		if ( form.getContext() == null ) {
@@ -51,6 +55,25 @@ public class StandardFormRenderer implements IFormRenderer {
 		}
 		
 		return data;
+	}
+	
+	protected boolean isAllowed( IFormItem item, RenderMode mode ) {
+		switch ( mode ) {
+		case FIELDS:
+			if ( item instanceof IForm ) {
+				return false;
+			}
+		break;
+		case FULL:
+		break;
+		case SUBFORMS:
+			if ( item instanceof IFormField ) {
+				return false;
+			}
+		break;
+		}
+		
+		return true;
 	}
 
 }

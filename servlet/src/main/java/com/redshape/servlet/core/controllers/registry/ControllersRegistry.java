@@ -27,6 +27,8 @@ public class ControllersRegistry implements IControllersRegistry, ApplicationCon
     }
     
     public ControllersRegistry( Set<Class<? extends IAction>> actions ) {
+    	super();
+    	
     	this.actions = actions;
     }
     
@@ -64,6 +66,11 @@ public class ControllersRegistry implements IControllersRegistry, ApplicationCon
                 break;
             }
         }
+    	
+    	if ( actionInstance != null ) {
+	    	this.getContext().getAutowireCapableBeanFactory()
+	    			.autowireBean( actionInstance );
+    	}
 
         return actionInstance;
     }

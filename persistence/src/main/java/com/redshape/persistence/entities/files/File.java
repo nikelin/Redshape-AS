@@ -14,8 +14,9 @@ import javax.persistence.MappedSuperclass;
  */
 @MappedSuperclass
 public abstract class File extends AbstractEntity {
+	private static final long serialVersionUID = 8056130393816201022L;
 
-    @Basic
+	@Basic
     private String filename;
 
     @Basic

@@ -22,7 +22,8 @@ public class NamedQuery implements IQuery {
         return this.query.where(expression);
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public <T extends IEntity> Class<T> getEntityClass() {
         return (Class<T>) this.query.getEntityClass();
     }

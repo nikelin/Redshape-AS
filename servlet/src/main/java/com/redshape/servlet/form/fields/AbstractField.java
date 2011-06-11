@@ -5,6 +5,8 @@ import java.util.HashSet;
 
 import com.redshape.servlet.form.AbstractFormItem;
 import com.redshape.servlet.form.IFormField;
+import com.redshape.servlet.form.RenderMode;
+import com.redshape.servlet.form.decorators.FormFieldDecorator;
 import com.redshape.servlet.form.render.IFormFieldRenderer;
 import com.redshape.validators.IValidator;
 import com.redshape.validators.result.IValidationResult;
@@ -61,14 +63,23 @@ public abstract class AbstractField<T> extends AbstractFormItem implements IForm
 		return this.renderer;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public String render() {
+		return this.render( RenderMode.FULL );
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public String render( RenderMode mode ) {
 		if ( this.getRenderer() == null ) {
 			throw new IllegalArgumentException("<null>");
 		}
 		
-		return this.getRenderer().render(this);
+		if ( !this.hasDecorator( FormFieldDecorator.class ) ) {
+			this.setDecorator( new FormFieldDecorator() );
+		}
+		
+		return this.getRenderer().render(this, mode);
 	}
 	
 	@Override

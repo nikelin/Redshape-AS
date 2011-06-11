@@ -1,6 +1,6 @@
 package com.redshape.servlet.form.fields;
 
-public class CheckboxField extends AbstractSelectField<Boolean> {
+public class CheckboxField extends AbstractSelectField<String> {
 	private static final long serialVersionUID = -396074450586493270L;
 
 	public CheckboxField() {

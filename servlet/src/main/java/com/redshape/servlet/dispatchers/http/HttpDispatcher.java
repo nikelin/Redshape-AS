@@ -81,6 +81,10 @@ public class HttpDispatcher implements IHttpDispatcher {
             }
             
             action.process( request, response );
+
+            if ( action.getView().getRedirection() != null ) {
+            	response.sendRedirect( action.getView().getRedirection() );
+            }
             
             if ( response.isCommitted() ) {
             	return;

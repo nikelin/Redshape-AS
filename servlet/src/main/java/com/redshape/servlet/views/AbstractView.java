@@ -2,6 +2,7 @@ package com.redshape.servlet.views;
 
 import com.redshape.i18n.impl.StandardI18NFacade;
 import com.redshape.servlet.core.Constants;
+import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.views.render.IViewRenderer;
 import com.redshape.servlet.views.render.RenderException;
 
@@ -21,6 +22,7 @@ public abstract class AbstractView implements IView {
     private IViewRenderer renderer;
     private Map<String, Object> parameters = new HashMap<String, Object>();
     private String extension;
+    private String redirection;
 
     public AbstractView( String basePath, String viewPath, String extension ) {
         this.viewPath = viewPath;
@@ -28,14 +30,24 @@ public abstract class AbstractView implements IView {
         this.extension = extension;
     }
 
-    public String getBasePath() {
+    @Override
+	public void setRedirection(String path) {
+		this.redirection = path;
+	}
+
+	@Override
+	public String getRedirection() {
+		return this.redirection;
+	}
+
+	public String getBasePath() {
         return this.basePath;
     }
 
     public void setBasePath( String path ) {
         this.basePath = path;
     }
-
+    
     public String getScriptPath() {
         StringBuilder path = new StringBuilder();
         if ( this.getBasePath() != null ) {

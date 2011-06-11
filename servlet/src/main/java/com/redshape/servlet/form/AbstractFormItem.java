@@ -93,6 +93,11 @@ public abstract class AbstractFormItem implements IFormItem {
 	}
 
 	@Override
+	public boolean hasAttribute( String name ) {
+		return this.attributes.containsKey(name);
+	}
+	
+	@Override
 	public void setAttribute(String name, Object value) {
 		this.attributes.put(name, value);
 	}

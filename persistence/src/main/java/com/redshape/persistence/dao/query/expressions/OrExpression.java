@@ -7,7 +7,8 @@ public class OrExpression implements IExpression {
         this.terms = terms;
     }
 
-    public <T extends IExpression> T[] getTerms() {
+    @SuppressWarnings("unchecked")
+	public <T extends IExpression> T[] getTerms() {
         return (T[]) terms;
     }
 }

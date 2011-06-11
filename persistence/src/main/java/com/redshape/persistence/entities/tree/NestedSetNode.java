@@ -1,6 +1,5 @@
 package com.redshape.persistence.entities.tree;
 
-import com.redshape.persistence.dao.ManagerException;
 import com.redshape.persistence.entities.AbstractEntity;
 import com.redshape.persistence.entities.IEntity;
 import com.redshape.persistence.entities.tree.fetchers.FetcherException;
@@ -27,7 +26,9 @@ import java.util.Collection;
     @UniqueConstraint( columnNames = { "right", "left" } )
 })
 abstract public class NestedSetNode<T extends TreeNode<T> & IEntity> extends AbstractEntity implements TreeNode<T> {
-    private static final Logger log = Logger.getLogger( NestedSetNode.class );
+	private static final long serialVersionUID = -5843876706806453045L;
+
+	private static final Logger log = Logger.getLogger( NestedSetNode.class );
     
     @Transient
 	private Class<T> entityClass;

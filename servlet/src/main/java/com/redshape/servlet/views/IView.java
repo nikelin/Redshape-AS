@@ -12,6 +12,10 @@ import com.redshape.servlet.views.render.RenderException;
  */
 public interface IView {
 
+	public void setRedirection( String path );
+	
+	public String getRedirection();
+	
     public String getExtension();
 
     public void setExtension( String value );

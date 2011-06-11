@@ -1,5 +1,7 @@
 package com.redshape.persistence.dao.query.executors;
 
+import java.lang.reflect.InvocationTargetException;
+
 import com.redshape.persistence.dao.query.IQuery;
 import com.redshape.persistence.dao.query.QueryExecutorException;
 import com.redshape.persistence.dao.query.expressions.AndExpression;
@@ -57,18 +59,21 @@ public abstract class AbstractQueryExecutor<T, P, E> implements IQueryExecutor<T
 
     abstract public E processStatement(ReferenceStatement reference) throws QueryExecutorException;;
 
-    public <V extends E> V processStatement( IStatement statement ) throws QueryExecutorException {
+    @SuppressWarnings("unchecked")
+	public <V extends E> V processStatement( IStatement statement ) throws QueryExecutorException {
         try {
             return (V) this.getClass()
                        .getMethod("processStatement", statement.getClass())
                        .invoke(this, statement);
+        } catch ( InvocationTargetException e ) {
+        	throw new QueryExecutorException( e.getCause().getMessage(), e.getCause() );
         } catch (Throwable e) {
-            log.error( e.getMessage(), e );
-            throw new QueryExecutorException(e.getMessage());
+            throw new QueryExecutorException(e.getMessage(), e);
         }
     }
 
-    public P processExpression(IExpression statement) throws QueryExecutorException {
+    @SuppressWarnings("unchecked")
+	public P processExpression(IExpression statement) throws QueryExecutorException {
         try {
         	Object expression = this.getClass()
 	            .getMethod("processExpression", statement.getClass())
@@ -78,9 +83,10 @@ public abstract class AbstractQueryExecutor<T, P, E> implements IQueryExecutor<T
         	}
 	            
         	return (P) expression;
+        } catch ( InvocationTargetException e ) {
+        	throw new QueryExecutorException( e.getCause().getMessage(), e.getCause() );
         } catch (Throwable e) {
-            log.error( e.getMessage(), e );
-            throw new QueryExecutorException(e.getMessage());
+            throw new QueryExecutorException(e.getMessage(), e);
         }
     }
 

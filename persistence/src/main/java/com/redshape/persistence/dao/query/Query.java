@@ -49,7 +49,8 @@ class Query implements IQuery {
         return this.attributes.containsKey(name);
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public <T extends IExpression> T getExpression() {
         return (T) this.expression;
     }
@@ -76,12 +77,14 @@ class Query implements IQuery {
         return this;
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public <T> Map<String, T> getAttributes() {
     	return (Map<String, T>) this.attributes;
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public <T> T getAttribute(String name) throws QueryExecutorException {
         if ( !this.attributes.containsKey(name)) {
             throw new QueryExecutorException("No such attribute: " + name);
@@ -90,7 +93,8 @@ class Query implements IQuery {
         return (T) this.attributes.get(name);
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public <T extends IEntity> Class<T> getEntityClass() {
         return (Class<T>) this.entityClass;
     }

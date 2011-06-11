@@ -17,8 +17,9 @@ import java.util.Set;
  */
 @MappedSuperclass
 abstract public class InheritanceRule<V extends IEntity, T extends IEntity> extends AbstractEntity {
+	private static final long serialVersionUID = 5602595514192831086L;
 
-    @OneToMany
+	@OneToMany
     private Set<V> subjects = new HashSet<V>();
 
     @ManyToOne( cascade = { CascadeType.REMOVE } )

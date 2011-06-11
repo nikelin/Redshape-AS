@@ -2,6 +2,7 @@ package com.redshape.servlet.form.render.impl.fields;
 
 import java.util.Map;
 
+import com.redshape.servlet.form.RenderMode;
 import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.fields.CheckboxField;
 import com.redshape.servlet.form.render.IFormFieldRenderer;
@@ -9,7 +10,7 @@ import com.redshape.servlet.form.render.IFormFieldRenderer;
 public class CheckboxFieldRenderer implements IFormFieldRenderer<CheckboxField> {
 
 	@Override
-	public String render(CheckboxField field) {
+	public String render(CheckboxField field, RenderMode mode) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("<input ")
 			   .append(" type=\"checkbox\" ");
@@ -20,7 +21,7 @@ public class CheckboxFieldRenderer implements IFormFieldRenderer<CheckboxField> 
 			builder.append("id=\"").append( field.getId() ).append("\" ");
 		}
 		
-		if ( field.getValue() != null && field.getValue() ) {
+		if ( field.getValue() != null && field.getValue().equals("on") ) {
 			builder.append("checked=\"checked\" ");
 		}
 		

@@ -11,7 +11,8 @@ import com.redshape.persistence.dao.query.expressions.NotOperation;
 import com.redshape.persistence.dao.query.expressions.OrExpression;
 import com.redshape.persistence.dao.query.statements.ReferenceStatement;
 import com.redshape.persistence.dao.query.statements.ScalarStatement;
-
+ 
+@SuppressWarnings("rawtypes")
 public class StaticQueryExecutor extends AbstractQueryExecutor<Boolean, Boolean, Comparable> 
 									implements IStaticQueryExecutor<Boolean> {
 
@@ -33,7 +34,8 @@ public class StaticQueryExecutor extends AbstractQueryExecutor<Boolean, Boolean,
         return predicate;
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public Boolean processExpression(LessThanOperation less) throws QueryExecutorException {
         return this.processStatement(less.getLeftOperand() )
                 .compareTo(
@@ -43,7 +45,8 @@ public class StaticQueryExecutor extends AbstractQueryExecutor<Boolean, Boolean,
                 ) == -1;
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public Boolean processExpression(GreaterThanOperation greater) throws QueryExecutorException {
         return this.processStatement(greater.getLeftOperand())
                 .compareTo(

@@ -4,9 +4,7 @@ import com.redshape.persistence.entities.IEntity;
 
 import javax.persistence.Query;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.

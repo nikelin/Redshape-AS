@@ -14,7 +14,9 @@ import com.redshape.renderer.Renderable;
 @javax.persistence.Entity( name = "locales" )
 @Renderable
 public class Locale extends AbstractEntity {
-    @Basic
+	private static final long serialVersionUID = -6379575563213321241L;
+
+	@Basic
     private String abbr;
 
     @Basic

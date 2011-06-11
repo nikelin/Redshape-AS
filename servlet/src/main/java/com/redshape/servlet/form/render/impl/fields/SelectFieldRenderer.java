@@ -3,6 +3,7 @@ package com.redshape.servlet.form.render.impl.fields;
 import java.util.Map;
 
 import com.redshape.i18n.impl.StandardI18NFacade;
+import com.redshape.servlet.form.RenderMode;
 import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.fields.SelectField;
 import com.redshape.servlet.form.render.IFormFieldRenderer;
@@ -10,7 +11,7 @@ import com.redshape.servlet.form.render.IFormFieldRenderer;
 public class SelectFieldRenderer implements IFormFieldRenderer<SelectField<?>> {
 
 	@Override
-	public String render(SelectField<?> field) {
+	public String render(SelectField<?> field, RenderMode mode ) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("<select ");
 		

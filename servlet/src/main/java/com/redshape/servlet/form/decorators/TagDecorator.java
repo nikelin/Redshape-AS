@@ -7,12 +7,6 @@ import com.redshape.servlet.form.IFormItem;
 
 public class TagDecorator extends AbstractDecorator {
 	
-	public enum Placement {
-		BEFORE,
-		AFTER,
-		WRAPPED
-	}
-	
 	private String tagName;
 	private Placement placement;
 	

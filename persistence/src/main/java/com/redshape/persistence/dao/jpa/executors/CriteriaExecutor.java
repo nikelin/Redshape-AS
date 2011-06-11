@@ -80,11 +80,7 @@ public class CriteriaExecutor extends AbstractQueryExecutor<Query, Predicate, Ex
     @Override
     public Expression<?> processStatement(ScalarStatement<?> scalar) throws QueryExecutorException {
     	// @TODO: split function of scalar into FieldStatement and LiteralStatement<>
-    	if ( scalar.getValue() instanceof String ) {
-    		return this.criteria.get().from( this.getQuery().getEntityClass() ).get( String.valueOf( scalar.getValue() ) );
-    	} else {
-    		return this.getBuilder().literal( scalar.getValue() );
-    	}
+		return this.getBuilder().literal( scalar.getValue() );
     }
 
     @Override

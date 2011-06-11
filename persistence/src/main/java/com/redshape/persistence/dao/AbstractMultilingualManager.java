@@ -18,12 +18,12 @@ public abstract class AbstractMultilingualManager<T extends IMultilingual<T>> ex
     }
 
     // @FIXME: due to dao refactorings
-    public <T extends IMultilingual<T>> boolean hasTranslation( T entity, Locale locale ) throws ManagerException {
+    public <V extends IMultilingual<T>> boolean hasTranslation( T entity, Locale locale ) throws ManagerException {
         return false;
     }
 
  // @FIXME: due to dao refactorings
-    public <T extends IMultilingual<T>> T getTranslation( T entity, Locale locale ) throws ManagerException {
+    public <V extends IMultilingual<T>> T getTranslation( T entity, Locale locale ) throws ManagerException {
        return null;
     }
 

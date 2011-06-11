@@ -14,8 +14,9 @@ import javax.persistence.Entity;
  */
 @Entity( name = "files_meta" )
 public class FileMeta extends AbstractEntity {
+	private static final long serialVersionUID = 7441294261584686877L;
 
-    @Basic
+	@Basic
     private Long filesize;
 
     @Basic
@@ -33,5 +34,52 @@ public class FileMeta extends AbstractEntity {
     @Basic
     private Long lastUpdatedTime;
 
-    
+	public Long getFilesize() {
+		return filesize;
+	}
+
+	public void setFilesize(Long filesize) {
+		this.filesize = filesize;
+	}
+
+	public String getExtension() {
+		return extension;
+	}
+
+	public void setExtension(String extension) {
+		this.extension = extension;
+	}
+
+	public String getMimetype() {
+		return mimetype;
+	}
+
+	public void setMimetype(String mimetype) {
+		this.mimetype = mimetype;
+	}
+
+	public Long getCreatedTime() {
+		return createdTime;
+	}
+
+	public void setCreatedTime(Long createdTime) {
+		this.createdTime = createdTime;
+	}
+
+	public Long getLastAccessTime() {
+		return lastAccessTime;
+	}
+
+	public void setLastAccessTime(Long lastAccessTime) {
+		this.lastAccessTime = lastAccessTime;
+	}
+
+	public Long getLastUpdatedTime() {
+		return lastUpdatedTime;
+	}
+
+	public void setLastUpdatedTime(Long lastUpdatedTime) {
+		this.lastUpdatedTime = lastUpdatedTime;
+	}
+
 }

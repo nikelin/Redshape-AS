@@ -17,7 +17,9 @@ import java.util.Set;
 @MappedSuperclass
 public abstract class AbstractMultilingualEntity<T extends IMultilingual<T>> extends AbstractEntity
                                                                           implements IMultilingual<T> {
-    @ManyToOne
+	private static final long serialVersionUID = -2410675666548871832L;
+
+	@ManyToOne
     private Locale locale;
 
     @ManyToOne
