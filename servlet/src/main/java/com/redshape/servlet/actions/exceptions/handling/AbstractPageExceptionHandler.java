@@ -31,7 +31,7 @@ public abstract class AbstractPageExceptionHandler implements IPageExceptionHand
             return;
         }
 
-        for ( Method method : this.getClass().getMethods() ) {
+        for ( Method method : this.getClass().getDeclaredMethods() ) {
             if ( this.isHandlerMethod(method) ) {
                 this.interceptors.put(
                         method.getParameterTypes()[0].asSubclass(ProcessingException.class),
@@ -44,10 +44,12 @@ public abstract class AbstractPageExceptionHandler implements IPageExceptionHand
 
     protected boolean isHandlerMethod( Method method ) {
         Class<?>[] params = method.getParameterTypes();
+        if ( params.length < 3 ) {
+            return false;
+        }
 
         return method.getName().equals( HANDLER_NAME )
-                    && params.length == 3
-                        && params[0].equals(ProcessingException.class)
+                        && params[0] != ProcessingException.class
                             && ProcessingException.class.isAssignableFrom( params[0] );
     }
 
@@ -56,7 +58,7 @@ public abstract class AbstractPageExceptionHandler implements IPageExceptionHand
 
     @Override
     public void handleException(ProcessingException e, IHttpRequest request, IHttpResponse response) {
-        Method method = this.interceptors.get(e);
+        Method method = this.interceptors.get( e.getClass() );
         if ( method == null ) {
             this.unknownExceptionHandler(e, request, response);
         }
