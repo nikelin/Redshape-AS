@@ -1,6 +1,5 @@
 package com.redshape.servlet.core.controllers;
 
-import com.redshape.servlet.actions.exceptions.AbstractPageException;
 import com.redshape.servlet.core.controllers.plugins.IPlugin;
 import com.redshape.servlet.core.HttpRequest;
 import com.redshape.servlet.core.HttpResponse;
@@ -27,7 +26,6 @@ import java.util.Set;
  * To change this template use File | Settings | File Templates.
  */
 public class FrontController {
-    @SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger( FrontController.class );
 
     @Autowired( required = true )
@@ -85,7 +83,7 @@ public class FrontController {
     }
 
     public void dispatch( HttpServlet servlet, HttpServletRequest request, HttpServletResponse response )
-                                                throws DispatchException, AbstractPageException {
+                                                throws DispatchException{
         HttpRequest routedRequest = this.getRouter().route(request);
         HttpResponse wrappedResponse = new HttpResponse( response );
 

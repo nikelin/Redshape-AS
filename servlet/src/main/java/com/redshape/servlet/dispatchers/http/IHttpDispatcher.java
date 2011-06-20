@@ -2,7 +2,6 @@ package com.redshape.servlet.dispatchers.http;
 
 import org.springframework.context.ApplicationContextAware;
 
-import com.redshape.servlet.actions.exceptions.AbstractPageException;
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.core.IHttpResponse;
 import com.redshape.servlet.dispatchers.DispatchException;
@@ -17,6 +16,6 @@ import com.redshape.servlet.dispatchers.DispatchException;
  */
 public interface IHttpDispatcher extends ApplicationContextAware {
 	
-    public void dispatch( IHttpRequest request, IHttpResponse response ) throws AbstractPageException, DispatchException;
+    public void dispatch( IHttpRequest request, IHttpResponse response ) throws DispatchException;
 
 }

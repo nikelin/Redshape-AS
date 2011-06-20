@@ -1,6 +1,6 @@
 package com.redshape.servlet.dispatchers.http;
 
-import com.redshape.servlet.actions.exceptions.AbstractPageException;
+import com.redshape.servlet.actions.exceptions.handling.IPageExceptionHandler;
 import com.redshape.servlet.actions.exceptions.PageNotFoundException;
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.core.IHttpResponse;
@@ -8,6 +8,7 @@ import com.redshape.servlet.core.context.IContextSwitcher;
 import com.redshape.servlet.core.context.IResponseContext;
 import com.redshape.servlet.core.controllers.FrontController;
 import com.redshape.servlet.core.controllers.IAction;
+import com.redshape.servlet.core.controllers.ProcessingException;
 import com.redshape.servlet.core.controllers.registry.IControllersRegistry;
 import com.redshape.servlet.dispatchers.DispatchException;
 import com.redshape.servlet.views.IView;
@@ -46,6 +47,16 @@ public class HttpDispatcher implements IHttpDispatcher {
 	private FrontController front;
 	
 	private ApplicationContext context;
+
+    public IPageExceptionHandler exceptionHandler;
+
+    public IPageExceptionHandler getExceptionHandler() {
+        return exceptionHandler;
+    }
+
+    public void setExceptionHandler(IPageExceptionHandler exceptionHandler) {
+        this.exceptionHandler = exceptionHandler;
+    }
 
     public IContextSwitcher getContextSwitcher() {
         return contextSwitcher;
@@ -144,9 +155,18 @@ public class HttpDispatcher implements IHttpDispatcher {
         context.proceedResponse( view, request, response );
     }
 
+    protected void processError( ProcessingException e, IHttpRequest request, IHttpResponse response )
+            throws DispatchException {
+        if ( this.getExceptionHandler() == null ) {
+            throw new DispatchException( e.getMessage(), e );
+        }
+
+        this.getExceptionHandler().handleException( e, request, response );
+    }
+
 	@Override
     public void dispatch( IHttpRequest request, IHttpResponse response ) 
-    	throws DispatchException, AbstractPageException {
+    	throws DispatchException {
         try {
         	if ( request.getRequestURI().endsWith("jsp") ) {
                 return;
@@ -192,8 +212,8 @@ public class HttpDispatcher implements IHttpDispatcher {
             request.setAttribute("view", view );
 
             this.redirectToView( view, request, response);
-        } catch ( AbstractPageException e ) {
-            throw e;
+        } catch ( ProcessingException e ) {
+            this.processError(e, request, response);
         } catch ( Throwable e ) {
         	throw new DispatchException( e.getMessage(), e );
         }
