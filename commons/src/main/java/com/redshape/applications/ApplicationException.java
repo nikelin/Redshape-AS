@@ -11,11 +11,11 @@ public class ApplicationException extends Exception {
 	private static final long serialVersionUID = -4311623864906387180L;
 
 	public ApplicationException() {
-    	super();
+    	this(null);
     }
 
     public ApplicationException(String message) {
-        super(message);
+        this(message, null);
     }
     
     public ApplicationException( String message, Throwable e ) {

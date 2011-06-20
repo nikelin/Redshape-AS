@@ -1,14 +1,14 @@
 package com.redshape.applications.bootstrap;
 
-import java.util.Collection;
-import java.util.HashSet;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.stereotype.Component;
-
 import com.redshape.utils.PackagesLoader;
 import com.redshape.utils.config.IConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,23 +19,10 @@ import com.redshape.utils.config.IConfig;
  */
 @Component
 public abstract class AbstractBootstrapAction implements IBootstrapAction {
-    /**
-     * Marker for crashed actions
-     * @var boolean
-     */
-    private boolean is_error;
-
-    /**
-     * Marker to stop program running in a case of exceptions
-     * @var boolean
-     */
-    private boolean is_critical;
-
-    /**
-     * Boolean marker to represent processing status
-     * @var boolean 
-     */
-    private boolean is_processed;
+	/**
+	 * Current action markers
+	 */
+	private Set<ActionMarker> markers = new HashSet<ActionMarker>();
 
     /**
      * Identifier for current bootstrap action (must be unique)
@@ -105,29 +92,21 @@ public abstract class AbstractBootstrapAction implements IBootstrapAction {
         this.dependencies.add(id);
     }
 
-    public boolean isProcessed() {
-        return this.is_processed;
-    }
+	public void addMarker( ActionMarker marker ) {
+		this.markers.add(marker);
+	}
 
-    public void markProcessed() {
-        this.is_processed = true;
-    }
+	public boolean hasMarkers( ActionMarker... markers ) {
+		return this.markers.containsAll( Arrays.asList( markers ) );
+	}
 
-    public void markCritical() {
-        this.is_critical = true;
-    }
+	public Collection<ActionMarker> getMarkers() {
+		return this.markers;
+	}
 
-    public boolean isCritical() {
-        return this.is_critical;
-    }
-
-    public boolean isError() {
-        return this.is_error;
-    }
-
-    public void markError() {
-        this.is_error = true;
-    }
+	public boolean hasMarker( ActionMarker marker ) {
+		return this.markers.contains( marker );
+	}
 
     public boolean hasDependencies() {
         return this.dependencies.isEmpty();
@@ -137,7 +116,7 @@ public abstract class AbstractBootstrapAction implements IBootstrapAction {
     	this.packagesLoader = loader;
     }
     
-    public PackagesLoader getPackagesLoader() {
+    protected PackagesLoader getPackagesLoader() {
     	return this.packagesLoader;
     }
 }

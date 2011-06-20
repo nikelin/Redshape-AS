@@ -1,12 +1,12 @@
 package com.redshape.ui.data.stores;
 
+import com.redshape.ui.data.IModelData;
+import com.redshape.ui.data.IStore;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-
-import com.redshape.ui.data.IModelData;
-import com.redshape.ui.data.IStore;
 
 public class StoresManager implements IStoresManager {
 	private Collection<StoreContext> contexts = new HashSet<StoreContext>();
@@ -46,7 +46,7 @@ public class StoresManager implements IStoresManager {
 			Class<? extends V> type) {
 		T result = null;
 		for ( StoreContext context : this.contexts ) {
-			result = this.findByTypeWithinContext(type, context);
+			result = this.<T, V>findByTypeWithinContext(type, context);
 			if ( result != null ) {
 				break;
 			}
@@ -55,7 +55,7 @@ public class StoresManager implements IStoresManager {
 		if ( result != null ) {
 			return result;
 		} else {
-			return this.findByTypeWithinContext(type, this.globalContext );
+			return this.<T, V>findByTypeWithinContext(type, this.globalContext );
 		}
 	}
 	

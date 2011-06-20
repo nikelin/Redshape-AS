@@ -1,5 +1,7 @@
 package com.redshape.auth;
 
+import java.util.Date;
+
 /**
  * Created by IntelliJ IDEA.
  * User: nikelin
@@ -9,8 +11,8 @@ package com.redshape.auth;
  */
 public interface IIdentity {
 
-    public Long getLastAccessTime();
+    public Date getLastAccessTime();
 
-    public void setLastAccessTime( Long time );
+    public void setLastAccessTime( Date time );
 
 }

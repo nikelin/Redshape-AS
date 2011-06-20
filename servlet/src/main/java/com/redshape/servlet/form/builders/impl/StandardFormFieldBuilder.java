@@ -1,38 +1,37 @@
 package com.redshape.servlet.form.builders.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-
 import com.redshape.servlet.form.IFormField;
 import com.redshape.servlet.form.builders.IFormBuilder;
 import com.redshape.servlet.form.builders.IFormFieldBuilder;
 import com.redshape.servlet.form.builders.IFormItemBuilder;
-import com.redshape.servlet.form.decorators.FormFieldDecorator;
+import com.redshape.servlet.form.decorators.ErrorsDecorator;
 import com.redshape.servlet.form.decorators.IDecorator;
-import com.redshape.servlet.form.fields.CheckboxField;
-import com.redshape.servlet.form.fields.CheckboxGroupField;
-import com.redshape.servlet.form.fields.RadioGroupField;
-import com.redshape.servlet.form.fields.SelectField;
-import com.redshape.servlet.form.fields.InputField;
-import com.redshape.servlet.form.render.impl.fields.CheckboxFieldRenderer;
-import com.redshape.servlet.form.render.impl.fields.InputFieldRenderer;
-import com.redshape.servlet.form.render.impl.fields.SelectFieldRenderer;
+import com.redshape.servlet.form.fields.*;
+import com.redshape.servlet.form.render.impl.fields.*;
 import com.redshape.utils.Commons;
+import com.redshape.validators.IValidator;
+import com.redshape.validators.result.IValidationResult;
+
+import java.util.*;
 
 public class StandardFormFieldBuilder implements IFormFieldBuilder {
 
 	private Collection<IDecorator> decorators = new HashSet<IDecorator>();
+	private List<IValidator<?, ?>> validators
+							= new ArrayList<IValidator<?, ?>>();
 	private Map<String, Object> attributes = new HashMap<String, Object>();
 	private String id;
 	private String name;
 	private String label;
 	private Object value;
 	
+	@Override
+	public <T> IFormFieldBuilder withValidator(
+			IValidator<T, ?> validator) {
+		this.validators.add( validator );
+		return this;
+	}
+
 	@Override
 	public IFormFieldBuilder withLabel( String label ) {
 		this.label = label;
@@ -91,6 +90,14 @@ public class StandardFormFieldBuilder implements IFormFieldBuilder {
 		return this;
 	}
 
+    @Override
+    public LabelField newLabelField() {
+        LabelField field = new LabelField();
+        this.processField(field);
+        field.setRenderer( new LabelFieldRenderer() );
+        return field;
+    }
+
 	@Override
 	public CheckboxField newCheckboxField() {
 		CheckboxField field = new CheckboxField();
@@ -120,6 +127,14 @@ public class StandardFormFieldBuilder implements IFormFieldBuilder {
 		field.addOptions(options);
 		return field;
 	}
+
+    @Override
+    public TextAreaField newTextAreaField() {
+        TextAreaField field = new TextAreaField();
+        this.processField(field);
+        field.setRenderer( new TextAreaRenderer() );
+        return field;
+    }
 
 	@Override
 	public <T> RadioGroupField<T> newRadioGroupField( Map<String, T> values) {
@@ -166,7 +181,13 @@ public class StandardFormFieldBuilder implements IFormFieldBuilder {
 		}
 		
 		field.setId( this.id );
+		field.clearValidators();
+		for ( IValidator<?, ?> validator : this.validators ) {
+			field.addValidator( (IValidator<T, IValidationResult>) validator );
+		}
+		
 		field.clearDecorators();
+		field.setDecorator( new ErrorsDecorator() );
 		field.setDecorators( this.decorators.toArray( new IDecorator[ this.decorators.size() ] ) );
 		field.setLabel( this.label );
 		field.setName( this.name );

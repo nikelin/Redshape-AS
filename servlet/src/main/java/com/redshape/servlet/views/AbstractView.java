@@ -2,7 +2,6 @@ package com.redshape.servlet.views;
 
 import com.redshape.i18n.impl.StandardI18NFacade;
 import com.redshape.servlet.core.Constants;
-import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.views.render.IViewRenderer;
 import com.redshape.servlet.views.render.RenderException;
 
@@ -23,11 +22,21 @@ public abstract class AbstractView implements IView {
     private Map<String, Object> parameters = new HashMap<String, Object>();
     private String extension;
     private String redirection;
+    private ILayout layout;
 
     public AbstractView( String basePath, String viewPath, String extension ) {
         this.viewPath = viewPath;
         this.basePath = basePath;
         this.extension = extension;
+    }
+
+    public void setLayout( ILayout layout ) {
+        this.layout = layout;
+    }
+
+    @Override
+    public ILayout getLayout() {
+        return this.layout;
     }
 
     @Override
@@ -74,14 +83,34 @@ public abstract class AbstractView implements IView {
         this.parameters.put( name, value );
     }
 
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return this.parameters;
+    }
+
     @SuppressWarnings("unchecked")
 	public <T> T getAttribute( String name ) {
         T object = (T) this.parameters.get(name);
-        if ( object instanceof String ) {
-        	object = (T) StandardI18NFacade._( (String) object );
+
+        ViewAttributes attributes = ViewAttributes.valueOf( name );
+        if ( attributes != null && attributes.isTranslatable() ) {
+            if ( object instanceof String ) {
+                object = (T) StandardI18NFacade._( String.valueOf(object) );
+            }
         }
-        
+
         return object;
+    }
+
+    @Override
+    public String getError() {
+        return this.getAttribute( ViewAttributes.ERROR );
+    }
+
+    @Override
+    public void setError(String message) {
+        this.setAttribute( ViewAttributes.ERROR, message );
     }
 
     public void setRenderer( IViewRenderer renderer ) {
@@ -111,7 +140,7 @@ public abstract class AbstractView implements IView {
 
 	@Override
 	public <T> T getAttribute(ViewAttributes name ) {
-		return this.getAttribute( name.name() );
+		return this.<T>getAttribute( name.name() );
 	}
 
 }

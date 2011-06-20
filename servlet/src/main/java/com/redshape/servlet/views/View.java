@@ -9,6 +9,10 @@ package com.redshape.servlet.views;
  */
 public class View extends AbstractView {
 
+    public View( String basePath, String extension ) {
+        this( basePath, null, extension );
+    }
+
     public View( String basePath, String scriptPath, String extension ) {
         super( basePath, scriptPath, extension );
     }

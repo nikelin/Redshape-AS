@@ -1,13 +1,10 @@
 package com.redshape.servlet.form.builders;
 
+import com.redshape.servlet.form.fields.*;
+import com.redshape.validators.IValidator;
+
 import java.util.List;
 import java.util.Map;
-
-import com.redshape.servlet.form.fields.CheckboxField;
-import com.redshape.servlet.form.fields.CheckboxGroupField;
-import com.redshape.servlet.form.fields.RadioGroupField;
-import com.redshape.servlet.form.fields.SelectField;
-import com.redshape.servlet.form.fields.InputField;
 
 /**
  * Common implementation for a form fields builder.
@@ -15,17 +12,30 @@ import com.redshape.servlet.form.fields.InputField;
  * @author nikelin
  */
 public interface IFormFieldBuilder extends IFormItemBuilder {
+
+	/**
+	 * Add to build profile specified validator
+	 * @param <T>
+	 * @param validator
+	 * @return
+	 */
+	public <T> IFormFieldBuilder withValidator( IValidator<T, ?> validator );
 	
+	/**
+	 * Set new field value to build profile
+	 * @param value
+	 * @return
+	 */
 	public IFormFieldBuilder withValue( Object value );
 	
 	public IFormFieldBuilder withLabel( String label );
-	
+
+    public LabelField newLabelField();
+
 	/**
 	 * Create new radio buttons box with a given parameters as initial state.
 	 * 
 	 * @param <T>
-	 * @param id
-	 * @param name
 	 * @param values
 	 * @return
 	 */
@@ -34,20 +44,22 @@ public interface IFormFieldBuilder extends IFormItemBuilder {
 	/**
 	 * Create new radio buttons box with a given parameters as initial state.
 	 * @param <T>
-	 * @param id
-	 * @param name
 	 * @param values
 	 * @param selected Value selected by default
 	 * @return
 	 */
 	public <T> RadioGroupField<T> newRadioGroupField( Map<String, T> values,
 													  T selected );
-	
+
+    /**
+     * Creates new textarea field
+     *
+     * @return
+     */
+    public TextAreaField newTextAreaField();
+
 	/**
 	 * Create new checkbox with a given parameters as initial state
-	 * @param id
-	 * @param name
-	 * @param value Indicated initial state of checkbox ( selected / unselected )
 	 * @return
 	 */
 	public CheckboxField newCheckboxField();
@@ -56,8 +68,6 @@ public interface IFormFieldBuilder extends IFormItemBuilder {
 	 * Build text field with a given parameters as initial state
 	 *  
 	 * @param type
-	 * @param label
-	 * @param id
 	 * @return
 	 */
 	public InputField newInputField( InputField.Type type );
@@ -65,8 +75,6 @@ public interface IFormFieldBuilder extends IFormItemBuilder {
 	/**
 	 * Construct new <select> field from a given parameters as initial state
 	 * @param <T>
-	 * @param id
-	 * @param name
 	 * @param names
 	 * @Param values
 	 * @return
@@ -76,8 +84,6 @@ public interface IFormFieldBuilder extends IFormItemBuilder {
 	/**
 	 * Construct new <select> field from a given parameters as initial state
 	 * @param <T>
-	 * @param id
-	 * @param name
 	 * @param options
 	 * @return
 	 */
@@ -86,8 +92,6 @@ public interface IFormFieldBuilder extends IFormItemBuilder {
 	/**
 	 * Create group of checkboxes from a given parameters as initial state
 	 * @param <T>
-	 * @param id
-	 * @param name
 	 * @param names
 	 * @param values
 	 * @return
@@ -97,9 +101,8 @@ public interface IFormFieldBuilder extends IFormItemBuilder {
 	/**
 	 * Create group of checkboxes from a given parameters as initial state
 	 * @param <T>
-	 * @param id
-	 * @param name
-	 * @param options
+     * @param names
+     * @param values
 	 * @return
 	 */
 	public <T> CheckboxGroupField<T> newCheckboxGroupField( Map<String, T> names,
@@ -108,8 +111,6 @@ public interface IFormFieldBuilder extends IFormItemBuilder {
 	/**
 	 * Create group of checkboxes from a given parameters as initial state
 	 * @param <T>
-	 * @param id
-	 * @param name
 	 * @param options
 	 * @param values
 	 * @return
@@ -120,8 +121,7 @@ public interface IFormFieldBuilder extends IFormItemBuilder {
 	/**
 	 * Create group of checkboxes from a given parameters as initial state
 	 * @param <T>
-	 * @param id
-	 * @param name
+     * @param names
 	 * @param values
 	 * @param selected
 	 * @return

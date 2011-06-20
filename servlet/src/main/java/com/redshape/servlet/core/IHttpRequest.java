@@ -1,6 +1,7 @@
 package com.redshape.servlet.core;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -21,6 +22,10 @@ public interface IHttpRequest extends HttpServletRequest {
     public void setAction( String name );
 
     public String getAction();
+
+    public String getCookie( String name );
+
+    public <T> T getObjectParameter( String name ) throws IOException;
 
     public void setParameters( Map<String, Object> parameters );
 

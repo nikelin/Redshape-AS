@@ -11,4 +11,6 @@ public interface IValidationResult {
 	
 	public boolean isValid();
 
+	public String getMessage();
+	
 }

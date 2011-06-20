@@ -141,6 +141,40 @@ public class StringUtils {
         return builder.toString();
     }
 
+    public static String formatDuration( int value ) {
+        return formatDuration( value, false );
+    }
+
+    public static String formatDuration( int value, boolean displayHours ) {
+        String result = "";
+        if ( displayHours ) {
+            if ( value > Constants.TIME_HOUR ) {
+                float hours = value / Constants.TIME_HOUR;
+                value -= hours * Constants.TIME_HOUR;
+                result += ( ( hours > 9 ? Math.round(hours) : "0" + Math.round(hours) ) + ":").toString();
+            } else {
+                result += "00:";
+            }
+        }
+
+        if ( value > Constants.TIME_MINUTE  ) {
+            float minutes = value / Constants.TIME_MINUTE;
+            value -= minutes * Constants.TIME_MINUTE;
+            result += ( ( minutes > 9 ? Math.round( minutes ) : "0" + Math.round( minutes ) ) + ":" ).toString();
+        } else {
+            result += "00:";
+        }
+
+        if ( value >= Constants.TIME_SECOND ) {
+            float seconds = value / Constants.TIME_SECOND;
+            result += ( ( seconds > 9 ? Math.round(seconds) : "0" + Math.round(seconds) ) ).toString();
+        } else {
+            result += "00";
+        }
+
+        return result;
+    }
+
     public static String ucfirst( String value ) {
 		if ( value.isEmpty() ) {
 			return value;
@@ -148,7 +182,7 @@ public class StringUtils {
 
     	return value.substring(0, 1).toUpperCase().concat( value.substring(1) );
     }
-    
+
     public static String lcfirst( String value ) {
 		if ( value.isEmpty() ) {
 			return value;

@@ -1,14 +1,12 @@
 package com.redshape.applications.bootstrap.actions;
 
-import org.springframework.stereotype.Component;
-
 import com.redshape.applications.bootstrap.AbstractBootstrapAction;
-import com.redshape.applications.bootstrap.Action;
 import com.redshape.plugins.info.InfoLoaderFactory;
 import com.redshape.plugins.info.XMLInfoLoader;
 import com.redshape.plugins.sources.DirectoryPluginSource;
 import com.redshape.plugins.sources.JarPluginSource;
 import com.redshape.plugins.sources.PluginSourcesFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,8 +17,10 @@ import com.redshape.plugins.sources.PluginSourcesFactory;
  */
 @Component
 public class PluginsInit extends AbstractBootstrapAction {
+	public final static String ID = "Boot.Action.Plugins";
+
     public PluginsInit() {
-        this.setId(Action.PLUGINS_ID);
+        this.setId(ID);
     }
 
     public void process() {

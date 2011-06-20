@@ -7,7 +7,7 @@ import com.redshape.validators.result.IValidationResult;
  * simple boolean validation and complex validation with required
  * some type of the result object.
  * 
- * @see com.redshape.validators.common.validations.BeansValidator
+ * @see com.redshape.validators.impl.annotations.common.validations.BeansValidator
  * @see com.redshape.validators.result.IResultsList
  * 
  * @author nikelin
@@ -17,6 +17,8 @@ import com.redshape.validators.result.IValidationResult;
  */
 public interface IValidator<T, R extends IValidationResult> {
 
+	public void setAttribute( String name, Object value );
+	
 	public boolean isValid( T value );
 
 	public R validate( T value );

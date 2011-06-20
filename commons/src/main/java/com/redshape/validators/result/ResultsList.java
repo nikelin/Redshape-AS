@@ -33,6 +33,11 @@ public class ResultsList extends HashSet<IValidationResult>
 		this.success = value;
 	}
 
+	@Override
+	public String getMessage() {
+		return null;
+	}
+	
 	public String getName() {
 		return this.name;
 	}

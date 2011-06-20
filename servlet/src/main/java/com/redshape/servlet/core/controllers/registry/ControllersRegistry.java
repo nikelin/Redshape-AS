@@ -1,14 +1,15 @@
 package com.redshape.servlet.core.controllers.registry;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import com.redshape.servlet.core.controllers.Action;
+import com.redshape.servlet.core.controllers.IAction;
+import com.redshape.utils.Commons;
+import org.apache.commons.collections.FastHashMap;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import com.redshape.servlet.core.controllers.Action;
-import com.redshape.servlet.core.controllers.IAction;
-import com.redshape.servlet.views.IViewsFactory;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,7 +22,8 @@ public class ControllersRegistry implements IControllersRegistry, ApplicationCon
     private Set<Class<? extends IAction>> actions = new HashSet<Class<? extends IAction>>();
 
     private ApplicationContext context;
-    
+    private Map<String, Map<String, IAction>> registry = new FastHashMap();
+
     public ControllersRegistry() {
     	this(null);
     }
@@ -31,7 +33,22 @@ public class ControllersRegistry implements IControllersRegistry, ApplicationCon
     	
     	this.actions = actions;
     }
-    
+
+    @Override
+    public String getViewPath( IAction action ) {
+        Action actionMeta = action.getClass().getAnnotation( Action.class );
+        if ( actionMeta == null ) {
+            return null;
+        }
+
+        String viewPath = actionMeta.view();
+        if ( viewPath == null || viewPath.isEmpty() ) {
+            return null;
+        }
+
+        return viewPath;
+    }
+
     @Override
     public void setApplicationContext( ApplicationContext context ) {
     	this.context = context;
@@ -56,32 +73,50 @@ public class ControllersRegistry implements IControllersRegistry, ApplicationCon
     }
 
     @Override
-	public IAction createAction( String controller, String action ) throws InstantiationException {
+    public IAction getInstance( String controller, String action ) throws InstantiationException {
+         if ( !this.registry.containsKey(controller) ) {
+             return this.createAction( controller, action );
+         }
+
+        if ( !this.registry.get( controller ).containsKey(action) ) {
+            return this.createAction( controller, action );
+        }
+
+        return this.registry.get(controller).get(action);
+    }
+
+	protected IAction createAction( String controller, String action ) throws InstantiationException {
         IAction actionInstance = null;
+        IAction controllerInstance = null;
     	for ( Class<? extends IAction> actionClazz : getActions() ) {
             Action actionMeta = actionClazz.getAnnotation( Action.class );
             if ( actionMeta.controller().equals( controller )
                     && actionMeta.name().equals( action ) ) {
                 actionInstance = _createInstance( actionClazz );
                 break;
+            } else if ( actionMeta.controller().equals( controller )
+                    && actionMeta.name().equals("index") ) {
+                controllerInstance = _createInstance( actionClazz );
             }
         }
     	
     	if ( actionInstance != null ) {
 	    	this.getContext().getAutowireCapableBeanFactory()
 	    			.autowireBean( actionInstance );
+
+            if ( !this.registry.containsKey(controller) ) {
+                this.registry.put( controller, new FastHashMap() );
+            }
+
+            this.registry.get( controller ).put( action, actionInstance );
     	}
 
-        return actionInstance;
+        return Commons.select( actionInstance, controllerInstance );
     }
 
     private IAction _createInstance( Class<? extends IAction> action ) throws InstantiationException {
         try {
-            IAction actionInstance = action.newInstance();
-            actionInstance.setRegistry( this );
-            actionInstance.setViewsFactory( this.getContext().getBean( IViewsFactory.class ) );
-            
-            return actionInstance;
+            return action.newInstance();
         } catch ( InstantiationException e ) {
         	throw new InstantiationException("Unable to craete action instance");
         } catch ( IllegalAccessException e ) {

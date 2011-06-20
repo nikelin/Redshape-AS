@@ -3,6 +3,8 @@ package com.redshape.servlet.views;
 import com.redshape.servlet.views.render.IViewRenderer;
 import com.redshape.servlet.views.render.RenderException;
 
+import java.util.Map;
+
 /**
  * Created by IntelliJ IDEA.
  * User: nikelin
@@ -11,6 +13,10 @@ import com.redshape.servlet.views.render.RenderException;
  * To change this template use File | Settings | File Templates.
  */
 public interface IView {
+
+    public String getError();
+
+    public void setError( String message );
 
 	public void setRedirection( String path );
 	
@@ -28,6 +34,8 @@ public interface IView {
     
     public <T> T getAttribute( String name );
 
+    public Map<String, Object> getAttributes();
+
     public void setBasePath( String path );
 
     public String getBasePath();
@@ -43,5 +51,9 @@ public interface IView {
     public void setRenderer( IViewRenderer engine );
 
     public IViewRenderer getRenderer();
+
+    public ILayout getLayout();
+
+    public void setLayout( ILayout layout );
 
 }

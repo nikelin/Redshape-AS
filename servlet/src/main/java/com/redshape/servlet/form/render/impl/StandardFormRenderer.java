@@ -1,7 +1,5 @@
 package com.redshape.servlet.form.render.impl;
 
-import java.util.Map;
-
 import com.redshape.servlet.form.IForm;
 import com.redshape.servlet.form.IFormField;
 import com.redshape.servlet.form.IFormItem;
@@ -10,13 +8,15 @@ import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.render.IFormRenderer;
 import com.redshape.utils.Commons;
 
+import java.util.Map;
+
 public class StandardFormRenderer implements IFormRenderer {
 	
 	@Override
 	public String render(IForm form, RenderMode mode) {
 		StringBuilder builder = new StringBuilder();
 		
-		if ( form.getContext() == null ) {
+		if ( form.getContext() == null && mode.equals( RenderMode.FULL ) ) {
 			builder.append("<form ")
 				   .append("action=\"").append( 
 						   Commons.select( form.getAction(), "/" ) ).append("\" ")
@@ -45,7 +45,7 @@ public class StandardFormRenderer implements IFormRenderer {
 			}
 		}
 		
-		if ( form.getContext() == null ) {
+		if ( form.getContext() == null && mode.equals( RenderMode.FULL ) ) {
 			builder.append("</form>\n");
 		}
 		

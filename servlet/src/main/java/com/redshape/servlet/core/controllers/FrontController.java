@@ -34,6 +34,7 @@ public class FrontController {
     private ILayout layout;
     
     private IHttpDispatcher dispatcher;
+
     private IHttpRouter router;
     
     private Set<IPlugin> plugins = new HashSet<IPlugin>();
@@ -43,8 +44,7 @@ public class FrontController {
         POST_DISPATCH
     };
     
-    public FrontController( IHttpDispatcher dispatcher, IHttpRouter router ) {
-    	this.dispatcher = dispatcher;
+    public FrontController( IHttpRouter router ) {
     	this.router = router;
     }
   

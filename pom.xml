@@ -9,13 +9,10 @@
     
     <modules>
         <module>commons</module>
-        <module>tasks</module>
-        <module>scheduler</module>
         <module>persistence</module>
         <module>ui</module>
         <module>payments</module>
-        <module>server</module>
-        <module>protocols</module>
+        <module>daemons</module>
         <module>cmd</module>
         <module>servlet</module>
 		<module>search</module>
@@ -86,7 +83,7 @@
     
     <organization>
         <name>Redshape Ltd.</name>
-        <url>http://redshape.ru</url>
+        <url>http://as.redshape.ru</url>
     </organization>
 
     <build>
@@ -111,7 +108,8 @@
                       <goal>copy-dependencies</goal>
                     </goals>
                     <configuration>
-                        <useRepositoryLayout>${project.groupId}.${project.artifactId}.${project.extension}</useRepositoryLayout>
+                        <useRepositoryLayout>true</useRepositoryLayout>
+                        <outputAbsoluteArtifactFilename>true</outputAbsoluteArtifactFilename>
                     </configuration>
                   </execution>
                 </executions>

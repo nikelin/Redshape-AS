@@ -1,6 +1,6 @@
 package com.redshape.utils;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +39,7 @@ public final class Commons {
 	 * @return
 	 */
 	public static <K, V> Map<K, V> map( K[] keys, V[] values ) {
-		Map<K, V> result = Collections.emptyMap();
+		Map<K, V> result = new HashMap<K, V>();
 		for ( int i = 0; i < keys.length; i ++ ) {
 			result.put( keys[i], values[i] );
 		}

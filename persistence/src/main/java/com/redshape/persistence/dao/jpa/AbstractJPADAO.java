@@ -13,126 +13,63 @@ import com.redshape.persistence.dao.query.IQueryHolder;
 import com.redshape.persistence.dao.query.QueryBuilderException;
 import com.redshape.persistence.dao.query.QueryExecutorException;
 import com.redshape.persistence.entities.IEntity;
+import org.apache.log4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.orm.jpa.support.JpaDaoSupport;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.*;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import org.apache.log4j.Logger;
 
 /**
  *
  * @author user
  */
-public abstract class AbstractJPADAO<T extends IEntity> implements IJPADAO<T>{
+public abstract class AbstractJPADAO<T extends IEntity> extends JpaDaoSupport implements IJPADAO<T>{
+    public static final Integer syncTime = 15000;
     private static final Logger log = Logger.getLogger(AbstractJPADAO.class);
     private Class<T> entityClass;
     
     private Map<Class<T>, com.redshape.persistence.dao.query.IQueryHolder> queryHolders = new HashMap<Class<T>, IQueryHolder>();
-    
+
     public AbstractJPADAO( Class<T> entityClass) {
+        super();
+
         this.entityClass = entityClass;
     }
 
-    protected EntityManagerFactory emFactory;
-    @PersistenceContext( type = PersistenceContextType.EXTENDED, name = "persistenceManager" )
+    @PersistenceContext( name = "persistenceManager", type = PersistenceContextType.TRANSACTION )
     protected EntityManager em;
-    
-    transient Object readLock = new Object();
-    transient Object writeLock = new Object();
-    
+
 	@Override
+    @Transactional
     public void save( Collection<T> list ) throws DAOException {
         for ( T record : list ) {
-            this.save(record, true );
+            this.save(record);
         }
     }
-
-	public void setEntityManagerFactory( EntityManagerFactory ef ) {
-		this.emFactory = ef;
-	}
-	
-	protected EntityManagerFactory getEntityManagerFactory() {
-		return this.emFactory;
-	}
-	
-	protected EntityManager getEntityManager() {
-		if ( this.em == null ) {
-			this.em = this.getEntityManagerFactory().createEntityManager();
-		}
-		
-		return this.em;
-	}
-	
-	protected void rollbackTransaction() {
-		if ( !this.getEntityManager().getTransaction().isActive() ) {
-			return;
-		}
-		
-		this.getEntityManager().getTransaction().rollback();
-	}
-	
-	protected void beginTransaction() {
-		if ( this.getEntityManager().getTransaction().isActive() ) {
-			return;
-		}
-		
-		this.getEntityManager().getTransaction().begin();
-	}
-	
-	protected void commitTransaction() {
-		if ( !this.getEntityManager().getTransaction().isActive() ) {
-			return;
-		}
-		
-		this.getEntityManager().getTransaction().commit();
-	}
-	
-	protected T save( T object, boolean isCollection ) throws DAOException {
-		try {
-			if ( !isCollection ) {
-				this.beginTransaction();
-			}
-			
-			object = this.getEntityManager().merge(object);
-	        
-	        return object;
-		} catch ( Throwable e ) {
-    		log.error( e.getMessage(), e );
-			try {
-				this.rollbackTransaction();
-			} catch ( Throwable ex ) {}
-			
-			throw new DAOException( e.getMessage(), e );
-		} finally {
-			if ( !isCollection ) {
-				try {
-					this.commitTransaction();
-				} catch ( Throwable e ) {
-					this.rollbackTransaction();
-				}
-	        }
-		}
-	}
 	
     @Override
+    @Transactional
     public T save(T object) throws DAOException {
-        return this.save( object, false );
+        return this.em.merge(object);
     }
     
     @Override
-    synchronized public T update(T object) throws DAOException {
-    	this.getEntityManager().refresh(object);
-        return object;
+    @Transactional
+    public T update(T object) throws DAOException {
+        if ( object.getId() == null ) {
+            throw new DAOException("<null> id provided");
+        }
+
+        return (T) this.em.find( object.getClass(), object.getId() );
     }
 
     @Override
+    @Transactional
     public void update(Collection<T> list ) throws DAOException {
         for ( T item : list ) {
             this.update( item );
@@ -140,8 +77,9 @@ public abstract class AbstractJPADAO<T extends IEntity> implements IJPADAO<T>{
     }
     
     @Override
+    @Transactional
     public void persist( T record ) throws DAOException {
-    	this.getEntityManager().persist(record);
+    	this.em.persist(record);
     }
 
     @Override
@@ -150,59 +88,22 @@ public abstract class AbstractJPADAO<T extends IEntity> implements IJPADAO<T>{
     }
     
     @Override
+    @Transactional
     public void remove( Collection<T> objects ) throws DAOException {
-    	try {
-	    	this.beginTransaction();
-	    	
-	    	for ( T record : objects ) {
-	    		this.remove(record, true);
-	    	}
-    	} catch ( Throwable e ) {
-    		log.error( e.getMessage(), e );
-			try {
-				this.rollbackTransaction();
-			} catch ( Throwable ex ) {}
-			
-			throw new DAOException( e.getMessage(), e );
-		} finally {
-			try {
-				this.commitTransaction();
-			} catch ( Throwable e ) {
-				this.rollbackTransaction();
-			}
-		}
+        for ( T record : objects ) {
+            this.remove(record);
+        }
     }
 
-	protected void remove( T object, boolean isCollection ) throws DAOException {
-    	try {
-    		if ( !isCollection ) {
-    			this.beginTransaction();
-    		}
-    		
-    		this.getEntityManager().remove(object);
-    			
-    		
-        } catch (Throwable e) {
-    		log.error( e.getMessage(), e );
-			try {
-				this.rollbackTransaction();
-			} catch ( Throwable ex ) {}
-			
-			throw new DAOException( e.getMessage(), e );
-        } finally {
-        	if ( !isCollection ) {
-        		try {
-					this.commitTransaction();
-				} catch ( Throwable e ) {
-					this.rollbackTransaction();
-				}
-    		}
-		}
-    }
-    
-	@Override
-    public void remove(T object) throws DAOException {
-        this.remove(object, false);
+    @Transactional
+	public void remove( T object ) throws DAOException {
+        if ( !this.em.contains( object ) ) {
+            T objInDb = (T) this.em.find( object.getClass(), object.getId() );
+            BeanUtils.copyProperties( object, objInDb );
+            this.remove(objInDb);
+        } else {
+            this.em.remove(object);
+        }
     }
 
     protected void executeUpdate(final String query) throws DAOException {
@@ -210,7 +111,7 @@ public abstract class AbstractJPADAO<T extends IEntity> implements IJPADAO<T>{
     }
 
     protected void executeUpdate(final String queryString, final Map<String, Object> params) throws DAOException {
-		Query query = this.getEntityManager().createQuery(queryString);
+		Query query = this.em.createQuery(queryString);
         for (String key : params.keySet()) {
             query.setParameter(key, params.get(key));
         }
@@ -221,7 +122,7 @@ public abstract class AbstractJPADAO<T extends IEntity> implements IJPADAO<T>{
     @Override
     public T findById( final Long id ) throws DAOException {
         try {
-            return this.getEntityManager().find( this.getEntityClass(), id );
+            return this.em.find( this.getEntityClass(), id );
         } catch ( Throwable e ) {
             throw new DAOException( e.getMessage(), e );
         }
@@ -250,7 +151,7 @@ public abstract class AbstractJPADAO<T extends IEntity> implements IJPADAO<T>{
 			}
 		}
 
-        CriteriaExecutor executor = new CriteriaExecutor( this.getEntityManager(), query);
+        CriteriaExecutor executor = new CriteriaExecutor( this.em, query);
         
         try {
 	        Query jpaQuery = executor.execute();
@@ -289,7 +190,7 @@ public abstract class AbstractJPADAO<T extends IEntity> implements IJPADAO<T>{
             }
         }
 
-		Query query = this.getEntityManager().createNamedQuery(queryName);
+		Query query = this.em.createNamedQuery(queryName);
         for (String key : params.keySet()) {
             query.setParameter(key, params.get(key));
         }
@@ -335,7 +236,7 @@ public abstract class AbstractJPADAO<T extends IEntity> implements IJPADAO<T>{
 
     @Override
     public List<T> findAll() throws DAOException {
-        return this.findAll( -1, -1 );
+    	return this.findAll( -1, -1 );
     }
 
     @Override
@@ -345,7 +246,7 @@ public abstract class AbstractJPADAO<T extends IEntity> implements IJPADAO<T>{
 
     @Override
     public List<T> findAll( final int offset, final int count ) throws DAOException {
-    	Query query = this.getEntityManager().createQuery( String.format("from %s", getEntityName() ) );
+    	Query query = this.em.createQuery( String.format("from %s", getEntityName() ) );
 
         if ( offset > 0 ) {
             query.setFirstResult( offset );
@@ -354,7 +255,7 @@ public abstract class AbstractJPADAO<T extends IEntity> implements IJPADAO<T>{
         if ( count > 0 ) {
             query.setMaxResults(count);
         }
-
+        
         return query.getResultList();
 	}
 
@@ -367,7 +268,7 @@ public abstract class AbstractJPADAO<T extends IEntity> implements IJPADAO<T>{
     }
 
     public Long count() throws DAOException {
-		return (Long) this.getEntityManager().createQuery("select count(*) from " + getEntityName() )
+		return (Long) this.em.createQuery("select count(*) from " + getEntityName() )
 				 	    .getSingleResult();
     }
 

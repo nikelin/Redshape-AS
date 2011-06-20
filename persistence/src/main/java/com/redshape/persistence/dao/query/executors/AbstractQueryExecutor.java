@@ -1,21 +1,14 @@
 package com.redshape.persistence.dao.query.executors;
 
-import java.lang.reflect.InvocationTargetException;
-
 import com.redshape.persistence.dao.query.IQuery;
 import com.redshape.persistence.dao.query.QueryExecutorException;
-import com.redshape.persistence.dao.query.expressions.AndExpression;
-import com.redshape.persistence.dao.query.expressions.EqualsOperation;
-import com.redshape.persistence.dao.query.expressions.GreaterThanOperation;
-import com.redshape.persistence.dao.query.expressions.IExpression;
-import com.redshape.persistence.dao.query.expressions.LessThanOperation;
-import com.redshape.persistence.dao.query.expressions.NotOperation;
-import com.redshape.persistence.dao.query.expressions.OrExpression;
+import com.redshape.persistence.dao.query.expressions.*;
 import com.redshape.persistence.dao.query.statements.IStatement;
 import com.redshape.persistence.dao.query.statements.ReferenceStatement;
 import com.redshape.persistence.dao.query.statements.ScalarStatement;
-
 import org.apache.log4j.Logger;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -79,6 +72,9 @@ public abstract class AbstractQueryExecutor<T, P, E> implements IQueryExecutor<T
 	            .getMethod("processExpression", statement.getClass())
 	            .invoke(this, statement);
         	if ( expression instanceof IExpression ) {
+                /**
+                 * @FIXME: is this logic erroneous?
+                 */
         		return this.processExpression( (IExpression) statement );
         	}
 	            

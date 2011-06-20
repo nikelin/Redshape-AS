@@ -1,14 +1,12 @@
 package com.redshape.servlet.core;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
-
+import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
-import org.apache.poi.util.StringUtil;
 
-import net.sf.json.JSONObject;
-
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -32,14 +30,26 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
     private String action;
     private String requestData;
     private Map<String, Object> parameters = new HashMap<String, Object>();
+    private Map<String, Cookie> cookiesMap = new HashMap<String, Cookie>();
 
     public HttpRequest( HttpServletRequest request ) {
         super(request);
         
         try {
+            this.initCookies();
         	this.initParameters();
         } catch ( IOException e ) {
         	throw new IllegalArgumentException("Unable to read parameters", e);
+        }
+    }
+
+    protected void initCookies() {
+        if ( this.getCookies() == null ) {
+            return;
+        }
+
+        for ( Cookie cookie : this.getCookies() ) {
+            this.cookiesMap.put( cookie.getName(), cookie );
         }
     }
     
@@ -62,8 +72,11 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
 		if ( this.initialized ) {
 			return;
 		}
-		
+
 		String data = this.readRequest();
+        if ( data == null || data.isEmpty() ) {
+            return;
+        }
     	
     	if ( data.startsWith("{") && data.endsWith("}") ) {
     		JSONObject object = this.readJSONRequest( data );
@@ -87,22 +100,37 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
     	
     	this.initialized = true;
 	}
-	
+
+    @Override
+    public <T> T getObjectParameter( String name ) throws IOException {
+        String data = super.getParameter(name);
+        if ( data == null ) {
+            return null;
+        }
+
+        this.initParameters();
+
+        return (T) this.parameters.get( name );
+    }
+
 	@Override
     public String getParameter(String name ) {
 		try {
-			String data = super.getParameter(name);
-			if ( data != null ) {
-				return data;
-			}
-			
-			this.initParameters();
-			
-			return String.valueOf( this.parameters.get(name) );
+			return String.valueOf( this.<Object>getObjectParameter(name) );
 		} catch ( IOException e ) {
 			throw new IllegalArgumentException( "Unable to grab parameter value", e );
 		}
 	}
+
+    @Override
+    public String getCookie( String name ) {
+        Cookie cookie = this.cookiesMap.get( name );
+        if ( cookie == null ) {
+            return null;
+        }
+
+        return cookie.getValue();
+    }
 
 	protected String readRequest() throws IOException {
 		if ( this.requestData != null ) {

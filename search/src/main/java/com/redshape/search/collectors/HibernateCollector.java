@@ -30,7 +30,7 @@ public class HibernateCollector implements IResultsCollector {
         Collection<T> results = new HashSet();
 
         for ( CollectedItem item : this.collected ) {
-//                results.add( (T) ManagersFactory.getDefault().getForEntity( (Class<? extends IEntity>) item.getSearchable() ).find( Integer.valueOf( item.getId() ) ) );
+//                results.add( (T) ManagersFactory.getDefault().getForEntity( (Class<? extends IEntity>) item.getSearchable() ).find( Integer.valueOf( item.getJobId() ) ) );
         }
 
         return results;

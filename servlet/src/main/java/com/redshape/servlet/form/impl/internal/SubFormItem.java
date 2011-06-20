@@ -1,19 +1,13 @@
 package com.redshape.servlet.form.impl.internal;
 
+import com.redshape.servlet.core.IHttpRequest;
+import com.redshape.servlet.form.*;
+import com.redshape.servlet.form.decorators.IDecorator;
+import com.redshape.servlet.form.render.IFormRenderer;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
-import com.redshape.servlet.core.IHttpRequest;
-import com.redshape.servlet.form.IForm;
-import com.redshape.servlet.form.IFormField;
-import com.redshape.servlet.form.IFormItem;
-import com.redshape.servlet.form.IFormProcessHandler;
-import com.redshape.servlet.form.InvalidDataException;
-import com.redshape.servlet.form.RenderMode;
-import com.redshape.servlet.form.decorators.IDecorator;
-import com.redshape.servlet.form.impl.Form;
-import com.redshape.servlet.form.render.IFormRenderer;
 
 public class SubFormItem implements IForm {
 	private static final long serialVersionUID = -3380922220515950665L;
@@ -42,7 +36,12 @@ public class SubFormItem implements IForm {
 		this.form = form;
 	}
 
-	@Override
+    @Override
+    public void resetState() {
+        this.form.resetState();
+    }
+
+    @Override
 	public void setContext(IForm form) {
 		this.form.setContext(form);
 	}
@@ -79,7 +78,7 @@ public class SubFormItem implements IForm {
 
 	@Override
 	public <T> T getAttribute(String name) {
-		return this.form.getAttribute(name);
+		return this.form.<T>getAttribute(name);
 	}
 
 	@Override

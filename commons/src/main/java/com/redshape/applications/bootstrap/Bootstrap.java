@@ -1,12 +1,14 @@
 package com.redshape.applications.bootstrap;
 
-import com.redshape.utils.PackagesLoader;
+import com.redshape.utils.IPackagesLoader;
 import com.redshape.utils.config.IConfig;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,13 +24,13 @@ public class Bootstrap implements IBootstrap {
     
     private Map<Object, Boolean> actionsStatus = new HashMap<Object, Boolean>();
     
-    private boolean inited;
+    private boolean initialized;
     
     @Autowired( required = true )
     private IConfig config;
     
     @Autowired( required = true )
-    private PackagesLoader packagesLoader;
+    private IPackagesLoader packagesLoader;
     
     public IConfig getConfig() {
     	return this.config;
@@ -38,11 +40,11 @@ public class Bootstrap implements IBootstrap {
     	this.config = config;
     }
     
-    protected PackagesLoader getPackagesLoader() {
+    protected IPackagesLoader getPackagesLoader() {
     	return this.packagesLoader;
     }
     
-    public void setPackagesLoader( PackagesLoader loader ) {
+    public void setPackagesLoader( IPackagesLoader loader ) {
     	this.packagesLoader = loader;
     }
     
@@ -59,7 +61,6 @@ public class Bootstrap implements IBootstrap {
     }
 
     synchronized public void addAction( IBootstrapAction action ) {
-        action.setBootstrap( this );
         this.actions.add(action);
     }
 
@@ -91,10 +92,10 @@ public class Bootstrap implements IBootstrap {
 
     @Override
     synchronized public void init() throws BootstrapException {
-        if ( this.inited ) {
+        if ( this.initialized ) {
             return;
         } else {
-            this.inited = true;
+            this.initialized = true;
         }
 
         List<IBootstrapAction> actions = this.getActions();
@@ -104,7 +105,7 @@ public class Bootstrap implements IBootstrap {
         }
 
         for ( IBootstrapAction action : actions ) {
-            if ( !action.isProcessed() ) {
+            if ( !action.hasMarker( ActionMarker.PROCESSED ) ) {
                 log.info("Processing action: " + action.getId() );
                 this.runAction( action );
             }
@@ -116,7 +117,8 @@ public class Bootstrap implements IBootstrap {
 
     private void runAction( IBootstrapAction action ) throws BootstrapException {
         try {
-            if ( action.isProcessed() || action.isError() || this.isDisabled( action.getId() ) ) {
+            if ( action.hasMarkers( ActionMarker.PROCESSED, ActionMarker.ERROR )
+		            || this.isDisabled( action.getId() ) ) {
                 return;
             }
 
@@ -129,18 +131,18 @@ public class Bootstrap implements IBootstrap {
             for( Object id : action.getDependencies() ) {
                 log.info("Processing dependency: " + id );
                 IBootstrapAction dependency = this.getAction(id);
-                if ( dependency == null || dependency.isError() ) {
+                if ( dependency == null || dependency.hasMarker( ActionMarker.ERROR ) ) {
                     throw new BootstrapException("cannot resolve dependencies ( " + id + " for " + action.getId() + " ) " )  ;
                 }
 
-                if ( !dependency.isProcessed() ) {
+                if ( !dependency.hasMarker( ActionMarker.PROCESSED ) ) {
                     this.runAction( dependency );
                 }
             }
         } catch ( BootstrapException e ) {
-            action.markError();
+            action.addMarker( ActionMarker.ERROR );
 
-            if ( action.isCritical() ) {
+            if ( action.hasMarker( ActionMarker.CRITICAL ) ) {
                 log.info("Critical bootstrapping exception", e );
                 throw e;
             } else {
@@ -155,12 +157,12 @@ public class Bootstrap implements IBootstrap {
 
     protected void _runAction( IBootstrapAction action ) throws BootstrapException {
         action.process();
-        action.markProcessed();
+        action.addMarker( ActionMarker.PROCESSED );
     }
 
     private boolean isDependenciesResolved( IBootstrapAction action ) {
         for ( Object id : action.getDependencies() ) {
-            if ( !this.getAction( id ).isProcessed() ) {
+            if ( !this.getAction( id ).hasMarker( ActionMarker.PROCESSED ) ) {
                 return false;
             }
         }

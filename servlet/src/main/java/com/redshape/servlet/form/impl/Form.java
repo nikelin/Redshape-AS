@@ -1,33 +1,22 @@
 package com.redshape.servlet.form.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-
 import com.redshape.servlet.core.IHttpRequest;
-import com.redshape.servlet.form.AbstractFormItem;
-import com.redshape.servlet.form.IForm;
-import com.redshape.servlet.form.IFormField;
-import com.redshape.servlet.form.IFormItem;
-import com.redshape.servlet.form.IFormProcessHandler;
-import com.redshape.servlet.form.InvalidDataException;
-import com.redshape.servlet.form.RenderMode;
+import com.redshape.servlet.form.*;
 import com.redshape.servlet.form.decorators.LegendDecorator;
 import com.redshape.servlet.form.impl.internal.SubFormItem;
 import com.redshape.servlet.form.render.IFormRenderer;
 import com.redshape.utils.Commons;
 import com.redshape.utils.StringUtils;
+import org.apache.log4j.Logger;
+
+import java.util.*;
 
 public class Form extends AbstractFormItem implements IForm {
-	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger( Form.class );
 	private static final long serialVersionUID = 5015229816321663639L;
 	
 	public enum FormState {
+        NONE,
 		RENDERED,
 		VALIDATED,
 		PROCESSED
@@ -64,6 +53,8 @@ public class Form extends AbstractFormItem implements IForm {
 		if ( !request.isPost() ) {
 			throw new IllegalArgumentException("Processing only possible in POST context");
 		}
+
+        this.resetState();
 		
 		Map<String, Object> parameters = request.getParameters();
 		for ( String attribute : parameters.keySet() ) {
@@ -106,6 +97,7 @@ public class Form extends AbstractFormItem implements IForm {
 		}
 		
 		if (  !( item instanceof IForm ) ) {
+			log.error("Current context:" + this.getCanonicalName() + ", full search path: " + Arrays.asList( path )  );
 			throw new IllegalArgumentException("Illegal path");
 		}
 		
@@ -119,7 +111,7 @@ public class Form extends AbstractFormItem implements IForm {
 	}
 	
 	protected <T> IFormField<T> findField( IForm context, String[] name ) {
-		IForm targetContext = this.findContext( name );
+		IForm targetContext = this.findContext( Arrays.copyOfRange( name, 0, name.length - 1 ) );
 		if ( targetContext == null ) {
 			throw new IllegalArgumentException("Path not founded!");
 		}
@@ -162,12 +154,26 @@ public class Form extends AbstractFormItem implements IForm {
 
 	@Override
 	public String render() {
+        if ( this.getContext() == null ) {
+            this.resetState();
+        }
+
 		return this.render( RenderMode.FULL );
 	}
-	
+
+    @Override
+    public void resetState() {
+        this.state = FormState.NONE;
+
+        for ( IFormItem item : this.getItems() ) {
+            item.resetState();
+        }
+    }
+
 	@Override
 	public String render( RenderMode mode ) {
-		if ( this.state != null && this.state.equals( FormState.RENDERED ) ) {
+		if ( this.state != null && this.state.equals( FormState.RENDERED )
+                && this.getContext() != null ) {
 			if ( !this.hasAttribute("forceRender") ) { 
 				return "";
 			}
@@ -276,7 +282,8 @@ public class Form extends AbstractFormItem implements IForm {
 	public boolean isValid() {
 		boolean result = true;
 		for ( IFormItem item : this.getItems() ) {
-			result = result && item.isValid();
+			boolean itemResult = item.isValid();
+            result = itemResult && result;
 		}
 		
 		return result;

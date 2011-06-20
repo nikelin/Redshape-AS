@@ -14,8 +14,8 @@ import java.lang.annotation.*;
  * 
  * Often used with a @see com.redshape.validators.BeansValidator.
  * 
- * @see com.redshape.validators.impl.ValidatorAnnotationValidator
- * @see com.redshape.validators.impl.ValidatorsAnnotationValidator
+ * @see com.redshape.validators.impl.annotations.ValidatorAnnotationValidator
+ * @see com.redshape.validators.impl.annotations.ValidatorsAnnotationValidator
  * 
  * @author nikelin
  * @date 18/04/11

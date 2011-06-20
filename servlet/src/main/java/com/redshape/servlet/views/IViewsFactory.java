@@ -1,5 +1,7 @@
 package com.redshape.servlet.views;
 
+import com.redshape.servlet.core.IHttpRequest;
+
 /**
  * Created by IntelliJ IDEA.
  * User: nikelin
@@ -17,6 +19,6 @@ public interface IViewsFactory {
 
     public String getExtension();
 
-    public IView createView( String viewPath );
+    public IView getView( IHttpRequest request );
 
 }

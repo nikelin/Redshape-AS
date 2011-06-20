@@ -1,13 +1,13 @@
 package com.redshape.auth;
 
 /**
- * Объект результата работы аутентификатора
+ * Object to represents result of authentication
  *
  * @author nikelin
  */
 public class AuthResult {
     /**
-     * Перечисление возможным статусов аутентификации
+     * Authentication statuses
      */
     public enum Status {
        SUCCESS,
@@ -27,10 +27,10 @@ public class AuthResult {
     }
 
     /**
-     * @param status Результат аутентификации
-     * @param identity Аутентифицируемая сущность
+     * @param status Authentication result
+     * @param identity
      */
-    public AuthResult(Status status, IIdentity identity ) {
+    public AuthResult( Status status, IIdentity identity ) {
        this.identity = identity;
        this.status = status;
     }

@@ -1,74 +1,81 @@
 package com.redshape.auth.adapters;
 
+import com.redshape.auth.AuthResult;
+import com.redshape.auth.AuthenticationException;
+import com.redshape.auth.AuthenticatorAttribute;
 import com.redshape.auth.IIdentity;
-import com.redshape.auth.storage.AuthStorage;
+import com.redshape.auth.storage.IAuthStorage;
 import com.redshape.auth.storage.MemoryStorage;
-import com.redshape.utils.Constants;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- * User: nikelin
- * Date: Jan 19, 2010
- * Time: 6:16:54 PM
- * To change this template use File | Settings | File Templates.
+ * Abstract authenticator entity
+ * @author nikelin
  */
-abstract public class AbstractAuthenticator<T extends IIdentity> implements AuthenticatorInterface<T> {
-    public static final int defaultSessionDuration = Constants.TIME_HOUR;
-    private static final Class<? extends AuthStorage> defaultStorage = MemoryStorage.class;
+abstract public class AbstractAuthenticator<T extends IIdentity> implements IAuthenticator<T> {
+    private IAuthStorage storage;
+    private Map<AuthenticatorAttribute, Object> attributes = new HashMap<AuthenticatorAttribute, Object>();
 
-    private AuthStorage storage;
-
-    private int sessionDuration = defaultSessionDuration;
-
-    public AbstractAuthenticator() throws InstantiationException {
-        try {
-            this.setStorage( defaultStorage.newInstance() );
-        } catch ( Throwable e ) {
-            throw new InstantiationException();
-        }
+    protected AbstractAuthenticator() {
+        this( new MemoryStorage() );
     }
 
-    public AbstractAuthenticator( AuthStorage storage ) {
-        this.setStorage( storage );
-    }
-
-    public void setStorage( AuthStorage storage ) {
+    protected AbstractAuthenticator( IAuthStorage storage )  {
         this.storage = storage;
     }
 
-    public AuthStorage getStorage() {
+    @Override
+    public T getIdentity( Object id ) {
+        return this.getStorage().<T>get( id );
+    }
+
+    @Override
+    public void setAttribute( AuthenticatorAttribute attribute, Object value ) {
+        if ( attribute == null ) {
+            throw new IllegalArgumentException("<null>");
+        }
+
+        if ( !attribute.isAllowed(value) ) {
+            throw new IllegalArgumentException("Wrong value type " + value.getClass().getCanonicalName()
+                        + " for attribute " + attribute.name() );
+        }
+
+        this.attributes.put( attribute, value );
+    }
+
+    @Override
+    public AuthResult authenticate( Map<String, Object> credentials )
+            throws AuthenticationException {
+        return this.authenticate( credentials, new HashMap<AuthenticatorAttribute, Object>() );
+    }
+
+    @Override
+    public AuthResult authenticate( Map<String, Object> credentials,
+                                    Map<AuthenticatorAttribute, Object> configuration )
+            throws AuthenticationException {
+        return this.authenticate( this.createIdentity(credentials), new HashMap<AuthenticatorAttribute, Object>() );
+    }
+
+    @Override
+    public AuthResult authenticate(T identity) throws AuthenticationException {
+        return this.authenticate(identity, new HashMap<AuthenticatorAttribute, Object>() );
+    }
+
+    @Override
+    public void forget( T identity ) {
+        this.getStorage().remove( identity );
+    }
+
+    protected IAuthStorage getStorage() {
         return this.storage;
     }
 
-    public Map<Object, T> getAuthenticated() {
-        return this.getStorage().getIdentities();
+    protected <V> V getAttribute( AuthenticatorAttribute name ) {
+        return (V) this.attributes.get(name);
     }
 
-    public void setSessionDuration( int time ) {
-        this.sessionDuration = time;
-    }
-
-    public void dropSession( T user ) {
-        this.getStorage().remove( user );
-    }
-
-    public T getIdentity( Object id ) {
-        T user = null;
-        if ( this.getStorage().isExists( id ) ) {
-            user = this.getStorage().<T>get( id );
-        }
-
-        return user;
-    }
-
-    public long getSessionDuration() {
-        return this.sessionDuration;
-    }
-
-    public void unauthorize( T identity ) {
-        this.getStorage().remove( identity );
-    }
+    abstract protected T createIdentity( Map<String,Object> credentials ) throws AuthenticationException;
 
 }

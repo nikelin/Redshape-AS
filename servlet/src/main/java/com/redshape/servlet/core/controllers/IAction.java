@@ -18,9 +18,13 @@ public interface IAction {
 	public void setViewsFactory( IViewsFactory factory );
 	
 	public void setRegistry( IControllersRegistry registry );
-	
-    public IView getView();
 
-    public void process( IHttpRequest request, IHttpResponse response ) throws ProcessingException;
+    public void setView( IView view );
+
+    public void setRequest( IHttpRequest request );
+
+    public void setResponse( IHttpResponse response );
+
+    public void process() throws ProcessingException;
 
 }

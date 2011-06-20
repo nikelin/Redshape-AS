@@ -1,10 +1,9 @@
 package com.redshape.persistence.entities;
 
-import java.lang.reflect.Field;
+import org.apache.log4j.Logger;
 
 import javax.persistence.*;
-
-import org.apache.log4j.*;
+import java.lang.reflect.Field;
 
 /**
  * @author nikelin

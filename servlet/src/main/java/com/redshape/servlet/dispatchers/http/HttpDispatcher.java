@@ -1,20 +1,26 @@
 package com.redshape.servlet.dispatchers.http;
 
-import javax.servlet.RequestDispatcher;
-
+import com.redshape.servlet.actions.exceptions.AbstractPageException;
+import com.redshape.servlet.actions.exceptions.PageNotFoundException;
+import com.redshape.servlet.core.IHttpRequest;
+import com.redshape.servlet.core.IHttpResponse;
+import com.redshape.servlet.core.context.IContextSwitcher;
+import com.redshape.servlet.core.context.IResponseContext;
+import com.redshape.servlet.core.controllers.FrontController;
+import com.redshape.servlet.core.controllers.IAction;
+import com.redshape.servlet.core.controllers.registry.IControllersRegistry;
+import com.redshape.servlet.dispatchers.DispatchException;
+import com.redshape.servlet.views.IView;
+import com.redshape.servlet.views.IViewsFactory;
+import com.redshape.utils.Commons;
+import com.redshape.utils.ResourcesLoader;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-import com.redshape.servlet.actions.exceptions.AbstractPageException;
-import com.redshape.servlet.actions.exceptions.PageNotFoundException;
-import com.redshape.servlet.core.controllers.FrontController;
-import com.redshape.servlet.core.controllers.IAction;
-import com.redshape.servlet.core.controllers.registry.IControllersRegistry;
-import com.redshape.servlet.core.IHttpRequest;
-import com.redshape.servlet.core.IHttpResponse;
-import com.redshape.servlet.dispatchers.DispatchException;
-import com.redshape.servlet.views.ILayout;
+import javax.servlet.ServletException;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,14 +32,46 @@ import com.redshape.servlet.views.ILayout;
 public class HttpDispatcher implements IHttpDispatcher {
 	private static final Logger log = Logger.getLogger( HttpDispatcher.class );
 
-	@Autowired
+    private IContextSwitcher contextSwitcher;
+
+    @Autowired( required = true )
+    private ResourcesLoader resourcesLoader;
+
+    @Autowired( required = true )
+    private IViewsFactory viewFactory;
+
+	@Autowired( required = true )
 	private IControllersRegistry registry;
 	
 	private FrontController front;
 	
 	private ApplicationContext context;
-	
-	public void setRegistry( IControllersRegistry registry ) {
+
+    public IContextSwitcher getContextSwitcher() {
+        return contextSwitcher;
+    }
+
+    public void setContextSwitcher(IContextSwitcher contextSwitcher) {
+        this.contextSwitcher = contextSwitcher;
+    }
+
+    public ResourcesLoader getResourcesLoader() {
+        return resourcesLoader;
+    }
+
+    public void setResourcesLoader(ResourcesLoader resourcesLoader) {
+        this.resourcesLoader = resourcesLoader;
+    }
+
+    public IViewsFactory getViewFactory() {
+        return viewFactory;
+    }
+
+    public void setViewFactory(IViewsFactory viewFactory) {
+        this.viewFactory = viewFactory;
+    }
+
+    public void setRegistry( IControllersRegistry registry ) {
 		this.registry = registry;
 	}
 	
@@ -61,44 +99,99 @@ public class HttpDispatcher implements IHttpDispatcher {
 	public void setApplicationContext( ApplicationContext context ) {
 		this.context = context;
 	}
-	
+
+    protected IView getView( IHttpRequest request ) {
+        return this.getViewFactory().getView( request );
+    }
+
+    protected void tryRedirectToView( IHttpRequest request,
+                                      IHttpResponse response ) throws PageNotFoundException,
+                                                                      ServletException,
+                                                                      IOException {
+        String path = String.format("%s/%s", request.getController(), request.getAction() );
+
+        IView view = this.getView(request);
+        view.setViewPath( path );
+        request.setAttribute("view", view );
+        request.setAttribute("layout", this.getFront().getLayout() );
+
+        this.getResourcesLoader().setRootDirectory( this.getFront().getLayout().getBasePath() );
+
+        try {
+            this.getResourcesLoader().loadFile( "views/" + view.getViewPath() + "." + view.getExtension(), true );
+        } catch ( FileNotFoundException e ) {
+            try {
+                view.setViewPath( String.format("%s/index", request.getController() ) );
+                this.getResourcesLoader().loadFile( "views/" + view.getViewPath() + "." + view.getExtension(),
+                                                true );
+                request.setAction("index");
+            } catch ( FileNotFoundException ex ) {
+                throw new PageNotFoundException();
+            }
+        }
+
+        this.redirectToView( view, request, response );
+    }
+
+    protected void redirectToView( IView view, IHttpRequest request, IHttpResponse response )
+        throws IOException, ServletException {
+        IResponseContext context = this.getContextSwitcher().chooseContext( request );
+        if ( context == null ) {
+            throw new ServletException("Unable to find " +
+                    "appropriate response context");
+        }
+
+        context.proceedResponse( view, request, response );
+    }
+
 	@Override
     public void dispatch( IHttpRequest request, IHttpResponse response ) 
     	throws DispatchException, AbstractPageException {
         try {
         	if ( request.getRequestURI().endsWith("jsp") ) {
+                return;
         	}
-        		
-        	 
+
+            IView view = this.getView(request);
+            view.setRedirection(null);
+
         	String controllerName = request.getController() == null ? "index" : request.getController();
-        	String actionName = request.getAction() == null ? "index" : request.getAction();
+            request.setController(controllerName);
+        	String actionName = request.getAction();
+            if ( actionName == null ) {
+                this.tryRedirectToView(request, response);
+                return;
+            }
         	
         	log.info("Requested page: " + controllerName + "/" + actionName );
         	
-            IAction action = this.getRegistry().createAction( controllerName, actionName );
+            IAction action = this.getRegistry().getInstance( controllerName, actionName );
             if ( action == null ) {
-            	throw new PageNotFoundException();
+                this.tryRedirectToView( request, response );
+                return;
             }
-            
-            action.process( request, response );
 
-            if ( action.getView().getRedirection() != null ) {
-            	response.sendRedirect( action.getView().getRedirection() );
+            String viewPath = this.getRegistry().getViewPath(action);
+
+            view.setViewPath( Commons.select( viewPath, controllerName + "/" + actionName ) );
+            action.setView( view );
+            action.setRequest( request );
+            action.setResponse( response );
+
+            action.process();
+
+            if ( view.getRedirection() != null ) {
+            	response.sendRedirect( view.getRedirection() );
             }
             
             if ( response.isCommitted() ) {
             	return;
             }
 
-            ILayout layout = this.getFront().getLayout();
-            request.setAttribute("layout", layout );
-            request.setAttribute("view", action.getView() );
- 
-            String actualPath = layout.getScriptPath();
-            
-            RequestDispatcher dispatcher = request.getRequestDispatcher( actualPath );
-            
-            dispatcher.forward(request, response);
+            request.setAttribute("layout", this.getFront().getLayout() );
+            request.setAttribute("view", view );
+
+            this.redirectToView( view, request, response);
         } catch ( AbstractPageException e ) {
             throw e;
         } catch ( Throwable e ) {

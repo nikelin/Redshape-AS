@@ -6,16 +6,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Простое хранилище, распологающее авторизованных сущностей в памяти
+ * Simple in-memory storage for authenticated entities
  *
  * @author nikelin
  */
-public class MemoryStorage implements AuthStorage {
+public class MemoryStorage implements IAuthStorage {
     private Map<Object, IIdentity> store = new HashMap<Object, IIdentity>();
 
-    public MemoryStorage save( Object id, IIdentity identity ) {
+    public void save( Object id, IIdentity identity ) {
         this.store.put( id, identity );
-        return this;
     }
 
     @SuppressWarnings("unchecked")
@@ -23,17 +22,17 @@ public class MemoryStorage implements AuthStorage {
         return (T) this.store.get(id);
     }
 
-    public MemoryStorage remove( Object id ) {
+    public void remove( Object id ) {
         this.store.remove(id);
-        return this;
     }
 
-    public MemoryStorage remove( IIdentity identity ) {
+    @Override
+    public void remove( IIdentity identity ) {
         this.store.remove( identity );
-        return this;
     }
 
-    public boolean isExists( Object id ) {
+    @Override
+    public boolean find( Object id ) {
         return this.store.containsKey(id);
     }
 

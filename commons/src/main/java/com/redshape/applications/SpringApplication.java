@@ -1,20 +1,19 @@
 package com.redshape.applications;
 
-import java.io.File;
-
+import com.redshape.applications.bootstrap.IBootstrap;
+import com.redshape.utils.PackagesLoader;
+import com.redshape.utils.ResourcesLoader;
+import com.redshape.utils.config.IConfig;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
-import com.redshape.applications.bootstrap.IBootstrap;
-import com.redshape.utils.PackagesLoader;
-import com.redshape.utils.ResourcesLoader;
-import com.redshape.utils.config.IConfig;
+import java.io.File;
 
 public class SpringApplication extends AbstractApplication {
 	private static final Logger log = Logger.getLogger( SpringApplication.class );
-	private ApplicationContext context;
+	private static ApplicationContext context;
 	
 	public SpringApplication( String args[] ) throws ApplicationException {
 		super( args );
@@ -23,15 +22,15 @@ public class SpringApplication extends AbstractApplication {
 			throw new ApplicationException("Too few startup parameters given");
 		}
 		
-		this.context = this.loadContext(args[0]);
+		context = this.loadContext(args[0]);
 		this.init();
 	}
 	
 	protected void init() {
-		this.setBootstrap( this.context.getBean(IBootstrap.class) );
-		this.setConfig( this.context.getBean( IConfig.class ) );
-		this.setResourcesLoader( this.context.getBean( ResourcesLoader.class ) );
-		this.setPackagesLoader( this.context.getBean( PackagesLoader.class ) );
+		this.setBootstrap( getContext().getBean(IBootstrap.class) );
+		this.setConfig( getContext().getBean( IConfig.class ) );
+		this.setResourcesLoader( getContext().getBean( ResourcesLoader.class ) );
+		this.setPackagesLoader( getContext().getBean( PackagesLoader.class ) );
 	}
 	
 	protected ApplicationContext loadContext( String contextPath ) {
@@ -43,8 +42,8 @@ public class SpringApplication extends AbstractApplication {
         }
     }
 	
-	public ApplicationContext getContext() {
-		return this.context;
+	public static ApplicationContext getContext() {
+		return context;
 	}
 	
 	@Override

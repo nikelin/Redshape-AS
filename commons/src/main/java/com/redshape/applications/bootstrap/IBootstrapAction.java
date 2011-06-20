@@ -1,8 +1,8 @@
 package com.redshape.applications.bootstrap;
 
-import java.util.Collection;
-
 import org.springframework.stereotype.Component;
+
+import java.util.Collection;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,19 +24,11 @@ public interface IBootstrapAction {
 
     public Object getId();
 
-    public void setId( Object id );
+	public boolean hasMarkers( ActionMarker... markers );
 
-    public boolean isProcessed();
+	public void addMarker( ActionMarker marker );
 
-    public void markProcessed();
+	public boolean hasMarker( ActionMarker marker );
 
-    public boolean isCritical();
-
-    public boolean isError();
-
-    public void markError();
-
-    public void setBootstrap( IBootstrap bootstrap );
-
-    public IBootstrap getBootstrap();
+	public Collection<ActionMarker> getMarkers();
 }

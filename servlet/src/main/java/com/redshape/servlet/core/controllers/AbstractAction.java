@@ -2,9 +2,12 @@ package com.redshape.servlet.core.controllers;
 
 
 import com.redshape.servlet.core.Constants;
+import com.redshape.servlet.core.IHttpRequest;
+import com.redshape.servlet.core.IHttpResponse;
 import com.redshape.servlet.core.controllers.registry.IControllersRegistry;
 import com.redshape.servlet.views.IView;
 import com.redshape.servlet.views.IViewsFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,12 +17,42 @@ import com.redshape.servlet.views.IViewsFactory;
  * To change this template use File | Settings | File Templates.
  */
 public abstract class AbstractAction implements IAction {
-    private ThreadLocal<IView> view = new ThreadLocal<IView>();
+    private IView view;
 
+    @Autowired( required = true )
     private IControllersRegistry registry;
-    
+    @Autowired( required = true )
     private IViewsFactory viewsFactory;
-    
+
+    private IHttpRequest request;
+    private IHttpResponse response;
+
+    @Override
+    public void setResponse(IHttpResponse response) {
+        if ( response == null ) {
+            throw new IllegalArgumentException("<null>");
+        }
+
+        this.response = response;
+    }
+
+    protected IHttpResponse getResponse() {
+        return this.response;
+    }
+
+    @Override
+    public void setRequest( IHttpRequest request) {
+        if ( request == null ) {
+            throw new IllegalArgumentException("<null>");
+        }
+
+        this.request = request;
+    }
+
+    protected IHttpRequest getRequest() {
+        return this.request;
+    }
+
     public void setViewsFactory( IViewsFactory factory ) {
     	this.viewsFactory = factory;
     }
@@ -35,13 +68,13 @@ public abstract class AbstractAction implements IAction {
     protected IControllersRegistry getRegistry() {
     	return this.registry;
     }
-    
-    synchronized public IView getView() {
-        if ( this.view.get() == null ) {
-            this.view.set( this.createViewObject() );
-        }
 
-        return this.view.get();
+    public void setView( IView view ) {
+        this.view = view;
+    }
+
+    protected synchronized IView getView() {
+        return this.view;
     }
 
     protected String getViewPath() {
@@ -53,10 +86,6 @@ public abstract class AbstractAction implements IAction {
         }
 
         return viewPath;
-    }
-
-    protected IView createViewObject() {
-        return this.getViewsFactory().createView( this.getViewPath() );
     }
 
 }

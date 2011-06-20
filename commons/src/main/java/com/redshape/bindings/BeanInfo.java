@@ -12,7 +12,7 @@ import java.util.*;
 
 import com.redshape.bindings.annotations.*;
 import com.redshape.validators.IValidator;
-import com.redshape.validators.common.BeansValidator;
+import com.redshape.validators.impl.annotations.BeansValidator;
 import com.redshape.validators.result.IResultsList;
 
 import org.apache.commons.collections.ListUtils;

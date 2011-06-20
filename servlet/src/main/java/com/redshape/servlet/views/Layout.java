@@ -22,4 +22,14 @@ public class Layout extends AbstractView implements ILayout {
         return this.content;
     }
 
+    @Override
+    public void setLayout( ILayout layout ) {
+        throw new UnsupportedOperationException("Operation not supported on ILayout type");
+    }
+
+    @Override
+    public ILayout getLayout() {
+        throw new UnsupportedOperationException("Operation not supported on ILayout type");
+    }
+
 }

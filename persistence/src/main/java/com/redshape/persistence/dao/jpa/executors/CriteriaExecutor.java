@@ -5,27 +5,17 @@
 
 package com.redshape.persistence.dao.jpa.executors;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import com.redshape.persistence.dao.query.IQuery;
 import com.redshape.persistence.dao.query.QueryExecutorException;
 import com.redshape.persistence.dao.query.executors.AbstractQueryExecutor;
-import com.redshape.persistence.dao.query.expressions.AndExpression;
-import com.redshape.persistence.dao.query.expressions.EqualsOperation;
-import com.redshape.persistence.dao.query.expressions.GreaterThanOperation;
-import com.redshape.persistence.dao.query.expressions.IExpression;
-import com.redshape.persistence.dao.query.expressions.LessThanOperation;
-import com.redshape.persistence.dao.query.expressions.NotOperation;
-import com.redshape.persistence.dao.query.expressions.OrExpression;
+import com.redshape.persistence.dao.query.expressions.*;
 import com.redshape.persistence.dao.query.statements.ReferenceStatement;
 import com.redshape.persistence.dao.query.statements.ScalarStatement;
 import com.redshape.persistence.entities.IEntity;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.persistence.criteria.*;
 
 /**
  *
@@ -34,12 +24,16 @@ import com.redshape.persistence.entities.IEntity;
 public class CriteriaExecutor extends AbstractQueryExecutor<Query, Predicate, Expression<?>>   {
     private EntityManager manager;
     private CriteriaBuilder builder;
-    private ThreadLocal<CriteriaQuery<IEntity>> criteria = new ThreadLocal<CriteriaQuery<IEntity>>();
+    private CriteriaQuery<IEntity> criteria;
+    private Root<?> root;
 
     public CriteriaExecutor( EntityManager manager, IQuery query) {
         super(query);
 
         this.manager = manager;
+        this.builder = manager.getCriteriaBuilder();
+        this.criteria = this.getBuilder().createQuery( this.getQuery().getEntityClass() );
+        this.root = this.criteria.from( query.<IEntity>getEntityClass() );
         this.builder = manager.getCriteriaBuilder();
     }
 
@@ -51,21 +45,15 @@ public class CriteriaExecutor extends AbstractQueryExecutor<Query, Predicate, Ex
         return this.builder;
     }
 
-    @Override
-    public Query execute() throws QueryExecutorException {
-        this.criteria.set( this.builder.createQuery( this.getQuery().getEntityClass() ) );
-        
-        return super.execute();
+    protected CriteriaQuery<IEntity> getCriteria() {
+        return this.criteria;
     }
-    
+
     @Override
     protected Query processResult( Predicate expression  ) throws QueryExecutorException {
-    	CriteriaQuery<IEntity> criteriaQuery = this.criteria.get();
-    	Root<IEntity> root = criteriaQuery.from( this.getQuery().getEntityClass() );
-    	criteriaQuery.select( root );
-    	criteriaQuery.where( expression );
+    	this.getCriteria().where( expression );
 
-        Query nativeQuery = this.getManager().createQuery( criteriaQuery );
+        Query nativeQuery = this.getManager().createQuery( this.getCriteria() );
         for ( String key : this.getQuery().getAttributes().keySet() ) {
         	if ( !this.getQuery().hasAttribute( key ) ) {
         		throw new QueryExecutorException();
@@ -79,17 +67,33 @@ public class CriteriaExecutor extends AbstractQueryExecutor<Query, Predicate, Ex
 
     @Override
     public Expression<?> processStatement(ScalarStatement<?> scalar) throws QueryExecutorException {
-    	// @TODO: split function of scalar into FieldStatement and LiteralStatement<>
-		return this.getBuilder().literal( scalar.getValue() );
+        Object value = scalar.getValue();
+        if ( value instanceof IEntity ) {
+            throw new QueryExecutorException("Not supported. Use dot-based (user.id) path notation");
+        }
+
+        if ( value != null ) {
+            return this.getBuilder().literal( value );
+        } else {
+            return this.getBuilder().nullLiteral( Object.class );
+        }
     }
 
     @Override
     public Expression<?> processStatement(ReferenceStatement reference) throws QueryExecutorException {
-    	if ( this.getQuery().hasAttribute( reference.getValue() ) ) {
-    		return this.getBuilder().parameter( this.getQuery().getAttribute( reference.getValue() ).getClass(), reference.getValue() );
-    	} else {
-    		return this.criteria.get().from( this.getQuery().getEntityClass() ).get( String.valueOf( reference.getValue() ) );
-    	}
+    	String path = reference.getValue();
+        if ( path == null ) {
+            return this.getBuilder().nullLiteral(Object.class);
+        }
+
+        String[] parts = path.toString().split("\\.");
+        int offset = 0;
+        Path<?> pathContext = this.root;
+        while ( offset < parts.length ) {
+            pathContext = pathContext.get(parts[offset++]);
+        }
+
+        return pathContext;
     }
     
     @Override

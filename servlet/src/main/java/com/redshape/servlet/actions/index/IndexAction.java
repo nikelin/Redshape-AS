@@ -2,8 +2,6 @@ package com.redshape.servlet.actions.index;
 
 import com.redshape.servlet.core.controllers.AbstractAction;
 import com.redshape.servlet.core.controllers.Action;
-import com.redshape.servlet.core.IHttpRequest;
-import com.redshape.servlet.core.IHttpResponse;
 import com.redshape.servlet.views.ViewAttributes;
 
 /**
@@ -15,8 +13,9 @@ import com.redshape.servlet.views.ViewAttributes;
  */
 @Action( name = "index", controller = "index", view="index/index" )
 public class IndexAction extends AbstractAction {
-	
-    public void process( IHttpRequest request, IHttpResponse response ) {
+
+    @Override
+    public void process() {
         this.getView().setAttribute(ViewAttributes.PAGE_TITLE, "Home");
     }
 

@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import com.redshape.bindings.BindingException;
+import com.redshape.tests.AbstractContextAwareTest;
 import com.redshape.ui.application.UIException;
 
 import org.junit.Test;
@@ -25,7 +26,6 @@ import com.redshape.ui.data.ModelDataTest;
 import com.redshape.ui.data.StoreTest;
 import com.redshape.ui.data.loaders.AbstractDataLoader;
 
-import com.redshape.ui.test.AbstractContextAwareTest;
 import com.redshape.ui.utils.UIConstants;
 import com.redshape.ui.utils.UIRegistry;
 import com.redshape.utils.IEnum;

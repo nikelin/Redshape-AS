@@ -1,21 +1,17 @@
 package com.redshape.servlet.form;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-
 import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.utils.Commons;
 import com.redshape.utils.StringUtils;
+
+import java.util.*;
 
 public abstract class AbstractFormItem implements IFormItem {
 	public static String PATH_SEPARATOR = ".";
 	
 	private static final long serialVersionUID = 4768154716952314774L;
 	
-	private Collection<IDecorator> decorators = new HashSet<IDecorator>();
+	private List<IDecorator> decorators;
 	private Map<String, Object> attributes = new HashMap<String, Object>();
 	private String id;
 	private String name;
@@ -29,7 +25,7 @@ public abstract class AbstractFormItem implements IFormItem {
 		this.id = id;
 		this.name = name;
 		
-		this.decorators = new HashSet<IDecorator>();
+		this.decorators = new ArrayList<IDecorator>();
 		this.attributes = new HashMap<String, Object>();
 	}
 

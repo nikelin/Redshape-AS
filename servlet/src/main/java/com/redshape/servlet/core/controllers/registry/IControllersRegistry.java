@@ -1,16 +1,17 @@
 package com.redshape.servlet.core.controllers.registry;
 
-import java.util.Set;
-
 import com.redshape.servlet.core.controllers.IAction;
+
+import java.util.Set;
 
 public interface IControllersRegistry {
 
-	public abstract void addAction(Class<? extends IAction> actionClazz);
+    public IAction getInstance( String controller, String action ) throws InstantiationException;
 
-	public abstract Set<Class<? extends IAction>> getActions();
+	public void addAction(Class<? extends IAction> actionClazz);
 
-	public abstract IAction createAction(String controller, String action)
-			throws InstantiationException;
+	public Set<Class<? extends IAction>> getActions();
+
+    public String getViewPath( IAction action );
 
 }

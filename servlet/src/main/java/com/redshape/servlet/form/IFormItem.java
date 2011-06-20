@@ -1,11 +1,11 @@
 package com.redshape.servlet.form;
 
+import com.redshape.servlet.form.decorators.IDecorator;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
-import com.redshape.servlet.form.decorators.IDecorator;
 
 /**
  * Interface for forms and their content.
@@ -150,10 +150,15 @@ public interface IFormItem extends Serializable {
 	/**
 	 * Change current item context (after adopting as another context structure part)
 	 * 
-	 * @param context
+	 * @param form
 	 */
 	public void setContext( IForm form );
-	
+
+    /**
+     * Reset state
+     */
+    public void resetState();
+
 	/**
 	 * Return full name for the current field.
 	 * 

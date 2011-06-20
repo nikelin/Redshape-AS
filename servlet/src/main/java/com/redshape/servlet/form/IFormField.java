@@ -1,10 +1,10 @@
 package com.redshape.servlet.form;
 
-import java.util.Collection;
-
 import com.redshape.servlet.form.render.IFormFieldRenderer;
 import com.redshape.validators.IValidator;
 import com.redshape.validators.result.IValidationResult;
+
+import java.util.Collection;
 
 /**
  * Interface to represent form field such as textfield, select, etc.
@@ -39,6 +39,12 @@ public interface IFormField<T> extends IFormItem {
 	 * @param validator
 	 */
 	public void removeValidator( IValidator<T, IValidationResult> validator );
+	
+	/**
+	 * Return results of validation for all validators
+	 * @return
+	 */
+	public Collection<IValidationResult> getValidationResults();
 	
 	/**
 	 * Proceed field value validation
