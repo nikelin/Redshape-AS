@@ -104,8 +104,8 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
     @Override
     public <T> T getObjectParameter( String name ) throws IOException {
         String data = super.getParameter(name);
-        if ( data == null ) {
-            return null;
+        if ( data != null ) {
+            return (T) data;
         }
 
         this.initParameters();
