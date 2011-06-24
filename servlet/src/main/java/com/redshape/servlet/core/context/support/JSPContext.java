@@ -1,18 +1,19 @@
 package com.redshape.servlet.core.context.support;
 
+import com.redshape.servlet.actions.exceptions.PageNotFoundException;
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.core.IHttpResponse;
 import com.redshape.servlet.core.context.IResponseContext;
 import com.redshape.servlet.core.context.SupportType;
 import com.redshape.servlet.core.controllers.FrontController;
+import com.redshape.servlet.core.controllers.ProcessingException;
 import com.redshape.servlet.resources.IWebResourcesHandler;
 import com.redshape.servlet.views.IView;
 import com.redshape.servlet.views.ViewAttributes;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import java.io.IOException;
+import java.io.FileNotFoundException;
 
 /**
  * @author nikelin
@@ -48,7 +49,7 @@ public class JSPContext implements IResponseContext {
 
     @Override
     public void proceedResponse(IView view, IHttpRequest request, IHttpResponse response)
-            throws IOException {
+            throws ProcessingException {
         view.setAttribute(ViewAttributes.Env.Controller, request.getController());
         view.setAttribute( ViewAttributes.Env.Action, request.getAction() );
         view.setAttribute( ViewAttributes.Env.ResourcesHandler, this.getHandler() );
@@ -57,8 +58,10 @@ public class JSPContext implements IResponseContext {
 
         try {
             dispatcher.forward( request, response);
-        } catch ( ServletException e ) {
-            throw new IOException( e.getMessage(), e );
+        } catch ( FileNotFoundException e ) {
+            throw new PageNotFoundException( e.getMessage(), e );
+        } catch ( Throwable e ) {
+            throw new ProcessingException( e.getMessage(), e );
         }
     }
 }

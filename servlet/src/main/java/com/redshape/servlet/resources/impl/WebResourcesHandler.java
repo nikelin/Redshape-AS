@@ -67,7 +67,7 @@ public class WebResourcesHandler implements IWebResourcesHandler {
         StringBuilder builder = new StringBuilder();
         for ( Script script : this.scripts ) {
             builder.append(
-                String.format("<script type=\"%s\" src=\"%s\"></script>",
+                String.format("<script type=\"%s\" src=\"%s\"></script>\n",
                         script.getType(), script.getHref() ) );
         }
 

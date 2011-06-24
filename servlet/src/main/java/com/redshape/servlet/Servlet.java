@@ -40,9 +40,10 @@ public class Servlet extends HttpServlet {
         try {
         	List<String> args = new ArrayList<String>();
         	String configPath = config.getInitParameter( CONTEXT_CONFIG_PARAMETER );
-        	if ( configPath == null || configPath.isEmpty() ) {
+            if ( configPath == null || configPath.isEmpty() ) {
         		throw new ServletException("Spring context location must be sepecified as <init-param>!");
         	}
+
         	args.add( configPath );
         	
             this.application = new WebApplication( args.toArray( new String[ args.size() ] ) );

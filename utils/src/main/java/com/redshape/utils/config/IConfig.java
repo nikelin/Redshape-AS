@@ -3,7 +3,7 @@ package com.redshape.utils.config;
 import java.io.Serializable;
 
 /**
-* XMLConfig handler
+* Configurations holder interface.
 *
 * @author nikelin
 */
@@ -68,16 +68,41 @@ public interface IConfig extends Serializable {
     public String attribute( String name );
 
     /**
+     * Get name of attributes which related to
+     * the current node.
+     *
+     * @return
+     */
+    public String[] attributeNames();
+
+    /**
     * Get value of current node
     * @return String
     */
     public String value();
 
+    /**
+     * Return current config parent node
+     * @return
+     * @throws ConfigException
+     */
     public IConfig parent() throws ConfigException;
 
-    // @todo: Move to serializer
+    /**
+     * Return string representation for the current node
+     * @return
+     * @throws ConfigException
+     */
     public String serialize() throws ConfigException;
-    
+
+    /**
+     * Used in XML implementation of IConfig interface to provide
+     * ability of accessing raw org.w3.Element object.
+     *
+     * @deprecated
+     * @param <V>
+     * @return
+     */
 	public <V> V getRawElement();
 
 }

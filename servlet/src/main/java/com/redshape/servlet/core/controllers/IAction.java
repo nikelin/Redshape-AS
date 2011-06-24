@@ -15,6 +15,8 @@ import com.redshape.servlet.views.IViewsFactory;
  */
 public interface IAction {
 
+    public void checkPermissions() throws ProcessingException;
+
 	public void setViewsFactory( IViewsFactory factory );
 	
 	public void setRegistry( IControllersRegistry registry );

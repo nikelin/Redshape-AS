@@ -1,7 +1,7 @@
 package com.redshape.servlet.dispatchers.http;
 
-import com.redshape.servlet.actions.exceptions.handling.IPageExceptionHandler;
 import com.redshape.servlet.actions.exceptions.PageNotFoundException;
+import com.redshape.servlet.actions.exceptions.handling.IPageExceptionHandler;
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.core.IHttpResponse;
 import com.redshape.servlet.core.context.IContextSwitcher;
@@ -13,6 +13,7 @@ import com.redshape.servlet.core.controllers.registry.IControllersRegistry;
 import com.redshape.servlet.dispatchers.DispatchException;
 import com.redshape.servlet.views.IView;
 import com.redshape.servlet.views.IViewsFactory;
+import com.redshape.servlet.views.ResetMode;
 import com.redshape.utils.Commons;
 import com.redshape.utils.ResourcesLoader;
 import org.apache.log4j.Logger;
@@ -21,7 +22,6 @@ import org.springframework.context.ApplicationContext;
 
 import javax.servlet.ServletException;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -116,9 +116,7 @@ public class HttpDispatcher implements IHttpDispatcher {
     }
 
     protected void tryRedirectToView( IHttpRequest request,
-                                      IHttpResponse response ) throws PageNotFoundException,
-                                                                      ServletException,
-                                                                      IOException {
+                                      IHttpResponse response ) throws ProcessingException {
         String path = String.format("%s/%s", request.getController(), request.getAction() );
 
         IView view = this.getView(request);
@@ -129,30 +127,46 @@ public class HttpDispatcher implements IHttpDispatcher {
         this.getResourcesLoader().setRootDirectory( this.getFront().getLayout().getBasePath() );
 
         try {
-            this.getResourcesLoader().loadFile( "views/" + view.getViewPath() + "." + view.getExtension(), true );
-        } catch ( FileNotFoundException e ) {
             try {
-                view.setViewPath( String.format("%s/index", request.getController() ) );
-                this.getResourcesLoader().loadFile( "views/" + view.getViewPath() + "." + view.getExtension(),
-                                                true );
-                request.setAction("index");
-            } catch ( FileNotFoundException ex ) {
-                throw new PageNotFoundException();
+                this.getResourcesLoader().loadFile( "views/" + view.getViewPath() + "." + view.getExtension(), true );
+            } catch ( FileNotFoundException e ) {
+                try {
+                    view.setViewPath( String.format("%s/index", request.getController() ) );
+                    this.getResourcesLoader().loadFile( "views/" + view.getViewPath() + "." + view.getExtension(),
+                                                    true );
+                    request.setAction("index");
+                } catch ( FileNotFoundException ex ) {
+                    throw new PageNotFoundException();
+                }
             }
-        }
 
-        this.redirectToView( view, request, response );
+            this.redirectToView( view, request, response );
+        } catch ( ProcessingException e ) {
+            throw e;
+        } catch ( Throwable e ) {
+            throw new ProcessingException( e.getMessage(), e );
+        }
     }
 
     protected void redirectToView( IView view, IHttpRequest request, IHttpResponse response )
-        throws IOException, ServletException {
-        IResponseContext context = this.getContextSwitcher().chooseContext( request );
-        if ( context == null ) {
-            throw new ServletException("Unable to find " +
-                    "appropriate response context");
-        }
+        throws DispatchException {
+        try {
+            IResponseContext context = this.getContextSwitcher().chooseContext( request );
+            if ( context == null ) {
+                throw new ServletException("Unable to find " +
+                        "appropriate response context");
+            }
 
-        context.proceedResponse( view, request, response );
+            try {
+                context.proceedResponse( view, request, response );
+            } catch ( ProcessingException e ) {
+                this.processError( e, request, response );
+            }
+        } catch ( DispatchException e ) {
+            throw e;
+        } catch ( Throwable e ) {
+            throw new DispatchException( e.getMessage(), e );
+        }
     }
 
     protected void processError( ProcessingException e, IHttpRequest request, IHttpResponse response )
@@ -173,7 +187,7 @@ public class HttpDispatcher implements IHttpDispatcher {
         	}
 
             IView view = this.getView(request);
-            view.setRedirection(null);
+            view.reset( ResetMode.TRANSIENT );
 
         	String controllerName = request.getController() == null ? "index" : request.getController();
             request.setController(controllerName);
@@ -198,10 +212,17 @@ public class HttpDispatcher implements IHttpDispatcher {
             action.setRequest( request );
             action.setResponse( response );
 
+            action.checkPermissions();
+
             action.process();
 
+            if ( view.getException() != null ) {
+                this.processError(view.getException(), request, response);
+                return;
+            }
+
             if ( view.getRedirection() != null ) {
-            	response.sendRedirect( view.getRedirection() );
+                response.sendRedirect( view.getRedirection() );
             }
             
             if ( response.isCommitted() ) {

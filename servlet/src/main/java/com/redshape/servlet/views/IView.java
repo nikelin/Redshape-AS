@@ -1,5 +1,6 @@
 package com.redshape.servlet.views;
 
+import com.redshape.servlet.core.controllers.ProcessingException;
 import com.redshape.servlet.views.render.IViewRenderer;
 import com.redshape.servlet.views.render.RenderException;
 
@@ -13,6 +14,10 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public interface IView {
+
+    public void setException( ProcessingException e );
+
+    public ProcessingException getException();
 
     public String getError();
 
@@ -55,5 +60,7 @@ public interface IView {
     public ILayout getLayout();
 
     public void setLayout( ILayout layout );
+
+    public void reset( ResetMode mode );
 
 }

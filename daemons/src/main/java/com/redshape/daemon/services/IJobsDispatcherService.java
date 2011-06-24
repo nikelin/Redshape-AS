@@ -1,8 +1,8 @@
 package com.redshape.daemon.services;
 
 import com.redshape.daemon.jobs.IJob;
-import com.redshape.daemon.jobs.execution.IExecutorDescriptor;
 import com.redshape.daemon.jobs.result.IJobResult;
+import com.redshape.daemon.jobs.services.execution.IExecutorDescriptor;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

@@ -31,7 +31,15 @@ public class Bootstrap implements IBootstrap {
     
     @Autowired( required = true )
     private IPackagesLoader packagesLoader;
-    
+
+    public Bootstrap() {
+        this( new ArrayList<IBootstrapAction>() );
+    }
+
+    public Bootstrap( List<IBootstrapAction> actions ) {
+        this.actions = actions;
+    }
+
     public IConfig getConfig() {
     	return this.config;
     }

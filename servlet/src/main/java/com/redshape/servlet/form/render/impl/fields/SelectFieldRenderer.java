@@ -26,7 +26,7 @@ public class SelectFieldRenderer extends AbstractFormFieldRenderer<SelectField<?
 		
 		Map<String, ?> options = field.getOptions();
 		for ( String key : options.keySet() ) {
-			builder.append("<option name=\"").append( options.get(key) ).append("\"> ")
+			builder.append("<option value=\"").append( options.get(key) ).append("\"> ")
 				   .append( StandardI18NFacade._( key ) )
 				   .append("</option> ");
 		}

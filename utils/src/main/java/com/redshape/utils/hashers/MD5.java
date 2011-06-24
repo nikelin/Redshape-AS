@@ -3,6 +3,7 @@ package com.redshape.utils.hashers;
 import com.redshape.utils.IHasher;
 
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,13 +44,25 @@ public class MD5 implements IHasher {
         }
     }
 
+    @Override
+    public String hashBase64( Object text ) {
+        try {
+            return new sun.misc.BASE64Encoder().encode( this.digitize(text) );
+        } catch ( Throwable e ) {
+            throw new IllegalStateException( e.getMessage(), e );
+        }
+    }
+
+    protected byte[] digitize( Object text ) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update( String.valueOf( text ).getBytes(), 0, String.valueOf( text ).length());
+        return md.digest();
+    }
+
+    @Override
     public String hash( Object text ) {
         try {
-            MessageDigest md = MessageDigest.getInstance("MD5");            
-            md.update( String.valueOf( text ).getBytes(), 0, String.valueOf( text ).length());
-            byte[] sha1hash = md.digest();
-
-            return convertToHex(sha1hash);
+            return convertToHex( this.digitize(text) );
         } catch ( Throwable e ) {
             return null;
         }

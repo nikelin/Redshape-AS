@@ -64,11 +64,7 @@ public abstract class AbstractEntity implements IEntity {
     public boolean equals( IEntity e ) {
         return this.getId() != null && e.getId() != null && this.getId().equals( e.getId() );
     }
-    
-    @Override
-    public void onDelete() {
-    	
-    }
+
 
     protected boolean isCollectionMember( Field field ) {
     	return field.getAnnotation( ManyToOne.class ) != null

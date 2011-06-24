@@ -2,6 +2,7 @@ package com.redshape.servlet.views;
 
 import com.redshape.i18n.impl.StandardI18NFacade;
 import com.redshape.servlet.core.Constants;
+import com.redshape.servlet.core.controllers.ProcessingException;
 import com.redshape.servlet.views.render.IViewRenderer;
 import com.redshape.servlet.views.render.RenderException;
 
@@ -21,13 +22,20 @@ public abstract class AbstractView implements IView {
     private IViewRenderer renderer;
     private Map<String, Object> parameters = new HashMap<String, Object>();
     private String extension;
-    private String redirection;
     private ILayout layout;
 
     public AbstractView( String basePath, String viewPath, String extension ) {
         this.viewPath = viewPath;
         this.basePath = basePath;
         this.extension = extension;
+    }
+
+    public ProcessingException getException() {
+        return this.getAttribute( ViewAttributes.Exception );
+    }
+
+    public void setException(ProcessingException exception) {
+        this.setAttribute( ViewAttributes.Exception, exception );
     }
 
     public void setLayout( ILayout layout ) {
@@ -41,12 +49,12 @@ public abstract class AbstractView implements IView {
 
     @Override
 	public void setRedirection(String path) {
-		this.redirection = path;
+		this.setAttribute( ViewAttributes.Redirect, path );
 	}
 
 	@Override
 	public String getRedirection() {
-		return this.redirection;
+		return this.getAttribute(ViewAttributes.Redirect);
 	}
 
 	public String getBasePath() {
@@ -105,12 +113,12 @@ public abstract class AbstractView implements IView {
 
     @Override
     public String getError() {
-        return this.getAttribute( ViewAttributes.ERROR );
+        return this.getAttribute( ViewAttributes.Error);
     }
 
     @Override
     public void setError(String message) {
-        this.setAttribute( ViewAttributes.ERROR, message );
+        this.setAttribute( ViewAttributes.Error, message );
     }
 
     public void setRenderer( IViewRenderer renderer ) {
@@ -143,4 +151,25 @@ public abstract class AbstractView implements IView {
 		return this.<T>getAttribute( name.name() );
 	}
 
+    @Override
+    public void reset(ResetMode mode) {
+        for ( String key : this.getAttributes().keySet() ) {
+            ViewAttributes attribute = ViewAttributes.valueOf(key);
+            boolean isTransient = attribute == null || attribute.isTransient();
+            switch ( mode ) {
+            case FULL:
+                this.setAttribute( key, null );
+            break;
+            case TRANSIENT:
+                if ( isTransient ) {
+                    this.setAttribute( key, null );
+                }
+            break;
+            case VOLATILE:
+                if ( !isTransient ) {
+                    this.setAttribute( key, null );
+                }
+            }
+        }
+    }
 }

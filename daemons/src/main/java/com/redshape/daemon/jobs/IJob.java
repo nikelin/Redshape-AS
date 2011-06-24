@@ -9,6 +9,10 @@ public interface IJob extends Serializable {
 	public UUID getJobId();
 	
 	public void setJobId(UUID id);
+
+    public void setState( JobStatus status );
+
+    public JobStatus getState();
 	
 	public Date getCreated();
 	

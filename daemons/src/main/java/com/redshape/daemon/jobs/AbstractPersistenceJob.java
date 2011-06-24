@@ -1,11 +1,9 @@
 package com.redshape.daemon.jobs;
 
-import com.redshape.persistence.entities.AbstractEntity;
+import com.redshape.persistence.entities.IEntity;
+import com.redshape.utils.Commons;
 
-import javax.persistence.Basic;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
 
@@ -17,9 +15,15 @@ import java.util.UUID;
  * To change this template use File | Settings | File Templates.
  */
 @MappedSuperclass
-public abstract class AbstractPersistenceJob extends AbstractEntity implements IJob {
+public abstract class AbstractPersistenceJob implements IPersistenceJob, IEntity {
     @Basic
     private UUID jobId;
+
+    @Enumerated( EnumType.STRING )
+    private JobStatus state;
+
+    @Basic
+    private Integer failuresCount;
 
     @Temporal( TemporalType.DATE )
     private Date created;
@@ -29,6 +33,32 @@ public abstract class AbstractPersistenceJob extends AbstractEntity implements I
 
     protected AbstractPersistenceJob() {
         this.jobId = UUID.randomUUID();
+        this.failuresCount = 0;
+        this.state = JobStatus.WAITING;
+    }
+
+    @Override
+    public JobStatus getState() {
+        return state;
+    }
+
+    @Override
+    public void setState(JobStatus state) {
+        this.state = state;
+    }
+
+    @Override
+    public void increaseFailuresCount() {
+        this.failuresCount = this.getFailuresCount() + 1;
+    }
+
+    @Override
+    public Integer getFailuresCount() {
+        return Commons.select( failuresCount, 0 );
+    }
+
+    public void setFailuresCount(Integer failuresCount) {
+        this.failuresCount = failuresCount;
     }
 
     @Override

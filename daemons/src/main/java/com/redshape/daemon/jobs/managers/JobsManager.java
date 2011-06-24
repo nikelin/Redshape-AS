@@ -31,8 +31,9 @@ public class JobsManager implements IJobsManager {
 	protected ExecutorService getThreadsExecutor() {
 		return this.threadsExecutor;
 	}
-	
-	public void setContext( ApplicationContext context ) {
+
+    @Override
+	public void setApplicationContext( ApplicationContext context ) {
 		this.context = context;
 	}
 	
@@ -64,12 +65,8 @@ public class JobsManager implements IJobsManager {
 		if ( handler == null ) {
 			throw new HandlingException("Handler for given job does not exists");
 		}
-		
-		HandlingDescriptor<T,R> descriptor = new HandlingDescriptor<T, R>( handler, job );
-		
-		this.jobs.put( job.getJobId(), descriptor );
-		
-		return this.getThreadsExecutor().submit( descriptor );
+
+		return this.getThreadsExecutor().submit( new HandlingDescriptor<T, R>( handler, job ) );
 	}
 	
 	public class HandlingDescriptor<T extends IJob, R extends IJobResult> implements Callable<R> {

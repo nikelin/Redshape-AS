@@ -1,4 +1,6 @@
-package com.redshape.daemon.jobs;
+package com.redshape.daemon.jobs.types;
+
+import com.redshape.daemon.jobs.IJob;
 
 import java.util.List;
 

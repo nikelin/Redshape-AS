@@ -90,6 +90,10 @@ public class ControllersRegistry implements IControllersRegistry, ApplicationCon
         IAction controllerInstance = null;
     	for ( Class<? extends IAction> actionClazz : getActions() ) {
             Action actionMeta = actionClazz.getAnnotation( Action.class );
+            if ( actionMeta == null
+                    || ( actionMeta.controller() == null || actionMeta.name() == null ) ) {
+                continue;
+            }
             if ( actionMeta.controller().equals( controller )
                     && actionMeta.name().equals( action ) ) {
                 actionInstance = _createInstance( actionClazz );

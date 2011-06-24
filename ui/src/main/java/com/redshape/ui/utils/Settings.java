@@ -13,7 +13,7 @@ import java.util.Map;
  * @package com.redshape.ui.utils
  */
 public class Settings implements IWritableConfig {
-	private static final long serialVersionUID = -6125512203291653333L;
+    private static final long serialVersionUID = 3111353072614008854L;
 	
 	private String name;
 	private String value;
@@ -40,7 +40,12 @@ public class Settings implements IWritableConfig {
 		this.nulled = nulled;
 	}
 
-	protected void setParent( IConfig parent ) {
+    @Override
+    public String[] attributeNames() {
+        return this.attributes.keySet().toArray( new String[ this.attributes.size() ] );
+    }
+
+    protected void setParent( IConfig parent ) {
 		if ( !( parent instanceof Settings ) ) {
 			throw new IllegalArgumentException("Illegal parent node type");
 		}

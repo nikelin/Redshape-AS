@@ -4,6 +4,7 @@ import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.core.IHttpResponse;
 import com.redshape.servlet.core.context.IResponseContext;
 import com.redshape.servlet.core.context.SupportType;
+import com.redshape.servlet.core.controllers.ProcessingException;
 import com.redshape.servlet.views.IView;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
@@ -30,8 +31,12 @@ public class AjaxContext implements IResponseContext {
     }
 
     @Override
-    public void proceedResponse(IView view, IHttpRequest request, IHttpResponse response) throws IOException {
-        this.writeJsonResponse( view.getAttributes(), response );
+    public void proceedResponse(IView view, IHttpRequest request, IHttpResponse response) throws ProcessingException {
+        try {
+            this.writeJsonResponse( view.getAttributes(), response );
+        } catch ( IOException e ) {
+            throw new ProcessingException( e.getMessage(), e );
+        }
     }
 
     private void writeResponse(String responseData, HttpServletResponse response) throws IOException {

@@ -10,7 +10,7 @@ public class NotFoundAction extends AbstractAction {
 
 	@Override
 	public void process() throws ProcessingException {
-		this.getView().setAttribute( ViewAttributes.PAGE_TITLE, "404");
+		this.getView().setAttribute( ViewAttributes.Title, "404");
 	}
 	
 }

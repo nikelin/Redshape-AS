@@ -11,7 +11,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -92,9 +94,17 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
 	            String[] paramParts = param.split("=");
 	
 	            String value = paramParts.length > 1 ? paramParts[1] : null;
-	            
-	            this.parameters.put( paramParts[0], 
-	            		value != null ? StringEscapeUtils.escapeHtml( URLDecoder.decode( value, "UTF-8" ) ) : null );
+	            String name = URLDecoder.decode( paramParts[0] );
+                if ( name.endsWith("[]") ) {
+                    name = name.replace("[]", "");
+                    if ( !this.parameters.containsKey(name) ) {
+                        this.parameters.put( name, new ArrayList<Object>() );
+                    }
+
+                    ( (List<Object> ) this.parameters.get(name) ).add( value );
+                } else {
+	                this.parameters.put( name, value != null ? StringEscapeUtils.escapeHtml( URLDecoder.decode( value, "UTF-8" ) ) : null );
+                }
 	        }
     	}
     	

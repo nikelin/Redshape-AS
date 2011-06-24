@@ -1,4 +1,4 @@
-package com.redshape.daemon.jobs.execution;
+package com.redshape.daemon.jobs.services.execution;
 
 import java.net.URI;
 import java.util.Date;

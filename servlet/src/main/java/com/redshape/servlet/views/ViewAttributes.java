@@ -12,15 +12,21 @@ public class ViewAttributes implements IEnum<String> {
     private static final Map<String, ViewAttributes> REGISTRY = new HashMap<String, ViewAttributes>();
 
 	private String name;
-    private boolean  translatable;
+    private boolean translatable;
+    private boolean isTransient;
 
     protected ViewAttributes( String name ) {
         this( name, false );
     }
 
     protected ViewAttributes( String name, boolean translatable ) {
+        this( name, translatable, true );
+    }
+
+    protected ViewAttributes( String name, boolean translatable, boolean isTransient ) {
 		this.name = name;
         this.translatable = translatable;
+        this.isTransient = isTransient;
 
         REGISTRY.put( name, this );
 	}
@@ -36,14 +42,20 @@ public class ViewAttributes implements IEnum<String> {
         public static final Env Action = new Env("Attributes.Env.Action");
 
     }
-	
-	public static final ViewAttributes PAGE_TITLE = new ViewAttributes("Attribute.Page.Title", true );
-	public static final ViewAttributes ERROR = new ViewAttributes("Attribute.Error", true );
+
+    public static final ViewAttributes Exception = new ViewAttributes("Attribute.Page.Exception", true);
+    public static final ViewAttributes Redirect = new ViewAttributes("Attribute.Page.Redirect", true);
+	public static final ViewAttributes Title = new ViewAttributes("Attribute.Page.Title", true );
+	public static final ViewAttributes Error = new ViewAttributes("Attribute.Error", true );
 
     @Override
 	public String name() {
 		return this.name;
 	}
+
+    public boolean isTransient() {
+        return this.isTransient;
+    }
 
     public boolean isTranslatable() {
         return this.translatable;

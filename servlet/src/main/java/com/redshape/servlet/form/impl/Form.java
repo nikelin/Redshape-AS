@@ -5,6 +5,7 @@ import com.redshape.servlet.form.*;
 import com.redshape.servlet.form.decorators.LegendDecorator;
 import com.redshape.servlet.form.impl.internal.SubFormItem;
 import com.redshape.servlet.form.render.IFormRenderer;
+import com.redshape.servlet.form.render.impl.StandardFormRenderer;
 import com.redshape.utils.Commons;
 import com.redshape.utils.StringUtils;
 import org.apache.log4j.Logger;
@@ -28,6 +29,8 @@ public class Form extends AbstractFormItem implements IForm {
 	
 	public Form( String id, String name ) {
 		super(id, name );
+
+        this.renderer = new StandardFormRenderer();
 	}
 
 	private FormState state;
@@ -55,7 +58,7 @@ public class Form extends AbstractFormItem implements IForm {
 		}
 
         this.resetState();
-		
+
 		Map<String, Object> parameters = request.getParameters();
 		for ( String attribute : parameters.keySet() ) {
 			this.<Object>findField(attribute).setValue( parameters.get(attribute) );

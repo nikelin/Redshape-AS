@@ -2,15 +2,11 @@ package com.redshape.utils.config;
 
 import com.redshape.utils.helpers.XMLHelper;
 import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import java.io.*;
-import java.util.Vector;
+import org.w3c.dom.*;
 
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.*;
+import java.util.Vector;
 
 /**
 * Created by IntelliJ IDEA.
@@ -135,6 +131,17 @@ public class XMLConfig implements IWritableConfig {
         } else {
             return new XMLConfig( (Element) list.item(0) );
         }
+    }
+
+    @Override
+    public String[] attributeNames() {
+        NamedNodeMap attributes = this.node.getAttributes();
+        String[] names = new String[ attributes.getLength() ];
+        for ( int i = 0; i < attributes.getLength(); i++ ) {
+            names[i] = attributes.item(i).getNodeName();
+        }
+
+        return names;
     }
 
     @Override

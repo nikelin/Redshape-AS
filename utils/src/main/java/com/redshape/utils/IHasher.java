@@ -11,6 +11,8 @@ public interface IHasher {
     
     public boolean checkEquality( String origin, String hashed );
 
+    public String hashBase64( Object text );
+
     public String hash( Object text );
 
     public String getName();

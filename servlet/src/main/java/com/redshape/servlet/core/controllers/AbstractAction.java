@@ -28,6 +28,11 @@ public abstract class AbstractAction implements IAction {
     private IHttpResponse response;
 
     @Override
+    public void checkPermissions() throws ProcessingException {
+
+    }
+
+    @Override
     public void setResponse(IHttpResponse response) {
         if ( response == null ) {
             throw new IllegalArgumentException("<null>");

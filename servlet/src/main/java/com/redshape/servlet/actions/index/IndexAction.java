@@ -16,7 +16,7 @@ public class IndexAction extends AbstractAction {
 
     @Override
     public void process() {
-        this.getView().setAttribute(ViewAttributes.PAGE_TITLE, "Home");
+        this.getView().setAttribute(ViewAttributes.Title, "Home");
     }
 
 }

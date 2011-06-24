@@ -1,10 +1,9 @@
 package com.redshape.utils;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author flare
@@ -16,9 +15,6 @@ public class HasherFactory {
     
     private Map<Class<? extends IHasher>, IHasher> hashers = new HashMap<Class<? extends IHasher>, IHasher>();
     
-    @Autowired( required = true )
-    private PackagesLoader packagesLoader;
-    
     public static HasherFactory getDefault() {
         return defaultInstance;
     }
@@ -27,31 +23,20 @@ public class HasherFactory {
         defaultInstance = factory;
     }
 
-    protected HasherFactory() {
-        this.init();
-    }
-    
-    public void setPackagesLoader( PackagesLoader loader ) {
-    	this.packagesLoader = loader;
-    }
-    
-    public PackagesLoader getPackagesLoader() {
-    	return this.packagesLoader;
-    }
+    public IHasher getHasher( Class<? extends IHasher> clazz ) {
+        IHasher hasher =  this.hashers.get(clazz);
+        if ( hasher != null ) {
+            return hasher;
+        }
 
-    protected void init() {
         try {
-            for ( Class<? extends IHasher> clazz : this.getPackagesLoader()
-                                               .<IHasher>getClasses("com.redshape.utils.hashers", new InterfacesFilter( new Class[] { IHasher.class }, true ) ) ) {
-                this.hashers.put(clazz, clazz.newInstance() );
-            }
+            this.hashers.put( clazz, hasher = clazz.newInstance() );
         } catch ( Throwable e ) {
             log.error( e.getMessage(), e );
+            return null;
         }
-    }
 
-    public IHasher getHasher( Class<? extends IHasher> clazz ) {
-        return this.hashers.get(clazz);
+        return hasher;
     }
 
     public IHasher getHasher( String name ) {

@@ -98,8 +98,8 @@ public class StandardExceptionsHandler extends AbstractPageExceptionHandler {
     @Override
     protected void unknownExceptionHandler(ProcessingException e, IHttpRequest request, IHttpResponse response) {
         try {
-            log.info("Error message (500):");
-            log.info( e.getMessage(), e );
+            log.error("Error message (500):");
+            log.error( e.getMessage(), e );
 
             response.sendRedirect( this.getPage500() );
         } catch ( IOException ex ) {

@@ -1,22 +1,18 @@
 package com.redshape.i18n.impl;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.log4j.Logger;
-
 import com.redshape.i18n.I18NFacade;
 import com.redshape.i18n.I18NManager;
 import com.redshape.utils.ResourcesLoader;
 import com.redshape.utils.config.ConfigException;
+import org.apache.log4j.Logger;
+
+import java.util.*;
 
 public class StandardI18NFacade implements com.redshape.i18n.I18NFacade {
 	private static final Logger log = Logger.getLogger( StandardI18NFacade.class );
 	
 	private static final I18NFacade instance = new StandardI18NFacade();
+    private static Locale defaultLocale;
 	private Map<String, I18NManager> managers = new HashMap<String, I18NManager>();
 	
 	public static I18NFacade instance() {
@@ -30,6 +26,10 @@ public class StandardI18NFacade implements com.redshape.i18n.I18NFacade {
 	public static String _( String orig, Locale locale ) {
 		return getDefaultManager( locale )._(orig);
 	}
+
+    public static Locale getDefaultLocale() {
+        return StandardI18NFacade.defaultLocale;
+    }
 	
 	public static void setLocale( Locale locale ) {
 		log.info("Changing locale to" + instance().normalizeLocale(locale) );
@@ -89,7 +89,9 @@ public class StandardI18NFacade implements com.redshape.i18n.I18NFacade {
 	}
 	
 	public static Set<I18NManager> createManagers(ResourcesLoader loader,
-			String[] resources, Locale[] locales) throws ConfigException {
+			String[] resources, Locale[] locales, Locale defaultLocale ) throws ConfigException {
+        StandardI18NFacade.defaultLocale = new Locale( instance().normalizeLocale( defaultLocale ) );
+
 		Set<I18NManager> managers = new HashSet<I18NManager>();
 		for ( int i = 0; i < resources.length; i++ ) {
 			managers.add( instance().createManager( loader, resources[i], locales[i] ) );
@@ -105,7 +107,7 @@ public class StandardI18NFacade implements com.redshape.i18n.I18NFacade {
 	
 	@Override
 	public I18NManager createManager(ResourcesLoader loader,
-			String resource, Locale locale) throws ConfigException {
+			String resource, Locale locale ) throws ConfigException {
 		I18NManager manager = new StandardI18N(loader, resource, locale);
 		this.managers.put( this.normalizeLocale( locale ), manager );
 		return manager;
