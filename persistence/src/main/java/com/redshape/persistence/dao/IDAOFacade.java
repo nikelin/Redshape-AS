@@ -1,6 +1,5 @@
 package com.redshape.persistence.dao;
 
-import com.redshape.persistence.dao.IDAO;
 import com.redshape.persistence.entities.IEntity;
 import org.springframework.context.ApplicationContextAware;
 
@@ -13,6 +12,6 @@ import org.springframework.context.ApplicationContextAware;
  */
 public interface IDAOFacade extends ApplicationContextAware {
 
-	public <V extends IEntity, T extends IDAO<V>> T getDAO( Class<T> clazz );
+	public <V extends IEntity, T extends IDAO<V>> T getDAO( Class<V> clazz );
 
 }

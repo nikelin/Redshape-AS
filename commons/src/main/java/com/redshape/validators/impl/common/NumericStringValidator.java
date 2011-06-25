@@ -13,7 +13,7 @@ public class NumericStringValidator extends AbstractValidator<String, Validation
 	@Override
 	public boolean isValid( String value ) {
 		try {
-			return value != null && !value.isEmpty() && Integer.valueOf(value) != null;
+			return value == null || value.isEmpty() || Integer.valueOf(value) != null;
 		} catch ( NumberFormatException e ) {
 			return false;
 		}

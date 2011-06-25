@@ -20,16 +20,12 @@ public class LengthValidator extends AbstractValidator<String, IValidationResult
 	
 	@Override
 	public boolean isValid(String value) {
-		if ( value == null ) {
-			return false;
-		}
-		
-		return ( max == -1 || value.length() <= max ) || ( min == -1 || value.length() >= min );
+		return ( value == null || value.isEmpty() ) || ( ( max == -1 || value.length() <= max ) || ( min == -1 || value.length() >= min ) );
 	}
 
 	protected String selectMessage( String value ) {
         if ( value == null ) {
-            return "Non-empty value expected!";
+            return "";
         }
 
 		if ( value.length() > max ) {

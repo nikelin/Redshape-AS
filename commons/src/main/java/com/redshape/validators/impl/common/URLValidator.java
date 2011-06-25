@@ -10,7 +10,7 @@ public class URLValidator extends AbstractValidator<String, ValidationResult> {
 	
 	@Override
 	public boolean isValid(String value) {
-		return this.pattern.matcher(value).find();
+		return value == null ||  !value.isEmpty() || this.pattern.matcher(value).find();
 	}
 
 	@Override

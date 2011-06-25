@@ -27,6 +27,11 @@ public abstract class AbstractFormFieldRenderer<T extends IFormField<?>> impleme
     protected void buildAttributes( StringBuilder builder, IFormField field ) {
         Map<String, Object> attributes = field.getAttributes();
 		for ( String key : attributes.keySet() ) {
+            Object value = attributes.get(key);
+            if ( value == null ) {
+                continue;
+            }
+
 			builder.append( key ).append("=\"").append( attributes.get(key) ).append("\" ");
 		}
     }

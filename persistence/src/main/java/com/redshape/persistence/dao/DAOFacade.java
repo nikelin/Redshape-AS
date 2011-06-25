@@ -1,8 +1,10 @@
 package com.redshape.persistence.dao;
 
-import com.redshape.persistence.dao.IDAO;
 import com.redshape.persistence.entities.IEntity;
 import org.springframework.context.ApplicationContext;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,8 +16,10 @@ import org.springframework.context.ApplicationContext;
 public class DAOFacade implements IDAOFacade {
 	private ApplicationContext context;
 
-	public DAOFacade() {}
+    private Map<Class<? extends IEntity>, IDAO<?>> cached
+            = new HashMap<Class<? extends IEntity>, IDAO<?>>();
 
+    @Override
 	public void setApplicationContext( ApplicationContext context ) {
 		this.context = context;
 	}
@@ -24,8 +28,26 @@ public class DAOFacade implements IDAOFacade {
 		return this.context;
 	}
 
-	public <V extends IEntity, T extends IDAO<V>> T getDAO( Class<T> clazz ) {
-		return this.getApplicationContext().getBean( clazz );
+    @Override
+	public <V extends IEntity, T extends IDAO<V>> T getDAO( Class<V> clazz ) {
+        T result = (T) this.cached.get(clazz);
+        if ( result != null ) {
+            return result;
+        }
+
+		for ( IDAO<?> daoBean : this.getApplicationContext().getBeansOfType(IDAO.class).values() ) {
+            Class<?> entityClazz = daoBean.getEntityClass();
+            if ( entityClazz.getCanonicalName().equals( clazz.getCanonicalName() ) ) {
+                result = (T) daoBean;
+                break;
+            }
+        }
+
+        if ( result != null ) {
+            this.cached.put( clazz, result );
+        }
+
+        return result;
 	}
 
 }

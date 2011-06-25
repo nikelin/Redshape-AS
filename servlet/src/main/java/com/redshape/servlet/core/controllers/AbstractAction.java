@@ -7,6 +7,7 @@ import com.redshape.servlet.core.IHttpResponse;
 import com.redshape.servlet.core.controllers.registry.IControllersRegistry;
 import com.redshape.servlet.views.IView;
 import com.redshape.servlet.views.IViewsFactory;
+import com.redshape.utils.config.IConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -20,6 +21,9 @@ public abstract class AbstractAction implements IAction {
     private IView view;
 
     @Autowired( required = true )
+    private IConfig config;
+
+    @Autowired( required = true )
     private IControllersRegistry registry;
     @Autowired( required = true )
     private IViewsFactory viewsFactory;
@@ -27,10 +31,16 @@ public abstract class AbstractAction implements IAction {
     private IHttpRequest request;
     private IHttpResponse response;
 
-    @Override
-    public void checkPermissions() throws ProcessingException {
-
+    protected IConfig getConfig() {
+        return config;
     }
+
+    public void setConfig(IConfig config) {
+        this.config = config;
+    }
+
+    @Override
+    public void checkPermissions() throws ProcessingException {}
 
     @Override
     public void setResponse(IHttpResponse response) {

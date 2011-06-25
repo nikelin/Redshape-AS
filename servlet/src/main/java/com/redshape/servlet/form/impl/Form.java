@@ -136,7 +136,7 @@ public class Form extends AbstractFormItem implements IForm {
 		}
 		
 		if ( item == null ) {
-			throw new IllegalArgumentException("Field not founded");
+			throw new IllegalArgumentException("Field " + context.getName() + "." + subContextName + " not founded");
 		}
 		
 		if ( !( item instanceof IFormField ) ) {
@@ -251,6 +251,7 @@ public class Form extends AbstractFormItem implements IForm {
 	@Override
 	public void addSubForm(IForm form, String name) {
 		form.setContext(this);
+        form.setName( name );
 		if ( form.getRenderer() == null ) {
 			form.setRenderer( this.renderer );
 		}

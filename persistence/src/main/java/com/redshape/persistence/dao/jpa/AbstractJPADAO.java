@@ -29,7 +29,6 @@ import java.util.Map;
  * @author user
  */
 public abstract class AbstractJPADAO<T extends IEntity> extends JpaDaoSupport implements IJPADAO<T>{
-    public static final Integer syncTime = 15000;
     private static final Logger log = Logger.getLogger(AbstractJPADAO.class);
     private Class<T> entityClass;
     
@@ -230,7 +229,8 @@ public abstract class AbstractJPADAO<T extends IEntity> extends JpaDaoSupport im
         return concreteHolder;
     }
 
-    protected Class<T> getEntityClass() {
+    @Override
+    public Class<T> getEntityClass() {
         return this.entityClass;
     }
 

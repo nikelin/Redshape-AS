@@ -1,11 +1,11 @@
 package com.redshape.servlet.form.render.impl.fields;
 
-import java.util.Map;
-
 import com.redshape.servlet.form.RenderMode;
 import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.fields.CheckboxField;
 import com.redshape.servlet.form.render.IFormFieldRenderer;
+
+import java.util.Map;
 
 public class CheckboxFieldRenderer implements IFormFieldRenderer<CheckboxField> {
 
@@ -14,7 +14,7 @@ public class CheckboxFieldRenderer implements IFormFieldRenderer<CheckboxField> 
 		StringBuilder builder = new StringBuilder();
 		builder.append("<input ")
 			   .append(" type=\"checkbox\" ");
-		
+
 		builder.append("name=\"").append( field.getCanonicalName() ).append("\" ");
 		
 		if ( field.getId() != null ) {

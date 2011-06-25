@@ -10,7 +10,7 @@ public class EmailValidator extends AbstractValidator<String, IValidationResult>
 	
 	@Override
 	public boolean isValid(String value) {
-		return value != null && this.pattern.matcher( value ).find();
+		return ( value == null || !value.isEmpty() ) || this.pattern.matcher( value ).find();
 	}
 
 	@Override

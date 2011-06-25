@@ -22,7 +22,8 @@ public abstract class AbstractField<T> extends AbstractFormItem implements IForm
 	private T value;
 	private List<IValidator<T, IValidationResult>> validators
 									= new ArrayList<IValidator<T, IValidationResult>>();
-	
+    private boolean required;
+
 	protected AbstractField() {
 		this(null);
 	}
@@ -35,7 +36,17 @@ public abstract class AbstractField<T> extends AbstractFormItem implements IForm
 		super(id, name);
 	}
 
-	@Override
+    @Override
+    public boolean isRequired() {
+        return this.required;
+    }
+
+    @Override
+    public void setRequired(boolean value) {
+        this.required = value;
+    }
+
+    @Override
 	public Collection<IValidationResult> getValidationResults() {
 		return validationResults;
 	}
@@ -48,7 +59,7 @@ public abstract class AbstractField<T> extends AbstractFormItem implements IForm
 
     @Override
     public void resetState() {
-        this.validationResults.clear();;
+        this.setValue(null);
     }
 
 	@Override

@@ -14,7 +14,19 @@ import java.util.Collection;
  * @param <T>
  */
 public interface IFormField<T> extends IFormItem {
-	
+
+    /**
+     * Value of field validity
+     * @return
+     */
+    public boolean isRequired();
+
+    /**
+     * Mark field as required as request member and fully-valid
+     * @param value
+     */
+    public void setRequired( boolean value );
+
 	/**
 	 * Add new validator to constraint current field value ranges.
 	 * 
