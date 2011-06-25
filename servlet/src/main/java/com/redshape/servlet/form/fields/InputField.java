@@ -30,5 +30,14 @@ public class InputField extends AbstractField<String> {
 	public InputField.Type getType() {
 		return this.type;
 	}
-	
+
+    @Override
+    public void resetState() {
+        if ( this.getType().equals(InputField.Type.SUBMIT ) ) {
+            return;
+        }
+
+        super.resetState();
+    }
+
 }
