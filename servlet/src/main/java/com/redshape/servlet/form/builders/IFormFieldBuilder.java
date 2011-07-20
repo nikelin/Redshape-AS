@@ -13,6 +13,21 @@ import java.util.Map;
  */
 public interface IFormFieldBuilder extends IFormItemBuilder {
 
+    /**
+     * Make field required to be present is income request
+     * @param required
+     * @return
+     */
+    public IFormFieldBuilder withRequired( boolean required );
+
+    /**
+     * Add to build profile specified validators set
+     * @param <T>
+     * @param validators
+     * @return
+     */
+    public <T> IFormFieldBuilder withValidators( IValidator<T, ?>[] validators );
+
 	/**
 	 * Add to build profile specified validator
 	 * @param <T>
@@ -27,9 +42,18 @@ public interface IFormFieldBuilder extends IFormItemBuilder {
 	 * @return
 	 */
 	public IFormFieldBuilder withValue( Object value );
-	
+
+    /**
+     * Apply label to the constructable field.
+     * @param label
+     * @return
+     */
 	public IFormFieldBuilder withLabel( String label );
 
+    /**
+     * Creates new label field with value as a text
+     * @return
+     */
     public LabelField newLabelField();
 
 	/**
@@ -88,7 +112,7 @@ public interface IFormFieldBuilder extends IFormItemBuilder {
 	 * @return
 	 */
 	public <T> SelectField<T> newSelectField( Map<String, T> options );
-	
+
 	/**
 	 * Create group of checkboxes from a given parameters as initial state
 	 * @param <T>

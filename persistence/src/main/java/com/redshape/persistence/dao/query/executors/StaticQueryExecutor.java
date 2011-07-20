@@ -2,13 +2,9 @@ package com.redshape.persistence.dao.query.executors;
 
 import com.redshape.persistence.dao.query.IQuery;
 import com.redshape.persistence.dao.query.QueryExecutorException;
-import com.redshape.persistence.dao.query.expressions.AndExpression;
-import com.redshape.persistence.dao.query.expressions.EqualsOperation;
-import com.redshape.persistence.dao.query.expressions.GreaterThanOperation;
-import com.redshape.persistence.dao.query.expressions.IExpression;
-import com.redshape.persistence.dao.query.expressions.LessThanOperation;
-import com.redshape.persistence.dao.query.expressions.NotOperation;
-import com.redshape.persistence.dao.query.expressions.OrExpression;
+import com.redshape.persistence.dao.query.expressions.*;
+import com.redshape.persistence.dao.query.expressions.operations.BinaryOperation;
+import com.redshape.persistence.dao.query.expressions.operations.UnaryOperation;
 import com.redshape.persistence.dao.query.statements.ReferenceStatement;
 import com.redshape.persistence.dao.query.statements.ScalarStatement;
  
@@ -32,6 +28,21 @@ public class StaticQueryExecutor extends AbstractQueryExecutor<Boolean, Boolean,
     @Override
     protected Boolean processResult( Boolean predicate ) throws QueryExecutorException {
         return predicate;
+    }
+
+    @Override
+    public Comparable processExpression(UnaryOperation operation) throws QueryExecutorException {
+        throw new QueryExecutorException("Static executor not support operations currently");
+    }
+
+    @Override
+    public Comparable processExpression(BinaryOperation operation) throws QueryExecutorException {
+        throw new QueryExecutorException("Static executor not supports operations currently");
+    }
+
+    @Override
+    public Boolean processExpression(FunctionExpression expression) throws QueryExecutorException {
+        throw new QueryExecutorException("Static executor currently not support FunctionExpression object");
     }
 
     @SuppressWarnings("unchecked")

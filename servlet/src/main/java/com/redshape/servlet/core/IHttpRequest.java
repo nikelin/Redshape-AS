@@ -31,4 +31,6 @@ public interface IHttpRequest extends HttpServletRequest {
 
     public Map<String, Object> getParameters();
 
+    public String getBody() throws IOException;
+
 }

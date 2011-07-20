@@ -61,7 +61,7 @@ public class Form extends AbstractFormItem implements IForm {
 
 		Map<String, Object> parameters = request.getParameters();
 		for ( String attribute : parameters.keySet() ) {
-			this.<Object>findField(attribute).setValue( parameters.get(attribute) );
+            this.setValue(attribute, parameters.get(attribute) );
 		}
 		
 		if ( !this.isValid() ) {
@@ -72,7 +72,11 @@ public class Form extends AbstractFormItem implements IForm {
 			this.getProcessHandler().process( this );
 		}
 	}
-	
+
+    protected void setValue( String path, Object value ) {
+        this.findField(path).setValue(value);
+    }
+
 	@Override
 	public <T> IFormField<T> findField( String path ) {
 		String[] parts = path.split("\\.");
@@ -90,21 +94,26 @@ public class Form extends AbstractFormItem implements IForm {
 	
 	protected IForm findContext( String[] path ) {
 		Integer index = this.itemsDict.get( path[0] );
-		if ( index == null ) {
-			return null;
-		}
-		
-		IFormItem item = this.items.get( index );
-		if ( item == null ) {
-			throw new IllegalStateException();
-		}
+
+        IFormItem item = null;
+		if ( index != null ) {
+            item = this.items.get( index );
+        } else {
+            if ( this.getCanonicalName().equals( path[0] ) ) {
+                item = this;
+            }
+        }
+
+        if ( item == null ) {
+            throw new IllegalStateException();
+        }
 		
 		if (  !( item instanceof IForm ) ) {
 			log.error("Current context:" + this.getCanonicalName() + ", full search path: " + Arrays.asList( path )  );
 			throw new IllegalArgumentException("Illegal path");
 		}
 		
-		final IForm form = (IForm) item;
+		IForm form = (IForm) item;
 		if ( path.length == 1 ) {
 			return form;
 		}
@@ -114,9 +123,14 @@ public class Form extends AbstractFormItem implements IForm {
 	}
 	
 	protected <T> IFormField<T> findField( IForm context, String[] name ) {
-		IForm targetContext = this.findContext( Arrays.copyOfRange( name, 0, name.length - 1 ) );
+		IForm targetContext = this.findContext( Arrays.copyOfRange( name, 0, name.length - 1  ) );
 		if ( targetContext == null ) {
-			throw new IllegalArgumentException("Path not founded!");
+            if ( name.length == 2
+                    && name[0].equals( Commons.select( this.getName(), this.getId() ) ) ) {
+                targetContext = this;
+            } else {
+			    throw new IllegalArgumentException("Path " + Arrays.asList(name) + " not founded!");
+            }
 		}
 		
 		return this.findField( targetContext, name[name.length-1] );
@@ -129,7 +143,8 @@ public class Form extends AbstractFormItem implements IForm {
 		if ( context != this ) {
 			item = context.findField( subContextName );
 		} else {
-			Integer index = this.itemsDict.get(subContextName);
+			Integer index = Commons.select( this.itemsDict.get(subContextName),
+                                            this.itemsDict.get( subContextName + "[]" ) );
 			if ( index != null ) {
 				item = this.items.get(index);
 			}
@@ -143,11 +158,17 @@ public class Form extends AbstractFormItem implements IForm {
 			throw new IllegalArgumentException("Requested path not related to field");
 		}
 		
-		return (IFormField<T>) item;
+		final IFormField<T> newItem = (IFormField<T>) item;
+        return newItem;
 	}
 	
 	protected String getFieldId( IFormField<?> field ) {
-		return Commons.select( field.getId(), field.getName() );
+		String id = Commons.select( field.getName(), field.getId() );
+        if ( id == null ) {
+            return null;
+        }
+
+        return id.replace("[]", "");
 	}
 	
 	@Override
@@ -157,12 +178,15 @@ public class Form extends AbstractFormItem implements IForm {
 
 	@Override
 	public String render() {
-        if ( this.getContext() == null ) {
-            this.resetState();
-        }
-
 		return this.render( RenderMode.FULL );
 	}
+
+    @Override
+    public void resetMessages() {
+        for ( IFormItem item : this.getItems() ) {
+            item.resetMessages();
+        }
+    }
 
     @Override
     public void resetState() {

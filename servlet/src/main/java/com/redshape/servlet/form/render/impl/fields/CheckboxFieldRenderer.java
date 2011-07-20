@@ -21,8 +21,8 @@ public class CheckboxFieldRenderer implements IFormFieldRenderer<CheckboxField> 
 			builder.append("id=\"").append( field.getId() ).append("\" ");
 		}
 		
-		if ( field.getValue() != null && field.getValue().equals("on") ) {
-			builder.append("checked=\"checked\" ");
+		if ( field.getValue() != null ) {
+            builder.append("value=\"").append( field.getValue() ).append("\" ");
 		}
 		
 		Map<String, Object> attributes = field.getAttributes();

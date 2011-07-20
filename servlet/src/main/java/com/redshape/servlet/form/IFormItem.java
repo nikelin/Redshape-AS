@@ -155,6 +155,12 @@ public interface IFormItem extends Serializable {
 	public void setContext( IForm form );
 
     /**
+     * Reset validation result for current field and its children
+     * elements
+     */
+    public void resetMessages();
+
+    /**
      * Reset state
      */
     public void resetState();

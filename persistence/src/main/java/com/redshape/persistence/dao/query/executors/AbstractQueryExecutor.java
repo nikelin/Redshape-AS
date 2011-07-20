@@ -3,6 +3,8 @@ package com.redshape.persistence.dao.query.executors;
 import com.redshape.persistence.dao.query.IQuery;
 import com.redshape.persistence.dao.query.QueryExecutorException;
 import com.redshape.persistence.dao.query.expressions.*;
+import com.redshape.persistence.dao.query.expressions.operations.BinaryOperation;
+import com.redshape.persistence.dao.query.expressions.operations.UnaryOperation;
 import com.redshape.persistence.dao.query.statements.IStatement;
 import com.redshape.persistence.dao.query.statements.ReferenceStatement;
 import com.redshape.persistence.dao.query.statements.ScalarStatement;
@@ -36,6 +38,12 @@ public abstract class AbstractQueryExecutor<T, P, E> implements IQueryExecutor<T
 
     abstract protected T processResult( P predicate ) throws QueryExecutorException;
 
+    abstract public E processExpression( UnaryOperation operation ) throws QueryExecutorException;
+
+    abstract public E processExpression( BinaryOperation operation ) throws QueryExecutorException;
+
+    abstract public E processExpression( FunctionExpression expression ) throws QueryExecutorException;
+
     abstract public P processExpression(EqualsOperation expression) throws QueryExecutorException;
 
     abstract public P processExpression(LessThanOperation less) throws QueryExecutorException;
@@ -55,6 +63,10 @@ public abstract class AbstractQueryExecutor<T, P, E> implements IQueryExecutor<T
     @SuppressWarnings("unchecked")
 	public <V extends E> V processStatement( IStatement statement ) throws QueryExecutorException {
         try {
+            if ( statement instanceof IExpression ) {
+                return (V) this.processExpression( (IExpression) statement );
+            }
+
             return (V) this.getClass()
                        .getMethod("processStatement", statement.getClass())
                        .invoke(this, statement);

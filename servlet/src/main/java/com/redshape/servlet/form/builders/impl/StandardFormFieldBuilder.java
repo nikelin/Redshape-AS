@@ -24,8 +24,21 @@ public class StandardFormFieldBuilder implements IFormFieldBuilder {
 	private String name;
 	private String label;
 	private Object value;
-	
-	@Override
+    private boolean required;
+
+    @Override
+    public IFormFieldBuilder withRequired(boolean required) {
+        this.required = required;
+        return this;
+    }
+
+    @Override
+    public <T> IFormFieldBuilder withValidators(IValidator<T, ?>[] validators) {
+        this.validators.addAll( Arrays.asList(validators) );
+        return this;
+    }
+
+    @Override
 	public <T> IFormFieldBuilder withValidator(
 			IValidator<T, ?> validator) {
 		this.validators.add( validator );
@@ -145,6 +158,7 @@ public class StandardFormFieldBuilder implements IFormFieldBuilder {
 	public <T> RadioGroupField<T> newRadioGroupField(Map<String, T> values, T selected) {
 		RadioGroupField<T> field = new RadioGroupField<T>();
 		this.processField(field);
+        field.setRenderer( new RadioGroupFieldRenderer() );
 		field.addOptions(values);
 		field.setValue(selected);
 		return field;
@@ -158,6 +172,7 @@ public class StandardFormFieldBuilder implements IFormFieldBuilder {
 	@Override
 	public <T> CheckboxGroupField<T> newCheckboxGroupField( Map<String, T> names, List<T> values) {
 		CheckboxGroupField<T> field = new CheckboxGroupField<T>();
+        field.setRenderer( new CheckboxGroupFieldRenderer() );
 		this.processField(field);
 		field.addOptions(names);
 		field.setValues( values );
@@ -181,10 +196,16 @@ public class StandardFormFieldBuilder implements IFormFieldBuilder {
 		}
 		
 		field.setId( this.id );
+        field.setRequired( this.required );
 		field.clearValidators();
+
 		for ( IValidator<?, ?> validator : this.validators ) {
 			field.addValidator( (IValidator<T, IValidationResult>) validator );
 		}
+
+        for ( String attribute : this.attributes.keySet() ) {
+            field.setAttribute( attribute, this.attributes.get(attribute) );
+        }
 		
 		field.clearDecorators();
 		field.setDecorator( new ErrorsDecorator() );

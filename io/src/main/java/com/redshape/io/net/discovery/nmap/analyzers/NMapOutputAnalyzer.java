@@ -1,25 +1,18 @@
 package com.redshape.io.net.discovery.nmap.analyzers;
 
+import com.redshape.io.*;
+import com.redshape.utils.StringUtils;
+import com.redshape.utils.helpers.XMLHelper;
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
+import javax.xml.xpath.*;
 import java.net.InetAddress;
 import java.util.Collection;
 import java.util.HashSet;
-
-import org.apache.log4j.Logger;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
-
-import com.redshape.io.INetworkNode;
-import com.redshape.io.NetworkNode;
-import com.redshape.io.NetworkNodeOS;
-import com.redshape.io.NetworkNodePort;
-import com.redshape.io.PlatformType;
-import com.redshape.utils.StringUtils;
-import com.redshape.utils.helpers.XMLHelper;
-
-import javax.xml.xpath.*;
 
 
 /**
@@ -77,7 +70,7 @@ public class NMapOutputAnalyzer {
 
     public Collection<INetworkNode> analyze( Document document ) throws NMapAnalyzerException {
         try {
-            Collection<INetworkNode> result = new HashSet();
+            Collection<INetworkNode> result = new HashSet<INetworkNode>();
 
             Element rootNode = document.getDocumentElement();
             NodeList list = (NodeList) NMapOutputAnalyzer.HOSTS_EXPRESSION.evaluate( rootNode, XPathConstants.NODESET );

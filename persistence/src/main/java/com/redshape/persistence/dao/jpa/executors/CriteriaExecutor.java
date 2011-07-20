@@ -9,9 +9,13 @@ import com.redshape.persistence.dao.query.IQuery;
 import com.redshape.persistence.dao.query.QueryExecutorException;
 import com.redshape.persistence.dao.query.executors.AbstractQueryExecutor;
 import com.redshape.persistence.dao.query.expressions.*;
+import com.redshape.persistence.dao.query.expressions.operations.BinaryOperation;
+import com.redshape.persistence.dao.query.expressions.operations.UnaryOperation;
+import com.redshape.persistence.dao.query.statements.IStatement;
 import com.redshape.persistence.dao.query.statements.ReferenceStatement;
 import com.redshape.persistence.dao.query.statements.ScalarStatement;
 import com.redshape.persistence.entities.IEntity;
+import com.redshape.utils.Commons;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -61,8 +65,71 @@ public class CriteriaExecutor extends AbstractQueryExecutor<Query, Predicate, Ex
         	
         	nativeQuery.setParameter( key, this.getQuery().getAttribute( key ) );
         }
-        
+
         return nativeQuery;
+    }
+
+    @Override
+    public Expression<?> processExpression(UnaryOperation operation) throws QueryExecutorException {
+        switch ( operation.getType() ) {
+            case NEGATE:
+                return this.getBuilder().neg(
+                        (Expression<Number>) this.processStatement( operation.getTerm() ) );
+            default:
+                throw new QueryExecutorException("Unsupported unary operation "
+                        + Commons.select( operation.getType(), "<null>" ) );
+        }
+    }
+
+    @Override
+    public Expression<?> processExpression(BinaryOperation operation) throws QueryExecutorException {
+        switch ( operation.getType() ) {
+            case SUM:
+                return this.getBuilder().sum(
+                    (Expression<Number>) this.processStatement( operation.getLeft() ),
+                    (Expression<Number>) this.processStatement( operation.getRight() )
+                );
+            case SUBTRACT:
+                return this.getBuilder().diff(
+                    (Expression<Number>) this.processStatement( operation.getLeft() ),
+                    (Expression<Number>) this.processStatement( operation.getRight() )
+                );
+            case DIVIDE:
+                return this.getBuilder().quot(
+                    (Expression<Number>) this.processStatement( operation.getLeft() ),
+                    (Expression<Number>) this.processStatement( operation.getRight() )
+                );
+            case MOD:
+                return this.getBuilder().mod(
+                    (Expression<Integer>) this.processStatement( operation.getLeft() ),
+                    (Expression<Integer>) this.processStatement( operation.getRight() )
+                );
+            case PROD:
+                return this.getBuilder().prod(
+                    (Expression<Number>) this.processStatement( operation.getLeft() ),
+                    (Expression<Number>) this.processStatement( operation.getRight() )
+                );
+            default:
+                throw new QueryExecutorException("Unsupported binary operation "
+                        + Commons.select( operation.getType(), "<null>") );
+        }
+    }
+
+    @Override
+    public Expression<?> processExpression(FunctionExpression expression) throws QueryExecutorException {
+        Expression[] expressions = new Expression[expression.getTerms().length];
+        int i = 0;
+        for ( IStatement term : expression.getTerms() ) {
+            expressions[i++] = this.processStatement(term);
+        }
+
+        Expression<?> result =  this.getBuilder().function(
+            expression.getName(),
+            Object.class,
+            expressions
+        );
+
+        return result;
     }
 
     @Override

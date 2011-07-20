@@ -6,5 +6,4 @@ public interface IQueryExecutor<T> {
 
     public T execute() throws QueryExecutorException;
 
-
 }

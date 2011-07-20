@@ -9,12 +9,12 @@ package com.redshape.utils;
  */
 public class Constants {
     public static final int TIME_MILLISECOND = 1;
-    public static final int TIME_SECOND = 1000;
+    public static final int TIME_SECOND = TIME_MILLISECOND * 1000;
     public static final int TIME_MINUTE = TIME_SECOND * 60;
-    public static final int TIME_HOUR = TIME_MINUTE * 60;
+    public static final long TIME_HOUR = TIME_MINUTE * 60;
     public static final long TIME_DAY = TIME_HOUR * 24;
     public static final long TIME_WEEK = TIME_DAY * 7;
-    public static final long TIME_MONTH = (long) TIME_DAY * 30;
+    public static final long TIME_MONTH = TIME_DAY * 30;
     public static final long TIME_YEAR = TIME_MONTH * 12;
     public static final long TIME_WE_ALL_DEATH = TIME_YEAR * 2039; // ;-)
     public static final char EOL = '\n';

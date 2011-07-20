@@ -1,12 +1,12 @@
 package com.redshape.servlet.form.render.impl.fields;
 
-import java.util.Map;
-
 import com.redshape.i18n.impl.StandardI18NFacade;
 import com.redshape.servlet.form.RenderMode;
 import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.fields.InputField;
 import com.redshape.servlet.form.render.IFormFieldRenderer;
+
+import java.util.Map;
 
 public class InputFieldRenderer implements IFormFieldRenderer<InputField> {
 
@@ -24,7 +24,12 @@ public class InputFieldRenderer implements IFormFieldRenderer<InputField> {
 		
 		
 		if ( field.getValue() != null ) {
-			builder.append("value=\"").append( StandardI18NFacade._( field.getValue() ) ).append("\" ");
+            String value = String.valueOf( field.getValue() );
+            if ( field.getType().equals( InputField.Type.SUBMIT ) || field.getType().equals( InputField.Type.RESET ) ) {
+                value = StandardI18NFacade._( value );
+            }
+
+			builder.append("value=\"").append( value ).append("\" ");
 		}
 		
 		Map<String, Object> params = field.getAttributes();

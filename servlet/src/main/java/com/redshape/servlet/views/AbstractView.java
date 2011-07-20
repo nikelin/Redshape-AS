@@ -36,6 +36,7 @@ public abstract class AbstractView implements IView {
 
     public void setException(ProcessingException exception) {
         this.setAttribute( ViewAttributes.Exception, exception );
+        this.setError( exception.getMessage() );
     }
 
     public void setLayout( ILayout layout ) {

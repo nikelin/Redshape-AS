@@ -58,6 +58,11 @@ public abstract class AbstractField<T> extends AbstractFormItem implements IForm
 	}
 
     @Override
+    public void resetMessages() {
+        this.validationResults.clear();
+    }
+
+    @Override
     public void resetState() {
         this.setValue(null);
     }
@@ -143,5 +148,10 @@ public abstract class AbstractField<T> extends AbstractFormItem implements IForm
 		
 		return result;
 	}
+
+    @Override
+    public String toString() {
+        return this.render();
+    }
 	
 }

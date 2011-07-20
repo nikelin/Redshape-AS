@@ -3,11 +3,9 @@ package com.redshape.auth;
 import com.redshape.utils.IEnum;
 
 /**
- * Created by IntelliJ IDEA.
- * User: nikelin
- * Date: 13.06.11
- * Time: 12:15
- * To change this template use File | Settings | File Templates.
+ * @author nikelin
+ * @date 13.06.11 12:15
+ * @package com.redshape.auth
  */
 public class AuthenticatorAttribute implements IEnum<String> {
     private String name;
@@ -48,14 +46,13 @@ public class AuthenticatorAttribute implements IEnum<String> {
 
     public static class Session extends AuthenticatorAttribute {
 
-        public Session( String name, Class<?> type ) {
+        protected Session( String name, Class<?> type ) {
             super(name, type);
         }
 
         public static final Session Id = new Session("Authenticator.Session.Id", Object.class );
         public static final Session Save = new Session("Authenticator.Session.Save", Boolean.class );
-        public static final Session Duration = new Session("Authenticator.Session.Duration", Integer.class );
-
+        public static final Session Duration = new Session("Authenticator.Session.Duration", Long.class );
     }
 
 }

@@ -66,7 +66,12 @@ public class SubFormItem implements IForm {
 		return this.form.getId();
 	}
 
-	@Override
+    @Override
+    public void resetMessages() {
+        this.form.resetMessages();
+    }
+
+    @Override
 	public Map<String, Object> getAttributes() {
 		return this.form.getAttributes();
 	}

@@ -23,7 +23,11 @@ public interface IAction {
 
     public void setView( IView view );
 
+    public IHttpRequest getRequest();
+
     public void setRequest( IHttpRequest request );
+
+    public IHttpResponse getResponse();
 
     public void setResponse( IHttpResponse response );
 

@@ -142,7 +142,7 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
         return cookie.getValue();
     }
 
-	protected String readRequest() throws IOException {
+	protected synchronized  String readRequest() throws IOException {
 		if ( this.requestData != null ) {
 			return this.requestData;
 		}
@@ -188,7 +188,17 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
 
 	@Override
 	public Map<String, Object> getParameters() {
+        try {
+            this.initParameters();
+        } catch ( IOException e ) {
+
+        }
+
 		return this.parameters;
 	}
 
+    @Override
+    public String getBody() throws IOException {
+        return this.readRequest();
+    }
 }

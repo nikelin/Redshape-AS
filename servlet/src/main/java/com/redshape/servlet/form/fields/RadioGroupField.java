@@ -1,6 +1,8 @@
 package com.redshape.servlet.form.fields;
 
-public class RadioGroupField<T> extends AbstractMultiSelectField<T> {
+import com.redshape.servlet.form.render.impl.fields.RadioGroupFieldRenderer;
+
+public class RadioGroupField<T> extends AbstractSelectField<T> {
 	private static final long serialVersionUID = 6859626264624176011L;
 
 	public RadioGroupField() {
@@ -13,6 +15,8 @@ public class RadioGroupField<T> extends AbstractMultiSelectField<T> {
 	
 	public RadioGroupField( String id, String name ) {
 		super(id, name );
+
+        this.setRenderer( new RadioGroupFieldRenderer() );
 	}
 	
 }

@@ -11,6 +11,10 @@ import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 /**
  * @author nikelin
@@ -19,6 +23,16 @@ import java.io.IOException;
 public class AjaxContext implements IResponseContext {
     private static final Logger log = Logger.getLogger( AjaxContext.class );
     private static final String MARKER_HEADER = "XMLHttpRequest";
+
+    private Collection<String> blackList = new HashSet<String>();
+
+    public Collection<String> getBlackList() {
+        return blackList;
+    }
+
+    public void setBlackList(Collection<String> blackList) {
+        this.blackList = blackList;
+    }
 
     @Override
     public SupportType isSupported(IHttpRequest request) {
@@ -30,10 +44,23 @@ public class AjaxContext implements IResponseContext {
         }
     }
 
+    protected Map<String, Object> prepareResult( Map<String, Object> params ) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        for ( String key : params.keySet() ) {
+            if ( this.getBlackList().contains(key) ) {
+                continue;
+            }
+
+            result.put( key, params.get(key) );
+        }
+
+        return result;
+    }
+
     @Override
     public void proceedResponse(IView view, IHttpRequest request, IHttpResponse response) throws ProcessingException {
         try {
-            this.writeJsonResponse( view.getAttributes(), response );
+            this.writeJsonResponse( this.prepareResult( view.getAttributes() ), response );
         } catch ( IOException e ) {
             throw new ProcessingException( e.getMessage(), e );
         }

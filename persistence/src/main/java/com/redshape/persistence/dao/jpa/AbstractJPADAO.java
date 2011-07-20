@@ -19,10 +19,7 @@ import org.springframework.orm.jpa.support.JpaDaoSupport;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -161,8 +158,12 @@ public abstract class AbstractJPADAO<T extends IEntity> extends JpaDaoSupport im
 	        if ( limit > 0 ) {
 	        	jpaQuery.setMaxResults(limit);
 	        }
-	        
-	        return  jpaQuery.getResultList();
+
+            try {
+	            return  jpaQuery.getResultList();
+            } catch ( EntityNotFoundException e ) {
+                return new ArrayList<T>();
+            }
         } catch ( QueryExecutorException e ) {
         	throw new DAOException( "Query execution failed", e );
         }

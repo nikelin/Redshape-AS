@@ -51,7 +51,8 @@ public abstract class AbstractAction implements IAction {
         this.response = response;
     }
 
-    protected IHttpResponse getResponse() {
+    @Override
+    public IHttpResponse getResponse() {
         return this.response;
     }
 
@@ -64,7 +65,8 @@ public abstract class AbstractAction implements IAction {
         this.request = request;
     }
 
-    protected IHttpRequest getRequest() {
+    @Override
+    public IHttpRequest getRequest() {
         return this.request;
     }
 

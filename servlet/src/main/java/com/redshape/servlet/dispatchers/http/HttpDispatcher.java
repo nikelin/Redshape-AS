@@ -11,6 +11,7 @@ import com.redshape.servlet.core.controllers.IAction;
 import com.redshape.servlet.core.controllers.ProcessingException;
 import com.redshape.servlet.core.controllers.registry.IControllersRegistry;
 import com.redshape.servlet.dispatchers.DispatchException;
+import com.redshape.servlet.dispatchers.interceptors.IDispatcherInterceptor;
 import com.redshape.servlet.views.IView;
 import com.redshape.servlet.views.IViewsFactory;
 import com.redshape.servlet.views.ResetMode;
@@ -22,6 +23,8 @@ import org.springframework.context.ApplicationContext;
 
 import javax.servlet.ServletException;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,6 +35,8 @@ import java.io.FileNotFoundException;
  */
 public class HttpDispatcher implements IHttpDispatcher {
 	private static final Logger log = Logger.getLogger( HttpDispatcher.class );
+
+    private List<IDispatcherInterceptor> interceptors = new ArrayList<IDispatcherInterceptor>();
 
     private IContextSwitcher contextSwitcher;
 
@@ -49,6 +54,14 @@ public class HttpDispatcher implements IHttpDispatcher {
 	private ApplicationContext context;
 
     public IPageExceptionHandler exceptionHandler;
+
+    public List<IDispatcherInterceptor> getInterceptors() {
+        return interceptors;
+    }
+
+    public void setInterceptors(List<IDispatcherInterceptor> interceptors) {
+        this.interceptors = interceptors;
+    }
 
     public IPageExceptionHandler getExceptionHandler() {
         return exceptionHandler;
@@ -136,9 +149,11 @@ public class HttpDispatcher implements IHttpDispatcher {
                                                     true );
                     request.setAction("index");
                 } catch ( FileNotFoundException ex ) {
-                    throw new PageNotFoundException();
+                    throw new PageNotFoundException( "View file not found", ex );
                 }
             }
+
+            this._invokeInterceptors( null, view, request, response );
 
             this.redirectToView( view, request, response );
         } catch ( ProcessingException e ) {
@@ -214,6 +229,8 @@ public class HttpDispatcher implements IHttpDispatcher {
 
             action.checkPermissions();
 
+            this._invokeInterceptors( null, view, request, response );
+
             action.process();
 
             if ( view.getException() != null ) {
@@ -239,5 +256,14 @@ public class HttpDispatcher implements IHttpDispatcher {
         	throw new DispatchException( e.getMessage(), e );
         }
     }
+
+    private void _invokeInterceptors( IResponseContext context, IView view,
+                                      IHttpRequest request, IHttpResponse response )
+                    throws ProcessingException {
+        for ( IDispatcherInterceptor interceptor : this.getInterceptors() ) {
+            interceptor.invoke( context, view, request, response );
+        }
+    }
+
 
 }

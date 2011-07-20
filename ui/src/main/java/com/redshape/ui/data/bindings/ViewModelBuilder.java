@@ -1,25 +1,24 @@
 package com.redshape.ui.data.bindings;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-
 import com.redshape.bindings.BeanInfo;
 import com.redshape.bindings.BindingException;
 import com.redshape.bindings.IBeanInfo;
 import com.redshape.bindings.types.CollectionType;
 import com.redshape.bindings.types.IBindable;
 import com.redshape.ui.application.UIException;
-import com.redshape.ui.data.bindings.views.ChoiceModel;
-import com.redshape.ui.data.bindings.views.CollectionModel;
-import com.redshape.ui.data.bindings.views.ComposedModel;
-import com.redshape.ui.data.bindings.views.DefferedModel;
-import com.redshape.ui.data.bindings.views.IComposedModel;
-import com.redshape.ui.data.bindings.views.IDefferedModel;
-import com.redshape.ui.data.bindings.views.IViewModel;
-import com.redshape.ui.data.bindings.views.PropertyModel;
+import com.redshape.ui.data.bindings.views.*;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
+/**
+ * Standard implementation of automated UI building which
+ * is a part of Redshape UI Automation package for a Swing.
+ *
+ * @author nikelin
+ */
 public class ViewModelBuilder implements IViewModelBuilder {
 	private Map<Class<?>, IComposedModel> processed = 
 						new HashMap<Class<?>, IComposedModel>();

@@ -1,12 +1,11 @@
 package com.redshape.servlet.routes.route;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.log4j.Logger;
-
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.routes.IRoute;
+import org.apache.log4j.Logger;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Regexp implements IRoute {
 	private static final Logger log = Logger.getLogger( Regexp.class );
@@ -50,9 +49,11 @@ public class Regexp implements IRoute {
 			log.info( "Groups founded:" + matcher.groupCount() );
 			log.info( matcher.group( this.actionGroup ) );
 			request.setAction( sourcePath.substring( matcher.start( this.actionGroup ),
-													 matcher.end( this.actionGroup ) ) );
+													 matcher.end( this.actionGroup ) )
+                                    .replaceAll("\\/", "") );
 			request.setController( sourcePath.substring( matcher.start( this.controllerGroup ),
-													 matcher.end( this.controllerGroup ) ) );
+													 matcher.end( this.controllerGroup ) )
+                                    .replaceAll("\\/", "") );
 		} else {
 			throw new IllegalArgumentException();
 		}

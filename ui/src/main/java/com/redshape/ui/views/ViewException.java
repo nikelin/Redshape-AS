@@ -1,5 +1,10 @@
 package com.redshape.ui.views;
 
+/**
+ * View-related exception
+ *
+ * @author nikelin
+ */
 public class ViewException extends Exception {
 	private static final long serialVersionUID = -7641085451234058629L;
 
