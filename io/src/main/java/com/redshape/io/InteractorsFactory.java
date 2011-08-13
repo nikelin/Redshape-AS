@@ -10,7 +10,6 @@ import com.redshape.io.net.auth.ICredentialsProvider;
 import com.redshape.utils.IPackagesLoader;
 import com.redshape.utils.InterfacesFilter;
 import com.redshape.utils.PackageLoaderException;
-import com.redshape.utils.PackagesLoader;
 
 import java.util.*;
 
@@ -21,11 +20,11 @@ import java.util.*;
  * @author nikelin.
  * @todo: Refactor!
  */
-public final class InteractorsFactory implements IInteractorsFactory, IPackagesLoader {
+public final class InteractorsFactory implements IInteractorsFactory {
     private static final Logger log = Logger.getLogger( InteractorsFactory.class );
 
     private Collection<String> packages;
-    private PackagesLoader packagesLoader;
+    private IPackagesLoader packagesLoader;
     private Map<Class<? extends INetworkInteractor>, ICredentialsProvider> credentialsProviders = new HashMap();
     private Map<Class<? extends INetworkInteractor>, IConfig> interactorsConfiguration = new HashMap();
     private Collection<Class<? extends INetworkInteractor>> interactors = new HashSet();
@@ -48,11 +47,11 @@ public final class InteractorsFactory implements IInteractorsFactory, IPackagesL
         }
     }
 
-    public void setPackagesLoader( PackagesLoader loader ) {
+    public void setPackagesLoader( IPackagesLoader loader ) {
         this.packagesLoader = loader;
     }
 
-    public PackagesLoader getPackagesLoader() {
+    public IPackagesLoader getPackagesLoader() {
         return this.packagesLoader;
     }
 

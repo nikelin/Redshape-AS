@@ -11,10 +11,14 @@ public class PackageLoaderException extends Exception {
 	private static final long serialVersionUID = 5900125090232239656L;
 
 	public PackageLoaderException() {
-		this(null);
 	}
 
-    public PackageLoaderException( String message ) {
-        super(message);
-    }
+	public PackageLoaderException(String s) {
+		super(s);
+	}
+
+	public PackageLoaderException(String s, Throwable throwable) {
+		super(s, throwable);
+	}
+
 }

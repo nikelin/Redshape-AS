@@ -1,9 +1,6 @@
 package com.redshape.renderer;
 
-import com.redshape.utils.InterfacesFilter;
-import com.redshape.utils.PackageLoaderException;
-import com.redshape.utils.PackagesLoader;
-import com.redshape.utils.ResourcesLoader;
+import com.redshape.utils.*;
 import com.redshape.utils.config.IConfig;
 
 import org.apache.log4j.Logger;
@@ -37,7 +34,7 @@ public abstract class AbstractRenderersFactory implements IRenderersFactory {
     private ResourcesLoader resourcesLoader;
     
     @Autowired( required = true )
-    private PackagesLoader packagesLoader;
+    private IPackagesLoader packagesLoader;
     
     @Autowired( required = true )
     private IConfig config;
@@ -62,11 +59,11 @@ public abstract class AbstractRenderersFactory implements IRenderersFactory {
     	return this.resourcesLoader;
     }
     
-    public PackagesLoader getPackagesLoader() {
+    public IPackagesLoader getPackagesLoader() {
     	return this.packagesLoader;
     }
     
-    public void setPackagesLoader( PackagesLoader loader ) {
+    public void setPackagesLoader( IPackagesLoader loader ) {
     	this.packagesLoader = loader;
     }
 

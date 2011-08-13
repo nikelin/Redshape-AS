@@ -1,6 +1,6 @@
 package com.redshape.applications.bootstrap;
 
-import com.redshape.utils.PackagesLoader;
+import com.redshape.utils.IPackagesLoader;
 import com.redshape.utils.config.IConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,7 +34,7 @@ public abstract class AbstractBootstrapAction implements IBootstrapAction {
     private IConfig config;
     
     @Autowired( required = true )
-    private PackagesLoader packagesLoader;
+    private IPackagesLoader packagesLoader;
 
     /**
      * Identifiers for actions on which current action depends on
@@ -112,11 +112,11 @@ public abstract class AbstractBootstrapAction implements IBootstrapAction {
         return this.dependencies.isEmpty();
     }
     
-    public void setPackagesLoader( PackagesLoader loader ) {
+    public void setPackagesLoader( IPackagesLoader loader ) {
     	this.packagesLoader = loader;
     }
     
-    protected PackagesLoader getPackagesLoader() {
+    protected IPackagesLoader getPackagesLoader() {
     	return this.packagesLoader;
     }
 }

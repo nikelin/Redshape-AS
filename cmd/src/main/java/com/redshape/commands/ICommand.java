@@ -21,7 +21,7 @@ public interface ICommand {
     public Map<String, String> getProperties();
 
     public boolean isSupports( String name );
-    
+
     public String[] getSupported();
 
     public String[] getImportant();

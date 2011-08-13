@@ -1,7 +1,7 @@
 package com.redshape.applications;
 
 import com.redshape.applications.bootstrap.IBootstrap;
-import com.redshape.utils.PackagesLoader;
+import com.redshape.utils.IPackagesLoader;
 import com.redshape.utils.ResourcesLoader;
 import com.redshape.utils.config.IConfig;
 import org.apache.log4j.Logger;
@@ -11,14 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Основной класс приложения
- *
- * Класс реализует основную логику запуска и остановки приложения сервера, а так же
- * запуска бутстраппера ( {@see com.vio.Bootstrap} ) и регистрации доступных API_ID-интерфейсов.
- *
- * @author nikelin
- * @group Server
- * @FIXME Отрефакторить и разбить на несколько абстрактных классов
+ * Main application abstraction
+ * 
+ * @author Cyril <nikelin> Karpenko <self@nikelin.ru>
  */
 public abstract class AbstractApplication implements IApplication {
 	private static final Logger log = Logger.getLogger( AbstractApplication.class );
@@ -31,7 +26,7 @@ public abstract class AbstractApplication implements IApplication {
     private ResourcesLoader resourcesLoader;
 
 	@Autowired( required = true )
-    private PackagesLoader packagesLoader;
+    private IPackagesLoader packagesLoader;
 
     private boolean pidCheckup;
     
@@ -48,11 +43,11 @@ public abstract class AbstractApplication implements IApplication {
         this.initEnv(this.envArgs);
     }
     
-    public void setPackagesLoader( PackagesLoader loader ) {
+    public void setPackagesLoader( IPackagesLoader loader ) {
     	this.packagesLoader = loader;
     }
     
-    protected PackagesLoader getPackagesLoader() {
+    protected IPackagesLoader getPackagesLoader() {
     	return this.packagesLoader;
     }
     

@@ -10,7 +10,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <name>Commands runner</name>
+    <name>Redshape - Commands Runner</name>
     <groupId>com.redshape</groupId>
     <artifactId>cmd</artifactId>
     <version>1.0.0A</version>
@@ -21,11 +21,6 @@
     </build>
 
     <dependencies>
-    	<dependency>
-    		<groupId>com.redshape</groupId>
-    		<artifactId>persistence</artifactId>
-    		<version>${project.version}</version>
-    	</dependency>
         <dependency>
             <groupId>com.redshape</groupId>
             <artifactId>commons</artifactId>

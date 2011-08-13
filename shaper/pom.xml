@@ -5,6 +5,7 @@
     <groupId>com.redshape</groupId>
     <version>1.0.0A</version>
   </parent>
+  <name>Redshape - Shaper</name>
   <groupId>com.redshape</groupId>
   <artifactId>shaper</artifactId>
   <version>1.0.0A</version>

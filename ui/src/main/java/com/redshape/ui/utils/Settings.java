@@ -62,6 +62,11 @@ public class Settings implements IWritableConfig {
 	}
 
 	@Override
+	public IWritableConfig asWritable() {
+		return (IWritableConfig) this;
+	}
+
+	@Override
 	public boolean isWritable() {
 		return true;
 	}

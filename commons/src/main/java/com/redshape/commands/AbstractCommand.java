@@ -19,6 +19,11 @@ public abstract class AbstractCommand implements ICommand {
         return this.properties;
     }
 
+    @Override
+    public boolean isSupports(String name) {
+        return this.getProperties().containsKey(name);
+    }
+
     public void setProperty( String name, String value ) {
         this.properties.put(name, value);
     }

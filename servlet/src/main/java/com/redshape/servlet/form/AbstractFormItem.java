@@ -45,7 +45,7 @@ public abstract class AbstractFormItem implements IFormItem {
 		IForm context = this.getContext();
 		while ( context != null ) {
 			String name = Commons.select( context.getName(), context.getId() );
-			if ( name != null ) {
+			if ( name != null && !name.equals("null") ) {
 				builder.append( name )
 					   .append( PATH_SEPARATOR );
 			}

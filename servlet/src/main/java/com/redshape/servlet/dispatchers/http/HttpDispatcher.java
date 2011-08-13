@@ -140,8 +140,9 @@ public class HttpDispatcher implements IHttpDispatcher {
         this.getResourcesLoader().setRootDirectory( this.getFront().getLayout().getBasePath() );
 
         try {
+            String filePath = "views/" + view.getViewPath() + "." + view.getExtension();
             try {
-                this.getResourcesLoader().loadFile( "views/" + view.getViewPath() + "." + view.getExtension(), true );
+                this.getResourcesLoader().loadFile( filePath, true );
             } catch ( FileNotFoundException e ) {
                 try {
                     view.setViewPath( String.format("%s/index", request.getController() ) );
@@ -149,7 +150,7 @@ public class HttpDispatcher implements IHttpDispatcher {
                                                     true );
                     request.setAction("index");
                 } catch ( FileNotFoundException ex ) {
-                    throw new PageNotFoundException( "View file not found", ex );
+                    throw new PageNotFoundException( "View file " + filePath + " not found", ex );
                 }
             }
 
@@ -166,13 +167,13 @@ public class HttpDispatcher implements IHttpDispatcher {
     protected void redirectToView( IView view, IHttpRequest request, IHttpResponse response )
         throws DispatchException {
         try {
-            IResponseContext context = this.getContextSwitcher().chooseContext( request );
+            IResponseContext context = this.getContextSwitcher().chooseContext( request, view );
             if ( context == null ) {
                 throw new ServletException("Unable to find " +
                         "appropriate response context");
             }
 
-            try {
+			try {
                 context.proceedResponse( view, request, response );
             } catch ( ProcessingException e ) {
                 this.processError( e, request, response );

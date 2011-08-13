@@ -34,7 +34,12 @@ public class AjaxContext implements IResponseContext {
         this.blackList = blackList;
     }
 
-    @Override
+	@Override
+	public SupportType isSupported(IView request) {
+		return SupportType.NO;
+	}
+
+	@Override
     public SupportType isSupported(IHttpRequest request) {
         String headerValue = request.getHeader("X-Requested-With");
          if (  headerValue != null && headerValue.equals(AjaxContext.MARKER_HEADER) ) {

@@ -11,6 +11,20 @@ import java.util.Map;
  */
 public final class Commons {
 
+    /**
+     * Conditional select operator which select B or C dependent on E equality to null
+     *
+     * @param <T>
+     * @param condition
+     * @param first
+     * @param second
+     *
+     * @return
+     */
+    public static <T> T select( Object condition, T first, T second ) {
+        return condition != null ? first : second;
+    }
+
 	/**
 	 * Simple selector which is analogy for JS operator || in a case of binary value
 	 * selection ( a || b ).

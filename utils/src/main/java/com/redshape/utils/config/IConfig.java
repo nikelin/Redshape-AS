@@ -3,28 +3,32 @@ package com.redshape.utils.config;
 import java.io.Serializable;
 
 /**
-* Configurations holder interface.
-*
+ * Configurations holder interface.
+ *
 * @author nikelin
-*/
+ */
 public interface IConfig extends Serializable {
 
     /**
-    * Neither node exists or not
-    * @return
-    */
+     * Neither node exists or not
+     *
+     * @return
+     */
     public boolean isNull();
 
     /**
     * Get child context
+    *
+    * @throws ConfigException
     * @param name
     * @return
     */
-    public IConfig get( String name ) throws ConfigException;
+    public IConfig get(String name) throws ConfigException;
 
     /**
     * Get ancestors of current node
     *
+    * @param <T>
     * @return T[]
     */
     public <T extends IConfig> T[] childs();
@@ -43,9 +47,11 @@ public interface IConfig extends Serializable {
 
     /**
     * Get specified ancestors nodes values
+    *
+    * @param name
     * @return
     */
-    public String[] list( String name );
+    public String[] list(String name);
 
     /**
         * Name of current node
@@ -65,7 +71,7 @@ public interface IConfig extends Serializable {
     * @param name
     * @return String
     */
-    public String attribute( String name );
+    public String attribute(String name);
 
     /**
      * Get name of attributes which related to
@@ -103,6 +109,12 @@ public interface IConfig extends Serializable {
      * @param <V>
      * @return
      */
-	public <V> V getRawElement();
+    public <V> V getRawElement();
 
+    /**
+     * Return writable object instance, if possible
+     *
+     * @return
+     */
+    public IWritableConfig asWritable();
 }

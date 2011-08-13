@@ -9,7 +9,7 @@
   <groupId>com.redshape</groupId>
   <artifactId>daemons</artifactId>
   <version>1.0.0A</version>
-  <name>Daemons API</name>
+  <name>Redshape - Daemons API</name>
 
   <dependencies>
     <dependency>

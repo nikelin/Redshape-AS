@@ -2,8 +2,8 @@ package com.redshape.search.collectors;
 
 import com.redshape.search.ISearchable;
 import com.redshape.search.annotations.Collector;
+import com.redshape.utils.IPackagesLoader;
 import com.redshape.utils.InterfacesFilter;
-import com.redshape.utils.PackagesLoader;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -24,7 +24,7 @@ public class CollectorsFactory {
     private static String collectorsPackage = "com.redshape.search.collectors";
 
     @Autowired( required = true )
-    private PackagesLoader packagesLoader;
+    private IPackagesLoader packagesLoader;
     private Map< Class<?>, IResultsCollector> collectors = new HashMap();
 
     public static CollectorsFactory getDefault() {
@@ -39,11 +39,11 @@ public class CollectorsFactory {
         this.initialize();
     }
     
-    public PackagesLoader getPackagesLoader() {
+    public IPackagesLoader getPackagesLoader() {
     	return this.packagesLoader;
     }
     
-    public void setPackagesLoader( PackagesLoader loader ) {
+    public void setPackagesLoader( IPackagesLoader loader ) {
     	this.packagesLoader = loader;
     }
 

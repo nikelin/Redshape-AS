@@ -1,8 +1,9 @@
 package com.redshape.cmd.commands;
 
+import com.redshape.cmd.Main;
 import com.redshape.commands.AbstractCommand;
-import com.redshape.commands.CommandsFactory;
 import com.redshape.commands.ICommand;
+import com.redshape.commands.ICommandsFactory;
 import com.redshape.commands.annotations.Command;
 import com.redshape.utils.StringUtils;
 
@@ -25,11 +26,15 @@ public class HelpCommand extends AbstractCommand {
         return true;
     }
 
+    protected ICommandsFactory getFactory() {
+        return Main.getContext().getBean(ICommandsFactory.class);
+    }
+
     @Override
     public void process() {
         StringBuffer buffer = new StringBuffer();
         buffer.append( StringUtils.repeat("\n", 5 ) );
-        buffer.append("VIO Runner")
+        buffer.append("Redshape Commands Runner")
               .append("\n");
         buffer.append("Available tasks:\n");
         buffer.append( StringUtils.repeat("-", 10) )
@@ -37,42 +42,52 @@ public class HelpCommand extends AbstractCommand {
 
         Set<String> modules = new HashSet();
 
-        Collection<Command> commands = CommandsFactory.getDefault().getTasks();
-        for( Command command : commands) {
-            modules.add( command.module() );
+        Collection<ICommand> commands = this.getFactory().getTasks();
+        for( ICommand command : commands) {
+            Command commandMeta = command.getClass().getAnnotation( Command.class );
+            if ( commandMeta == null ) {
+                continue;
+            }
+
+            modules.add( commandMeta.module() );
         }
 
         for ( String module : modules ) {
-            buffer.append("Module ")
+            buffer.append("Module `")
                   .append( module )
-                  .append( ":" )
+                  .append( "`:" )
                   .append( "\n" );
             
-            for ( Command command : commands ) {
+            for ( ICommand commandInstance : commands ) {
+                Command command = commandInstance.getClass().getAnnotation( Command.class );
                 if ( !command.module().equals( module ) ) {
                     continue;    
                 }
 
-                buffer.append( command.name() )
-                      .append( ": ")
+                buffer.append("`")
+                      .append( command.name() )
+                      .append("`")
+                      .append( " - ")
                       .append( command.helpMessage() );
 
-                try {
-                    ICommand commandInstance = CommandsFactory.getDefault().createTask( command.module(), command.name() );
-                    for ( String property : commandInstance.getSupported() ) {
-                        buffer.append( "-" )
-                              .append( property )
-                              .append( " " );
-                    }
+                buffer.append(" ( Supported properties: ");
 
-                    buffer.append( "\n" );
-                } catch ( InstantiationException e ) {
-                    buffer.append( " [ERROR] unavailable command!" );
+                int i = 0;
+                for ( String property : commandInstance.getSupported() ) {
+                    buffer.append( "-" )
+                          .append( property );
+
+                    if ( i++ != ( commandInstance.getSupported().length - 1 ) ) {
+                          buffer.append( "," );
+                    }
                 }
+                buffer.append(" )");
+
+                buffer.append( "\n" );
             }
 
-            buffer.append("-------------")
-                  .append("To run target task enter its' path in the next way:\n")
+            buffer.append("\n-------------\n")
+                  .append("To run target task enter its' path in the next form:\n")
                   .append(" [module-name] [task-name] -[arg1]=[arg1-value]...")
                   .append("\n\n\n");
         }

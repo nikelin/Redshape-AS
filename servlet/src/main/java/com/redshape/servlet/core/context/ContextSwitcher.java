@@ -1,6 +1,7 @@
 package com.redshape.servlet.core.context;
 
 import com.redshape.servlet.core.IHttpRequest;
+import com.redshape.servlet.views.IView;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +24,7 @@ public class ContextSwitcher implements IContextSwitcher {
     }
 
     @Override
-    public IResponseContext chooseContext(IHttpRequest request) {
+    public IResponseContext chooseContext(IHttpRequest request, IView view) {
         IResponseContext result = null;
         List<IResponseContext> variants = new ArrayList<IResponseContext>();
         for ( IResponseContext context : this.registry ) {
@@ -33,8 +34,12 @@ public class ContextSwitcher implements IContextSwitcher {
                     result = context;
                     break;
                 case MAY:
-                    variants.add( context );
-                    break;
+					if ( context.isSupported( view ).equals( SupportType.SHOULD ) ) {
+						result = context;
+					} else {
+                    	variants.add( context );
+					}
+				break;
             }
 
             if ( result != null ) {

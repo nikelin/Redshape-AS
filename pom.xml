@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.redshape</groupId>
     <artifactId>as</artifactId>
-    <name>Redshaper AS</name>
+    <name>Redshape AS</name>
     <version>1.0.0A</version>
     <packaging>pom</packaging>
     

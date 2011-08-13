@@ -22,9 +22,14 @@ public class PropertiesConfig implements IWritableConfig {
     private List<IConfig> childs = new ArrayList<IConfig>();
     private Map<String, String> attributes = new HashMap<String, String>();
 
-    protected PropertiesConfig( String name, String value ) {
+    protected PropertiesConfig( IConfig parent, String name, String value ) {
+        this.parent = parent;
         this.name = name;
         this.value = value;
+    }
+
+    protected PropertiesConfig( String name, String value ) {
+        this(null, name, value);
     }
 
     public PropertiesConfig( File file ) throws ConfigException {
@@ -55,9 +60,7 @@ public class PropertiesConfig implements IWritableConfig {
                     throw new ConfigException("Syntax exception");
                 }
 
-                line = line.replace("[", "").replace("]", "");
-
-                String[] parts = line.split("\\s");
+                String[] parts = line.replace("[", "").replace("]", "").split("\\s");
                 context = this.createChild(parts[0]);
                 if ( parts.length > 1 && !parts[1].isEmpty() ) {
                     context.set( parts[1] );
@@ -114,6 +117,7 @@ public class PropertiesConfig implements IWritableConfig {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T extends IConfig> T[] childs() {
         return (T[]) this.childs.toArray( new IConfig[this.childs.size()] );
     }
@@ -204,8 +208,7 @@ public class PropertiesConfig implements IWritableConfig {
             throw new IllegalArgumentException("<null>");
         }
 
-        PropertiesConfig config = new PropertiesConfig(name, "");
-        config.parent = this;
+        PropertiesConfig config = new PropertiesConfig(this, name, "");
         this.append(config);
         return config;
     }
@@ -269,5 +272,11 @@ public class PropertiesConfig implements IWritableConfig {
     public <V> V getRawElement() {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public IWritableConfig asWritable() {
+        return (IWritableConfig) this;
+    }
+
 
 }

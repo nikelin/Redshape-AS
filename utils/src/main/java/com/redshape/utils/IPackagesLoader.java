@@ -1,18 +1,14 @@
 package com.redshape.utils;
 
-import java.util.Collection;
-
 /**
- * Created by IntelliJ IDEA.
- * User: user
- * Date: Nov 8, 2010
- * Time: 1:58:16 PM
- * To change this template use File | Settings | File Templates.
+ * @author Cyril A. Karpenko <self@nikelin.ru>
+ * @package com.redshape.utils
+ * @date 8/13/11 12:27 PM
  */
 public interface IPackagesLoader {
 
-    public void addPackage( String path );
+	public <T> Class<T>[] getClasses(String pkgName) throws PackageLoaderException;
 
-    public Collection<String> getPackages();
+	public <T> Class<T>[] getClasses(String pkgName, IFilter<Class<T>> filter) throws PackageLoaderException;
 
 }

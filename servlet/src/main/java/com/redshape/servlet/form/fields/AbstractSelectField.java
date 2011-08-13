@@ -1,11 +1,13 @@
 package com.redshape.servlet.form.fields;
 
-import java.util.HashMap;
+import org.apache.commons.collections.OrderedMap;
+import org.apache.commons.collections.map.LinkedMap;
+
 import java.util.Map;
 
 public class AbstractSelectField<T> extends AbstractField<T> {
 	private static final long serialVersionUID = 7948336414439747793L;
-	private Map<String, T> options = new HashMap<String, T>();
+	private OrderedMap options = new LinkedMap();
 
 	public AbstractSelectField() {
 		this(null);

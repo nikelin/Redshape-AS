@@ -9,10 +9,16 @@ package com.redshape.commands;
  */
 public class ExecutionException extends Exception {
 
-    public ExecutionException() {}
+    public ExecutionException() {
+        this(null);
+    }
 
     public ExecutionException( String message ) {
-        super(message);
+        this(message, null);
+    }
+
+    public ExecutionException( String message, Throwable e ) {
+        super( message, e );
     }
 
 }

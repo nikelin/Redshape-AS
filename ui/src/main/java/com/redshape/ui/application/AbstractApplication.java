@@ -1,40 +1,37 @@
 package com.redshape.ui.application;
 
-import java.awt.Menu;
-import java.awt.MenuItem;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.File;
-import java.util.Collection;
-
 import com.redshape.ui.Dispatcher;
+import com.redshape.ui.application.events.AppEvent;
 import com.redshape.ui.application.events.EventType;
+import com.redshape.ui.application.events.IEventHandler;
+import com.redshape.ui.application.events.UIEvents;
 import com.redshape.ui.application.events.handlers.ErrorsHandler;
 import com.redshape.ui.application.handlers.ExitHandler;
 import com.redshape.ui.application.handlers.RepaintHandler;
 import com.redshape.ui.application.handlers.awt.AWTExceptionsHandler;
-import com.redshape.ui.windows.AbstractMainWindow;
 import com.redshape.ui.components.IComponent;
 import com.redshape.ui.components.IComponentsRegistry;
 import com.redshape.ui.components.actions.ComponentAction;
-import com.redshape.ui.application.events.IEventHandler;
-import com.redshape.ui.application.events.AppEvent;
-import com.redshape.ui.application.events.UIEvents;
 import com.redshape.ui.utils.UIConstants;
 import com.redshape.ui.utils.UIRegistry;
 import com.redshape.ui.views.widgets.IWidget;
 import com.redshape.ui.views.widgets.IWidgetsManager;
-
-import javax.swing.*;
-
+import com.redshape.ui.windows.AbstractMainWindow;
 import com.redshape.utils.config.ConfigException;
 import com.redshape.utils.config.IConfig;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.util.Collection;
 
 /**
  * @author nikelin
@@ -65,7 +62,6 @@ public abstract class AbstractApplication implements IApplication {
         this.init();
     }
 
-    // TODO: move to utility class
     protected static ApplicationContext loadContext( String contextPath ) {
         File file = new File(contextPath);
         if (file.exists()) {

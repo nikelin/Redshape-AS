@@ -1,12 +1,12 @@
 package com.redshape.migration;
 
+import com.redshape.utils.IPackagesLoader;
 import com.redshape.utils.config.ConfigException;
 import com.redshape.migration.strategy.MigrationStrategy;
 import com.redshape.migration.strategy.entities.Rollback;
 import com.redshape.migration.strategy.entities.Update;
 import com.redshape.utils.InterfacesFilter;
 import com.redshape.utils.PackageLoaderException;
-import com.redshape.utils.PackagesLoader;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class EntitiesMigrationManager extends AbstractMigrationManager {
     private static final Logger log = Logger.getLogger( MigrationManager.class );
     
     @Autowired( required = true )
-    private PackagesLoader packagesLoader;
+    private IPackagesLoader packagesLoader;
     
     public static MigrationManager getDefault() {
         return defaultInstance;
@@ -38,11 +38,11 @@ public class EntitiesMigrationManager extends AbstractMigrationManager {
         this.setStrategy( Action.ROLLBACK, new Rollback(this) );
     }
     
-    public void setPackagesLoader( PackagesLoader loader ) {
+    public void setPackagesLoader( IPackagesLoader loader ) {
     	this.packagesLoader = loader;
     }
     
-    public PackagesLoader getPackagesLoader() {
+    public IPackagesLoader getPackagesLoader() {
     	return this.packagesLoader;
     }
 

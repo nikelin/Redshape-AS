@@ -34,6 +34,9 @@ public abstract class AbstractField<T> extends AbstractFormItem implements IForm
 	
 	protected AbstractField( String id, String name ) {
 		super(id, name);
+
+        this.setDecorator( new FormFieldDecorator() );
+        this.setDecorator( new ErrorsDecorator() );
 	}
 
     @Override
@@ -104,14 +107,6 @@ public abstract class AbstractField<T> extends AbstractFormItem implements IForm
 			throw new IllegalArgumentException("<null>");
 		}
 		
-		if ( !this.hasDecorator( FormFieldDecorator.class ) ) {
-			this.setDecorator( new FormFieldDecorator() );
-		}
-		
-		if ( !this.hasDecorator( ErrorsDecorator.class ) ) {
-			this.setDecorator( new ErrorsDecorator() );
-		}
-		
 		return this.getRenderer().render(this, mode);
 	}
 	
@@ -138,6 +133,8 @@ public abstract class AbstractField<T> extends AbstractFormItem implements IForm
 
 	@Override
 	public boolean isValid() {
+        this.resetMessages();
+
 		boolean result = true;
 		for ( IValidator<T, IValidationResult> validator : this.validators ) {
 			IValidationResult validationResult = validator.validate( this.getValue() );

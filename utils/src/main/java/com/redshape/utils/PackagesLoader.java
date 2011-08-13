@@ -1,8 +1,11 @@
 package com.redshape.utils;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
@@ -11,154 +14,233 @@ import java.util.jar.JarFile;
 
 /**
  * @author nikelin
- * 
+ *
  * x
- */ 
-public class PackagesLoader {
-    private static final Logger log = Logger.getLogger( PackagesLoader.class );
-    private ResourcesLoader resourcesLoader;
+ */
+public class PackagesLoader implements IPackagesLoader {
+	private static final Logger log = Logger.getLogger( PackagesLoader.class );
 
-    public void setResourcesLoader( ResourcesLoader loader ) {
-        this.resourcesLoader = loader;
-    }
+	@Autowired( required = true )
+	private ResourcesLoader resourcesLoader;
 
-    public ResourcesLoader getResourcesLoader() {
-        return this.resourcesLoader;
-    }
+	private List<String> classpath;
 
-    @SuppressWarnings("unchecked")
-	public <T> Class<T>[] getClasses( String pkgName ) throws PackageLoaderException {
-        return this.getClasses( pkgName, new InterfacesFilter<T>( new Class[] {} ) );
-    }
+	public PackagesLoader() {
+		this( new ArrayList<String>() );
+	}
 
-    @SuppressWarnings("unchecked")
-	public <T> Class<T>[] getClasses( String pkgName, IFilter<Class<T>> filter ) throws PackageLoaderException {
-        Set<Class<T>> classes = new HashSet<Class<T>>();
-        for ( String path : System.getProperty("java.class.path").split(":") ) {
-            try {
-                Class<T>[] collectionPart = this.getClasses( path, pkgName, filter );
-                if ( collectionPart != null ) {
-                    classes.addAll( Arrays.asList( collectionPart ) );
-                }
-            } catch ( PackageLoaderException e ) {
-                continue;
-            }
-        }
+	public PackagesLoader(List<String> classpath) {
+		this.classpath = classpath;
 
-        return classes.toArray(new Class[classes.size()]);
-    }
+		this.init();
+	}
 
-    @SuppressWarnings("unchecked")
-	public <T> Class<T>[] getClasses( String path, String pkgName ) throws PackageLoaderException {
-        return this.getClasses(path, pkgName, new InterfacesFilter<T>(new Class[]{}));
-    }
+	protected void init() {
+		String systemClasspath = System.getProperty("java.class.path");
 
-    public <T> Class<T>[] getClasses( String path, String pkgName, IFilter<Class<T>> filter ) throws PackageLoaderException {
-        if ( path.endsWith(".jar") ) {
-            return this.getClassesFromJar( path, pkgName, filter );
-        } else {
-            return this.getClassesFromIdle( path, pkgName, filter );
-        }
-    }
+		this.classpath.addAll(
+			Arrays.asList(
+				systemClasspath.split(":")
+			)
+		);
 
-    @SuppressWarnings("unchecked")
-	protected <T> Class<T>[] getClassesFromJar( String path, String pkgName, IFilter<Class<T>> filter ) throws PackageLoaderException {
-        try {
-            String folderName = this.convertToFolderName( pkgName );
+		System.setProperty("java.class.path", StringUtils.join(this.classpath, ":"));
+	}
 
-            JarFile file = new JarFile( path );
-            Enumeration<JarEntry> entries = file.entries();
-            List<URL> targetEntries = new ArrayList<URL>() ;
-            while( entries.hasMoreElements() ) {
-                JarEntry testing = entries.nextElement();
+	public List<String> getClasspath() {
+		return classpath;
+	}
 
-                if ( testing.getName().contains(folderName) &&
-                        !testing.isDirectory() 
-                        	&& testing.getName().endsWith(".class") ) {
-                    targetEntries.add( new URL("jar", path + "!/", testing.getName() ) );
-                }
-            }
+	public void setClasspath(List<String> classpath) {
+		this.classpath = classpath;
+	}
 
-            List<Class<T>> result = new ArrayList<Class<T>>();
-            URLClassLoader loader = new URLClassLoader( targetEntries.toArray( new URL[targetEntries.size()]) );
-            for ( URL classUrl : targetEntries ) {
-                String clsName = ( classUrl.getPath()
-                                        .substring( 0 , classUrl.getPath().lastIndexOf(".") ) )
-                                        .replaceAll(".class", "")
-                                        .replaceAll( "/", "." );
-                Class<T> clazz;
-                try {
-                    clazz = (Class<T>) loader.loadClass( clsName );
-                    if ( filter == null || filter.filter(clazz) ) {
-                        result.add(clazz);
-                    }
-                } catch ( Throwable e ) {
-                    log.info( "Unable to load class: " + clsName, e );
-                }
-            }
+	public void setResourcesLoader( ResourcesLoader loader ) {
+		this.resourcesLoader = loader;
+	}
 
-            return result.toArray( new Class[result.size()] );
-        } catch ( Throwable e ) {
-            throw new PackageLoaderException( e.getMessage() );
-        }
-    }
+	public ResourcesLoader getResourcesLoader() {
+		return this.resourcesLoader;
+	}
 
-    @SuppressWarnings("unchecked")
-	protected <T> Class<T>[] getClassesFromIdle( String path, String pkgName, IFilter<Class<T>> filter ) throws PackageLoaderException {
-        try {
-            List<Class<T>> classes = new ArrayList<Class<T>>();
-            String folderName = this.convertToFolderName( pkgName);
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> Class<T>[] getClasses(String pkgName) throws PackageLoaderException {
+		return this.getClasses(pkgName, new InterfacesFilter<T>(new Class[]{ }));
+	}
 
-            File folder = resourcesLoader.loadFile(path + "/" + folderName);
-            if ( folder == null || !folder.exists() || !folder.canRead() || ( !folder.isDirectory() && !folder.getPath().endsWith(".jar") ) ) {
-                return null;
-            }
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> Class<T>[] getClasses(String pkgName, IFilter<Class<T>> filter) throws PackageLoaderException {
+		Set<Class<T>> classes = new HashSet<Class<T>>();
+		for ( String path : this.getClasspath() ) {
+			try {
+				Class<T>[] collectionPart = this.getClasses( path, pkgName, filter );
+				if ( collectionPart != null ) {
+					classes.addAll( Arrays.asList( collectionPart ) );
+				}
+			} catch ( PackageLoaderException e ) {
+				log.error(e.getMessage(), e);
+				continue;
+			} catch ( IOException e ) {
+				log.error(e.getMessage(), e);
+				continue;
+			}
+		}
 
-            if ( folder.getPath().endsWith(".jar") ) {
-                classes.addAll( Arrays.<Class<T>>asList( this.getClassesFromJar( path, pkgName, filter ) ) );
-            } else {
-                classes.addAll( this.<T>getClassesFromIdleFolder( path + File.separator + pkgName.replace(".", "/"), pkgName, filter ) );
-            }
+		log.info( classes.size() + " classes loaded!" );
 
-            return classes.toArray( new Class[ classes.size() ] );
-        } catch ( PackageLoaderException e ) {
-            throw e;
-        } catch ( Throwable e ) {
-            log.error( e.getMessage(), e );
-            throw new PackageLoaderException( e.getMessage() );
-        }
-    }
+		return classes.toArray(new Class[classes.size()]);
+	}
 
-    @SuppressWarnings("unchecked")
-	protected <T> Collection<Class<T>> getClassesFromIdleFolder( String folder, String pkgName, IFilter<Class<T>> filter )
-                                                                        throws ClassNotFoundException {
-        Collection<Class<T>> classes = new HashSet<Class<T>>();
-        File folderFile = new File( folder );
+	protected <T> Class<T>[] getClasses( String path, String pkgName, IFilter<Class<T>> filter )
+			throws PackageLoaderException, IOException {
+		if ( path.endsWith(".jar") ) {
+			return this.getClassesFromJar( path, pkgName, filter );
+		} else {
+			return this.getClassesFromIdle( path, pkgName, filter );
+		}
+	}
 
-        String[] clsEntries = folderFile.list();
-        for ( int i = 0; i < clsEntries.length; i++ ) {
-            File clsFile = new File( folder + File.separator + clsEntries[i] );
+	private ClassLoader createClassLoader( URL path ) {
+		return this.createClassLoader( Arrays.asList( new URL[] { path } ) );
+	}
 
-            if ( clsFile.isDirectory() ) {
-                classes.addAll( this.<T>getClassesFromIdleFolder( folder + File.separator + clsEntries[i], pkgName + "." + clsEntries[i], filter ) );
-            }
+	private ClassLoader createClassLoader( List<URL> targetEntries ) {
+		return new URLClassLoader( targetEntries.toArray( new URL[targetEntries.size()]) );
+	}
 
-            String className = clsEntries[i].substring( 0, clsEntries[i].indexOf(".") );
+	@SuppressWarnings("unchecked")
+	protected <T> Class<T>[] getClassesFromJar( String path,
+												String pkgName,
+												IFilter<Class<T>> filter )
+			throws IOException, PackageLoaderException {
+		try {
+			List<URL> targetEntries = this.filterJarEntries(
+				new JarFile( path ),
+				this.convertToFolderName( pkgName ),
+				path
+			);
 
-            Class<T> clazz = (Class<T>) ClassLoader.getSystemClassLoader().loadClass( pkgName + "." + className );
-            if ( filter != null && !filter.filter(clazz) ) {
-                continue;
-            }
+			List<Class<T>> result = new ArrayList<Class<T>>();
+			ClassLoader loader = this.createClassLoader( targetEntries );
+			for ( URL classUrl : targetEntries ) {
+				String className = this.prepareClassName( classUrl );
+				try {
+					Class<T> clazz = (Class<T>) loader.loadClass(className);
+					if ( filter == null || filter.filter(clazz) ) {
+						result.add(clazz);
+					}
+				} catch ( ClassNotFoundException e ) {
+					log.debug( String.format("Unable to loader class %s", className), e );
+					continue;
+				}
+			}
 
-            classes.add( clazz );
-        }
+			return result.toArray( new Class[result.size()] );
+		} catch ( IOException e ) {
+			throw e;
+		}
+	}
 
-        return classes;
-    }
+	protected String prepareClassName( URL url ) {
+		return this.prepareClassName( url.getPath() );
+	}
 
-    private String convertToFolderName( String packageName ) {
-        return packageName.replace(".", File.separator );
-    }
+	protected String prepareClassName( String value ) {
+		return 	value.substring(0, value.lastIndexOf("."))
+					.replaceAll(".class", "")
+					.replaceAll("/", ".");
+	}
+
+	private List<URL> filterJarEntries( JarFile file, String contextName, String itemName )
+		throws MalformedURLException {
+		Enumeration<JarEntry> entries = file.entries();
+		List<URL> targetEntries = new ArrayList<URL>() ;
+		while( entries.hasMoreElements() ) {
+			JarEntry testing = entries.nextElement();
+
+			if ( testing.getName().contains(contextName) &&
+					!testing.isDirectory()
+					&& testing.getName().endsWith(".class") ) {
+				targetEntries.add( new URL("jar", itemName + "!/", testing.getName() ) );
+			}
+		}
+
+		return targetEntries;
+	}
+
+	protected <T> Class<T>[] getClassesFromIdle( String basePath,
+												 String pkgName,
+												 IFilter<Class<T>> filter )
+			throws PackageLoaderException {
+		return this.getClassesFromIdle( basePath, basePath, pkgName, filter );
+	}
+
+	@SuppressWarnings("unchecked")
+	protected <T> Class<T>[] getClassesFromIdle( String basePath, String path, String pkgName, IFilter<Class<T>> filter ) throws PackageLoaderException {
+		try {
+			List<Class<T>> classes = new ArrayList<Class<T>>();
+			String folderName = this.convertToFolderName( pkgName);
+
+			File folder = resourcesLoader.loadFile(path + "/" + folderName);
+			if ( folder == null || !folder.exists() || !folder.canRead() || ( !folder.isDirectory() && !folder.getPath().endsWith(".jar") ) ) {
+				return null;
+			}
+
+			if ( folder.getPath().endsWith(".jar") ) {
+				classes.addAll( Arrays.<Class<T>>asList( this.getClassesFromJar( path, pkgName, filter ) ) );
+			} else {
+				classes.addAll( this.<T>getClassesFromIdleFolder( basePath, path + File.separator + pkgName.replace(".", "/"), pkgName, filter ) );
+			}
+
+			return classes.toArray( new Class[ classes.size() ] );
+		} catch ( PackageLoaderException e ) {
+			throw e;
+		} catch ( Throwable e ) {
+			throw new PackageLoaderException( e.getMessage(), e );
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	protected <T> Collection<Class<T>> getClassesFromIdleFolder( String basePath, String folder, String pkgName, IFilter<Class<T>> filter )
+			throws ClassNotFoundException, MalformedURLException {
+		Collection<Class<T>> classes = new HashSet<Class<T>>();
+		File folderFile = new File( folder );
+
+		File[] clsEntries = folderFile.listFiles();
+		for ( File clsFile : clsEntries ) {
+			if ( clsFile.isDirectory() ) {
+				classes.addAll(
+					this.<T>getClassesFromIdleFolder(
+						basePath,
+						clsFile.getAbsolutePath(),
+						pkgName + "." + clsFile.getName(),
+						filter
+					)
+				);
+			}
+
+			String clazzName = this.prepareClassName(pkgName + File.separator + clsFile.getName());
+			try {
+				Class<T> clazz = (Class<T>) Class.forName(clazzName);
+				if ( filter != null && !filter.filter(clazz) ) {
+					continue;
+				}
+
+				classes.add( clazz );
+			} catch ( Throwable e ) {
+				log.error( String.format( "Unable to load class %s", clazzName ));
+				continue;
+			}
+		}
+
+		return classes;
+	}
+
+	private String convertToFolderName( String packageName ) {
+		return packageName.replace(".", File.separator );
+	}
 
 }
 

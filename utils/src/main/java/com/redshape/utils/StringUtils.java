@@ -8,6 +8,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -123,7 +124,7 @@ public class StringUtils {
         return result.toString();
     }
 
-    public static String join( List<?> join, String separator ) {
+    public static String join( Collection<?> join, String separator ) {
         return join( join.toArray( new Object[join.size()] ), separator );
     }
 

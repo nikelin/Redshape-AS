@@ -2,6 +2,7 @@ package com.redshape.servlet.core.controllers.registry;
 
 import com.redshape.servlet.core.controllers.Action;
 import com.redshape.servlet.core.controllers.IAction;
+import com.redshape.servlet.core.controllers.IActionsLoader;
 import com.redshape.utils.Commons;
 import org.apache.commons.collections.FastHashMap;
 import org.springframework.context.ApplicationContext;
@@ -12,29 +13,49 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
- * User: nikelin
- * Date: 10/11/10
- * Time: 12:23 AM
- * To change this template use File | Settings | File Templates.
+ * Registry to handle action objects and their mappings on income
+ * requests path.
+ *
+ * @author Cyril A. Karpenko <self@nikelin.ru>
  */
 public class ControllersRegistry implements IControllersRegistry, ApplicationContextAware{
     private Set<Class<? extends IAction>> actions = new HashSet<Class<? extends IAction>>();
 
     private ApplicationContext context;
+	private IActionsLoader loader;
     private Map<String, Map<String, IAction>> registry = new FastHashMap();
 
     public ControllersRegistry() {
-    	this(null);
-    }
-    
-    public ControllersRegistry( Set<Class<? extends IAction>> actions ) {
-    	super();
-    	
-    	this.actions = actions;
+    	this( (Set<Class<? extends IAction>>) null);
     }
 
-    @Override
+	public ControllersRegistry( Set<Class<? extends IAction>> actions ) {
+		super();
+
+		this.actions = actions;
+	}
+
+
+    public ControllersRegistry( IActionsLoader loader ) {
+    	super();
+
+		this.loader = loader;
+		this.init();
+    }
+
+	protected void init() {
+		if ( this.getLoader() == null ) {
+			return;
+		}
+
+		this.actions = this.getLoader().load();
+	}
+
+	protected IActionsLoader getLoader() {
+		return loader;
+	}
+
+	@Override
     public String getViewPath( IAction action ) {
         Action actionMeta = action.getClass().getAnnotation( Action.class );
         if ( actionMeta == null ) {

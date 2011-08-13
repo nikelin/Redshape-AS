@@ -13,6 +13,8 @@ public interface IResponseContext {
 
     public SupportType isSupported( IHttpRequest request );
 
+	public SupportType isSupported( IView view );
+
     public void proceedResponse( IView view, IHttpRequest request, IHttpResponse response )
             throws ProcessingException;
 

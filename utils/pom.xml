@@ -4,7 +4,7 @@
     
     <groupId>com.redshape</groupId>
     <artifactId>utils</artifactId>
-    <name>Utility Classes</name>
+    <name>Redshape - Utils</name>
     <version>1.0.0A</version>
     <packaging>jar</packaging>
     

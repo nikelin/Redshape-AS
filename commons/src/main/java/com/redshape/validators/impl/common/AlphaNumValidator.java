@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
  * @date 7/20/11 8:59 AM
  */
 public class AlphaNumValidator extends AbstractValidator<String, IValidationResult> {
-    private Pattern pattern = Pattern.compile("[a-zA-Z0-9_]");
+    private Pattern pattern = Pattern.compile("^[a-zA-Z0-9_]+$");
 
     @Override
     public boolean isValid(String value) {

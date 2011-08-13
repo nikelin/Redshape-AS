@@ -4,7 +4,6 @@ import com.redshape.servlet.form.IFormField;
 import com.redshape.servlet.form.builders.IFormBuilder;
 import com.redshape.servlet.form.builders.IFormFieldBuilder;
 import com.redshape.servlet.form.builders.IFormItemBuilder;
-import com.redshape.servlet.form.decorators.ErrorsDecorator;
 import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.fields.*;
 import com.redshape.servlet.form.render.impl.fields.*;
@@ -206,10 +205,11 @@ public class StandardFormFieldBuilder implements IFormFieldBuilder {
         for ( String attribute : this.attributes.keySet() ) {
             field.setAttribute( attribute, this.attributes.get(attribute) );
         }
-		
-		field.clearDecorators();
-		field.setDecorator( new ErrorsDecorator() );
-		field.setDecorators( this.decorators.toArray( new IDecorator[ this.decorators.size() ] ) );
+
+        if ( !this.decorators.isEmpty() ) {
+		    field.setDecorators( this.decorators.toArray( new IDecorator[ this.decorators.size() ] ) );
+        }
+
 		field.setLabel( this.label );
 		field.setName( this.name );
 	}

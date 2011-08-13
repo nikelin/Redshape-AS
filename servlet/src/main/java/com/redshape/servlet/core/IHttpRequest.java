@@ -27,10 +27,18 @@ public interface IHttpRequest extends HttpServletRequest {
 
     public <T> T getObjectParameter( String name ) throws IOException;
 
+	public void setParameter( String name, Object value );
+
     public void setParameters( Map<String, Object> parameters );
+
+    public boolean hasParameter( String name ) throws IOException;
 
     public Map<String, Object> getParameters();
 
     public String getBody() throws IOException;
+
+    public byte[] getFileContent( String name ) throws IOException;
+
+    public IMultipartRequest getMultipart() throws IOException;
 
 }

@@ -9,7 +9,7 @@
   <groupId>com.redshape</groupId>
   <artifactId>payments</artifactId>
   <version>1.0.0A</version>
-  <name>Payments API</name>
+  <name>Redshape - Payments API</name>
   
   <dependencies>
     <dependency>

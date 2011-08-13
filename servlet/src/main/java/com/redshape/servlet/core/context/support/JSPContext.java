@@ -20,13 +20,15 @@ import java.io.FileNotFoundException;
  * @date 14:01
  */
 public class JSPContext implements IResponseContext {
+	public static final String EXTENSION = "jsp";
+
     @Autowired( required = true )
     private IWebResourcesHandler handler;
 
     @Autowired( required = true )
     private FrontController front;
 
-    public FrontController getFront() {
+	public FrontController getFront() {
         return front;
     }
 
@@ -46,6 +48,15 @@ public class JSPContext implements IResponseContext {
     public SupportType isSupported(IHttpRequest request) {
         return SupportType.MAY;
     }
+
+	@Override
+	public SupportType isSupported( IView view ) {
+		if ( !view.getExtension().equals( EXTENSION ) ) {
+			return SupportType.NO;
+		}
+
+		return SupportType.MAY;
+	}
 
     @Override
     public void proceedResponse(IView view, IHttpRequest request, IHttpResponse response)

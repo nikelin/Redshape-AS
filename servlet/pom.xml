@@ -11,7 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>servlet</artifactId>
-    <name>Servlet Core</name>
+    <name>Redshape - Servlet Core</name>
     <version>1.0.0A</version>
     <packaging>jar</packaging>
     <groupId>com.redshape</groupId>
@@ -52,6 +52,11 @@
             <artifactId>commons</artifactId>
             <groupId>com.redshape</groupId>
             <version>1.0.0A</version>
+        </dependency>
+        <dependency>
+            <artifactId>mail</artifactId>
+            <groupId>javax.mail</groupId>
+            <version>1.4</version>
         </dependency>
     </dependencies>
 

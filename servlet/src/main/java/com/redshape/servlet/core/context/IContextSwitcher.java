@@ -1,6 +1,7 @@
 package com.redshape.servlet.core.context;
 
 import com.redshape.servlet.core.IHttpRequest;
+import com.redshape.servlet.views.IView;
 
 /**
  * @author nikelin
@@ -8,6 +9,6 @@ import com.redshape.servlet.core.IHttpRequest;
  */
 public interface IContextSwitcher {
 
-    public IResponseContext chooseContext( IHttpRequest request );
+    public IResponseContext chooseContext( IHttpRequest request, IView view );
 
 }

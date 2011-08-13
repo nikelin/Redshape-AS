@@ -1,30 +1,31 @@
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>com.redshape</groupId>
-		<artifactId>as</artifactId>
-		<version>1.0.0A</version>
-	</parent>
+    <parent>
+        <groupId>com.redshape</groupId>
+        <artifactId>as</artifactId>
+        <version>1.0.0A</version>
+    </parent>
 
-  	<groupId>com.redshape</groupId>
+    <groupId>com.redshape</groupId>
     <artifactId>persistence</artifactId>
     <packaging>jar</packaging>
     <version>1.0.0A</version>
 
-    <name>Persistence Core</name>
+    <name>Redshape - Persistence Core</name>
 
     <properties>
         <hibernate-version>3.5.1-Final</hibernate-version>
     </properties>
 
     <dependencies>
-    	<dependency>
-    		<artifactId>commons</artifactId>
-    		<groupId>com.redshape</groupId>
-    		<version>1.0.0A</version>
-    	</dependency>
+        <dependency>
+            <artifactId>commons</artifactId>
+            <groupId>com.redshape</groupId>
+            <version>1.0.0A</version>
+        </dependency>
         
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -60,11 +61,11 @@
             <version>5.1.9</version>
         </dependency>
 
-       <dependency>
-           <groupId>net.sf.ehcache</groupId>
-           <artifactId>ehcache-core</artifactId>
-           <version>2.1.0</version>
-       </dependency>
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-core</artifactId>
+            <version>2.1.0</version>
+        </dependency>
 
         <dependency>
             <groupId>javax.transaction</groupId>
@@ -88,10 +89,10 @@
         </dependency>
 
         <dependency>
-			<groupId>commons-dbcp</groupId>
-			<artifactId>commons-dbcp</artifactId>
-			<version>1.4</version>
-		</dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.4</version>
+        </dependency>
 
     </dependencies>
    

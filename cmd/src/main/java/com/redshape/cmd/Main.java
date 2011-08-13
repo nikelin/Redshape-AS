@@ -4,18 +4,14 @@ import com.redshape.applications.ApplicationException;
 import com.redshape.applications.SpringApplication;
 import com.redshape.applications.bootstrap.IBootstrapAction;
 import com.redshape.cmd.commands.HelpCommand;
-import com.redshape.commands.CommandsFactory;
 import com.redshape.commands.ExecutionException;
 import com.redshape.commands.ICommand;
-
-import org.apache.log4j.*;
+import com.redshape.commands.ICommandsFactory;
+import org.apache.log4j.Logger;
 
 /**
- * Created by IntelliJ IDEA.
- * User: nikelin
- * Date: Jul 21, 2010
- * Time: 5:04:52 PM
- * To change this template use File | Settings | File Templates.
+ * @author nikelin
+ * @package com.redshape.cmd
  */
 public final class Main extends SpringApplication {
     private static final Logger log = Logger.getLogger( Main.class );
@@ -25,6 +21,10 @@ public final class Main extends SpringApplication {
         super( args);
 
         this.processCommands();
+    }
+
+    protected ICommandsFactory getCommandsFactory() {
+        return getContext().getBean( ICommandsFactory.class );
     }
 
     @Override 
@@ -46,18 +46,32 @@ public final class Main extends SpringApplication {
 
         try {
             this.processTask(this.actualTask);
-        } catch ( ExecutionException e ) {
-            log.error("Task execution exception!", e );
-        }
+        } catch ( IllegalArgumentException e ) {
+           System.out.println("Insufficiently or illegal arguments given!");
+           System.exit(4);
+       } catch ( ExecutionException e )  {
+           System.out.println( "Command processing exception");
+           System.exit(2);
+           e.printStackTrace();
+       } catch ( Throwable e ) {
+           System.out.println("Something goes wrong...");
+           System.exit(1);
+           e.printStackTrace();
+       }
+
+        System.exit(0);
     }
 
     protected void processCommands() {
            try {
-               CommandsFactory.addPackages( this.getConfig().get("settings").get("commands").list("package") );
-
                String module = null;
                ICommand task = null;
+               int i = 0;
                for ( String arg : this.getEnvArgs() ) {
+                   if ( i++ == 0 ) {
+                       continue;
+                   }
+
                    if ( !arg.startsWith("-") ) {
                        if ( module != null) {
                            if ( task != null ) {
@@ -65,7 +79,7 @@ public final class Main extends SpringApplication {
                                task = null;
                            }
 
-                           task = CommandsFactory.getDefault().createTask( module, arg );
+                           task = this.getCommandsFactory().createTask(module, arg);
                        } else {
                            module = arg;
                        }
@@ -85,20 +99,24 @@ public final class Main extends SpringApplication {
                if ( task != null ) {
                    this.actualTask = task;
                } else if ( module != null ) {
-                   task = CommandsFactory.getDefault().createTask( null, module );
+                   task = this.getCommandsFactory().createTask(null, module);
                    if ( task != null ) {
                        this.actualTask = task;
                    }
                }
            } catch ( InstantiationException e ) {
                System.out.println("Requested task does not supports! Write `help` for advice.");
+               System.exit(3);
            } catch ( IllegalArgumentException e ) {
                System.out.println("Insufficiently or illegal arguments given!");
+               System.exit(4);
            } catch ( ExecutionException e )  {
                System.out.println( "Command processing exception");
+               System.exit(2);
                e.printStackTrace();
            } catch ( Throwable e ) {
                System.out.println("Something goes wrong...");
+               System.exit(1);
                e.printStackTrace();
            }
        }

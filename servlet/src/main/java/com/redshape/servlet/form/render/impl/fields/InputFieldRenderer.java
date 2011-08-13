@@ -19,8 +19,10 @@ public class InputFieldRenderer implements IFormFieldRenderer<InputField> {
 		if ( field.getId() != null ) {
 			builder.append("id=\"").append( field.getId() ).append( "\" ");
 		}
-		
-		builder.append("name=\"").append( field.getCanonicalName() ).append( "\" ");
+
+        if ( field.getName() != null ) {
+		    builder.append("name=\"").append( field.getCanonicalName() ).append( "\" ");
+        }
 		
 		
 		if ( field.getValue() != null ) {
