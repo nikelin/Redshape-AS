@@ -73,6 +73,11 @@ public class Form extends AbstractFormItem implements IForm {
 		}
 	}
 
+	@Override
+	public <T> T getValue( String path ) {
+		return this.<T>findField(path).getValue();
+	}
+
     protected void setValue( String path, Object value ) {
         this.findField(path).setValue(value);
     }

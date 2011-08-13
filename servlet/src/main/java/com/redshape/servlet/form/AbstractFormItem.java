@@ -15,6 +15,7 @@ public abstract class AbstractFormItem implements IFormItem {
 	private Map<String, Object> attributes = new HashMap<String, Object>();
 	private String id;
 	private String name;
+	private List<String> messages = new ArrayList<String>();
 	private IForm context;
 	
 	public AbstractFormItem( String id ) {
@@ -27,6 +28,14 @@ public abstract class AbstractFormItem implements IFormItem {
 		
 		this.decorators = new ArrayList<IDecorator>();
 		this.attributes = new HashMap<String, Object>();
+	}
+
+	public void addMessage( String message ) {
+		this.messages.add(message);
+	}
+
+	public List<String> getMessages() {
+		return messages;
 	}
 
 	@Override

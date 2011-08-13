@@ -175,4 +175,13 @@ public interface IFormItem extends Serializable {
 	 * @return
 	 */
 	public String getCanonicalName();
+
+	/**
+	 * Add error message to the given field
+	 *
+	 * @param message
+	 */
+	public void addMessage( String message );
+
+	public List<String> getMessages();
 }

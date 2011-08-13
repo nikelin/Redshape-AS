@@ -1,7 +1,10 @@
 package com.redshape.utils;
 
+import org.apache.log4j.Logger;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 /**
  * 
@@ -10,7 +13,9 @@ import java.lang.reflect.Method;
  * @param <V>
  * @param <T>
  */
-public class Function<V, T> implements IFunction<V, T> {
+public class Function<V, T> implements com.redshape.utils.IFunction<V, T> {
+	private static final Logger log = Logger.getLogger(Function.class);
+
 	private Method method;
 	private V bind;
 	private Object[] arguments;
@@ -19,7 +24,7 @@ public class Function<V, T> implements IFunction<V, T> {
 		this(null);
 	}
 	
-	public Function ( String name, Class<V> context, 
+	public Function ( String name, Class<?> context, 
 					  Class<?>... arguments ) throws NoSuchMethodException{
 		this( context.getMethod(name, arguments) );
 	}
@@ -35,6 +40,30 @@ public class Function<V, T> implements IFunction<V, T> {
 	
 	protected Method getMethod() {
 		return this.method;
+	}
+
+	protected void assertTrue( Boolean condition, String message ) {
+		if ( !condition ) {
+			throw new IllegalArgumentException(message);
+		}
+	}
+
+	protected void assertArgumentType( Object argument, Class<?> type ) {
+		this.assertArgumentsType( new Object[] { argument }, type );
+	}
+
+	protected void assertArgumentsType( Object[] arguments, Class<?> type ) {
+		for ( Object argument : arguments ) {
+			if ( !type.isAssignableFrom( argument.getClass() ) ) {
+				throw new IllegalArgumentException("Wrong argument type");
+			}
+		}
+	}
+
+	protected void assertArgumentsCount( Object[] actual, int count ) {
+		if ( actual.length != count ) {
+			throw new IllegalArgumentException("Wrong arguments count");
+		}
 	}
 	
 	@Override
@@ -82,16 +111,20 @@ public class Function<V, T> implements IFunction<V, T> {
 		}
 		
 		try {
-			result = (T) this.getMethod().invoke( context, args);
+			result = (T) this.getMethod().invoke( context instanceof Class ? null : context, args);
 		} catch ( Throwable e  ) {
-			throw new InvocationTargetException( e ); 
+			log.info("Erroneous context: " + String.valueOf( context ) );
+			log.info("Erroneous method: " + this.getMethod().getName() );
+			log.info("Erroneous args: " + Arrays.asList(arguments) );
+			log.info( e.getMessage(), e );
+			throw new InvocationTargetException( e );
 		}
 		
 		return result;
 	}
 
 	@Override
-	public IFunction<V, T> pass(Object... arguments) {
+	public com.redshape.utils.IFunction<V, T> pass(Object... arguments) {
 		return new Function<V, T>( this.getMethod(), arguments);
 	}
 	

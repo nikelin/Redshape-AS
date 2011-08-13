@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 * Time: 10:23:11 AM
 * To change this template use File | Settings | File Templates.
 */
-public class ResourcesLoader {
+public class ResourcesLoader implements IResourcesLoader {
     private final static Logger log = Logger.getLogger( ResourcesLoader.class );
     private String rootDirectory;
     private Collection<String> searchPath = new HashSet<String>();
@@ -154,4 +154,8 @@ public class ResourcesLoader {
         return targetEntries.toArray( new String[targetEntries.size()] );
     }
 
+	@Override
+	public void addSearchPath(String searchPath) {
+		this.searchPath.add(searchPath);
+	}
 }

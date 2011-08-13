@@ -39,7 +39,7 @@ public abstract class AbstractField<T> extends AbstractFormItem implements IForm
         this.setDecorator( new ErrorsDecorator() );
 	}
 
-    @Override
+	@Override
     public boolean isRequired() {
         return this.required;
     }

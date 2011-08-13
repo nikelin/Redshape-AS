@@ -1,9 +1,9 @@
 <settings>
 	<servers>
 		<server>
-			<id>cloudbees-central</id>
+			<id>redshape.central</id>
 			<username>nikelin</username>
-			<password>{uD8xEEfEvscHtZ5iXPDkS73WuoY1cHt6JigPwTpf7AXwUmr7VLnQzZ9+5wNhza8k}</password>
+			<password>jellicalde1990_nikelin</password>
 		</server>
 	</servers>
 </settings>
