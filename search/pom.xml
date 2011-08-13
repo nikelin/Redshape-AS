@@ -7,13 +7,13 @@
     <parent>
         <artifactId>as</artifactId>
         <groupId>com.redshape</groupId>
-        <version>1.0.0A</version>
+        <version>2.0.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.redshape</groupId>
-    <version>1.0.0A</version>
+    <version>${project.parent.version}</version>
     <artifactId>search</artifactId>
     <packaging>jar</packaging>
 
@@ -21,12 +21,12 @@
        <dependency>
            <artifactId>utils</artifactId>
            <groupId>com.redshape</groupId>
-           <version>1.0.0A</version>
+           <version>${project.version}</version>
        </dependency>
         <dependency>
             <artifactId>persistence</artifactId>
             <groupId>com.redshape</groupId>
-            <version>1.0.0A</version>
+            <version>${project.version}</version>
         </dependency>
        <dependency>
            <artifactId>lucene-core</artifactId>

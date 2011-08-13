@@ -3,19 +3,19 @@
   <parent>
     <artifactId>as</artifactId>
     <groupId>com.redshape</groupId>
-    <version>1.0.0A</version>
+    <version>2.0.0</version>
   </parent>
   
   <groupId>com.redshape</groupId>
   <artifactId>payments</artifactId>
-  <version>1.0.0A</version>
+  <version>${project.parent.version}</version>
   <name>Redshape - Payments API</name>
   
   <dependencies>
     <dependency>
       <groupId>com.redshape</groupId>
       <artifactId>persistence</artifactId>
-      <version>1.0.0A</version>
+      <version>${project.version}</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>
