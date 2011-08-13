@@ -11,7 +11,7 @@
     <parent>
         <artifactId>as</artifactId>
         <groupId>com.redshape</groupId>
-        <version>2.0.0</version>
+        <version>3.0.0</version>
     </parent>
 
     <build>

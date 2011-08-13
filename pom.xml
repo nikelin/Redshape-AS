@@ -6,7 +6,7 @@
     <name>Redshape AS</name>
     <version>3.0.0</version>
     <packaging>pom</packaging>
-    
+
     <modules>
         <module>commons</module>
         <module>persistence</module>
@@ -115,6 +115,13 @@
                 </executions>
               </plugin>
         </plugins>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav</artifactId>
+                <version>1.0-beta-2</version>
+            </extension>
+        </extensions>
     </build>
     
     <dependencies>
@@ -154,10 +161,12 @@
     
     <distributionManagement>
     	<repository>
-    		<id>Artifactory</id>
-    		<url>http://10.0.0.3:8180/artifactory</url>
+    		<id>redshape.central</id>
+            <name>Cloudbees Maven Repository</name>
+    		<url>dav:https://repository-redshape.forge.cloudbees.com/snapshot/</url>
     	</repository>
     </distributionManagement>
+
 
 </project>
 
