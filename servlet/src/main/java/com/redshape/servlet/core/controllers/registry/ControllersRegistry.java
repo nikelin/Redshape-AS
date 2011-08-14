@@ -2,7 +2,7 @@ package com.redshape.servlet.core.controllers.registry;
 
 import com.redshape.servlet.core.controllers.Action;
 import com.redshape.servlet.core.controllers.IAction;
-import com.redshape.servlet.core.controllers.IActionsLoader;
+import com.redshape.servlet.core.controllers.loaders.IActionsLoader;
 import com.redshape.utils.Commons;
 import org.apache.commons.collections.FastHashMap;
 import org.springframework.context.ApplicationContext;
@@ -115,12 +115,14 @@ public class ControllersRegistry implements IControllersRegistry, ApplicationCon
                     || ( actionMeta.controller() == null || actionMeta.name() == null ) ) {
                 continue;
             }
-            if ( actionMeta.controller().equals( controller )
-                    && actionMeta.name().equals( action ) ) {
+
+			String actionController = actionMeta.controller().replaceAll("/", "");
+			String actionName = actionMeta.name().replaceAll("/", "");
+            if ( actionController.equals( controller ) && actionName.equals( action ) ) {
                 actionInstance = _createInstance( actionClazz );
                 break;
-            } else if ( actionMeta.controller().equals( controller )
-                    && actionMeta.name().equals("index") ) {
+            } else if ( actionController.equals(controller)
+                    && actionName.equals("index") ) {
                 controllerInstance = _createInstance( actionClazz );
             }
         }

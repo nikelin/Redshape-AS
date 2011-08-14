@@ -2,6 +2,7 @@ package com.redshape.servlet.routes.route;
 
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.routes.IRoute;
+import com.redshape.utils.range.IRange;
 import org.apache.log4j.Logger;
 
 import java.util.regex.Matcher;
@@ -9,13 +10,13 @@ import java.util.regex.Pattern;
 
 public class Regexp implements IRoute {
 	private static final Logger log = Logger.getLogger( Regexp.class );
-	
+
 	private Pattern pattern;
-	private Integer controllerGroup;
-	private Integer actionGroup;
+	private IRange<Integer> controllerGroup;
+	private IRange<Integer> actionGroup;
 	
-	public Regexp( String expression, Integer controllerGroup, 
-									  Integer actionGroup ) {
+	public Regexp( String expression, IRange<Integer> controllerGroup,
+									  IRange<Integer> actionGroup ) {
 		if ( expression == null || expression.isEmpty() ) {
 			throw new IllegalArgumentException("<null> expression");
 		}
@@ -26,6 +27,11 @@ public class Regexp implements IRoute {
 		
 		if ( actionGroup == null ) {
 			throw new IllegalArgumentException("<null> action group");
+		}
+
+		if ( controllerGroup.isIntersects( actionGroup ) ) {
+			throw new IllegalArgumentException("Controller groups indexes must " +
+					"not intersects with action groups");
 		}
 		
 		this.pattern = Pattern.compile(expression);
@@ -47,13 +53,25 @@ public class Regexp implements IRoute {
 		
 		if ( matcher.find() ) {
 			log.info( "Groups founded:" + matcher.groupCount() );
-			log.info( matcher.group( this.actionGroup ) );
-			request.setAction( sourcePath.substring( matcher.start( this.actionGroup ),
-													 matcher.end( this.actionGroup ) )
-                                    .replaceAll("\\/", "") );
-			request.setController( sourcePath.substring( matcher.start( this.controllerGroup ),
-													 matcher.end( this.controllerGroup ) )
-                                    .replaceAll("\\/", "") );
+
+			StringBuilder actionPath = new StringBuilder();
+			StringBuilder controllerPath = new StringBuilder();
+			for ( int i = 1; ; i++ ) {
+				if ( this.controllerGroup.inRange(i) ) {
+					controllerPath.append(
+							sourcePath.substring(
+								matcher.start(i), matcher.end(i) ) );
+				} else if ( this.actionGroup.inRange(i) ) {
+					actionPath.append(
+						sourcePath.substring(
+							matcher.start(i), matcher.end(i) ) );
+				} else {
+					break;
+				}
+			}
+
+			request.setAction( actionPath.toString().replaceAll("/", "") );
+			request.setController( controllerPath.toString().replaceAll("/", "") );
 		} else {
 			throw new IllegalArgumentException();
 		}

@@ -44,7 +44,7 @@ public class Servlet extends HttpServlet {
         		throw new ServletException("Spring context location must be sepecified as <init-param>!");
         	}
 
-        	args.add( configPath );
+        	args.add( "/" + config.getServletContext().getRealPath("/") + configPath );
         	
             this.application = new WebApplication( args.toArray( new String[ args.size() ] ) );
             log.info( config.getInitParameterNames() );

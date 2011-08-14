@@ -55,14 +55,15 @@ public class Function<V, T> implements com.redshape.utils.IFunction<V, T> {
 	protected void assertArgumentsType( Object[] arguments, Class<?> type ) {
 		for ( Object argument : arguments ) {
 			if ( !type.isAssignableFrom( argument.getClass() ) ) {
-				throw new IllegalArgumentException("Wrong argument type");
+				throw new IllegalArgumentException("Wrong argument type " + argument.getClass().getCanonicalName()
+						+ " when expected " + type.getCanonicalName()  );
 			}
 		}
 	}
 
 	protected void assertArgumentsCount( Object[] actual, int count ) {
 		if ( actual.length != count ) {
-			throw new IllegalArgumentException("Wrong arguments count");
+			throw new IllegalArgumentException("Wrong arguments count " + actual.length + " when expected " + count );
 		}
 	}
 	

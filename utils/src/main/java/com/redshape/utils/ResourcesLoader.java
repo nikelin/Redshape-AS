@@ -69,10 +69,6 @@ public class ResourcesLoader implements IResourcesLoader {
             file = this.find(path);
         }
 
-        if ( file == null ) {
-            throw new FileNotFoundException( path );
-        }
-
         return file;
     }
 

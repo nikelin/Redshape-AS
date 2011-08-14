@@ -1,8 +1,8 @@
 package com.redshape.ascript;
 
 import com.redshape.ascript.context.IEvaluationContext;
+import com.redshape.ascript.evaluation.EvaluationMode;
 import com.redshape.utils.IResourcesLoader;
-import org.apache.poi.hssf.record.formula.functions.T;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -39,13 +39,12 @@ public interface IEvaluator {
 	 * @param path
 	 * @return
 	 */
-	public <T> T evaluateFile( String path ) throws EvaluationException;
+	public <T> T evaluateFile(String path, EvaluationMode mode) throws EvaluationException;
 
     /**
 	 *  Process expressions which embed in a text: "Afla Afla ${(counter a)} Afla#${(+ (counter a) 2)}"
 	 *
 	 * @param expression
-	 * @param <T>
 	 * @return
 	 * @throws EvaluationException
 	 */

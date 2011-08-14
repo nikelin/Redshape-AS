@@ -106,19 +106,11 @@ public class EvaluationContext implements IEvaluationContext {
 
 	@Override
 	public void exportClass( String name, Class<?> clazz ) throws EvaluationException {
-		if ( this.get(name) != null ) {
-			throw new EvaluationException("Object with such name already registered in current context!");
-		}
-
 		this.items.put( name, new ClassContext( clazz ) );
 	}
 
 	@Override
 	public void exportFunction( String name, IFunction<?,?> context ) throws EvaluationException {
-		if ( this.get(name) != null ) {
-			throw new EvaluationException("Object with such name already registered in current context!");
-		}
-
 		this.items.put(name, new FunctionItem( context ) );
 	}
 	
@@ -169,7 +161,8 @@ public class EvaluationContext implements IEvaluationContext {
 			log.info("Resolving method " + path.peek() );
 			return this.wrapMethod( context.<V>getValue(), context.getMethod( path.poll(), argumentsCount, types) );
 		} else {
-			return this.resolve( this.createContextItem( context.getValue(), path.size() > 1 ), path );
+			return this.resolveMethod(
+					this.createContextItem(context.<Object>getValue(path.poll()), false), argumentsCount, path, types);
 		}
 	}
 
@@ -235,10 +228,16 @@ public class EvaluationContext implements IEvaluationContext {
 	
 	@SuppressWarnings("unchecked")
 	protected IEvaluationContextItem createContextItem( Object object, boolean scalar ) {
+		if ( object instanceof IEvaluationContextItem) {
+			return (IEvaluationContextItem) object;
+		}
+
 		if ( scalar ) {
 			return new ValueItem(object);
 		} else if ( object instanceof Map ) {
 			return new MapItem( (Map<String,?>) object );
+		} else if ( object instanceof IEvaluationContext ) {
+			return new ContextItem( (IEvaluationContext) object );
 		} else {
 			return new BeanItem(object.getClass(), object);
 		}

@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -107,7 +108,7 @@ public class PackagesLoader implements IPackagesLoader {
 	}
 
 	private ClassLoader createClassLoader( List<URL> targetEntries ) {
-		return new URLClassLoader( targetEntries.toArray( new URL[targetEntries.size()]) );
+		return new URLClassLoader( targetEntries.toArray( new URL[targetEntries.size()]), Thread.currentThread().getContextClassLoader() );
 	}
 
 	@SuppressWarnings("unchecked")
@@ -183,15 +184,35 @@ public class PackagesLoader implements IPackagesLoader {
 			List<Class<T>> classes = new ArrayList<Class<T>>();
 			String folderName = this.convertToFolderName( pkgName);
 
-			File folder = resourcesLoader.loadFile(path + "/" + folderName);
-			if ( folder == null || !folder.exists() || !folder.canRead() || ( !folder.isDirectory() && !folder.getPath().endsWith(".jar") ) ) {
-				return null;
+			File folder;
+			try {
+				folder = resourcesLoader.loadFile(path + "/" + folderName);
+				if ( folder == null || !folder.exists() || !folder.canRead() || ( !folder.isDirectory() && !folder.getPath().endsWith(".jar") ) ) {
+					return null;
+				}
+			} catch ( FileNotFoundException e ) {
+				folder = null;
 			}
 
-			if ( folder.getPath().endsWith(".jar") ) {
-				classes.addAll( Arrays.<Class<T>>asList( this.getClassesFromJar( path, pkgName, filter ) ) );
+			if ( folder != null ) {
+				if ( folder.getPath().endsWith(".jar") ) {
+					classes.addAll( Arrays.<Class<T>>asList( this.getClassesFromJar( path, pkgName, filter ) ) );
+				} else {
+					classes.addAll( this.<T>getClassesFromIdleFolder( basePath, path + File.separator + pkgName.replace(".", "/"), pkgName, filter ) );
+				}
 			} else {
-				classes.addAll( this.<T>getClassesFromIdleFolder( basePath, path + File.separator + pkgName.replace(".", "/"), pkgName, filter ) );
+				File pathFile = this.getResourcesLoader().loadFile(path);
+				for ( File file : pathFile.listFiles() ) {
+					try {
+						if ( file.getPath().endsWith(".jar") ) {
+							classes.addAll( Arrays.<Class<T>>asList( this.getClassesFromJar( file.getAbsolutePath(), pkgName, filter ) ) );
+						} else if ( file.isDirectory() && !file.getName().startsWith(".") ) {
+							classes.addAll( this.<T>getClassesFromIdleFolder( file.getPath(), file.getPath() + File.separator + pkgName.replace(".", "/"), pkgName, filter ) );
+						}
+					} catch ( Throwable e ) {
+						continue;
+					}
+				}
 			}
 
 			return classes.toArray( new Class[ classes.size() ] );
@@ -230,7 +251,7 @@ public class PackagesLoader implements IPackagesLoader {
 
 				classes.add( clazz );
 			} catch ( Throwable e ) {
-				log.error( String.format( "Unable to load class %s", clazzName ));
+				log.debug( String.format( "Unable to load class %s", clazzName ));
 				continue;
 			}
 		}

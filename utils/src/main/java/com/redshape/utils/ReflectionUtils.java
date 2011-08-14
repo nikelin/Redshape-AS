@@ -16,11 +16,11 @@ public final class ReflectionUtils {
 	public static boolean compareTypeLists( Class<?>[] first, Class<?>[] second, boolean strict ) {
 		for ( int i = 0; i < first.length; i++ ) {
 			if ( strict ) {
-				if ( !first[i].equals(second[i]) ) {
+				if ( second[i] == null || !first[i].equals(second[i]) ) {
 					return false;
 				}
 			} else {
-				if ( !first[i].isAssignableFrom( second[i] ) ) {
+				if ( second[i] == null || !first[i].isAssignableFrom( second[i] ) ) {
 					return false;
 				}
 			}
@@ -32,6 +32,10 @@ public final class ReflectionUtils {
     public static Class<?>[] getTypesList( Object... instances ) {
         Class<?>[] result = new Class[instances.length];
         for ( int i = 0; i < instances.length; i++ ) {
+			if ( instances[i] == null ) {
+				continue;
+			}
+
             result[i] = instances[i].getClass();
         }
 

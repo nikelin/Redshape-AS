@@ -52,7 +52,7 @@ public class ExpressionEvaluator implements IEvaluator {
     private Collection<String> includes = new HashSet<String>();
 	private IResourcesLoader loader;
 
-    private static final Pattern embedPattern = Pattern.compile("\\$\\{(.+?)\\}");
+    private static final Pattern embedPattern = Pattern.compile("\\$\\{(.+?)\\}", Pattern.MULTILINE);
 
 	public ExpressionEvaluator() throws EvaluationException {
 		this( new ResourcesLoader() );
@@ -115,6 +115,7 @@ public class ExpressionEvaluator implements IEvaluator {
         /**
               * String functions
               */
+		this.getRootContext().exportFunction("split", new SplitFunction(this) );
         this.getRootContext().exportFunction("upper-case", new UpperCaseFunction(this) );
         this.getRootContext().exportFunction("lower-case", new LowerCaseFunction(this) );
         this.getRootContext().exportFunction("index-of", new IndexOfFunction(this) );
@@ -229,9 +230,17 @@ public class ExpressionEvaluator implements IEvaluator {
     }
 
 	@Override
-	public <T> T evaluateFile(String path) throws EvaluationException {
+	public <T> T evaluateFile(String path, EvaluationMode mode) throws EvaluationException {
 		try {
-			return this.evaluate( this.getLoader().loadData(path) );
+			String data = this.getLoader().loadData(path);
+			switch ( mode ) {
+				case EMBED:
+					return (T) this.processEmbed( data );
+				case NORMAL:
+					return this.evaluate( data );
+				default:
+					throw new EvaluationException("Unsupported evaluation mode");
+			}
 		} catch ( IOException e ) {
 			throw new EvaluationException("I/O related exception", e );
 		}

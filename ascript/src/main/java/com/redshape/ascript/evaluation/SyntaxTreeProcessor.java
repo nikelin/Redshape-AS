@@ -434,7 +434,8 @@ public class SyntaxTreeProcessor implements ISyntaxTreeVisitor {
 				arguments[i++] = this.visit( argNode );
 			}
 
-			IFunction<?, T> function = this.getContext().resolveFunction(node.getName(), node.getArguments().size(), ReflectionUtils.getTypesList(arguments) );
+			IFunction<?, T> function = this.getContext().resolveFunction(node.getName(), node.getArguments().size(),
+					ReflectionUtils.getTypesList(arguments) );
 			if ( function == null ) {
 				throw new EvaluationException("Function " + node.getName() + " is not defined!");
 			}
