@@ -199,6 +199,7 @@ public class Form extends AbstractFormItem implements IForm {
     @Override
     public void resetState() {
         this.state = FormState.NONE;
+		this.clearMessages();
 
         for ( IFormItem item : this.getItems() ) {
             item.resetState();

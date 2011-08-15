@@ -30,6 +30,10 @@ public abstract class AbstractFormItem implements IFormItem {
 		this.attributes = new HashMap<String, Object>();
 	}
 
+	public void clearMessages() {
+		this.messages.clear();
+	}
+
 	public void addMessage( String message ) {
 		this.messages.add(message);
 	}

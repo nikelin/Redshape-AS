@@ -2,6 +2,7 @@ package com.redshape.servlet.core.controllers.registry;
 
 import com.redshape.servlet.core.controllers.Action;
 import com.redshape.servlet.core.controllers.IAction;
+import com.redshape.servlet.core.controllers.annotations.IndexAction;
 import com.redshape.servlet.core.controllers.loaders.IActionsLoader;
 import com.redshape.utils.Commons;
 import org.apache.commons.collections.FastHashMap;
@@ -121,8 +122,7 @@ public class ControllersRegistry implements IControllersRegistry, ApplicationCon
             if ( actionController.equals( controller ) && actionName.equals( action ) ) {
                 actionInstance = _createInstance( actionClazz );
                 break;
-            } else if ( actionController.equals(controller)
-                    && actionName.equals("index") ) {
+            } else if ( actionClazz.getAnnotation(IndexAction.class) != null ) {
                 controllerInstance = _createInstance( actionClazz );
             }
         }
