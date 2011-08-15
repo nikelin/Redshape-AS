@@ -5,10 +5,7 @@ import com.redshape.servlet.form.fields.InputField;
 import com.redshape.servlet.form.impl.Form;
 import com.redshape.validators.impl.common.NumericStringValidator;
 
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
@@ -60,10 +57,45 @@ public class DateForm extends Form {
 
 		Calendar calendar = Calendar.getInstance();
 		for ( int i = 1; i <= 12; i++ ) {
-			calendar.set( Calendar.MONTH, i );
-			result.put( calendar.getDisplayName( Calendar.MONTH, Calendar.LONG, Locale.getDefault() ), i );
+			calendar.set(Calendar.MONTH, i);
+			result.put( calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()), i );
 		}
 
 		return result;
+	}
+
+	public Integer getMonth() {
+		String value = this.getValue("month");
+		if ( value == null || value.equals("null") ) {
+			value = String.valueOf( Calendar.getInstance().get( Calendar.MONTH ) );
+		}
+
+		return Integer.valueOf( value );
+	}
+
+	public Integer getDay() {
+		String value = this.getValue("day");
+		if ( value == null || value.equals("null") ) {
+			value = String.valueOf( Calendar.getInstance().get( Calendar.DAY_OF_MONTH ) );
+		}
+
+		return Integer.valueOf( value );
+	}
+
+	public Integer getYear() {
+		String value = this.getValue("year");
+		if ( value == null || value.equals("null") ) {
+			value = String.valueOf( Calendar.getInstance().get( Calendar.YEAR ) );
+		}
+
+		return Integer.valueOf( value );
+	}
+
+	public Date prepareDate() {
+		return new Date(
+			Integer.valueOf( this.getYear() ),
+			Integer.valueOf( this.getMonth() ),
+			Integer.valueOf( this.getDay() )
+		);
 	}
 }

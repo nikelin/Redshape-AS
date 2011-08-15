@@ -2,6 +2,7 @@ package com.redshape.servlet.form.impl;
 
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.form.*;
+import com.redshape.servlet.form.decorators.ErrorsDecorator;
 import com.redshape.servlet.form.decorators.LegendDecorator;
 import com.redshape.servlet.form.impl.internal.SubFormItem;
 import com.redshape.servlet.form.render.IFormRenderer;
@@ -31,6 +32,7 @@ public class Form extends AbstractFormItem implements IForm {
 		super(id, name );
 
         this.renderer = new StandardFormRenderer();
+		this.setDecorator( new ErrorsDecorator() );
 	}
 
 	private FormState state;
@@ -157,7 +159,7 @@ public class Form extends AbstractFormItem implements IForm {
 		}
 		
 		if ( item == null ) {
-			throw new IllegalArgumentException("Field " + context.getName() + "." + subContextName + " not founded");
+			return null;
 		}
 		
 		if ( !( item instanceof IFormField ) ) {
@@ -278,8 +280,8 @@ public class Form extends AbstractFormItem implements IForm {
 		if ( form.getRenderer() == null ) {
 			form.setRenderer( this.renderer );
 		}
-		
-		this.items.add( new SubFormItem( form, name  ) );
+
+		this.items.add( form );
 		this.itemsDict.put( name, this.items.size() - 1 );
 	}
 

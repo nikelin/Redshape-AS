@@ -116,7 +116,7 @@ public class ControllersRegistry implements IControllersRegistry, ApplicationCon
                 continue;
             }
 
-			String actionController = actionMeta.controller().replaceAll("/", "");
+			String actionController = this.normalize( actionMeta.controller() );
 			String actionName = actionMeta.name().replaceAll("/", "");
             if ( actionController.equals( controller ) && actionName.equals( action ) ) {
                 actionInstance = _createInstance( actionClazz );
@@ -140,6 +140,18 @@ public class ControllersRegistry implements IControllersRegistry, ApplicationCon
 
         return Commons.select( actionInstance, controllerInstance );
     }
+
+	protected String normalize( String value ) {
+		if ( value.startsWith("/") ) {
+			value = value.substring(1);
+		}
+
+		if ( value.endsWith("/") ) {
+			value = value.substring( value.length(), value.length() - 1 );
+		}
+
+		return value;
+	}
 
     private IAction _createInstance( Class<? extends IAction> action ) throws InstantiationException {
         try {

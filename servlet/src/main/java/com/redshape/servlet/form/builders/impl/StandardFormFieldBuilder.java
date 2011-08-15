@@ -32,13 +32,13 @@ public class StandardFormFieldBuilder implements IFormFieldBuilder {
     }
 
     @Override
-    public IFormFieldBuilder withValidators(IValidator[] validators) {
-        this.validators.addAll( Arrays.<IValidator<?,?>>asList(validators) );
+    public IFormFieldBuilder withValidators(IValidator<?,?>[] validators) {
+        this.validators.addAll( Arrays.asList(validators) );
         return this;
     }
 
     @Override
-	public IFormFieldBuilder withValidator( IValidator validator) {
+	public IFormFieldBuilder withValidator( IValidator<?,?> validator) {
 		this.validators.add( validator );
 		return this;
 	}

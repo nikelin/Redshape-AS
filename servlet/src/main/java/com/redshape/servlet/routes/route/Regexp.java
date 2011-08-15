@@ -57,24 +57,50 @@ public class Regexp implements IRoute {
 			StringBuilder actionPath = new StringBuilder();
 			StringBuilder controllerPath = new StringBuilder();
 			for ( int i = 1; ; i++ ) {
-				if ( this.controllerGroup.inRange(i) ) {
-					controllerPath.append(
-							sourcePath.substring(
-								matcher.start(i), matcher.end(i) ) );
-				} else if ( this.actionGroup.inRange(i) ) {
-					actionPath.append(
-						sourcePath.substring(
-							matcher.start(i), matcher.end(i) ) );
+				boolean lastNode =
+							(i == matcher.groupCount() );
+
+				int start = matcher.start(i);
+				int end = matcher.end(i);
+				if ( start == -1 ) {
+					continue;
+				}
+
+				String nodeValue = sourcePath.substring(
+								matcher.start(i), matcher.end(i) );
+				if ( this.controllerGroup.inRange(i) &&
+							/** controller nodes count must not be
+							 *  higher than total (groups count - 1)**/
+							!lastNode ) {
+					if ( i != 1 ) {
+						controllerPath.append("/");
+					}
+					controllerPath.append( nodeValue );
+				} else if ( this.actionGroup.inRange(i) || lastNode ) {
+					actionPath.append( nodeValue );
+					break;
 				} else {
 					break;
 				}
 			}
 
 			request.setAction( actionPath.toString().replaceAll("/", "") );
-			request.setController( controllerPath.toString().replaceAll("/", "") );
+			request.setController( this.normalize( controllerPath.toString() ) );
 		} else {
 			throw new IllegalArgumentException();
 		}
+	}
+
+	protected String normalize( String value ) {
+		if ( value.startsWith("/") ) {
+			value = value.substring(1);
+		}
+
+		if ( value.endsWith("/") ) {
+			value = value.substring( value.length(), value.length() - 1 );
+		}
+
+		return value;
 	}
 	
 }

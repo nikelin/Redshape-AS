@@ -5,46 +5,48 @@ import com.redshape.servlet.form.IForm;
 import com.redshape.servlet.form.IFormField;
 import com.redshape.validators.AbstractValidator;
 import com.redshape.validators.impl.common.ValidationResult;
+import com.redshape.validators.result.IValidationResult;
 
 /**
  * @package com.redshape.servlet.form.validators
  * @user cyril
  * @date 6/25/11 1:07 PM
  */
-public class RepeatFieldValidator extends AbstractValidator<String, ValidationResult> {
+public class RepeatFieldValidator extends AbstractValidator<String, IValidationResult> {
     private IForm form;
-    private String sourcePath;
-    private String targetPath;
+    private IFormField<?> source;
+    private IFormField<?> target;
 
     public RepeatFieldValidator( IForm form, String sourcePath, String targetPath ) {
         this.form = form;
-        this.sourcePath = sourcePath;
-        this.targetPath = targetPath;
+        this.source = this.form.findField( sourcePath );
+		if ( this.source == null ) {
+			throw new IllegalArgumentException("<null>");
+		}
+
+        this.target = this.form.findField( targetPath );
+		if ( this.target == null ) {
+			throw new IllegalArgumentException("<null>");
+		}
     }
 
     protected IForm getForm() {
         return this.form;
     }
 
-    protected String getSourcePath() {
-        return this.sourcePath;
-    }
-
-    protected String getTargetPath() {
-        return this.targetPath;
-    }
-
     protected IFormField<?> getSource() {
-        return this.form.findField( this.getSourcePath() );
+        return this.source;
     }
 
     protected IFormField<?> getTarget() {
-        return this.form.findField( this.getTargetPath() );
+        return this.target;
     }
 
     @Override
     public boolean isValid(String value) {
-        return this.getSource().getValue().equals( this.getTarget().getValue() );
+        return this.getSource().getValue() == null
+			|| this.getTarget().getValue() == null
+			|| this.getSource().getValue().equals( this.getTarget().getValue() );
     }
 
     @Override

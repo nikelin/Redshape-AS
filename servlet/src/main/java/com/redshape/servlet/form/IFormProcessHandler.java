@@ -1,7 +1,7 @@
 package com.redshape.servlet.form;
 
-public interface IFormProcessHandler {
+public interface IFormProcessHandler<T extends IForm> {
 
-	public void process( IForm form );
+	public void process( T form );
 	
 }
