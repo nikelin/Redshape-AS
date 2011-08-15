@@ -23,6 +23,11 @@ public class SubFormItem implements IForm {
 		this.form = form;
 	}
 
+	@Override
+	public void setValue(String name, Object value) {
+		this.getForm().setValue(name, value);
+	}
+
 	public List<String> getMessages() {
 		return this.form.getMessages();
 	}

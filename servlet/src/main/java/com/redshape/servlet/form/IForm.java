@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface IForm extends com.redshape.servlet.form.IFormItem {
 
+	public void setValue( String name, Object value );
+
 	public <T> T getValue( String name );
 
 	public void setProcessHandler( com.redshape.servlet.form.IFormProcessHandler handler );
