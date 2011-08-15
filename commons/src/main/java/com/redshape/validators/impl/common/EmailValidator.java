@@ -1,11 +1,10 @@
 package com.redshape.validators.impl.common;
 
 import com.redshape.validators.AbstractValidator;
-import com.redshape.validators.result.IValidationResult;
 
 import java.util.regex.Pattern;
 
-public class EmailValidator extends AbstractValidator<String, IValidationResult> {
+public class EmailValidator extends AbstractValidator<String, ValidationResult> {
 	private Pattern pattern = Pattern.compile("\\w+@(\\w+\\.\\w+){1,}");
 	
 	@Override
@@ -14,7 +13,7 @@ public class EmailValidator extends AbstractValidator<String, IValidationResult>
 	}
 
 	@Override
-	public IValidationResult validate(String value) {
+	public ValidationResult validate(String value) {
 		return new ValidationResult( this.isValid(value), "Invalid e-mail address format");
 	}
 

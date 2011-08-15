@@ -22,19 +22,17 @@ public interface IFormFieldBuilder extends IFormItemBuilder {
 
     /**
      * Add to build profile specified validators set
-     * @param <T>
      * @param validators
      * @return
      */
-    public <T> IFormFieldBuilder withValidators( IValidator<T, ?>[] validators );
+    public IFormFieldBuilder withValidators( IValidator[] validators );
 
 	/**
 	 * Add to build profile specified validator
-	 * @param <T>
 	 * @param validator
 	 * @return
 	 */
-	public <T> IFormFieldBuilder withValidator( IValidator<T, ?> validator );
+	public IFormFieldBuilder withValidator( IValidator validator );
 	
 	/**
 	 * Set new field value to build profile

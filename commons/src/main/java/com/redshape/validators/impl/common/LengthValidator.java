@@ -2,9 +2,8 @@ package com.redshape.validators.impl.common;
 
 import com.redshape.validators.AbstractValidator;
 import com.redshape.validators.impl.annotations.result.ValidationResult;
-import com.redshape.validators.result.IValidationResult;
 
-public class LengthValidator extends AbstractValidator<String, IValidationResult> {
+public class LengthValidator extends AbstractValidator<String, ValidationResult> {
 	private int min;
 	private int max;
 	
@@ -42,7 +41,7 @@ public class LengthValidator extends AbstractValidator<String, IValidationResult
 	}
 	
 	@Override
-	public IValidationResult validate(String value) {
+	public ValidationResult validate(String value) {
 		return new ValidationResult( this.isValid(value), this.selectMessage(value) );
 	}
 	

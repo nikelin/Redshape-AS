@@ -205,13 +205,6 @@ public class Form extends AbstractFormItem implements IForm {
 
 	@Override
 	public String render( RenderMode mode ) {
-		if ( this.state != null && this.state.equals( FormState.RENDERED )
-                && this.getContext() != null ) {
-			if ( !this.hasAttribute("forceRender") ) { 
-				return "";
-			}
-		}
-		
 		if ( this.renderer == null ) {
 			throw new IllegalStateException("<null>");
 		}
