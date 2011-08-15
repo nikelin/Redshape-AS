@@ -1,7 +1,10 @@
 package com.redshape.servlet.form.impl.internal;
 
 import com.redshape.servlet.core.IHttpRequest;
-import com.redshape.servlet.form.*;
+import com.redshape.servlet.form.IForm;
+import com.redshape.servlet.form.IFormField;
+import com.redshape.servlet.form.IFormProcessHandler;
+import com.redshape.servlet.form.InvalidDataException;
 import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.render.IFormRenderer;
 
@@ -18,6 +21,19 @@ public class SubFormItem implements IForm {
 	public SubFormItem( IForm form, String name ) {
 		this.name = name;
 		this.form = form;
+	}
+
+	@Override
+	public void setValue(String name, Object value) {
+		this.getForm().setValue(name, value);
+	}
+
+	public List<String> getMessages() {
+		return this.form.getMessages();
+	}
+
+	public void addMessage( String message ) {
+		this.form.addMessage(message);
 	}
 	
 	public String getName() {
@@ -44,6 +60,11 @@ public class SubFormItem implements IForm {
     @Override
 	public void setContext(IForm form) {
 		this.form.setContext(form);
+	}
+
+	@Override
+	public <T> T getValue( String name ) {
+		return this.form.<T>getValue(name);
 	}
 
 	@Override
@@ -207,7 +228,7 @@ public class SubFormItem implements IForm {
 	}
 
 	@Override
-	public List<IFormItem> getItems() {
+	public List<com.redshape.servlet.form.IFormItem> getItems() {
 		return this.getForm().getItems();
 	}
 
@@ -222,7 +243,7 @@ public class SubFormItem implements IForm {
 	}
 
 	@Override
-	public String render(RenderMode mode) {
+	public String render(com.redshape.servlet.form.RenderMode mode) {
 		return this.getForm().render(mode);
 	}
 

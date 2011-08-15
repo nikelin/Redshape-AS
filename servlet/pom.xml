@@ -49,6 +49,11 @@
             <version>2.5</version>
         </dependency>
         <dependency>
+            <groupId>com.redshape</groupId>
+            <artifactId>ascript</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <artifactId>commons</artifactId>
             <groupId>com.redshape</groupId>
             <version>${project.version}</version>

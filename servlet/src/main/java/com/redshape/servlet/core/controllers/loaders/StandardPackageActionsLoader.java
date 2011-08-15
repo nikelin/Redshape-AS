@@ -2,7 +2,6 @@ package com.redshape.servlet.core.controllers.loaders;
 
 import com.redshape.servlet.core.controllers.Action;
 import com.redshape.servlet.core.controllers.IAction;
-import com.redshape.servlet.core.controllers.IActionsLoader;
 import com.redshape.utils.IPackagesLoader;
 import com.redshape.utils.InterfacesFilter;
 import com.redshape.utils.PackageLoaderException;

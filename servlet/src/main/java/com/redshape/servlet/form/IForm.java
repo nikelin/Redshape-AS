@@ -1,15 +1,19 @@
 package com.redshape.servlet.form;
 
-import java.util.List;
-
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.form.render.IFormRenderer;
 
-public interface IForm extends IFormItem {
+import java.util.List;
+
+public interface IForm extends com.redshape.servlet.form.IFormItem {
+
+	public void setValue( String name, Object value );
+
+	public <T> T getValue( String name );
+
+	public void setProcessHandler( com.redshape.servlet.form.IFormProcessHandler handler );
 	
-	public void setProcessHandler( IFormProcessHandler handler );
-	
-	public void process( IHttpRequest request ) throws InvalidDataException;
+	public void process( IHttpRequest request ) throws com.redshape.servlet.form.InvalidDataException;
 	
 	public void setLegend( String legend );
 	
@@ -25,13 +29,13 @@ public interface IForm extends IFormItem {
 	
 	public IForm findContext( String name );
 	
-	public <T> IFormField<T> findField( String name );
+	public <T> com.redshape.servlet.form.IFormField<T> findField( String name );
 	
-	public void addField( IFormField<?> field );
+	public void addField( com.redshape.servlet.form.IFormField<?> field );
 	
-	public void removeField( IFormField<?> field );
+	public void removeField( com.redshape.servlet.form.IFormField<?> field );
 	
-	public List<IFormField<?>> getFields();
+	public List<com.redshape.servlet.form.IFormField<?>> getFields();
 	
 	public void addSubForm( IForm form, String name );
 	
@@ -39,7 +43,7 @@ public interface IForm extends IFormItem {
 	
 	public List<IForm> getSubForms();
 	
-	public List<IFormItem> getItems();
+	public List<com.redshape.servlet.form.IFormItem> getItems();
 
 	public IFormRenderer getRenderer();
 	

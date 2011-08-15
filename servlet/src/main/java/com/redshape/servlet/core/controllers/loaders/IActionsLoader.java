@@ -1,4 +1,6 @@
-package com.redshape.servlet.core.controllers;
+package com.redshape.servlet.core.controllers.loaders;
+
+import com.redshape.servlet.core.controllers.IAction;
 
 import java.util.Set;
 

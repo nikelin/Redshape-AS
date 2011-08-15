@@ -21,12 +21,11 @@ public class ResourcesInitializerServlet extends HttpServlet {
 
     @Override
     public void init() {
-        log.debug("Afla!");
         String config = this.getServletConfig().getInitParameter( CONFIG_PARAMETER );
 
         StringTokenizer tokenizer = new StringTokenizer(config, "\n");
         while ( tokenizer.hasMoreTokens() ) {
-            String path = getServletContext().getRealPath("/") + "/" + tokenizer.nextToken().trim();
+            String path = getServletContext().getRealPath("/") + tokenizer.nextToken().trim();
             log.info( "Servlet path: " + path );
 
             System.setProperty("java.class.path", System.getProperty("java.class.path") + File.pathSeparator + path );
