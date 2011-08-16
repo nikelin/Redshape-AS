@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface IForm extends com.redshape.servlet.form.IFormItem {
 
+	public void copy( IForm form );
+
 	public void setValue( String name, Object value );
 
 	public <T> T getValue( String name );
@@ -32,7 +34,13 @@ public interface IForm extends com.redshape.servlet.form.IFormItem {
 	public <T> com.redshape.servlet.form.IFormField<T> findField( String name );
 	
 	public void addField( com.redshape.servlet.form.IFormField<?> field );
-	
+
+	public void removeField( String path );
+
+	public void removeContext( String path );
+
+	public void remove();
+
 	public void removeField( com.redshape.servlet.form.IFormField<?> field );
 	
 	public List<com.redshape.servlet.form.IFormField<?>> getFields();

@@ -100,6 +100,9 @@ public class Regexp implements IRoute {
 			value = value.substring( value.length(), value.length() - 1 );
 		}
 
+		// Remove double slashes
+		value = value.replace("//", "/");
+
 		return value;
 	}
 	

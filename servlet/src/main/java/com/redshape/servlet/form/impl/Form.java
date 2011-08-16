@@ -3,8 +3,8 @@ package com.redshape.servlet.form.impl;
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.form.*;
 import com.redshape.servlet.form.decorators.ErrorsDecorator;
+import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.decorators.LegendDecorator;
-import com.redshape.servlet.form.impl.internal.SubFormItem;
 import com.redshape.servlet.form.render.IFormRenderer;
 import com.redshape.servlet.form.render.impl.StandardFormRenderer;
 import com.redshape.utils.Commons;
@@ -170,7 +170,7 @@ public class Form extends AbstractFormItem implements IForm {
         return newItem;
 	}
 	
-	protected String getFieldId( IFormField<?> field ) {
+	protected String getItemId( IFormItem field ) {
 		String id = Commons.select( field.getName(), field.getId() );
         if ( id == null ) {
             return null;
@@ -255,13 +255,14 @@ public class Form extends AbstractFormItem implements IForm {
 	public void addField(IFormField<?> field) {
 		field.setContext(this);
 		this.items.add( field );
-		this.itemsDict.put( this.getFieldId(field), this.items.size() - 1 );
+		this.itemsDict.put( this.getItemId(field), this.items.size() - 1 );
 	}
 
 	@Override
 	public void removeField(IFormField<?> field) {
+		this.itemsDict.remove( this.getItemId(field) );
 		this.items.remove( field );
-		this.itemsDict.remove( this.getFieldId(field) );
+		this.updateItemsDict();
 	}
 
 	@Override
@@ -284,19 +285,38 @@ public class Form extends AbstractFormItem implements IForm {
 
 		this.items.add( form );
 		this.itemsDict.put( name, this.items.size() - 1 );
+		this.updateItemsDict();
 	}
 
 	@Override
 	public void removeSubForm(String name) {
-		
+		IFormItem result = null;
+		for ( IFormItem item : this.getItems() ) {
+			if ( item.getName().equals( name ) ) {
+				if ( !( item instanceof IForm ) ) {
+					throw new IllegalArgumentException("Given name not related to a subform");
+				}
+
+				result = item;
+				break;
+			}
+		}
+
+		if ( result == null ) {
+			throw new IllegalArgumentException("Item not found");
+		}
+
+		this.itemsDict.remove( this.getItemId(result) );
+		this.items.remove( result );
+		this.updateItemsDict();
 	}
 
 	@Override
 	public List<IForm> getSubForms() {
 		List<IForm> result = new ArrayList<IForm>();
 		for ( IFormItem item : this.items ) {
-			if ( item instanceof SubFormItem ) {
-				result.add( (IForm) ( (SubFormItem) item ).getForm() );
+			if ( item instanceof IForm ) {
+				result.add( (IForm) item );
 			}
 		}
 		
@@ -318,7 +338,57 @@ public class Form extends AbstractFormItem implements IForm {
 		
 		return result;
 	}
-	
+
+	@Override
+	public void removeField(String path) {
+		IFormField<?> field = this.findField(path);
+		if ( field == null ) {
+			throw new IllegalArgumentException("Field not found");
+		}
+
+		this.removeField(field);
+	}
+
+	@Override
+	public void removeContext(String path) {
+		this.findContext(path).remove();
+	}
+
+	@Override
+	public void remove() {
+		if ( this.getContext() == null ) {
+			throw new IllegalArgumentException("Unable to remove root form context");
+		}
+
+		this.getContext().removeSubForm( this.getName() );
+	}
+
+	@Override
+	public void copy( IForm form ) {
+		this.setAction( form.getAction() );
+		this.setMethod( form.getMethod() );
+
+		for ( IFormItem item : form.getItems() ) {
+			if ( item instanceof IFormField ) {
+				this.addField( (IFormField<?>) item );
+			} else if ( item instanceof IForm ) {
+				this.addSubForm( (IForm) item, item.getName() );
+			}
+		}
+
+		for ( IDecorator decorator : this.getDecorators() ) {
+			this.setDecorator( decorator );
+		}
+	}
+
+	// Hmm, maybe it's must be changed in a some way...
+	protected void updateItemsDict() {
+		int i = 0;
+		for ( IFormItem item : this.items ) {
+			this.itemsDict.put( this.getItemId(item), i++ );
+		}
+	}
+
 	@Override
 	public String toString() {
 		return this.render();

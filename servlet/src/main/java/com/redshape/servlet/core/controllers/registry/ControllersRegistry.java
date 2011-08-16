@@ -122,7 +122,8 @@ public class ControllersRegistry implements IControllersRegistry, ApplicationCon
             if ( actionController.equals( controller ) && actionName.equals( action ) ) {
                 actionInstance = _createInstance( actionClazz );
                 break;
-            } else if ( actionClazz.getAnnotation(IndexAction.class) != null ) {
+            } else if ( actionController.equals(controller)
+					&& actionClazz.getAnnotation(IndexAction.class) != null ) {
                 controllerInstance = _createInstance( actionClazz );
             }
         }
@@ -136,6 +137,7 @@ public class ControllersRegistry implements IControllersRegistry, ApplicationCon
             }
 
             this.registry.get( controller ).put( action, actionInstance );
+			controllerInstance = null;
     	}
 
         return Commons.select( actionInstance, controllerInstance );

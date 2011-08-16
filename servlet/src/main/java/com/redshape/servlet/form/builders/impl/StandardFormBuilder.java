@@ -1,11 +1,5 @@
 package com.redshape.servlet.form.builders.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.redshape.servlet.form.IForm;
 import com.redshape.servlet.form.IFormField;
 import com.redshape.servlet.form.IFormItem;
@@ -15,8 +9,9 @@ import com.redshape.servlet.form.builders.IFormFieldBuilder;
 import com.redshape.servlet.form.builders.IFormItemBuilder;
 import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.impl.Form;
-import com.redshape.servlet.form.impl.internal.SubFormItem;
 import com.redshape.servlet.form.render.impl.StandardFormRenderer;
+
+import java.util.*;
 
 public class StandardFormBuilder implements IFormBuilder {
 	private String id;
@@ -80,7 +75,7 @@ public class StandardFormBuilder implements IFormBuilder {
 	@Override
 	public IFormBuilder withSubForm(IForm form, String name) {
 		form.setName(name);
-		this.items.add( new SubFormItem(form, name) );
+		this.items.add(form);
 		return this;
 	}
 
@@ -97,8 +92,8 @@ public class StandardFormBuilder implements IFormBuilder {
 		for ( IFormItem item : this.items ) {
 			if ( item instanceof IFormField ) {
 				form.addField( (IFormField<?>) item );
-			} else if ( item instanceof SubFormItem ) {
-				form.addSubForm( ((SubFormItem) item).getForm(), ((SubFormItem) item).getName() );
+			} else if ( item instanceof IForm ) {
+				form.addSubForm( (IForm) item, item.getName() );
 			} 
 		}
 		

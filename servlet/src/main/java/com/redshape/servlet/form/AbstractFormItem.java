@@ -119,7 +119,9 @@ public abstract class AbstractFormItem implements IFormItem {
 	
 	@Override
 	public void setDecorator(IDecorator decorator) {
-		this.decorators.add(decorator);
+		if ( !this.decorators.contains(decorator) ) {
+			this.decorators.add(decorator);
+		}
 	}
 	
 	@Override
