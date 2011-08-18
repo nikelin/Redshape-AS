@@ -3,7 +3,10 @@ package com.redshape.servlet.form.impl.support;
 import com.redshape.servlet.form.builders.BuildersFacade;
 import com.redshape.servlet.form.fields.InputField;
 import com.redshape.servlet.form.impl.Form;
+import com.redshape.utils.range.IntervalRange;
+import com.redshape.utils.range.RangeBuilder;
 import com.redshape.validators.impl.common.NumericStringValidator;
+import com.redshape.validators.impl.common.RangeValidator;
 
 import java.util.*;
 
@@ -29,26 +32,39 @@ public class DateForm extends Form {
 	}
 
 	protected void buildForm() {
+		this.setAttribute("class", "date-form");
+
 		this.addField(
-			BuildersFacade.newFieldBuilder()
+				BuildersFacade.newFieldBuilder()
 					.withValidator(new NumericStringValidator())
+					.withValidator(new RangeValidator(
+							RangeBuilder.createInterval(IntervalRange.Type.INCLUSIVE, 1, 31)
+					))
 					.withName("day")
+					.withAttribute("class", "day-element")
 				.asFieldBuilder()
 				.newInputField(InputField.Type.TEXT)
 		);
 
 		this.addField(
-			BuildersFacade.newFieldBuilder()
+				BuildersFacade.newFieldBuilder()
+					.withValidator(new RangeValidator(
+							RangeBuilder.createInterval(IntervalRange.Type.INCLUSIVE, 1, 12)
+					))
+					.withValidator(new NumericStringValidator() )
 					.withName("month")
+					.withAttribute("class", "month-element")
 				.asFieldBuilder()
-				.newSelectField( this.createMonthsList() )
+				.newSelectField(this.createMonthsList())
 		);
 
 		this.addField(
-			BuildersFacade.newFieldBuilder()
+				BuildersFacade.newFieldBuilder()
+					.withValidator(new NumericStringValidator())
 					.withName("year")
+					.withAttribute("class", "year-element")
 				.asFieldBuilder()
-				.newInputField( InputField.Type.TEXT )
+				.newInputField(InputField.Type.TEXT)
 		);
 	}
 

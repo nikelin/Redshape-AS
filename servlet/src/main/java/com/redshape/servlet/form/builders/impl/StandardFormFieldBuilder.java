@@ -168,6 +168,11 @@ public class StandardFormFieldBuilder implements IFormFieldBuilder {
 	}
 
 	@Override
+	public <T> CheckboxGroupField<T> newCheckboxGroupField(Map<String, T> names) {
+		return this.newCheckboxGroupField( names, new ArrayList<T>() );
+	}
+
+	@Override
 	public <T> CheckboxGroupField<T> newCheckboxGroupField( Map<String, T> names, List<T> values) {
 		CheckboxGroupField<T> field = new CheckboxGroupField<T>();
         field.setRenderer( new CheckboxGroupFieldRenderer() );

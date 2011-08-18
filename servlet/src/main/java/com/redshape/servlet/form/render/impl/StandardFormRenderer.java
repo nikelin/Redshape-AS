@@ -15,28 +15,38 @@ public class StandardFormRenderer implements IFormRenderer {
 	@Override
 	public String render(IForm form, RenderMode mode) {
 		StringBuilder builder = new StringBuilder();
-		
-		if ( form.getContext() == null && mode.equals( RenderMode.FULL ) ) {
-			builder.append("<form ")
-				   .append("action=\"").append( 
-						   Commons.select( form.getAction(), "/" ) ).append("\" ")
-				   .append("method=\"").append( 
-						   Commons.select( form.getMethod(), "POST" ) ).append("\" ");
-		
-		
-			if ( form.getId() != null ) {
-			   builder.append("id=\"")
-			   		  .append( form.getId() )
-			   		  .append("\"");
+
+		if ( mode.equals( RenderMode.FULL ) ) {
+			if ( form.getContext() == null ) {
+				builder.append("<form ")
+					   .append("action=\"").append(
+							   Commons.select( form.getAction(), "/" ) ).append("\" ")
+					   .append("method=\"").append(
+							   Commons.select( form.getMethod(), "POST" ) ).append("\" ");
+
+
+				if ( form.getId() != null ) {
+				   builder.append("id=\"")
+						  .append( form.getId() )
+						  .append("\"");
+				}
+			}  else {
+				builder.append("<fieldset ");
 			}
-			
+
 			Map<String, Object> attributes = form.getAttributes();
 			for ( String key : attributes.keySet() ) {
 				builder.append( key ).append("=")
 					   .append("\"").append( attributes.get(key) ).append("\"");
 			}
-				   
+
 			builder.append(">\n");
+
+			if ( form.getContext() == null ) {
+				if ( form.getLegend() != null ) {
+					builder.append("<legend>").append( form.getLegend() ).append("</legend>");
+				}
+			}
 		}
 		
 		for ( IFormItem item : form.getItems() ) {
@@ -44,9 +54,13 @@ public class StandardFormRenderer implements IFormRenderer {
 				builder.append( item.render() ).append("\n");
 			}
 		}
-		
-		if ( form.getContext() == null && mode.equals( RenderMode.FULL ) ) {
-			builder.append("</form>\n");
+
+		if ( mode.equals( RenderMode.FULL ) ) {
+			if ( form.getContext() == null ) {
+				builder.append("</form>\n");
+			} else {
+				builder.append("</fieldset>");
+			}
 		}
 		
 		String data = builder.toString();

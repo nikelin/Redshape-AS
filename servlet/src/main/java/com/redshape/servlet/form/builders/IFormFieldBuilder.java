@@ -129,7 +129,14 @@ public interface IFormFieldBuilder extends IFormItemBuilder {
 	 */
 	public <T> CheckboxGroupField<T> newCheckboxGroupField( Map<String, T> names,
 												List<T> values );
-	
+
+	/**
+	 * Create group of checkboxes without initial state
+	 *
+	 * @param names
+	 */
+	public <T> CheckboxGroupField<T> newCheckboxGroupField( Map<String, T> names );
+
 	/**
 	 * Create group of checkboxes from a given parameters as initial state
 	 * @param <T>

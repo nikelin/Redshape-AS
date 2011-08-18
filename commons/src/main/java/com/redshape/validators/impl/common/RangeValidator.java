@@ -12,6 +12,10 @@ public class RangeValidator extends AbstractValidator<String, ValidationResult> 
 	private IRange<Integer> range;
 
 	public RangeValidator( IRange<Integer> range ) {
+		if ( range == null ) {
+			throw new IllegalArgumentException("<null>");
+		}
+
 		this.range = range;
 	}
 

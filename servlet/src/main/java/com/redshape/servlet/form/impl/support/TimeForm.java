@@ -9,6 +9,9 @@ import com.redshape.validators.impl.common.LengthValidator;
 import com.redshape.validators.impl.common.NumericStringValidator;
 import com.redshape.validators.impl.common.RangeValidator;
 
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
  * @package com.redshape.servlet.form.impl.support
@@ -27,42 +30,85 @@ public class TimeForm extends DateForm {
 
 	public TimeForm(String id, String name) {
 		super(id, name);
-
-		this.timeRange = RangeBuilder.createInterval( IntervalRange.Type.INCLUSIVE, 1, 60 );
 	}
 
 	@Override
 	protected void buildForm() {
 		super.buildForm();
 
+		this.timeRange = RangeBuilder.createInterval(IntervalRange.Type.INCLUSIVE, 1, 60);
+
 		this.addField(
 				BuildersFacade.newFieldBuilder()
-						.withValidator( new NumericStringValidator() )
-						.withValidator( new LengthValidator( 0, 2) )
-						.withValidator( new RangeValidator( this.timeRange ) )
-						.withName( "hour" )
-						.asFieldBuilder()
-						.newInputField( InputField.Type.TEXT )
+					.withValidator(new NumericStringValidator())
+					.withValidator(new LengthValidator(0, 2))
+					.withValidator(new RangeValidator(this.timeRange))
+					.withName("hour")
+					.withAttribute("class", "hour-element")
+				.asFieldBuilder()
+				.newInputField(InputField.Type.TEXT)
 		);
 
 		this.addField(
 			BuildersFacade.newFieldBuilder()
-					.withValidator( new NumericStringValidator() )
+					.withValidator(new NumericStringValidator())
 					.withValidator( new LengthValidator( 0, 2 ) )
 					.withValidator( new RangeValidator( this.timeRange ) )
 					.withName("minute")
+					.withAttribute("class", "minute-element")
 				.asFieldBuilder()
 				.newInputField( InputField.Type.TEXT )
 		);
 
 		this.addField(
 			BuildersFacade.newFieldBuilder()
-					.withValidator( new NumericStringValidator() )
+					.withValidator(new NumericStringValidator())
 					.withValidator( new LengthValidator( 0, 2 ) )
-					.withValidator( new RangeValidator( timeRange ) )
-					.withName( "second")
+					.withValidator( new RangeValidator( this.timeRange ) )
+					.withName("second")
+					.withAttribute("class", "second-element")
 				.asFieldBuilder()
 				.newInputField( InputField.Type.TEXT )
 		);
+	}
+
+	public Integer getHour() {
+		String hour = this.getValue("hour");
+		if ( hour == null ) {
+			return Calendar.getInstance().get( Calendar.HOUR_OF_DAY );
+		}
+
+		return Integer.valueOf( hour );
+	}
+
+	public Integer getMinute() {
+		String minute = this.getValue("minute");
+		if ( minute == null ) {
+			return Calendar.getInstance().get( Calendar.MINUTE );
+		}
+
+		return Integer.valueOf( minute );
+	}
+
+	public Integer getSecond() {
+		String second = this.getValue("second");
+		if ( second == null ) {
+			return Calendar.getInstance().get( Calendar.SECOND );
+		}
+
+		return Integer.valueOf( second );
+	}
+
+	@Override
+	public Date prepareDate() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set( Calendar.YEAR, this.getYear() );
+		calendar.set( Calendar.MONTH, this.getMonth() );
+		calendar.set( Calendar.DAY_OF_MONTH,  this.getDay() );
+		calendar.set( Calendar.HOUR, this.getHour() );
+		calendar.set( Calendar.MINUTE, this.getMinute() );
+		calendar.set( Calendar.SECOND, this.getSecond() );
+
+		return calendar.getTime();
 	}
 }

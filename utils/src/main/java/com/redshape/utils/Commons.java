@@ -59,5 +59,20 @@ public final class Commons {
 		}
 		return result;
 	}
+
+
+	public static Map<String, Object> map( Class<? extends Enum> enumClazz ) {
+		try {
+			Map<String, Object> result = new HashMap<String, Object>();
+			Enum[] enumValues = (Enum[]) enumClazz.getMethod("values").invoke(null);
+			for ( Enum enumValue : enumValues ) {
+				result.put( enumValue.name(), enumValue.ordinal() );
+			}
+
+			return result;
+		} catch ( Throwable e ) {
+			return null;
+		}
+	}
 	
 }
