@@ -5,6 +5,7 @@ import com.redshape.servlet.resources.IWebResourcesHandler;
 import com.redshape.servlet.resources.types.Link;
 import com.redshape.servlet.resources.types.Script;
 import com.redshape.servlet.resources.types.Style;
+import com.redshape.servlet.views.ViewHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +69,7 @@ public class WebResourcesHandler implements IWebResourcesHandler {
         for ( Script script : this.scripts ) {
             builder.append(
                 String.format("<script type=\"%s\" src=\"%s\"></script>\n",
-                        script.getType(), script.getHref() ) );
+						script.getType(), ViewHelper.url( script.getHref() ) ) );
         }
 
         return builder.toString();
@@ -80,7 +81,7 @@ public class WebResourcesHandler implements IWebResourcesHandler {
         for ( Style style : this.styles) {
             builder.append(
                 String.format("<link rel=\"stylesheet\" type=\"%s\" href=\"%s\"/>",
-                        style.getType(), style.getHref()  ) );
+                        style.getType(), ViewHelper.url( style.getHref() ) ) );
         }
 
         return builder.toString();

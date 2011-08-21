@@ -241,7 +241,7 @@ public class HttpDispatcher implements IHttpDispatcher {
             }
 
             if ( view.getRedirection() != null ) {
-                response.sendRedirect( view.getRedirection() );
+                response.sendRedirect( request.getServletPath() + "/" + view.getRedirection() );
             }
             
             if ( response.isCommitted() ) {

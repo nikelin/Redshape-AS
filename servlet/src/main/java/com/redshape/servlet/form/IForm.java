@@ -9,7 +9,7 @@ public interface IForm extends com.redshape.servlet.form.IFormItem {
 
 	public void copy( IForm form );
 
-	public void setValue( String name, Object value );
+	public <T> void setValue( String path, T value );
 
 	public <T> T getValue( String name );
 

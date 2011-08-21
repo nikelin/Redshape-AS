@@ -186,7 +186,8 @@ public class PackagesLoader implements IPackagesLoader {
 
 			File folder;
 			try {
-				folder = resourcesLoader.loadFile(path + "/" + folderName);
+				folder = resourcesLoader.loadFile( path + "/" + folderName );
+				log.info("Trying to search in " + path + "/" + folderName );
 				if ( folder == null || !folder.exists() || !folder.canRead() || ( !folder.isDirectory() && !folder.getPath().endsWith(".jar") ) ) {
 					return null;
 				}
@@ -205,6 +206,7 @@ public class PackagesLoader implements IPackagesLoader {
 				for ( File file : pathFile.listFiles() ) {
 					try {
 						if ( file.getPath().endsWith(".jar") ) {
+							log.info("Trying to load JAR: " + file.getPath() );
 							classes.addAll( Arrays.<Class<T>>asList( this.getClassesFromJar( file.getAbsolutePath(), pkgName, filter ) ) );
 						} else if ( file.isDirectory() && !file.getName().startsWith(".") ) {
 							classes.addAll( this.<T>getClassesFromIdleFolder( file.getPath(), file.getPath() + File.separator + pkgName.replace(".", "/"), pkgName, filter ) );

@@ -6,6 +6,7 @@ import com.redshape.servlet.form.IFormItem;
 import com.redshape.servlet.form.RenderMode;
 import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.render.IFormRenderer;
+import com.redshape.servlet.views.ViewHelper;
 import com.redshape.utils.Commons;
 
 import java.util.Map;
@@ -20,7 +21,7 @@ public class StandardFormRenderer implements IFormRenderer {
 			if ( form.getContext() == null ) {
 				builder.append("<form ")
 					   .append("action=\"").append(
-							   Commons.select( form.getAction(), "/" ) ).append("\" ")
+							   Commons.select( ViewHelper.url(form.getAction()) , "/" ) ).append("\" ")
 					   .append("method=\"").append(
 							   Commons.select( form.getMethod(), "POST" ) ).append("\" ");
 

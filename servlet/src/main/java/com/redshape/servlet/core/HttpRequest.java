@@ -85,7 +85,10 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
 
         String data = this.readRequest();
         if ( data == null || data.isEmpty() ) {
-            return;
+            data = this.getQueryString();
+			if ( data == null || data.isEmpty() ) {
+				return;
+			}
         }
 
         if ( data.startsWith("{") && data.endsWith("}") ) {

@@ -20,11 +20,11 @@ public class CheckboxGroupFieldRenderer extends AbstractFormFieldRenderer<Checkb
 
     protected void renderItem( StringBuilder builder, IFormField<?> field, String name, Object value ) {
         builder.append("<label>")
-               .append(value)
+               .append(name)
                 .append("</label>");
 
         builder.append("<input type=\"checkbox\" value=\"")
-               .append(name);
+               .append(value);
 
         builder.append("\" name=\"").append( field.getCanonicalName() ).append("\" ");
 

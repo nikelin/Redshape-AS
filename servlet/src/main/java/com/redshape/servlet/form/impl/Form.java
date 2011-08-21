@@ -77,12 +77,30 @@ public class Form extends AbstractFormItem implements IForm {
 
 	@Override
 	public <T> T getValue( String path ) {
-		return this.<T>findField(path).getValue();
+		if ( path == null ) {
+			throw new IllegalArgumentException("<null>");
+		}
+
+		IFormField<T> field = this.<T>findField(path);
+		if ( field == null ) {
+			throw new IllegalArgumentException("Path " + path + " not exists!");
+		}
+
+		return field.getValue();
 	}
 
 	@Override
-    public void setValue( String path, Object value ) {
-        this.findField(path).setValue(value);
+    public <T> void setValue( String path, T value ) {
+		if ( path == null ) {
+			throw new IllegalArgumentException("<null>");
+		}
+
+		IFormField<T> field = this.<T>findField(path);
+		if ( field == null ) {
+			throw new IllegalArgumentException("Path " + path + " not exists!");
+		}
+
+		field.setValue(value);
     }
 
 	@Override

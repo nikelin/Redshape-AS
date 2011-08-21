@@ -41,16 +41,18 @@ public class Regexp implements IRoute {
 
 	@Override
 	public boolean isApplicatable(IHttpRequest request) {
-		log.info("URI requested:" + request.getRequestURI() ); 
-		log.info("URI pattern:" + this.pattern.pattern() );
-		return this.pattern.matcher( request.getRequestURI() ).find();
+		return this.pattern.matcher(
+				request.getRequestURI().startsWith( request.getServletPath() ) ?
+						request.getRequestURI().substring( request.getServletPath().length() )
+						: request.getRequestURI() ).find();
 	}
 
 	@Override
 	public void applicate(IHttpRequest request) {
-		String sourcePath = request.getRequestURI();
+		String sourcePath = request.getServletPath().startsWith( request.getServletPath() )?
+						request.getRequestURI().substring( request.getServletPath().length() )
+						: request.getRequestURI();
 		Matcher matcher = this.pattern.matcher( sourcePath );
-		
 		if ( matcher.find() ) {
 			log.info( "Groups founded:" + matcher.groupCount() );
 
@@ -85,23 +87,31 @@ public class Regexp implements IRoute {
 			}
 
 			request.setAction( actionPath.toString().replaceAll("/", "") );
-			request.setController( this.normalize( controllerPath.toString() ) );
-		} else {
-			throw new IllegalArgumentException();
+			request.setController( this.normalize( this.removeContextPart( request, controllerPath.toString() ) ) );
 		}
 	}
 
+	protected String removeContextPart( IHttpRequest request, String sourcePath ) {
+		while ( sourcePath.startsWith( request.getServletPath() ) ) {
+			sourcePath = sourcePath.substring( request.getServletPath().length() );
+		}
+
+		return sourcePath;
+	}
+
 	protected String normalize( String value ) {
-		if ( value.startsWith("/") ) {
+		while ( value.startsWith("/") ) {
 			value = value.substring(1);
 		}
 
-		if ( value.endsWith("/") ) {
+		while ( value.endsWith("/") ) {
 			value = value.substring( value.length(), value.length() - 1 );
 		}
 
-		// Remove double slashes
-		value = value.replace("//", "/");
+		while ( value.contains("//") ) {
+			// Remove double slashes
+			value = value.replace("//", "/");
+		}
 
 		return value;
 	}

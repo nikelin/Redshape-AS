@@ -65,7 +65,8 @@ public class JSPContext implements IResponseContext {
         view.setAttribute( ViewAttributes.Env.Action, request.getAction() );
         view.setAttribute( ViewAttributes.Env.ResourcesHandler, this.getHandler() );
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher( this.getFront().getLayout().getScriptPath() );
+        RequestDispatcher dispatcher = request.getRequestDispatcher(
+				 this.getFront().getLayout().getScriptPath() );
 
         try {
             dispatcher.forward( request, response);

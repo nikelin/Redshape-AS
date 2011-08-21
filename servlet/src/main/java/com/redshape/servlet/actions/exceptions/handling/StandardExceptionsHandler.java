@@ -65,7 +65,7 @@ public class StandardExceptionsHandler extends AbstractPageExceptionHandler {
             log.info("Error message (404):");
             log.info( e.getMessage(), e );
 
-            response.sendRedirect( this.getPage404() );
+            this.sendRedirect( request, response, this.getPage404() );
         } catch ( IOException ex ) {
             log.error( ex.getMessage(), ex );
         }
@@ -77,7 +77,7 @@ public class StandardExceptionsHandler extends AbstractPageExceptionHandler {
             log.info("Error message (401):");
             log.info( e.getMessage(), e );
 
-            response.sendRedirect( this.getPage401() );
+            this.sendRedirect( request, response, this.getPage401() );
         } catch ( IOException ex ) {
             log.error( ex.getMessage(), ex );
         }
@@ -89,7 +89,7 @@ public class StandardExceptionsHandler extends AbstractPageExceptionHandler {
             log.info("Error message (403):");
             log.info( e.getMessage(), e );
 
-            response.sendRedirect( this.getPage403() );
+            this.sendRedirect( request, response, this.getPage403() );
         } catch ( IOException ex ) {
             log.error( ex.getMessage(), ex );
         }
@@ -101,9 +101,14 @@ public class StandardExceptionsHandler extends AbstractPageExceptionHandler {
             log.error("Error message (500):");
             log.error( e.getMessage(), e );
 
-            response.sendRedirect( this.getPage500() );
+            this.sendRedirect( request, response, this.getPage500() );
         } catch ( IOException ex ) {
             log.error( ex.getMessage(), ex );
         }
     }
+
+	protected void sendRedirect( IHttpRequest request, IHttpResponse response, String path )
+		throws IOException {
+		response.sendRedirect( request.getServletPath() + "/" + path );
+	}
 }

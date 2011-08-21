@@ -22,10 +22,18 @@ public class AbstractSelectField<T> extends AbstractField<T> {
 	}
 	
 	public void addOptions( Map<String, T> values ) {
+		if ( values == null ) {
+			return;
+		}
+
 		this.options.putAll( values );
 	}
 	
 	public void addOption( String name, T value ) {
+		if ( name == null ) {
+			throw new IllegalArgumentException("<nul>");
+
+		}
 		this.options.put( name, value );
 	}
 	
@@ -34,6 +42,10 @@ public class AbstractSelectField<T> extends AbstractField<T> {
 	}
 	
 	public void removeOption( String name ) {
+		if ( name == null ) {
+			throw new IllegalArgumentException("<null>");
+		}
+
 		this.options.remove(name);
 	}
 	
