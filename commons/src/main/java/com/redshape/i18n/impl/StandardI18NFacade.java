@@ -47,7 +47,7 @@ public class StandardI18NFacade implements com.redshape.i18n.I18NFacade {
 	public static I18NManager getDefaultManager( Locale locale ) {
 		I18NManager manager = instance().getManager( locale );
 		if ( manager == null ) {
-			throw new IllegalArgumentException("Locale not associated with any manager");
+			throw new IllegalArgumentException("Locale " + locale.toString() + " not associated with any manager");
 		}
 		
 		return manager;

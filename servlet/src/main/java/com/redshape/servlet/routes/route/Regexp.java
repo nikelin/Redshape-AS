@@ -69,7 +69,7 @@ public class Regexp implements IRoute {
 				}
 
 				String nodeValue = sourcePath.substring(
-								matcher.start(i), matcher.end(i) );
+								start, end );
 				if ( this.controllerGroup.inRange(i) &&
 							/** controller nodes count must not be
 							 *  higher than total (groups count - 1)**/
