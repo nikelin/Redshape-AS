@@ -1,6 +1,5 @@
 package com.redshape.servlet.form.render.impl.fields;
 
-import com.redshape.servlet.form.IFormField;
 import com.redshape.servlet.form.RenderMode;
 import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.fields.CheckboxGroupField;
@@ -18,15 +17,20 @@ public class CheckboxGroupFieldRenderer extends AbstractFormFieldRenderer<Checkb
         super();
     }
 
-    protected void renderItem( StringBuilder builder, IFormField<?> field, String name, Object value ) {
+    protected void renderItem( StringBuilder builder, CheckboxGroupField<?> field, String name, Object value ) {
         builder.append("<label>")
                .append(name)
                 .append("</label>");
 
         builder.append("<input type=\"checkbox\" value=\"")
-               .append(value);
+               .append(value)
+			   .append("\"");
 
-        builder.append("\" name=\"").append( field.getCanonicalName() ).append("\" ");
+		if ( field.getValue() != null && field.getValues().contains(value) ) {
+			builder.append("checked=\"checked\"");
+		}
+
+		builder.append("name=\"").append( field.getCanonicalName() ).append("\" ");
 
         builder.append("/><br/>");
     }

@@ -25,6 +25,11 @@ public class RadioGroupFieldRenderer extends AbstractFormFieldRenderer<RadioGrou
 
         builder.append("<input type=\"radio\" value=\"")
                .append(name);
+
+		if ( field.getValue() != null && field.getValue().equals( value ) ) {
+			builder.append("checked=\"checked\"");
+		}
+
         builder.append("\" name=\"").append( field.getCanonicalName() ).append("\" ");
 
         this.buildAttributes( builder, field );
