@@ -119,7 +119,9 @@ public abstract class AbstractJPADAO<T extends IEntity> extends JpaDaoSupport im
     public T findById( final Long id ) throws DAOException {
         try {
             return this.em.find( this.getEntityClass(), id );
-        } catch ( Throwable e ) {
+        } catch ( EntityNotFoundException e ) {
+			return null;
+		} catch ( Throwable e ) {
             throw new DAOException( e.getMessage(), e );
         }
     }
@@ -256,8 +258,12 @@ public abstract class AbstractJPADAO<T extends IEntity> extends JpaDaoSupport im
         if ( count > 0 ) {
             query.setMaxResults(count);
         }
-        
-        return query.getResultList();
+
+		try {
+        	return query.getResultList();
+		} catch ( EntityNotFoundException e ) {
+			return new ArrayList<T>();
+		}
 	}
 
     public static String getEntityName(IEntity entity) {

@@ -6,6 +6,7 @@ import com.redshape.servlet.actions.exceptions.PageNotFoundException;
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.core.IHttpResponse;
 import com.redshape.servlet.core.controllers.ProcessingException;
+import com.redshape.servlet.views.ViewHelper;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -109,6 +110,6 @@ public class StandardExceptionsHandler extends AbstractPageExceptionHandler {
 
 	protected void sendRedirect( IHttpRequest request, IHttpResponse response, String path )
 		throws IOException {
-		response.sendRedirect( request.getServletPath() + "/" + path );
+		response.sendRedirect( ViewHelper.url(path) );
 	}
 }
