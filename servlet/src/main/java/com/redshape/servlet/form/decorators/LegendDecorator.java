@@ -11,14 +11,14 @@ public class LegendDecorator extends AbstractDecorator {
 		if ( ! ( item instanceof IForm ) ) {
 			return data;
 		}
-		
-		if ( item instanceof IForm && ( (IForm) item ).getContext() != null ) {
-			this.setAttributes( item.getAttributes() );
-		}
-		
+
 		StringBuilder builder = new StringBuilder();
 		builder.append("<fieldset ");
-	    this.buildAttributes(builder);
+
+		if ( item instanceof IForm && ( (IForm) item ).getContext() != null ) {
+			this.buildAttributes( item.getAttributes(), builder );
+		}
+
 	   	builder.append(">");
 		builder.append("<legend>")
 		       .append( StandardI18NFacade._( ( (IForm) item).getLegend() ) )
@@ -30,5 +30,9 @@ public class LegendDecorator extends AbstractDecorator {
 		
 		return builder.toString();
 	}
-	
+
+	@Override
+	public boolean isSupported(DecoratorAttribute attribute) {
+		return false;
+	}
 }

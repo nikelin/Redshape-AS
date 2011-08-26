@@ -1,16 +1,17 @@
 package com.redshape.servlet.form.decorators.builders;
 
-import java.util.List;
-import java.util.Map;
-
+import com.redshape.servlet.form.decorators.DecoratorAttribute;
 import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.decorators.Placement;
 
+import java.util.List;
+import java.util.Map;
+
 public interface IDecoratorBuilder {
 
-	public IDecoratorBuilder withAttribute( String name, Object value );
+	public IDecoratorBuilder withAttribute( DecoratorAttribute name, Object value );
 	
-	public IDecoratorBuilder withAttributes( Map<String, Object> attributes );
+	public IDecoratorBuilder withAttributes( Map<DecoratorAttribute, Object> attributes );
 	
 	public IDecorator withFormFieldDecorator();
 	

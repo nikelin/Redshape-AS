@@ -1,8 +1,10 @@
 package com.redshape.servlet.form.builders;
 
-import java.util.Collection;
-
+import com.redshape.servlet.form.decorators.DecoratorAttribute;
 import com.redshape.servlet.form.decorators.IDecorator;
+
+import java.util.Collection;
+import java.util.Map;
 
 public interface IFormItemBuilder {
 	
@@ -34,7 +36,11 @@ public interface IFormItemBuilder {
 	 * @return
 	 */
 	public IFormItemBuilder withDecorator( IDecorator decorator );
-	
+
+	public IFormItemBuilder withDecoratorAttribute( DecoratorAttribute name, Object value );
+
+	public IFormItemBuilder withDecoratorAttributes( Map<DecoratorAttribute, Object> attributes );
+
 	/**
 	 * Needs to add decorators collection in a batch manner.
 	 * 

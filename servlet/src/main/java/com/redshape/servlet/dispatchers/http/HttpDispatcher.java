@@ -15,6 +15,7 @@ import com.redshape.servlet.dispatchers.interceptors.IDispatcherInterceptor;
 import com.redshape.servlet.views.IView;
 import com.redshape.servlet.views.IViewsFactory;
 import com.redshape.servlet.views.ResetMode;
+import com.redshape.servlet.views.ViewHelper;
 import com.redshape.utils.Commons;
 import com.redshape.utils.ResourcesLoader;
 import org.apache.log4j.Logger;
@@ -241,7 +242,7 @@ public class HttpDispatcher implements IHttpDispatcher {
             }
 
             if ( view.getRedirection() != null ) {
-                response.sendRedirect( request.getServletPath() + "/" + view.getRedirection() );
+                response.sendRedirect( ViewHelper.url(view.getRedirection()) );
             }
             
             if ( response.isCommitted() ) {

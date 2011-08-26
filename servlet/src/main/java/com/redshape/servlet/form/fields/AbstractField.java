@@ -3,8 +3,7 @@ package com.redshape.servlet.form.fields;
 import com.redshape.servlet.form.AbstractFormItem;
 import com.redshape.servlet.form.IFormField;
 import com.redshape.servlet.form.RenderMode;
-import com.redshape.servlet.form.decorators.ErrorsDecorator;
-import com.redshape.servlet.form.decorators.FormFieldDecorator;
+import com.redshape.servlet.form.decorators.*;
 import com.redshape.servlet.form.render.IFormFieldRenderer;
 import com.redshape.validators.IValidator;
 import com.redshape.validators.result.IValidationResult;
@@ -15,6 +14,12 @@ import java.util.List;
 
 public abstract class AbstractField<T> extends AbstractFormItem implements IFormField<T> {
 	private static final long serialVersionUID = 5498825562953448526L;
+
+	public static IDecorator[] STANDARD_DECORATORS_SET = new IDecorator[] {
+															new FormFieldDecorator(),
+															new LabelDecorator(),
+															new ErrorsDecorator()
+														};
 	
 	private String label;
 	private List<IValidationResult> validationResults = new ArrayList<IValidationResult>();
@@ -35,8 +40,7 @@ public abstract class AbstractField<T> extends AbstractFormItem implements IForm
 	protected AbstractField( String id, String name ) {
 		super(id, name);
 
-        this.setDecorator( new FormFieldDecorator() );
-        this.setDecorator( new ErrorsDecorator() );
+		this.setDecorator( new ComposedDecorator( STANDARD_DECORATORS_SET ) );
 	}
 
 	@Override

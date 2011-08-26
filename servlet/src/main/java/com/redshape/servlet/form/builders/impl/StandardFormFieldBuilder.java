@@ -1,9 +1,9 @@
 package com.redshape.servlet.form.builders.impl;
 
 import com.redshape.servlet.form.IFormField;
-import com.redshape.servlet.form.builders.IFormBuilder;
+import com.redshape.servlet.form.builders.AbstractFormItemBuilder;
 import com.redshape.servlet.form.builders.IFormFieldBuilder;
-import com.redshape.servlet.form.builders.IFormItemBuilder;
+import com.redshape.servlet.form.decorators.DecoratorAttribute;
 import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.fields.*;
 import com.redshape.servlet.form.render.impl.fields.*;
@@ -11,16 +11,15 @@ import com.redshape.utils.Commons;
 import com.redshape.validators.IValidator;
 import com.redshape.validators.result.IValidationResult;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
-public class StandardFormFieldBuilder implements IFormFieldBuilder {
-
-	private Collection<IDecorator> decorators = new HashSet<IDecorator>();
+public class StandardFormFieldBuilder extends AbstractFormItemBuilder
+									  implements IFormFieldBuilder {
 	private List<IValidator<?, ?>> validators
 							= new ArrayList<IValidator<?, ?>>();
-	private Map<String, Object> attributes = new HashMap<String, Object>();
-	private String id;
-	private String name;
 	private String label;
 	private Object value;
     private boolean required;
@@ -52,52 +51,6 @@ public class StandardFormFieldBuilder implements IFormFieldBuilder {
 	@Override
 	public IFormFieldBuilder withValue( Object value ) {
 		this.value = value;
-		return this;
-	}
-	
-	@Override
-	public IFormFieldBuilder withName( String name ) {
-		this.name = name;
-		return this;
-	}
-	
-	@Override
-	public IFormItemBuilder withId(String id) {
-		this.id = id;
-		return this;
-	}
-
-	@Override
-	public IFormItemBuilder withEmptyDecorators() {
-		this.decorators.clear();
-		return this;
-	}
-	
-	@Override
-	public IFormItemBuilder withDecorator(IDecorator decorator) {
-		this.decorators.add( decorator );
-		return this;
-	}
-
-	@Override
-	public IFormItemBuilder withDecorators(Collection<IDecorator> decorators) {
-		this.decorators.addAll(decorators);
-		return this;
-	}
-
-	@Override
-	public IFormItemBuilder withAttribute(String name, Object value) {
-		this.attributes.put(name, value);
-		return this;
-	}
-
-	@Override
-	public IFormBuilder asFormBuilder() {
-		throw new UnsupportedOperationException("Operation not supported");
-	}
-
-	@Override
-	public IFormFieldBuilder asFieldBuilder() {
 		return this;
 	}
 
@@ -211,7 +164,15 @@ public class StandardFormFieldBuilder implements IFormFieldBuilder {
         }
 
         if ( !this.decorators.isEmpty() ) {
-		    field.setDecorators( this.decorators.toArray( new IDecorator[ this.decorators.size() ] ) );
+			for ( IDecorator decorator : this.decorators ) {
+				for ( DecoratorAttribute attribute : this.decoratorAttributes.keySet() ) {
+					if ( decorator.isSupported(attribute) ) {
+						decorator.setAttribute( attribute, this.decoratorAttributes.get(attribute) );
+					}
+				}
+
+				field.setDecorator(decorator);
+			}
         }
 
 		field.setLabel( this.label );

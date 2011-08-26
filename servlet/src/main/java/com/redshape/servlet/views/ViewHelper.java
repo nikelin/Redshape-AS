@@ -15,7 +15,12 @@ public final class ViewHelper {
 
 	public static String url( String url ) {
 		try {
-			return getConfig().get("web").get("servletPath") + normalizeUrl(url);
+			String servletPath = getConfig().get("web").get("servletPath").value();
+			if ( !url.startsWith( servletPath ) ) {
+				return servletPath + normalizeUrl(url);
+			}
+
+			return normalizeUrl(url);
 		} catch ( ConfigException e ) {
 			return url;
 		}

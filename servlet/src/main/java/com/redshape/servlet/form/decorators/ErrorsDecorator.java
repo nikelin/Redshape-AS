@@ -11,7 +11,16 @@ import java.util.List;
 
 public class ErrorsDecorator extends AbstractDecorator {
 	public static final String PLACEMENT = "Attribute.PLACEMENT";
-	
+
+	public static class Attributes extends DecoratorAttribute {
+
+		protected Attributes(String name) {
+			super(name);
+		}
+
+		public static final Attributes Placement = new Attributes("DecoratorAttributes.Errors.Placement");
+	}
+
 	protected void buildList( Collection<String> messages, StringBuilder builder ) {
 		boolean first = true;
 		for ( String message : messages ) {
@@ -65,23 +74,26 @@ public class ErrorsDecorator extends AbstractDecorator {
 		}
 
 		StringBuilder builder = new StringBuilder();
-		Placement placement = this.getAttribute( PLACEMENT ) == null ? 
-											Placement.AFTER :
-											this.<Placement>getAttribute( PLACEMENT );
-				
+
+		Placement placement = this.getAttribute( Attributes.Placement );
 		switch (placement) {
-		case AFTER:
-		case WRAPPED:
-			builder.append( data );
-			this.buildList( messages, builder );
-		break;
 		case BEFORE:
 			this.buildList( messages, builder );
 			builder.append(data);
 		break;
+		case AFTER:
+		case WRAPPED:
+		default:
+			builder.append( data );
+			this.buildList( messages, builder );
+		break;
 		}
 			
 		return builder.toString();	
-	}	
-	
+	}
+
+	@Override
+	public boolean isSupported(DecoratorAttribute attribute) {
+		return Attributes.class.isAssignableFrom(attribute.getClass());
+	}
 }

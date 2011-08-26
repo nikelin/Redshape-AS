@@ -1,20 +1,15 @@
 package com.redshape.servlet.form.decorators.builders.impl;
 
+import com.redshape.servlet.form.decorators.*;
+import com.redshape.servlet.form.decorators.builders.IDecoratorBuilder;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.redshape.servlet.form.decorators.ComposedDecorator;
-import com.redshape.servlet.form.decorators.FormFieldDecorator;
-import com.redshape.servlet.form.decorators.IDecorator;
-import com.redshape.servlet.form.decorators.LegendDecorator;
-import com.redshape.servlet.form.decorators.Placement;
-import com.redshape.servlet.form.decorators.TagDecorator;
-import com.redshape.servlet.form.decorators.builders.IDecoratorBuilder;
-
 public class StandardDecoratorBuilder implements IDecoratorBuilder {
-	private Map<String, Object> attributes = new HashMap<String, Object>();
+	private Map<DecoratorAttribute, Object> attributes = new HashMap<DecoratorAttribute, Object>();
 	
 	@Override
 	public IDecorator withLegendDecorator() {
@@ -22,13 +17,13 @@ public class StandardDecoratorBuilder implements IDecoratorBuilder {
 	}
 
 	@Override
-	public IDecoratorBuilder withAttribute(String name, Object value) {
+	public IDecoratorBuilder withAttribute(DecoratorAttribute name, Object value) {
 		this.attributes.put(name, value);
 		return this;
 	}
 
 	@Override
-	public IDecoratorBuilder withAttributes(Map<String, Object> attributes) {
+	public IDecoratorBuilder withAttributes(Map<DecoratorAttribute, Object> attributes) {
 		this.attributes.putAll(attributes);
 		return this;
 	}
