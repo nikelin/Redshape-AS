@@ -31,22 +31,14 @@ public class StandardFormRenderer implements IFormRenderer {
 						  .append( form.getId() )
 						  .append("\"");
 				}
-			}  else {
-				builder.append("<fieldset ");
+
+				builder.append(">\n");
 			}
 
 			Map<String, Object> attributes = form.getAttributes();
 			for ( String key : attributes.keySet() ) {
 				builder.append( key ).append("=")
 					   .append("\"").append( attributes.get(key) ).append("\"");
-			}
-
-			builder.append(">\n");
-
-			if ( form.getContext() == null ) {
-				if ( form.getLegend() != null ) {
-					builder.append("<legend>").append( form.getLegend() ).append("</legend>");
-				}
 			}
 		}
 		
@@ -59,8 +51,6 @@ public class StandardFormRenderer implements IFormRenderer {
 		if ( mode.equals( RenderMode.FULL ) ) {
 			if ( form.getContext() == null ) {
 				builder.append("</form>\n");
-			} else {
-				builder.append("</fieldset>");
 			}
 		}
 		

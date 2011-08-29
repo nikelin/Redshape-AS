@@ -3,6 +3,7 @@ package com.redshape.servlet.form.decorators;
 import com.redshape.servlet.form.IForm;
 import com.redshape.servlet.form.IFormField;
 import com.redshape.servlet.form.IFormItem;
+import com.redshape.utils.Commons;
 import com.redshape.validators.result.IValidationResult;
 
 import java.util.ArrayList;
@@ -75,7 +76,8 @@ public class ErrorsDecorator extends AbstractDecorator {
 
 		StringBuilder builder = new StringBuilder();
 
-		Placement placement = this.getAttribute( Attributes.Placement );
+		Placement placement = Commons.select( this.<Placement>getAttribute( Attributes.Placement ),
+											  Placement.AFTER );
 		switch (placement) {
 		case BEFORE:
 			this.buildList( messages, builder );

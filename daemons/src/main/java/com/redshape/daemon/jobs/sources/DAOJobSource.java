@@ -5,7 +5,11 @@ import com.redshape.daemon.jobs.IPersistenceJob;
 import com.redshape.daemon.jobs.JobException;
 import com.redshape.daemon.jobs.JobStatus;
 import com.redshape.persistence.dao.DAOException;
+import com.redshape.persistence.utils.EntityManagerUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import java.util.List;
 
@@ -14,9 +18,10 @@ import java.util.List;
  * @user cyril
  * @date 6/21/11 5:52 PM
  */
-public class DAOJobSource implements IJobSource<IPersistenceJob> {
+public class DAOJobSource implements IJobSource<IPersistenceJob>, ApplicationContextAware {
     private static final Logger log = Logger.getLogger(IJobSource.class);
 
+	private ApplicationContext context;
     private IJobsDAO<?> source;
     private int chunkSize = 30;
     private int period;
@@ -25,7 +30,16 @@ public class DAOJobSource implements IJobSource<IPersistenceJob> {
         this.source = source;
     }
 
-    public int getPeriod() {
+	public ApplicationContext getContext() {
+		return context;
+	}
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.context = applicationContext;
+	}
+
+	public int getPeriod() {
         return period;
     }
 
@@ -45,18 +59,23 @@ public class DAOJobSource implements IJobSource<IPersistenceJob> {
         this.chunkSize = chunkSize;
     }
 
+
     @Override
     public void save( IPersistenceJob entity) throws JobException {
         try {
+			EntityManagerUtils.openEntityManager( this.getContext() );
             this.getSource().save( entity );
         } catch ( DAOException e ) {
             throw new JobException( e.getMessage(), e );
-        }
+        } finally {
+			EntityManagerUtils.closeEntityManager(context);
+		}
     }
 
     @Override
-    public synchronized List<IPersistenceJob> fetch() throws JobException {
-        try {
+    public List<IPersistenceJob> fetch() throws JobException {
+		try {
+			EntityManagerUtils.openEntityManager( this.getContext() );
             List<IPersistenceJob> jobs = this.getSource().findByStatus( JobStatus.WAITING, 0, this.chunkSize );
             for ( IPersistenceJob job : jobs ) {
                 job.setState( JobStatus.PROCESSING );
@@ -65,9 +84,10 @@ public class DAOJobSource implements IJobSource<IPersistenceJob> {
             }
 
             return jobs;
-        } catch ( DAOException e ) {
+        } catch ( Throwable e ) {
+			EntityManagerUtils.closeEntityManager( this.getContext() );
             log.error( e.getMessage(), e );
-            throw new JobException();
+            throw new JobException( e.getMessage(), e );
         }
     }
 }

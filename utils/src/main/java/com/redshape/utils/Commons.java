@@ -1,5 +1,6 @@
 package com.redshape.utils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +73,35 @@ public final class Commons {
 			return result;
 		} catch ( Throwable e ) {
 			return null;
+		}
+	}
+
+	public static <T, V> T switchEnum( IEnum<V> value, Map<IEnum<V>, IFunction<?, T>> values ) {
+		return switchEnum( value, values, null );
+	}
+
+	public static <T, V> T switchEnum( IEnum<V> value, Map<IEnum<V>, IFunction<?, T>> values,
+															 IFunction<?, T> defaultCase ) {
+		IEnum<V> resultCase = null;
+		for ( IEnum<V> enumMember : values.keySet() ) {
+			if ( enumMember.equals(value) ) {
+				resultCase = enumMember;
+				break;
+			}
+		}
+
+		try {
+			if ( resultCase == null ) {
+				if ( defaultCase != null ) {
+					defaultCase.invoke();
+				}
+
+				return null;
+			}
+
+			return values.get(resultCase).invoke();
+		} catch ( InvocationTargetException e ) {
+			throw new IllegalStateException("Case activation failed", e.getTargetException() );
 		}
 	}
 	

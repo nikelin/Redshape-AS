@@ -256,7 +256,7 @@ public class HttpDispatcher implements IHttpDispatcher {
         } catch ( ProcessingException e ) {
             this.processError(e, request, response);
         } catch ( Throwable e ) {
-        	throw new DispatchException( e.getMessage(), e );
+        	this.processError( new ProcessingException( e.getMessage(), e ), request, response );
         }
     }
 

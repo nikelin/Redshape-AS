@@ -69,7 +69,11 @@ public class AbstractMultiSelectField<T> extends AbstractSelectField<T> {
 
 	@Override
 	public T getValue() {
-		return this.selected.get(0);
+		if ( this.selected.isEmpty() ) {
+			return null;
+		}
+
+		return this.selected.iterator().next();
 	}
 
 	public List<T> getValues() {
