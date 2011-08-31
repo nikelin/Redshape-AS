@@ -9,9 +9,7 @@ import com.redshape.servlet.form.render.IFormRenderer;
 import com.redshape.servlet.views.ViewHelper;
 import com.redshape.utils.Commons;
 
-import java.util.Map;
-
-public class StandardFormRenderer implements IFormRenderer {
+public class StandardFormRenderer extends AbstractFormItemRenderer<IForm> implements IFormRenderer {
 	
 	@Override
 	public String render(IForm form, RenderMode mode) {
@@ -32,13 +30,9 @@ public class StandardFormRenderer implements IFormRenderer {
 						  .append("\"");
 				}
 
-				builder.append(">\n");
-			}
+				this.buildAttributes( builder, form );
 
-			Map<String, Object> attributes = form.getAttributes();
-			for ( String key : attributes.keySet() ) {
-				builder.append( key ).append("=")
-					   .append("\"").append( attributes.get(key) ).append("\"");
+				builder.append(">\n");
 			}
 		}
 		

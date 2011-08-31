@@ -76,6 +76,24 @@ public class Form extends AbstractFormItem implements IForm {
 	}
 
 	@Override
+	public <T> List<T> getValues( String path ) {
+		if ( path == null ) {
+			throw new IllegalArgumentException("<null>");
+		}
+
+		IFormField<T> field = this.<T>findField( path );
+		if ( field == null ) {
+			throw new IllegalArgumentException("Path " + path + " not exists!");
+		}
+
+		if ( !field.hasMultiValues() ) {
+			throw new IllegalStateException("Field " + path + " can handle only single value!");
+		}
+
+		return field.getValues();
+	}
+
+	@Override
 	public <T> T getValue( String path ) {
 		if ( path == null ) {
 			throw new IllegalArgumentException("<null>");
@@ -300,6 +318,8 @@ public class Form extends AbstractFormItem implements IForm {
 		if ( form.getRenderer() == null ) {
 			form.setRenderer( this.renderer );
 		}
+
+		form.setDecorator( new LegendDecorator() );
 
 		this.items.add( form );
 		this.itemsDict.put( name, this.items.size() - 1 );

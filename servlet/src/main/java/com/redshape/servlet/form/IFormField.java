@@ -5,6 +5,7 @@ import com.redshape.validators.IValidator;
 import com.redshape.validators.result.IValidationResult;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Interface to represent form field such as textfield, select, etc.
@@ -14,6 +15,19 @@ import java.util.Collection;
  * @param <T>
  */
 public interface IFormField<T> extends IFormItem {
+
+	/**
+	 * Always return true, if field can handle more than
+	 * one value at same time
+	 * @return
+	 */
+	public boolean hasMultiValues();
+
+	/**
+	 * Return all selected values related to a field
+	 * @return
+	 */
+	public List<T> getValues();
 
     /**
      * Value of field validity

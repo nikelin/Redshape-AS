@@ -69,7 +69,7 @@ public class WebResourcesHandler implements IWebResourcesHandler {
         for ( Script script : this.scripts ) {
             builder.append(
                 String.format("<script type=\"%s\" src=\"%s\"></script>\n",
-						script.getType(), this.normalize( script.getHref() ) ) );
+						script.getType(), ViewHelper.url( script.getHref() ) ) );
         }
 
         return builder.toString();
@@ -81,18 +81,10 @@ public class WebResourcesHandler implements IWebResourcesHandler {
         for ( Style style : this.styles) {
             builder.append(
                 String.format("<link rel=\"stylesheet\" type=\"%s\" href=\"%s\"/>",
-                        style.getType(), this.normalize( style.getHref() ) ) );
+                        style.getType(), ViewHelper.url( style.getHref() ) ) );
         }
 
         return builder.toString();
     }
 
-	protected String normalize( String url ) {
-		url = ViewHelper.url( url );
-		if ( !url.startsWith("/") ) {
-			return "/" + url;
-		}
-
-		return url;
-	}
 }

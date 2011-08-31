@@ -20,6 +20,10 @@ public class StandardI18NFacade implements com.redshape.i18n.I18NFacade {
 	}
 	
 	public static String _( String orig ) {
+		if ( orig == null ) {
+			return "";
+		}
+
 		return _( orig, Locale.getDefault() );
 	}
 	

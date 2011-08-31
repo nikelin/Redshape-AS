@@ -3,8 +3,7 @@ package com.redshape.servlet.form.render.impl.fields;
 import com.redshape.servlet.form.IFormField;
 import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.render.IFormFieldRenderer;
-
-import java.util.Map;
+import com.redshape.servlet.form.render.impl.AbstractFormItemRenderer;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,7 +12,9 @@ import java.util.Map;
  * Time: 1:16
  * To change this template use File | Settings | File Templates.
  */
-public abstract class AbstractFormFieldRenderer<T extends IFormField<?>> implements IFormFieldRenderer<T> {
+public abstract class AbstractFormFieldRenderer<T extends IFormField<?>>
+									extends AbstractFormItemRenderer<T>
+									implements IFormFieldRenderer<T> {
 
     protected String applyDecorators( StringBuilder builder, IFormField field ) {
         String data = builder.toString();
@@ -24,15 +25,4 @@ public abstract class AbstractFormFieldRenderer<T extends IFormField<?>> impleme
         return data;
     }
 
-    protected void buildAttributes( StringBuilder builder, IFormField field ) {
-        Map<String, Object> attributes = field.getAttributes();
-		for ( String key : attributes.keySet() ) {
-            Object value = attributes.get(key);
-            if ( value == null ) {
-                continue;
-            }
-
-			builder.append( key ).append("=\"").append( attributes.get(key) ).append("\" ");
-		}
-    }
 }

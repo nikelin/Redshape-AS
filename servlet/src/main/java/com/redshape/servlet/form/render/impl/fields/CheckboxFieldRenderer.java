@@ -3,11 +3,8 @@ package com.redshape.servlet.form.render.impl.fields;
 import com.redshape.servlet.form.RenderMode;
 import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.fields.CheckboxField;
-import com.redshape.servlet.form.render.IFormFieldRenderer;
 
-import java.util.Map;
-
-public class CheckboxFieldRenderer implements IFormFieldRenderer<CheckboxField> {
+public class CheckboxFieldRenderer extends AbstractFormFieldRenderer<CheckboxField> {
 
 	@Override
 	public String render(CheckboxField field, RenderMode mode) {
@@ -24,11 +21,8 @@ public class CheckboxFieldRenderer implements IFormFieldRenderer<CheckboxField> 
 		if ( field.getValue() != null ) {
             builder.append("value=\"").append( field.getValue() ).append("\" ");
 		}
-		
-		Map<String, Object> attributes = field.getAttributes();
-		for ( String key : attributes.keySet() ) {
-			builder.append( key ).append("=\"").append( attributes.get(key) ).append("\"");
-		}
+
+		this.buildAttributes( builder, field );
 		
 		builder.append("/>");
 		

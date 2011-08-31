@@ -20,7 +20,12 @@ public class AbstractMultiSelectField<T> extends AbstractSelectField<T> {
 	protected AbstractMultiSelectField( String id, String name ) {
 		super(id, name);
 	}
-	
+
+	@Override
+	public boolean hasMultiValues() {
+		return true;
+	}
+
 	@Override
 	public void setValue( T value ) {
 		if ( value == null ) {
@@ -32,11 +37,23 @@ public class AbstractMultiSelectField<T> extends AbstractSelectField<T> {
 			return;
 		}
 
-		if ( !this.getOptions().values().contains( value ) ) {
-			throw new IllegalArgumentException("Values constraint exception!");
+		if ( !this.checkConstraintsFor(value) ) {
+			throw new IllegalStateException("Not bounded value provided!");
 		}
 
 		this.selected.add( value );
+	}
+
+	protected boolean checkConstraintsFor( Object value ) {
+		boolean bounded = false;
+		for ( Object constraintItem : this.getOptions().values() ) {
+			if ( constraintItem.toString().equals( value.toString() ) ) {
+				bounded = true;
+				break;
+			}
+		}
+
+		return bounded;
 	}
 
 	public void setValues( Collection<T> values ) {

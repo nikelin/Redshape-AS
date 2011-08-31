@@ -24,10 +24,11 @@ public class RadioGroupFieldRenderer extends AbstractFormFieldRenderer<RadioGrou
                 .append("</label>");
 
         builder.append("<input type=\"radio\" value=\"")
-               .append(name);
+               .append(value)
+			 	.append("\" ");
 
 		if ( field.getValue() != null && field.getValue().equals( value ) ) {
-			builder.append("checked=\"checked\"");
+			builder.append(" checked=\"checked\" ");
 		}
 
         builder.append("\" name=\"").append( field.getCanonicalName() ).append("\" ");

@@ -7,6 +7,7 @@ public class InputField extends AbstractField<String> {
 		TEXT,
 		PASSWORD,
 		HIDDEN,
+		FILE,
 		SUBMIT,
 		RESET
 	}

@@ -18,14 +18,17 @@ public class CheckboxGroupFieldRenderer extends AbstractFormFieldRenderer<Checkb
     }
 
     protected void renderItem( StringBuilder builder, CheckboxGroupField<?> field, String name, Object value ) {
-        builder.append("<input type=\"checkbox\" value=\"")
+        builder.append("<span class=\"label\">").append( name ).append("</span>");
+
+		builder.append("<input type=\"checkbox\" value=\"")
                .append(value)
-			   .append("\"");
+			   .append("\" ");
 
 		if ( field.getValue() != null && field.getValues().contains(value) ) {
-			builder.append("checked=\"checked\"");
+			builder.append(" checked=\"checked\" ");
 		}
 
+		this.buildAttributes( builder, field );
 		builder.append("name=\"").append( field.getCanonicalName() ).append("\" ");
 
         builder.append("/><br/>");
@@ -38,6 +41,10 @@ public class CheckboxGroupFieldRenderer extends AbstractFormFieldRenderer<Checkb
         for ( String option : options.keySet() ) {
             this.renderItem( builder, item, option, options.get(option) );
         }
+
+		if ( options.isEmpty() ) {
+			builder.append("<strong>Any options available</strong>");
+		}
 
         String data = builder.toString();
         for ( IDecorator decorator : item.getDecorators() ) {

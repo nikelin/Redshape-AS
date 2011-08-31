@@ -44,6 +44,16 @@ public abstract class AbstractField<T> extends AbstractFormItem implements IForm
 	}
 
 	@Override
+	public boolean hasMultiValues() {
+		return false;
+	}
+
+	@Override
+	public List<T> getValues() {
+		throw new IllegalArgumentException("Not supported by the current field!");
+	}
+
+	@Override
     public boolean isRequired() {
         return this.required;
     }

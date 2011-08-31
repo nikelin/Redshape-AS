@@ -11,6 +11,8 @@ public interface IForm extends com.redshape.servlet.form.IFormItem {
 
 	public <T> void setValue( String path, T value );
 
+	public <T> List<T> getValues( String name );
+
 	public <T> T getValue( String name );
 
 	public void setProcessHandler( com.redshape.servlet.form.IFormProcessHandler handler );
