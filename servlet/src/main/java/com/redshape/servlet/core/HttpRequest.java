@@ -25,6 +25,8 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
     @SuppressWarnings("unused")
     private static final Logger log = Logger.getLogger( HttpRequest.class );
 
+	public static final String MULTIPART_TYPE = "multipart/form-data";
+
     private boolean initialized;
     private String controller;
     private String action;
@@ -38,8 +40,19 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
     public HttpRequest( HttpServletRequest request ) {
         super(request);
 
+		this.init();
         this.initCookies();
     }
+
+	protected void init() {
+		try {
+			if ( this.isMultiPart() ) {
+				this.multipart = new MultipartRequest(this);
+			}
+		} catch ( Throwable e ) {
+			throw new IllegalStateException( e.getMessage(), e);
+		}
+	}
 
     protected void initCookies() {
         if ( this.getCookies() == null ) {
@@ -78,10 +91,26 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
         return this.parameters.containsKey(name);
     }
 
+	public boolean isMultiPart() {
+		return this.getContentType() != null && this.getContentType().contains( MULTIPART_TYPE );
+	}
+
+	private void initMultipartParameters() {
+		Iterator parameterNames = this.getMultipart().getParameterNames();
+		while ( parameterNames.hasNext() ) {
+			String parameterName = (String) parameterNames.next();
+			this.parameters.put( parameterName, this.getMultipart().getParameter(parameterName) );
+		}
+	}
+
     protected void initParameters() throws IOException {
         if ( this.initialized ) {
             return;
         }
+
+		if ( this.isMultiPart() ) {
+			this.initMultipartParameters();
+		}
 
         String data = this.readRequest();
         if ( data == null || data.isEmpty() ) {
@@ -172,16 +201,12 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
     }
 
     @Override
-    public synchronized IMultipartRequest getMultipart() throws IOException {
-        try {
-            if ( this.multipart == null ) {
-                this.multipart = new MultipartRequest(this);
-            }
+    public synchronized IMultipartRequest getMultipart() {
+		if ( !this.isMultiPart() ) {
+			throw new IllegalStateException("Request is not multipart type");
+		}
 
-            return this.multipart;
-        } catch ( MessagingException e ) {
-            throw new IOException( e.getMessage(), e );
-        }
+		return this.multipart;
     }
 
     @Override
@@ -226,9 +251,7 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
     public Map<String, Object> getParameters() {
         try {
             this.initParameters();
-        } catch ( IOException e ) {
-
-        }
+        } catch ( IOException e ) {}
 
         return this.parameters;
     }
