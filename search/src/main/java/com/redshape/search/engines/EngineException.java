@@ -16,4 +16,8 @@ public class EngineException extends Exception {
     public EngineException( String message ) {
         super(message);
     }
+
+	public EngineException( String message, Throwable e ) {
+		super(message, e);
+	}
 }

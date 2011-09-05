@@ -8,4 +8,7 @@ package com.redshape.search.query.terms;
  * To change this template use File | Settings | File Templates.
  */
 public interface ISearchTerm {
+
+	public Operation getOperation();
+
 }

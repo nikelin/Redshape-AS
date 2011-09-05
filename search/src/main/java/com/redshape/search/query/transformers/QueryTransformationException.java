@@ -17,4 +17,8 @@ public class QueryTransformationException extends Exception {
         super(message);
     }
 
+	public QueryTransformationException( String message, Throwable e ) {
+		super(message, e);
+	}
+
 }

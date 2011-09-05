@@ -20,7 +20,7 @@ public class RadioGroupFieldRenderer extends AbstractFormFieldRenderer<RadioGrou
 
     protected void renderItem( StringBuilder builder, IFormField<?> field, String name, Object value ) {
         builder.append("<label>")
-               .append(value)
+               .append(name)
                 .append("</label>");
 
         builder.append("<input type=\"radio\" value=\"")
@@ -31,7 +31,7 @@ public class RadioGroupFieldRenderer extends AbstractFormFieldRenderer<RadioGrou
 			builder.append(" checked=\"checked\" ");
 		}
 
-        builder.append("\" name=\"").append( field.getCanonicalName() ).append("\" ");
+        builder.append("name=\"").append( field.getCanonicalName() ).append("\" ");
 
         this.buildAttributes( builder, field );
 

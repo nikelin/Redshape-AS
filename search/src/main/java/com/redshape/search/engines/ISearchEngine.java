@@ -1,6 +1,5 @@
 package com.redshape.search.engines;
 
-import com.redshape.search.ISearchable;
 import com.redshape.search.query.terms.ISearchTerm;
 
 import java.util.Collection;
@@ -14,10 +13,10 @@ import java.util.Collection;
  */
 public interface ISearchEngine {
 
-    public <T extends ISearchable> Collection<T> find( Class<? extends T> searchable, ISearchTerm query ) throws EngineException;
+    public <T> Collection<T> find( Class<? extends T> searchable, ISearchTerm query ) throws EngineException;
 
-    public void save( ISearchable object ) throws EngineException;
+    public void save( Object object ) throws EngineException;
 
-    public void remove( ISearchable object ) throws EngineException;
+    public void remove( Object object ) throws EngineException;
 
 }

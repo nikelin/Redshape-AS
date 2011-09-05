@@ -1,8 +1,7 @@
 package com.redshape.search.index.builders;
 
-import com.redshape.search.ISearchable;
-import com.redshape.search.index.visitor.field.IFieldVisitor;
 import com.redshape.search.index.IIndex;
+import com.redshape.search.index.visitor.field.IFieldVisitor;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,7 +12,7 @@ import com.redshape.search.index.IIndex;
  */
 public interface IIndexBuilder {
 
-    public IIndex getIndex( Class<? extends ISearchable> searchable ) throws BuilderException;
+    public IIndex getIndex( Class<?> searchable ) throws BuilderException;
 
     public IFieldVisitor getFieldVisitor();
 

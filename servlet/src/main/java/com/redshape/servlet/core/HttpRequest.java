@@ -103,10 +103,25 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
 		}
 	}
 
+	protected void copyBaseParams() {
+		Enumeration<String> parameterNames = super.getParameterNames();
+		while ( parameterNames.hasMoreElements() ) {
+			String parameterName = parameterNames.nextElement();
+			String[] values = super.getParameterValues(parameterName);
+			if ( values.length == 1 && !parameterName.endsWith("[]") ) {
+				this.parameters.put( parameterName, values[0] );
+			} else {
+				this.parameters.put( parameterName, Arrays.asList(values) );
+			}
+		}
+	}
+
     protected void initParameters() throws IOException {
         if ( this.initialized ) {
             return;
         }
+
+		this.copyBaseParams();
 
 		if ( this.isMultiPart() ) {
 			this.initMultipartParameters();
@@ -197,7 +212,8 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
             data.append(buff);
         }
 
-        return this.requestData = data.toString();
+		this.requestData = data.toString();
+		return this.requestData = this.requestData.isEmpty() ? this.getBody() : this.requestData;
     }
 
     @Override

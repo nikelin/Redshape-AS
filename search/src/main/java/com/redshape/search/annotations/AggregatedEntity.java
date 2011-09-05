@@ -1,6 +1,5 @@
 package com.redshape.search.annotations;
 
-import com.redshape.search.ISearchable;
 import com.redshape.search.index.AggregationType;
 
 import java.lang.annotation.ElementType;
@@ -19,7 +18,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface AggregatedEntity {
 
-    public Class<? extends ISearchable> targetEntity() default ISearchable.class;
+    public Class<?> targetEntity();
 
     public AggregationType type();
 

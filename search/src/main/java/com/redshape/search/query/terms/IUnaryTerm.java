@@ -11,6 +11,4 @@ public interface IUnaryTerm extends ISearchTerm {
 
     public ISearchTerm getTerm();
 
-    public Operation getOperation();
-
 }

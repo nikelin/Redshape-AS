@@ -14,25 +14,40 @@ import java.io.InputStreamReader;
  * Time: 6:39:38 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ArraySerializer implements ISerializer<String[]> {
+public class ArraySerializer implements ISerializer {
 
-    public byte[] serializeBytes( String[] subject ) {
+	@Override
+    public byte[] serializeBytes( Object subject ) {
+		this.checkAssertions(subject);
+
         return this.serializeString(subject).getBytes();
     }
 
-    public String serializeString( String[] subject ) {
-        return StringUtils.join( subject, "," );
+	@Override
+    public String serializeString( Object subject ) {
+		this.checkAssertions(subject);
+
+        return StringUtils.join( (Object[]) subject, "," );
     }
 
+	protected void checkAssertions( Object subject ) {
+		if ( !subject.getClass().isArray() ) {
+			throw new IllegalArgumentException("Only array types is acceptable");
+		}
+	}
+
+	@Override
     public String[] unserialize( String data ) {
         return data.split(",");
     }
 
+	@Override
     public String[] unserialize( byte[] data ) throws SerializerException {
         try {
-            return new BufferedReader( new InputStreamReader( new ByteArrayInputStream(data) ) )
-                                .readLine()
-                                .split(",");
+            return this.unserialize(
+				new BufferedReader( new InputStreamReader( new ByteArrayInputStream(data) ) )
+					.readLine()
+			);
         } catch ( IOException e ) {
             throw new SerializerException();
         }

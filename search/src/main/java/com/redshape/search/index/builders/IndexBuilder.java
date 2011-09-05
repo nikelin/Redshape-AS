@@ -1,6 +1,5 @@
 package com.redshape.search.index.builders;
 
-import com.redshape.search.ISearchable;
 import com.redshape.search.annotations.Searchable;
 import com.redshape.search.index.IIndex;
 import com.redshape.search.index.Index;
@@ -21,32 +20,31 @@ import java.util.Map;
  */
 public class IndexBuilder extends AbstractIndexBuilder {
     private static final Logger log = Logger.getLogger( IndexBuilder.class );
-    private static Class<? extends IIndexBuilder> defaultBuilder = IndexBuilder.class;
 
-    private Map< Class<? extends ISearchable>, IIndex> indexes = new HashMap();
+    private Map< Class<?>, IIndex> indexes = new HashMap();
     
-    public IndexBuilder( Class<? extends IndexBuilder> clazz ) {
+    public IndexBuilder() {
         this.setFieldVisitor( new StandardFieldVisitor() );
     }
 
-    public static void setDefaultBuilder( Class<? extends IIndexBuilder> builderClazz ) {
-        defaultBuilder = builderClazz;
-    }
+	private boolean isSupported( Class<?> subject ) {
+		return subject.getAnnotation(Searchable.class) != null;
+	}
 
-    public static IIndexBuilder newBuilder() throws InstantiationException {
-        return newBuilder( defaultBuilder );
-    }
+	protected void checkAssertions( Class<?> subject ) {
+		if ( subject == null ) {
+			throw new IllegalArgumentException("<null>");
+		}
 
-    public static IIndexBuilder newBuilder( Class<? extends IIndexBuilder> builder ) throws InstantiationException {
-        try {
-            return defaultBuilder.newInstance();
-        } catch ( Throwable e ) {
-            throw new InstantiationException();
-        }
-    }
+		if ( !this.isSupported(subject) ) {
+			throw new IllegalArgumentException("Object is not supported");
+		}
+	}
 
     @Override
-    public IIndex getIndex( Class<? extends ISearchable> searchable ) throws BuilderException {
+    public IIndex getIndex( Class<?> searchable ) throws BuilderException {
+		this.checkAssertions(searchable);
+
         IIndex index = this.indexes.get( searchable);
         if ( index != null ) {
             return index;
@@ -59,22 +57,22 @@ public class IndexBuilder extends AbstractIndexBuilder {
         return index;
     }
 
-    protected IIndex buildIndex( Class<? extends ISearchable> searchable ) throws BuilderException {
+    protected IIndex buildIndex( Class<?> searchable ) throws BuilderException {
         IIndex index = new Index();
 
-        Searchable meta = searchable.getClass().getAnnotation( Searchable.class );
+        Searchable meta = searchable.getAnnotation( Searchable.class );
         if ( meta == null ) {
             return null;
         }
 
         index.setName( meta.name() );
 
-        for ( Field field : searchable.getFields() ) {
+        for ( Field field : searchable.getDeclaredFields() ) {
             try {
                 this.getFieldVisitor().visitField( index, searchable, field );
             } catch ( VisitorException e ) {
                 log.error("Index builder exception", e );
-                throw new BuilderException();
+                throw new BuilderException( e.getMessage(), e );
             }
         }
 

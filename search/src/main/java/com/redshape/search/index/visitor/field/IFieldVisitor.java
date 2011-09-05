@@ -1,6 +1,5 @@
 package com.redshape.search.index.visitor.field;
 
-import com.redshape.search.ISearchable;
 import com.redshape.search.index.IIndex;
 import com.redshape.search.index.visitor.VisitorException;
 
@@ -15,6 +14,7 @@ import java.lang.reflect.Field;
  */
 public interface IFieldVisitor {
 
-    public void visitField( IIndex index, Class<? extends ISearchable> entityClass, Field field ) throws VisitorException;
+    public void visitField( IIndex index, Class<?> entityClass, Field field )
+			throws VisitorException;
 
 }

@@ -17,4 +17,8 @@ public class VisitorException extends Exception {
         super(message);
     }
 
+	public VisitorException( String message, Throwable e ) {
+		super(message, e);
+	}
+
 }

@@ -17,4 +17,8 @@ public class BuilderException extends Exception {
         super(message);
     }
 
+	public BuilderException( String message, Throwable e ) {
+		super(message, e );
+	}
+
 }

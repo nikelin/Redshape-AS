@@ -8,19 +8,19 @@ package com.redshape.search.query.terms;
  * To change this template use File | Settings | File Templates.
  */
 public class EqTerm implements IBinaryTerm {
-    private LiteralTerm term;
-    private LiteralTerm value;
+    private IUnaryTerm term;
+    private IUnaryTerm value;
 
-    public EqTerm( LiteralTerm term, LiteralTerm value ) {
+    public EqTerm( IUnaryTerm term, IUnaryTerm value ) {
         this.term = term;
         this.value = value;
     }
 
-    public LiteralTerm getLeft() {
+    public IUnaryTerm getLeft() {
         return this.term;
     }
 
-    public LiteralTerm getRight() {
+    public IUnaryTerm getRight() {
         return this.value;
     }
 

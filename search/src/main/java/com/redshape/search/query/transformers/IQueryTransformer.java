@@ -9,8 +9,8 @@ import com.redshape.search.query.terms.ISearchTerm;
  * Time: 12:11:16 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface IQueryTransformer<T> {
+public interface IQueryTransformer {
 
-    public T transform( ISearchTerm term ) throws QueryTransformationException; 
+    public <T> T transform( ISearchTerm term ) throws QueryTransformationException;
 
 }

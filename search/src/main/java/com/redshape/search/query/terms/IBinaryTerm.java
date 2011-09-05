@@ -13,6 +13,4 @@ public interface IBinaryTerm extends ISearchTerm {
 
     public ISearchTerm getRight();
 
-    public Operation getOperation();
-
 }

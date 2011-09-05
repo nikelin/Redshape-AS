@@ -1,5 +1,6 @@
 package com.redshape.search.index;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -10,7 +11,7 @@ import java.util.Set;
  * To change this template use File | Settings | File Templates.
  */
 public class Index implements IIndex {
-    private Set<IIndexField> fields;
+    private Set<IIndexField> fields = new HashSet<IIndexField>();
 
     private String name;
 

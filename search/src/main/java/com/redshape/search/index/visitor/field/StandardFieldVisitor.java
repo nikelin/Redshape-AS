@@ -1,14 +1,14 @@
 package com.redshape.search.index.visitor.field;
 
-import com.redshape.search.ISearchable;
 import com.redshape.search.annotations.AggregatedEntity;
 import com.redshape.search.annotations.SearchableField;
 import com.redshape.search.annotations.SearchableFieldSerializer;
 import com.redshape.search.index.IIndex;
 import com.redshape.search.index.IIndexField;
 import com.redshape.search.index.IndexingType;
-import com.redshape.search.index.builders.IndexBuilder;
+import com.redshape.search.index.builders.IIndexBuilder;
 import com.redshape.search.index.visitor.VisitorException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -23,8 +23,19 @@ import java.util.Arrays;
  */
 public class StandardFieldVisitor implements IFieldVisitor {
 
-    @Override
-    public void visitField( IIndex index, Class<? extends ISearchable> entityClass, Field field ) throws VisitorException {
+	@Autowired( required = true )
+	private IIndexBuilder indexBuilder;
+
+	public IIndexBuilder getIndexBuilder() {
+		return indexBuilder;
+	}
+
+	public void setIndexBuilder(IIndexBuilder indexBuilder) {
+		this.indexBuilder = indexBuilder;
+	}
+
+	@Override
+    public void visitField( IIndex index, Class<?> entityClass, Field field ) throws VisitorException {
         if ( field.getAnnotation(AggregatedEntity.class) != null ) {
             this.visitAggregatedField( index, entityClass, field );
         } else {
@@ -32,7 +43,7 @@ public class StandardFieldVisitor implements IFieldVisitor {
         }
     }
 
-    protected void visitAggregatedField( IIndex index, Class<? extends ISearchable> entityClass, Field field ) throws VisitorException {
+    protected void visitAggregatedField( IIndex index, Class<?> entityClass, Field field ) throws VisitorException {
         try {
             AggregatedEntity annotation = field.getAnnotation( AggregatedEntity.class );
 
@@ -45,15 +56,15 @@ public class StandardFieldVisitor implements IFieldVisitor {
                 break;
             }
         } catch ( Throwable e ) {
-            throw new VisitorException();
+            throw new VisitorException( e.getMessage(), e );
         }
     }
 
-    private void _aggregatedComposition( IIndex index, Class<? extends ISearchable> entity, Field field ) throws VisitorException {
+    private void _aggregatedComposition( IIndex index, Class<?> entity, Field field ) throws VisitorException {
         try {
             AggregatedEntity annotation = field.getAnnotation( AggregatedEntity.class );
 
-            Class<? extends ISearchable> aggregatedType;
+            Class<?> aggregatedType;
             if ( annotation.targetEntity() != null ) {
                 aggregatedType = annotation.targetEntity();
             } else {
@@ -62,10 +73,10 @@ public class StandardFieldVisitor implements IFieldVisitor {
                     throw new VisitorException("Aggregated field cannot be interface or must be specificated by targetEntity()");
                 }
 
-                aggregatedType = (Class<? extends ISearchable>) fieldType;
+                aggregatedType = (Class<?>) fieldType;
             }
 
-            for ( IIndexField aggregatedField : IndexBuilder.newBuilder().getIndex( aggregatedType ).getFields() ) {
+            for ( IIndexField aggregatedField : this.getIndexBuilder().getIndex( aggregatedType ).getFields() ) {
                 if ( annotation.exclude().length > 0 &&
                         Arrays.binarySearch( annotation.exclude(), aggregatedField ) != -1 ){
                     continue;
@@ -79,11 +90,11 @@ public class StandardFieldVisitor implements IFieldVisitor {
                 index.addField( aggregatedField );
             }
         } catch ( Throwable e ) {
-            throw new VisitorException();
+            throw new VisitorException( e.getMessage(), e );
         }
     }
 
-    private void _aggregatedById( IIndex index, Class<? extends ISearchable> entityClass, Field field ) throws VisitorException {
+    private void _aggregatedById( IIndex index, Class<?> entityClass, Field field ) throws VisitorException {
         IIndexField indexField = index.createField();
 
         String fieldName;
@@ -103,10 +114,14 @@ public class StandardFieldVisitor implements IFieldVisitor {
         index.addField( indexField );
     }
 
-    protected void visitSimpleField( IIndex index, Class<? extends ISearchable> entityClass, Field field ) {
+    protected void visitSimpleField( IIndex index, Class<?> entityClass, Field field ) {
         IIndexField indexPart = index.createField();
 
         SearchableField fieldMeta = field.getAnnotation( SearchableField.class );
+		if ( fieldMeta == null ) {
+			return;
+		}
+
         indexPart.setName( fieldMeta.name() );
         indexPart.setType( fieldMeta.type() );
         indexPart.setRank( fieldMeta.rank() );

@@ -7,19 +7,20 @@ package com.redshape.search.query.terms;
  * Time: 1:54:49 PM
  * To change this template use File | Settings | File Templates.
  */
-public class LiteralTerm implements ISearchTerm {
-    private String value;
+public class LiteralTerm implements IScalarTerm {
+    private Object value;
 
-    public LiteralTerm( String value ) {
+    public LiteralTerm( Object value ) {
         this.value = value;
     }
 
-    public String getValue() {
-        return this.value;
-    }
+	@Override
+	public <T> T getValue() {
+		return (T) this.value;
+	}
 
-    public void setValue( String value ) {
-        this.value = value;
-    }
-
+	@Override
+	public Operation getOperation() {
+		throw new UnsupportedOperationException("Not supported");
+	}
 }

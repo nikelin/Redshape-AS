@@ -16,29 +16,34 @@ import java.lang.reflect.Method;
  * Time: 12:12:00 PM
  * To change this template use File | Settings | File Templates.
  */
-public class LuceneQueryTransformer implements IQueryTransformer<Query> {
+public class LuceneQueryTransformer implements IQueryTransformer {
 
+	@Override
     public Query transform( ISearchTerm term ) throws QueryTransformationException {
         try {
             return this.createQueryParser().parse( this._transform(term) );
         } catch ( Throwable e ) {
-            throw new QueryTransformationException();
+            throw new QueryTransformationException( e.getMessage(), e );
         }
     }
 
     protected String _transform( ISearchTerm term ) throws QueryTransformationException {
         try {
-            for ( Method m : this.getClass().getMethods() ) {
-                if ( m.getClass().isAssignableFrom( term.getClass() ) ) {
+            for ( Method m : this.getClass().getDeclaredMethods() ) {
+                if ( m.getName().startsWith("_")
+						&& m.getParameterTypes().length > 0
+						&& !m.getParameterTypes()[0].equals( ISearchTerm.class )
+						&& m.getParameterTypes()[0].isAssignableFrom( term.getClass() ) ) {
                     return (String) m.invoke( this, term );
                 }
             }
 
-            throw new QueryTransformationException();
+            throw new QueryTransformationException("Term " + term.getClass().getCanonicalName()
+					+ " not supported by current engine");
         } catch ( QueryTransformationException e ) {
             throw e;
         } catch ( Throwable e ) {
-            throw new QueryTransformationException();
+            throw new QueryTransformationException( e.getMessage(), e );
         }
     }
 
@@ -61,7 +66,7 @@ public class LuceneQueryTransformer implements IQueryTransformer<Query> {
         return builder.toString();
     }
 
-    protected String _transform( LiteralTerm term ) throws QueryTransformationException {
+    protected String _transform( IScalarTerm term ) throws QueryTransformationException {
         return term.getValue();
     }
 
@@ -69,10 +74,10 @@ public class LuceneQueryTransformer implements IQueryTransformer<Query> {
         String result;
         switch ( operation ) {
             case AND:
-                result = "AND";
+                result = " AND ";
             break;
             case OR:
-                result = "OR";
+                result = " OR ";
             break;
             case NOT:
                 result = "-";

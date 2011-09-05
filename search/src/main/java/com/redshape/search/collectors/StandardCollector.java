@@ -1,14 +1,15 @@
 package com.redshape.search.collectors;
 
-import com.redshape.search.*;
-import com.redshape.search.index.IIndex;
+import com.redshape.search.ISearchFacade;
 import com.redshape.search.index.IIndexField;
-import com.redshape.search.index.builders.IndexBuilder;
+import com.redshape.search.index.builders.IIndexBuilder;
+import com.redshape.search.serializers.ISerializersFacade;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.lucene.document.Field;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -19,64 +20,79 @@ import java.util.Set;
  * To change this template use File | Settings | File Templates.
  */
 public class StandardCollector implements IResultsCollector {
+	@Autowired( required = true )
+	private ISerializersFacade serializersFacade;
+
+	@Autowired( required = true )
+	private IIndexBuilder indexBuilder;
+
+	@Autowired( required = true )
+	private ISearchFacade searchFacade;
+
     private Set<CollectedItem> collected = new HashSet();
 
-    public void collect( Class<? extends ISearchable> searchable, Field[] fields, String id ) {
+	public ISerializersFacade getSerializersFacade() {
+		return serializersFacade;
+	}
+
+	public void setSerializersFacade(ISerializersFacade serializersFacade) {
+		this.serializersFacade = serializersFacade;
+	}
+
+	public IIndexBuilder getIndexBuilder() {
+		return indexBuilder;
+	}
+
+	public void setIndexBuilder(IIndexBuilder indexBuilder) {
+		this.indexBuilder = indexBuilder;
+	}
+
+	public ISearchFacade getSearchFacade() {
+		return searchFacade;
+	}
+
+	public void setSearchFacade(ISearchFacade searchFacade) {
+		this.searchFacade = searchFacade;
+	}
+
+	public void collect( Class<?> searchable, Map<IIndexField, Object> fields, String id ) {
         this.collected.add( new CollectedItem( searchable, fields, id ) );
     }
 
-    public <T extends ISearchable> Collection<T> getResults() throws ProcessingException {
+    public <T> Collection<T> getResults() throws ProcessingException {
         try {
-            Collection<T> results = new HashSet();
-
-            for ( CollectedItem item : collected ) {
+            Collection<T> results = new HashSet<T>();
+            for ( CollectedItem item : this.collected ) {
                 Class<T> searchableClass = (Class<T>) item.getSearchable();
-
-                IIndex index = IndexBuilder.newBuilder().getIndex(searchableClass);
-                ISearchable searchable = searchableClass.newInstance();
-
-                for ( Field field : item.getFields() ) {
-                    IIndexField indexField = index.getField( field.name() );
-                    if ( indexField == null ) {
-                        throw new ProcessingException();
-                    }
-
-                    Object value;
-                    if ( indexField.getSerializer() != null ) {
-                        value = field.isBinary() ? Search.getSerializer( indexField.getSerializer() ).unserialize( field.getBinaryValue() ) : Search.getSerializer( indexField.getSerializer() ).unserialize( field.stringValue() );
-                    } else {
-                        value = field.stringValue();
-                    }
-
-                    PropertyUtils.setProperty( searchable, field.name(), value );
+                Object searchable = searchableClass.newInstance();
+				Map<IIndexField, Object> fields = item.getFields();
+                for ( IIndexField field : fields.keySet() ) {
+                    PropertyUtils.setProperty( searchable, field.getName(), fields.get(field) );
                 }
             }
 
             return results;
-
-        } catch ( ProcessingException e ) {
-            throw e;
         } catch ( Throwable e ) {
-            throw new ProcessingException();
+            throw new ProcessingException( e.getMessage(), e );
         }
     }
 
     final static class CollectedItem {
-        private Class<? extends ISearchable> searchable;
-        private Field[] fields;
+        private Class<?> searchable;
+        private Map<IIndexField, Object> fields;
         private String id;
 
-        public CollectedItem( Class<? extends ISearchable> searchable, Field[] fields, String id ) {
+        public CollectedItem( Class<?> searchable, Map<IIndexField, Object> fields, String id ) {
             this.searchable = searchable;
             this.id = id;
             this.fields = fields;
         }
 
-        public Field[] getFields() {
+        public Map<IIndexField, Object> getFields() {
             return this.fields;
         }
 
-        public Class<? extends ISearchable> getSearchable() {
+        public Class<?> getSearchable() {
             return this.searchable;
         }
 

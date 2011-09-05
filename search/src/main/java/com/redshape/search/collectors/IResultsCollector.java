@@ -1,9 +1,9 @@
 package com.redshape.search.collectors;
 
-import com.redshape.search.ISearchable;
-import org.apache.lucene.document.Field;
+import com.redshape.search.index.IIndexField;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,11 +14,8 @@ import java.util.Collection;
  */
 public interface IResultsCollector {
 
-    public void collect(
-        Class<? extends ISearchable> collectable,
-        Field[] fields,
-        String id
-    );
+    public void collect( Class<?> collectable, Map<IIndexField, Object> fields, String id )
+			throws ProcessingException;
 
-    public <T extends ISearchable> Collection<T> getResults() throws ProcessingException;
+    public <T> Collection<T> getResults() throws ProcessingException;
 }

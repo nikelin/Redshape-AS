@@ -7,14 +7,14 @@ package com.redshape.search.serializers;
  * Time: 5:19:51 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface ISerializer<T> {
+public interface ISerializer {
 
-    public String serializeString( T object );
+    public String serializeString( Object object );
 
-    public byte[] serializeBytes( T object );
+    public byte[] serializeBytes( Object object );
 
-    public T unserialize( String data ) throws SerializerException; 
+    public <T> T unserialize( String data ) throws SerializerException;
 
-    public T unserialize( byte[] data ) throws SerializerException;
+    public <T> T unserialize( byte[] data ) throws SerializerException;
 
 }

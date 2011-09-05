@@ -45,7 +45,7 @@ public @interface SearchableField {
      * Store value as a bytes array
      * @return
      */
-    boolean binary() default true;
+    boolean binary() default false;
 
     /**
      * Field value for result scoring

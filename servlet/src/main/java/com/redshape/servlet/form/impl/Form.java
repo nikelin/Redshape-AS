@@ -109,6 +109,7 @@ public class Form extends AbstractFormItem implements IForm {
 
 	@Override
     public <T> void setValue( String path, T value ) {
+		path = path.replace("[]", "");
 		if ( path == null ) {
 			throw new IllegalArgumentException("<null>");
 		}
