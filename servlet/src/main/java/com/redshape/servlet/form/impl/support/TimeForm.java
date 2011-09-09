@@ -74,7 +74,7 @@ public class TimeForm extends DateForm {
 
 	public Integer getHour() {
 		String hour = this.getValue("hour");
-		if ( hour == null ) {
+		if ( hour == null || hour.isEmpty() ) {
 			return Calendar.getInstance().get( Calendar.HOUR_OF_DAY );
 		}
 
@@ -83,7 +83,7 @@ public class TimeForm extends DateForm {
 
 	public Integer getMinute() {
 		String minute = this.getValue("minute");
-		if ( minute == null ) {
+		if ( minute == null || minute.isEmpty() ) {
 			return Calendar.getInstance().get( Calendar.MINUTE );
 		}
 
@@ -92,7 +92,7 @@ public class TimeForm extends DateForm {
 
 	public Integer getSecond() {
 		String second = this.getValue("second");
-		if ( second == null ) {
+		if ( second == null || second.isEmpty() ) {
 			return Calendar.getInstance().get( Calendar.SECOND );
 		}
 
