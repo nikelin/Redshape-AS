@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 @SuppressWarnings("restriction")
 public class StringUtils {
     public static List<String> camelCaseDelimiters = Arrays.asList( "_", "-" );
+	private static final String ESCAPE_SYMBOL = "\\";
 
     public static String repeat(String source, int times) {
         String result = "";
@@ -221,4 +222,38 @@ public class StringUtils {
 
     	return writer.toString();
     }
+
+	public static String escape( String orig, String[] escapeSequences ) {
+		return escape(orig, escapeSequences, ESCAPE_SYMBOL );
+	}
+
+	public static String escape( String orig, String[] escapeSequences, String escapeSymbol ) {
+		if ( orig == null ) {
+			throw new IllegalArgumentException("<null>");
+		}
+
+		String replacement = orig;
+		for ( String sequence : escapeSequences ) {
+			int lastIndex = replacement.indexOf(sequence);
+			while ( lastIndex > 0 && lastIndex !=
+											replacement.indexOf( escapeSymbol, lastIndex - 2) + 1 ) {
+				replacement = replacement.replace( sequence, escapeSymbol + sequence );
+				lastIndex = replacement.indexOf(sequence, lastIndex);
+			}
+		}
+
+		return replacement;
+	}
+
+	public static String wordWrap( String sentence, int interval, String separator ) {
+		int count = (int) ( sentence.length() / interval );
+		int i = 0;
+		StringBuilder builder = new StringBuilder();
+		while ( i++ != count - 1 ) {
+			builder.append( sentence.substring( --i * interval, ++i * interval ) )
+				   .append( separator );
+		}
+
+		return builder.toString();
+	}
 }

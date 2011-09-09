@@ -4,7 +4,7 @@ import com.redshape.search.ISearchFacade;
 import com.redshape.search.index.IIndexField;
 import com.redshape.search.index.builders.IIndexBuilder;
 import com.redshape.search.serializers.ISerializersFacade;
-import org.apache.commons.beanutils.PropertyUtils;
+import com.redshape.utils.beans.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
@@ -64,11 +64,14 @@ public class StandardCollector implements IResultsCollector {
             Collection<T> results = new HashSet<T>();
             for ( CollectedItem item : this.collected ) {
                 Class<T> searchableClass = (Class<T>) item.getSearchable();
-                Object searchable = searchableClass.newInstance();
+                T searchable = searchableClass.newInstance();
 				Map<IIndexField, Object> fields = item.getFields();
                 for ( IIndexField field : fields.keySet() ) {
-                    PropertyUtils.setProperty( searchable, field.getName(), fields.get(field) );
+                    PropertyUtils.getInstance().getProperty(searchable.getClass(), field.getName())
+											   .set( searchable, fields.get(field));
                 }
+
+				results.add( searchable );
             }
 
             return results;

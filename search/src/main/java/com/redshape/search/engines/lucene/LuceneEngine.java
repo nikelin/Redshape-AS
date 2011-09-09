@@ -28,6 +28,7 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
@@ -46,6 +47,12 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class LuceneEngine implements ISearchEngine {
+	public static final Version VERSION = Version.LUCENE_30;
+	public static String[] ESCAPE_SEQUENCES = new String[] {
+									"+", "-", "&&", "||", "!", "(", ")",
+									"{", "}", "[", "]", "^", "\"", "~", "*", "?", ":", "\\"
+								};
+
 	@Autowired( required = true )
 	private ITransformersBuilder transformersBuilder;
 
@@ -163,13 +170,17 @@ public class LuceneEngine implements ISearchEngine {
 									 .getTransformer(LuceneQueryTransformer.class)
 							.transform(query);
 
-            ScoreDoc[] hits = searcher.search(searchQuery, null, 1000).scoreDocs;
+			TopDocs result = searcher.search(searchQuery, null, 1000);
+            ScoreDoc[] hits = result.scoreDocs;
             for ( ScoreDoc hit : hits ) {
                 Document doc = searcher.doc( hit.doc );
                 String docId = doc.getField("searchable_entity").stringValue();
 
-                Class<?> foundedClass = this.getEntityClassByDocId( docId );
-				collector.collect(foundedClass, this.prepareFieldsMap(index, doc), docId);
+				collector.collect(
+					this.getEntityClassByDocId( docId ),
+					this.prepareFieldsMap(index, doc),
+					this.getEntityIdByDocId(docId)
+				);
             }
 
             return collector.getResults();
@@ -177,6 +188,10 @@ public class LuceneEngine implements ISearchEngine {
             throw new EngineException( e.getMessage(), e );
         }
     }
+
+	protected String getEntityIdByDocId( String docId ) {
+		return docId.split("_")[1];
+	}
 
 	private Map<IIndexField, Object> prepareFieldsMap( IIndex index, Document doc  )
 		throws SerializerException {
@@ -199,10 +214,14 @@ public class LuceneEngine implements ISearchEngine {
 		ISerializer serializer = this.getSerializersFacade()
 			   .getSerializer(indexField.getSerializer());
 
-		if ( value.getClass().isArray() ) {
-			return serializer.unserialize( (byte[]) value );
+		if ( serializer != null ) {
+			if ( value.getClass().isArray() ) {
+				return serializer.unserialize( (byte[]) value );
+			} else {
+				return serializer.unserialize( (String) value );
+			}
 		} else {
-			return serializer.unserialize( (String) value );
+			return value;
 		}
 	}
 
@@ -228,7 +247,7 @@ public class LuceneEngine implements ISearchEngine {
     protected IndexWriter createIndexWriter( IIndex index ) throws EngineException {
 		Directory directory = null;
         try {
-			Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_CURRENT);
+			Analyzer analyzer = new StandardAnalyzer(VERSION);
 
             // Store the index in memory:
             directory = this.openDirectory( this.getIndexDirectoryPath( index ) );
@@ -241,7 +260,7 @@ public class LuceneEngine implements ISearchEngine {
         } catch ( Throwable e ) {
 			if ( directory != null ) {
 				try {
-					directory.clearLock(index.getName());
+					directory.clearLock(IndexWriter.WRITE_LOCK_NAME);
 					directory.close();
 				} catch ( IOException ex ) {
 					throw new EngineException( e.getMessage(), ex );
@@ -284,7 +303,10 @@ public class LuceneEngine implements ISearchEngine {
             doc.add( new Field( "searchable_entity", this.createDocumentId(searchable), Field.Store.YES, Field.Index.NO ) );
 
             for ( IIndexField field : index.getFields() ) {
-                Object fieldValue = PropertyUtils.getInstance().getProperty( searchable.getClass(), field.getName());
+                Object fieldValue = PropertyUtils.getInstance()
+												.getProperty(
+												 	searchable.getClass(), field.getName()
+												).get(searchable);
 
                 Field docField;
                 if ( field.isBinary() ) {

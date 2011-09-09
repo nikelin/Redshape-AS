@@ -3,6 +3,7 @@ package com.redshape.servlet.form.builders.impl;
 import com.redshape.servlet.form.IFormField;
 import com.redshape.servlet.form.builders.AbstractFormItemBuilder;
 import com.redshape.servlet.form.builders.IFormFieldBuilder;
+import com.redshape.servlet.form.data.IFieldDataProvider;
 import com.redshape.servlet.form.decorators.DecoratorAttribute;
 import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.fields.*;
@@ -79,6 +80,15 @@ public class StandardFormFieldBuilder extends AbstractFormItemBuilder
 	}
 
 	@Override
+	public <T> SelectField<T> newSelectField(IFieldDataProvider<T> dataProvider ) {
+		SelectField<T> field = new SelectField<T>();
+		this.processField(field);
+		field.setRenderer( new SelectFieldRenderer() );
+		field.setDataProvider(dataProvider);
+		return field;
+	}
+
+	@Override
 	public <T> SelectField<T> newSelectField( String[] names, T[] values ) { 
 		return this.newSelectField( Commons.map( names, values ) );
 	}
@@ -99,6 +109,21 @@ public class StandardFormFieldBuilder extends AbstractFormItemBuilder
         field.setRenderer( new TextAreaRenderer() );
         return field;
     }
+
+	@Override
+	public <T> RadioGroupField<T> newRadioGroupField(IFieldDataProvider<T> dataProvider, T selected) {
+		RadioGroupField<T> field = new RadioGroupField<T>();
+		this.processField(field);
+        field.setRenderer( new RadioGroupFieldRenderer() );
+		field.setDataProvider(dataProvider);
+		field.setValue(selected);
+		return field;
+	}
+
+	@Override
+	public <T> RadioGroupField<T> newRadioGroupField(IFieldDataProvider<T> dataProvider) {
+		return this.newRadioGroupField(dataProvider, null);
+	}
 
 	@Override
 	public <T> RadioGroupField<T> newRadioGroupField( Map<String, T> values) {
@@ -123,6 +148,21 @@ public class StandardFormFieldBuilder extends AbstractFormItemBuilder
 	@Override
 	public <T> CheckboxGroupField<T> newCheckboxGroupField(Map<String, T> names) {
 		return this.newCheckboxGroupField( names, new ArrayList<T>() );
+	}
+
+	@Override
+	public <T> CheckboxGroupField<T> newCheckboxGroupField(IFieldDataProvider<T> dataProvider, List<T> values) {
+		CheckboxGroupField<T> field = new CheckboxGroupField<T>();
+        field.setRenderer( new CheckboxGroupFieldRenderer() );
+		this.processField(field);
+		field.setDataProvider(dataProvider);
+		field.setValues( values );
+		return field;
+	}
+
+	@Override
+	public <T> CheckboxGroupField<T> newCheckboxGroupField(IFieldDataProvider<T> dataProvider) {
+		return this.newCheckboxGroupField(dataProvider, null);
 	}
 
 	@Override

@@ -9,6 +9,4 @@ package com.redshape.search.query.terms;
  */
 public interface ISearchTerm {
 
-	public Operation getOperation();
-
 }

@@ -19,8 +19,4 @@ public class LiteralTerm implements IScalarTerm {
 		return (T) this.value;
 	}
 
-	@Override
-	public Operation getOperation() {
-		throw new UnsupportedOperationException("Not supported");
-	}
 }

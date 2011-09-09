@@ -1,5 +1,6 @@
 package com.redshape.servlet.form.builders;
 
+import com.redshape.servlet.form.data.IFieldDataProvider;
 import com.redshape.servlet.form.fields.*;
 import com.redshape.validators.IValidator;
 
@@ -73,6 +74,11 @@ public interface IFormFieldBuilder extends IFormItemBuilder {
 	public <T> RadioGroupField<T> newRadioGroupField( Map<String, T> values,
 													  T selected );
 
+	public <T> RadioGroupField<T> newRadioGroupField( IFieldDataProvider<T> dataProvider );
+
+	public <T> RadioGroupField<T> newRadioGroupField( IFieldDataProvider<T> dataProvider,
+													  T selected );
+
     /**
      * Creates new textarea field
      *
@@ -111,6 +117,8 @@ public interface IFormFieldBuilder extends IFormItemBuilder {
 	 */
 	public <T> SelectField<T> newSelectField( Map<String, T> options );
 
+	public <T> SelectField<T> newSelectField( IFieldDataProvider<T> dataProvider );
+
 	/**
 	 * Create group of checkboxes from a given parameters as initial state
 	 * @param <T>
@@ -119,6 +127,10 @@ public interface IFormFieldBuilder extends IFormItemBuilder {
 	 * @return
 	 */
 	public <T> CheckboxGroupField<T> newCheckboxGroupField( String[] names, T[] values );
+
+	public <T> CheckboxGroupField<T> newCheckboxGroupField( IFieldDataProvider<T> dataProvider );
+
+	public <T> CheckboxGroupField<T> newCheckboxGroupField( IFieldDataProvider<T> dataProvider, List<T> values );
 	
 	/**
 	 * Create group of checkboxes from a given parameters as initial state

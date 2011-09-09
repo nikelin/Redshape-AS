@@ -30,6 +30,31 @@ public class SearchTermBuilder implements ISearchTermBuilder {
 	}
 
 	@Override
+	public IFieldTerm field(String name, ISearchTerm term) {
+		return new FieldTerm(name, term);
+	}
+
+	@Override
+	public IGroupingTerm field(String[] names, ISearchTerm term, Operation operation ) {
+		ISearchTerm[] terms = new ISearchTerm[ names.length ];
+		for ( int i = 0; i < names.length; i++ ) {
+			terms[i] = this.field(names[i], term);
+		}
+
+		return this.group( operation, terms );
+	}
+
+	@Override
+	public IGroupingTerm group( Operation operation, ISearchTerm... list) {
+		return new GroupingTerm(list, operation);
+	}
+
+	@Override
+	public IBinaryTerm to(ISearchTerm from, ISearchTerm to, RangeType type) {
+		return new ToTerm(from, to, type);
+	}
+
+	@Override
 	public IScalarTerm literal(Object value) {
 		return new LiteralTerm(value);
 	}

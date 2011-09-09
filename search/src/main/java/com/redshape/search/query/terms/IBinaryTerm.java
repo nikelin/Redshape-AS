@@ -1,16 +1,30 @@
 package com.redshape.search.query.terms;
 
 /**
- * Created by IntelliJ IDEA.
- * User: nikelin
- * Date: Jun 30, 2010
- * Time: 2:23:04 PM
- * To change this template use File | Settings | File Templates.
+ * Represents binary search term.
+ *
+ * @author Cyril A. Karpenko <self@nikelin.ru>
+ * @package com.redshape.search.query.terms
+ * @date 9/7/11 1:55 PM
  */
 public interface IBinaryTerm extends ISearchTerm {
 
+	/**
+	 * Return left member of a binary group
+	 * @return
+	 */
     public ISearchTerm getLeft();
 
+	/**
+	 * Return right member of a binary group
+	 * @return
+	 */
     public ISearchTerm getRight();
+
+	/**
+	 * Return operation which join binary group
+	 * @return
+	 */
+	public Operation getOperation();
 
 }
