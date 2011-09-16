@@ -36,7 +36,7 @@ public class TimeForm extends DateForm {
 	protected void buildForm() {
 		super.buildForm();
 
-		this.timeRange = RangeBuilder.createInterval(IntervalRange.Type.INCLUSIVE, 1, 60);
+		this.timeRange = RangeBuilder.createInterval(IntervalRange.Type.INCLUSIVE, 0, 59);
 
 		this.addField(
 				BuildersFacade.newFieldBuilder()
