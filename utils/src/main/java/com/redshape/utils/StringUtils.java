@@ -142,10 +142,10 @@ public class StringUtils {
         StringBuilder builder = new StringBuilder();
         int i = 0;
         for ( Object joinItem : join ) {
-			String value = null;
+			String value = joinItem == null ? null : joinItem.toString();
 			if ( filter != null ) {
 				try {
-					value = filter.invoke( String.valueOf( joinItem ) );
+					value = filter.invoke( value );
 				} catch ( InvocationTargetException e ) {
 					throw new IllegalArgumentException("Filtering exception", e );
 				}

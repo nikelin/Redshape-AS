@@ -1,5 +1,6 @@
 package com.redshape.servlet.form.render.impl.fields;
 
+import com.redshape.i18n.impl.StandardI18NFacade;
 import com.redshape.servlet.form.RenderMode;
 import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.fields.CheckboxGroupField;
@@ -18,11 +19,10 @@ public class CheckboxGroupFieldRenderer extends AbstractFormFieldRenderer<Checkb
     }
 
     protected void renderItem( StringBuilder builder, CheckboxGroupField<?> field, String name, Object value ) {
-        builder.append("<span class=\"label\">").append( name ).append("</span>");
-
-		builder.append("<input type=\"checkbox\" value=\"")
-               .append(value)
-			   .append("\" ");
+        builder.append("<span class=\"label\">").append( StandardI18NFacade._(name) ).append("</span>")
+		    .append("<input type=\"checkbox\" value=\"")
+		    .append(value)
+		    .append("\" ");
 
 		if ( field.getValue() != null && field.getValues().contains(value) ) {
 			builder.append(" checked=\"checked\" ");
@@ -37,6 +37,7 @@ public class CheckboxGroupFieldRenderer extends AbstractFormFieldRenderer<Checkb
     @Override
     public String render(CheckboxGroupField<?> item, RenderMode mode) {
         StringBuilder builder = new StringBuilder();
+		builder.append("<fieldset>");
         Map<String, Object> options = (Map<String, Object>) item.getOptions();
         for ( String option : options.keySet() ) {
             this.renderItem( builder, item, option, options.get(option) );
@@ -45,6 +46,8 @@ public class CheckboxGroupFieldRenderer extends AbstractFormFieldRenderer<Checkb
 		if ( options.isEmpty() ) {
 			builder.append("<strong>Any options available</strong>");
 		}
+
+		builder.append("</fieldset>");
 
         String data = builder.toString();
         for ( IDecorator decorator : item.getDecorators() ) {
