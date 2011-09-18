@@ -122,7 +122,7 @@ public class StandardFormFieldBuilder extends AbstractFormItemBuilder
 
 	@Override
 	public <T> RadioGroupField<T> newRadioGroupField(IFieldDataProvider<T> dataProvider) {
-		return this.newRadioGroupField(dataProvider, null);
+		return this.newRadioGroupField(dataProvider, null );
 	}
 
 	@Override
@@ -162,7 +162,7 @@ public class StandardFormFieldBuilder extends AbstractFormItemBuilder
 
 	@Override
 	public <T> CheckboxGroupField<T> newCheckboxGroupField(IFieldDataProvider<T> dataProvider) {
-		return this.newCheckboxGroupField(dataProvider, null);
+		return this.newCheckboxGroupField(dataProvider, new ArrayList<T>() );
 	}
 
 	@Override

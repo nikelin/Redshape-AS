@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
@@ -126,18 +127,35 @@ public class StringUtils {
     }
 
     public static String join( Collection<?> join, String separator ) {
-        return join( join.toArray( new Object[join.size()] ), separator );
+		return join( join.toArray(), separator );
     }
 
-    public static String join( Object[] join, String separator ) {
+	public static String join( Collection<?> join, String separator, IFunction<?, String> filter ) {
+		return join( join.toArray( new Object[join.size()] ), separator, filter );
+	}
+
+	public static String join( Object[] join, String separator ) {
+		return join( join, separator, null );
+	}
+
+    public static String join( Object[] join, String separator, IFunction<?, String> filter ) {
         StringBuilder builder = new StringBuilder();
         int i = 0;
         for ( Object joinItem : join ) {
-            builder.append( String.valueOf( joinItem ) );
+			String value = null;
+			if ( filter != null ) {
+				try {
+					value = filter.invoke( String.valueOf( joinItem ) );
+				} catch ( InvocationTargetException e ) {
+					throw new IllegalArgumentException("Filtering exception", e );
+				}
+			}
 
-            if ( i++ != join.length - 1 ) {
-                builder.append( separator );
-            }
+			builder.append( value );
+
+			if ( i++ != join.length - 1 ) {
+				builder.append( separator );
+			}
         }
 
         return builder.toString();
