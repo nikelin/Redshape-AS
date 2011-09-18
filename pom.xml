@@ -164,7 +164,7 @@
     	<repository>
     		<id>redshape.central</id>
             <name>Cloudbees Maven Repository</name>
-    		<url>dav:https://repository-redshape.forge.cloudbees.com/snapshot/</url>
+    		<url>file:///opt/redshape/framework</url>
     	</repository>
     </distributionManagement>
 

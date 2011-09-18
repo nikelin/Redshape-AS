@@ -18,6 +18,14 @@ public final class ViewHelper {
 
 	public static String url( String url ) {
 		try {
+			if ( url == null ) {
+				return null;
+			}
+
+			if ( protocolMatcher.matcher(url).find() ) {
+				return url;
+			}
+
 			String servletPath = getConfig().get("web").get("servletPath").value();
 			if ( !url.startsWith( servletPath ) ) {
 				return servletPath + normalizeUrl(url);
@@ -34,11 +42,7 @@ public final class ViewHelper {
 			return url;
 		}
 
-		if ( !ViewHelper.protocolMatcher.matcher(url).find() ) {
-			return "/" + url;
-		}
-
-		return url;
+		return "/" + url;
 	}
 
 	public static String action( Class<? extends IAction> action ) {

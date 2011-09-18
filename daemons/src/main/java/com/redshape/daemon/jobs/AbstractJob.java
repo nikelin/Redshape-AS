@@ -8,9 +8,28 @@ public abstract class AbstractJob implements IJob {
 	
 	private Date created;
 	private UUID id;
-	
+	private JobStatus state;
+
 	public AbstractJob() {
+		this( UUID.randomUUID() );
+	}
+
+	public AbstractJob( UUID jobId ) {
 		this.created = new Date();
+
+		if ( jobId != null ) {
+			this.setJobId(jobId);
+		}
+	}
+
+	@Override
+	public void setState(JobStatus status) {
+		this.state = status;
+	}
+
+	@Override
+	public JobStatus getState() {
+		return this.state;
 	}
 
 	@Override

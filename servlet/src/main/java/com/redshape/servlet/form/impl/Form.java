@@ -107,6 +107,11 @@ public class Form extends AbstractFormItem implements IForm {
 		return field.getValue();
 	}
 
+	public boolean hasValue( String path ) {
+		return !this.getValue(path).equals("null")
+				&& !String.valueOf(this.getValue(path)).isEmpty();
+	}
+
 	@Override
     public <T> void setValue( String path, T value ) {
 		path = path.replace("[]", "");

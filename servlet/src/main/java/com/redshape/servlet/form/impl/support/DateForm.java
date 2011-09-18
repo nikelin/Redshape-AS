@@ -69,7 +69,7 @@ public class DateForm extends Form {
 	}
 
 	protected Map<String, Object> createMonthsList() {
-		Map<String, Object> result = new HashMap<String, Object>();
+		Map<String, Object> result = new LinkedHashMap<String, Object>();
 
 		Calendar calendar = Calendar.getInstance();
 		for ( int i = 1; i <= 12; i++ ) {
