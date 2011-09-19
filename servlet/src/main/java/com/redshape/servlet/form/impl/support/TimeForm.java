@@ -2,6 +2,7 @@ package com.redshape.servlet.form.impl.support;
 
 import com.redshape.servlet.form.builders.BuildersFacade;
 import com.redshape.servlet.form.fields.InputField;
+import com.redshape.utils.Commons;
 import com.redshape.utils.range.IRange;
 import com.redshape.utils.range.IntervalRange;
 import com.redshape.utils.range.RangeBuilder;
@@ -40,6 +41,7 @@ public class TimeForm extends DateForm {
 
 		this.addField(
 				BuildersFacade.newFieldBuilder()
+					.withValue( Calendar.getInstance().get(Calendar.HOUR_OF_DAY) )
 					.withValidator(new NumericStringValidator())
 					.withValidator(new LengthValidator(0, 2))
 					.withValidator(new RangeValidator(this.timeRange))
@@ -51,6 +53,7 @@ public class TimeForm extends DateForm {
 
 		this.addField(
 			BuildersFacade.newFieldBuilder()
+					.withValue( Calendar.getInstance().get(Calendar.MINUTE) )
 					.withValidator(new NumericStringValidator())
 					.withValidator( new LengthValidator( 0, 2 ) )
 					.withValidator( new RangeValidator( this.timeRange ) )
@@ -62,6 +65,7 @@ public class TimeForm extends DateForm {
 
 		this.addField(
 			BuildersFacade.newFieldBuilder()
+					.withValue( Calendar.getInstance().get( Calendar.SECOND ) )
 					.withValidator(new NumericStringValidator())
 					.withValidator( new LengthValidator( 0, 2 ) )
 					.withValidator( new RangeValidator( this.timeRange ) )
@@ -70,6 +74,10 @@ public class TimeForm extends DateForm {
 				.asFieldBuilder()
 				.newInputField( InputField.Type.TEXT )
 		);
+	}
+
+	public void setHour( Integer hour ) {
+		this.setValue("hour", Commons.select( hour, Calendar.getInstance().get(Calendar.HOUR_OF_DAY) ) );
 	}
 
 	public Integer getHour() {
@@ -81,6 +89,10 @@ public class TimeForm extends DateForm {
 		return Integer.valueOf( hour );
 	}
 
+	public void setMinute( Integer value ) {
+		this.setValue("minute", Commons.select( value, Calendar.getInstance().get(Calendar.MINUTE) ) );
+	}
+
 	public Integer getMinute() {
 		String minute = this.getValue("minute");
 		if ( minute == null || minute.isEmpty() ) {
@@ -88,6 +100,10 @@ public class TimeForm extends DateForm {
 		}
 
 		return Integer.valueOf( minute );
+	}
+
+	public void setSecond( Integer value ) {
+		this.setValue("second", Commons.select(value, 0 ) );
 	}
 
 	public Integer getSecond() {
