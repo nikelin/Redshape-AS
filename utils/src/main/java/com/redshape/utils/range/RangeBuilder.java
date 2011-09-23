@@ -5,6 +5,8 @@ import com.redshape.utils.IFunction;
 import com.redshape.utils.range.impl.DefaultRangeParser;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
@@ -29,6 +31,51 @@ public final class RangeBuilder {
 				return Integer.valueOf( String.valueOf(arguments[0]) );
 			}
 		});
+	}
+
+	public static <V extends IRange<Integer>> V fromBitmask( int mask, int size ) {
+		int intervalStart = -1;
+		int intervalEnd = -1;
+		List<IRange<Integer>> ranges = new ArrayList<IRange<Integer>>();
+		for ( int i = 0; i < size; i++ ) {
+			if ( (mask & (1 << i) ) != 0 ) {
+				if ( intervalStart == -1 ) {
+					intervalStart = i;
+				} else {
+					intervalEnd = i;
+				}
+			} else {
+				if ( intervalStart != -1 ) {
+					if ( intervalEnd != -1 ) {
+						ranges.add(
+							RangeBuilder.<Integer>createInterval(IntervalRange.Type.INCLUSIVE,
+																intervalStart, intervalEnd) );
+					} else {
+						ranges.add(
+							RangeBuilder.<Integer>createSingular(intervalStart)
+						);
+					}
+
+					intervalStart = -1;
+					intervalEnd = -1;
+				}
+			}
+		}
+
+		if ( ranges.isEmpty() ) {
+			return (V) ranges.get(0);
+		}
+
+		return (V) RangeBuilder.createList( ranges );
+	}
+
+	public static <T extends Comparable<T>> IRangeList<T> createList( List<IRange<T>> ranges ) {
+		IRangeList<T> list = createList();
+		for ( IRange<T> subRange : ranges ) {
+			list.addSubRange(subRange);
+		}
+
+		return list;
 	}
 
 	public static <T extends Comparable<T>, V extends IRange<T>> V fromString(

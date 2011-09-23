@@ -49,6 +49,16 @@ public class IntervalRange<T extends Comparable<T>> implements IRange<T> {
 
 	@Override
 	public boolean isIntersects(IRange<T> tiRange) {
-		return false;  //To change body of implemented methods use File | Settings | File Templates.
+		return RangeUtils.checkIntersections(this, tiRange);
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append( this.start )
+			   .append( "-" )
+			   .append( this.end );
+
+		return builder.toString();
 	}
 }

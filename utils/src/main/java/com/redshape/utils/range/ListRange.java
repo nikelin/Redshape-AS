@@ -46,4 +46,19 @@ public class ListRange<T extends Comparable<T>> implements IRangeList<T> {
 	public boolean isIntersects(IRange<T> tiRange) {
 		return RangeUtils.checkIntersections( this, tiRange );
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		int i = 0;
+		for ( IRange<T> range : this.getSubRanges() ) {
+			builder.append( range.toString() );
+
+			if ( i++ != (this.getSubRanges().size() - 1) ) {
+		   		builder.append(",");
+			}
+		}
+
+		return builder.toString();
+	}
 }

@@ -35,4 +35,9 @@ public class SingularRange<T extends Comparable<T>> implements IRange<T> {
 	public boolean isIntersects(IRange<T> range) {
 		return RangeUtils.checkIntersections( this, range );
 	}
+
+	@Override
+	public String toString() {
+		return String.valueOf( this.value );
+	}
 }
