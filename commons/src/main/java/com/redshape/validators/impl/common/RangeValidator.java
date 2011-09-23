@@ -1,6 +1,8 @@
 package com.redshape.validators.impl.common;
 
 import com.redshape.utils.range.IRange;
+import com.redshape.utils.range.RangeBuilder;
+import com.redshape.utils.range.RangeUtils;
 import com.redshape.validators.AbstractValidator;
 
 /**
@@ -22,7 +24,10 @@ public class RangeValidator extends AbstractValidator<String, ValidationResult> 
 	@Override
 	public boolean isValid(String value) {
 		return value == null || value.isEmpty()
-				|| range.inRange( Integer.valueOf(value) );
+				/**
+				 * @FIXME: needs to use isSubRange() check
+				 */
+				|| RangeUtils.checkIntersections( range, RangeBuilder.fromString(value) );
 	}
 
 	@Override
