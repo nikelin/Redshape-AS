@@ -44,6 +44,6 @@ public class ListRange<T extends Comparable<T>> implements IRangeList<T> {
 
 	@Override
 	public boolean isIntersects(IRange<T> tiRange) {
-		return false;  //To change body of implemented methods use File | Settings | File Templates.
+		return RangeUtils.checkIntersections( this, tiRange );
 	}
 }
