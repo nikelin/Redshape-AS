@@ -62,8 +62,8 @@ public class JSPContext implements IResponseContext {
     public void proceedResponse(IView view, IHttpRequest request, IHttpResponse response)
             throws ProcessingException {
         view.setAttribute(ViewAttributes.Env.Controller, request.getController());
-        view.setAttribute( ViewAttributes.Env.Action, request.getAction() );
-        view.setAttribute( ViewAttributes.Env.ResourcesHandler, this.getHandler() );
+        view.setAttribute(ViewAttributes.Env.Action, request.getAction() );
+        view.setAttribute(ViewAttributes.Env.ResourcesHandler, this.getHandler() );
 
         RequestDispatcher dispatcher = request.getRequestDispatcher(
 				 this.getFront().getLayout().getScriptPath() );

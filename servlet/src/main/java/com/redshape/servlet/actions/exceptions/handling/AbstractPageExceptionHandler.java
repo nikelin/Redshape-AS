@@ -4,6 +4,7 @@ import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.core.IHttpResponse;
 import com.redshape.servlet.core.controllers.ProcessingException;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -54,10 +55,14 @@ public abstract class AbstractPageExceptionHandler implements IPageExceptionHand
     }
 
     protected abstract void unknownExceptionHandler( ProcessingException e,
-                                                     IHttpRequest request, IHttpResponse response );
+                                                     IHttpRequest request, IHttpResponse response )
+
+		throws IOException ;
 
     @Override
-    public void handleException(ProcessingException e, IHttpRequest request, IHttpResponse response) {
+    public void handleException(ProcessingException e, IHttpRequest request, IHttpResponse response)
+
+		throws IOException {
         Method method = this.interceptors.get( e.getClass() );
         if ( method == null ) {
             this.unknownExceptionHandler(e, request, response);

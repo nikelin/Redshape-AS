@@ -24,6 +24,7 @@ import org.springframework.context.ApplicationContext;
 
 import javax.servlet.ServletException;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -192,7 +193,11 @@ public class HttpDispatcher implements IHttpDispatcher {
             throw new DispatchException( e.getMessage(), e );
         }
 
-        this.getExceptionHandler().handleException( e, request, response );
+		try {
+        	this.getExceptionHandler().handleException( e, request, response );
+		} catch ( IOException ex ) {
+			throw new DispatchException( ex.getMessage(), ex );
+		}
     }
 
 	@Override

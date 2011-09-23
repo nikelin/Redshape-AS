@@ -7,6 +7,8 @@ import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.core.IHttpResponse;
 import com.redshape.servlet.core.controllers.ProcessingException;
 
+import java.io.IOException;
+
 /**
  * Interface for processing related exceptions raised in a
  * controllers context.
@@ -18,15 +20,19 @@ import com.redshape.servlet.core.controllers.ProcessingException;
 public interface IPageExceptionHandler {
 
     public void handleException( PageNotFoundException e, IHttpRequest request,
-                                 IHttpResponse response );
+                                 IHttpResponse response )
+		throws IOException;
 
     public void handleException( PageAuthRequiredException e, IHttpRequest request,
-                                 IHttpResponse response );
+                                 IHttpResponse response )
+		throws IOException ;
 
     public void handleException( PageAccessDeniedException e, IHttpRequest request,
-                                 IHttpResponse response );
+                                 IHttpResponse response )
+		throws IOException ;
 
     public void handleException( ProcessingException e, IHttpRequest request,
-                                 IHttpResponse response );
+                                 IHttpResponse response )
+		throws IOException ;
 
 }

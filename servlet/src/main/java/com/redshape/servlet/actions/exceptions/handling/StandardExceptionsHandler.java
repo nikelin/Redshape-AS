@@ -9,6 +9,7 @@ import com.redshape.servlet.core.controllers.ProcessingException;
 import com.redshape.servlet.views.ViewHelper;
 import org.apache.log4j.Logger;
 
+import javax.servlet.ServletException;
 import java.io.IOException;
 
 /**
@@ -61,55 +62,63 @@ public class StandardExceptionsHandler extends AbstractPageExceptionHandler {
     }
 
     @Override
-    public void handleException(PageNotFoundException e, IHttpRequest request, IHttpResponse response) {
+    public void handleException(PageNotFoundException e,
+					IHttpRequest request, IHttpResponse response)
+		throws IOException {
         try {
             log.info("Error message (404):");
             log.info( e.getMessage(), e );
 
             this.sendRedirect( request, response, this.getPage404() );
-        } catch ( IOException ex ) {
+        } catch ( ServletException ex ) {
             log.error( ex.getMessage(), ex );
         }
     }
 
     @Override
-    public void handleException(PageAuthRequiredException e, IHttpRequest request, IHttpResponse response) {
+    public void handleException(PageAuthRequiredException e,
+						IHttpRequest request, IHttpResponse response)
+		throws IOException  {
         try {
             log.info("Error message (401):");
             log.info( e.getMessage(), e );
 
             this.sendRedirect( request, response, this.getPage401() );
-        } catch ( IOException ex ) {
+        } catch ( ServletException ex ) {
             log.error( ex.getMessage(), ex );
         }
     }
 
     @Override
-    public void handleException(PageAccessDeniedException e, IHttpRequest request, IHttpResponse response) {
+    public void handleException(PageAccessDeniedException e,
+						IHttpRequest request, IHttpResponse response)
+		throws IOException  {
         try {
             log.info("Error message (403):");
             log.info( e.getMessage(), e );
 
             this.sendRedirect( request, response, this.getPage403() );
-        } catch ( IOException ex ) {
+        } catch ( ServletException ex ) {
             log.error( ex.getMessage(), ex );
         }
     }
 
     @Override
-    protected void unknownExceptionHandler(ProcessingException e, IHttpRequest request, IHttpResponse response) {
+    protected void unknownExceptionHandler(ProcessingException e,
+								   IHttpRequest request, IHttpResponse response)
+		throws IOException  {
         try {
             log.error("Error message (500):");
             log.error( e.getMessage(), e );
 
             this.sendRedirect( request, response, this.getPage500() );
-        } catch ( IOException ex ) {
+        } catch ( ServletException ex ) {
             log.error( ex.getMessage(), ex );
         }
     }
 
 	protected void sendRedirect( IHttpRequest request, IHttpResponse response, String path )
-		throws IOException {
-		response.sendRedirect( ViewHelper.url(path) );
+		throws ServletException, IOException {
+		request.getRequestDispatcher( ViewHelper.url(path) ).forward(request, response);
 	}
 }
