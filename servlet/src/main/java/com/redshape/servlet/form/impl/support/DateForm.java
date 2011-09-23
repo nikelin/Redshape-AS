@@ -90,7 +90,7 @@ public class DateForm extends Form {
 
 	public Integer getMonth() {
 		String value = this.getValue("month");
-		if ( value == null || value.equals("null") ) {
+		if ( value == null || value.isEmpty() || value.equals("null") ) {
 			value = String.valueOf( Calendar.getInstance().get( Calendar.MONTH ) );
 		}
 
@@ -103,7 +103,7 @@ public class DateForm extends Form {
 
 	public Integer getDay() {
 		String value = this.getValue("day");
-		if ( value == null || value.equals("null") ) {
+		if ( value == null || value.isEmpty() || value.equals("null") ) {
 			value = String.valueOf( Calendar.getInstance().get( Calendar.DAY_OF_MONTH ) );
 		}
 
@@ -116,7 +116,7 @@ public class DateForm extends Form {
 
 	public Integer getYear() {
 		String value = this.getValue("year");
-		if ( value == null || value.equals("null") ) {
+		if ( value == null || value.isEmpty() || value.equals("null") ) {
 			value = String.valueOf( Calendar.getInstance().get( Calendar.YEAR ) );
 		}
 
