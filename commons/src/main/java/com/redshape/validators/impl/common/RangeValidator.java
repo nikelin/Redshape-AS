@@ -24,9 +24,6 @@ public class RangeValidator extends AbstractValidator<String, ValidationResult> 
 	@Override
 	public boolean isValid(String value) {
 		return value == null || value.isEmpty()
-				/**
-				 * @FIXME: needs to use isSubRange() check
-				 */
 				|| RangeUtils.checkIntersections( range, RangeBuilder.fromString(value) );
 	}
 

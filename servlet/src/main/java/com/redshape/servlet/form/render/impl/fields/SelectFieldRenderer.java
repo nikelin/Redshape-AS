@@ -12,33 +12,33 @@ public class SelectFieldRenderer extends AbstractFormFieldRenderer<SelectField<?
 	public String render(SelectField<?> field, RenderMode mode ) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("<select ");
-		
+
 		builder.append("name=\"").append( field.getCanonicalName() ).append("\" ");
 
-		
+
 		if ( field.getId() != null ) {
 			builder.append("id=\"").append( field.getId() ).append("\" ");
 		}
-		
+
 		this.buildAttributes(builder, field);
-		
+
 		builder.append(">");
-		
+
 		Map<String, ?> options = field.getOptions();
 		for ( String key : options.keySet() ) {
-			builder.append("<option value=\"").append( options.get(key) );
+			builder.append("<option value=\"").append( options.get(key) ).append("\" ");
 
 			if ( field.getValue() != null && field.getValue().equals( options.get( key ) ) ) {
-				builder.append("selected=\"selected\"");
+				builder.append(" selected=\"selected\" ");
 			}
 
-			builder.append("\"> ")
-			   .append( StandardI18NFacade._( key ) )
-			   .append("</option> ");
+			builder.append(">");
+			builder.append( StandardI18NFacade._( key ) )
+					.append("</option> ");
 		}
-		
+
 		builder.append("</select>");
-		
+
 		return this.applyDecorators( builder, field );
 	}
 

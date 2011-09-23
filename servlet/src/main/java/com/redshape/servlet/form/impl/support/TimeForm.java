@@ -115,16 +115,25 @@ public class TimeForm extends DateForm {
 		return Integer.valueOf( second );
 	}
 
+	public void fromDate( Date date ) {
+		super.fromDate(date);
+
+		if ( date == null ) {
+			return;
+		}
+
+		this.setHour( date.getHours() );
+		this.setMinute( date.getMinutes() );
+		this.setSecond( date.getSeconds() );
+	}
+
 	@Override
 	public Date prepareDate() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.set( Calendar.YEAR, this.getYear() );
-		calendar.set( Calendar.MONTH, this.getMonth() );
-		calendar.set( Calendar.DAY_OF_MONTH,  this.getDay() );
-		calendar.set( Calendar.HOUR, this.getHour() );
-		calendar.set( Calendar.MINUTE, this.getMinute() );
-		calendar.set( Calendar.SECOND, this.getSecond() );
-
-		return calendar.getTime();
+		return new Date( this.getYear() - 1900,
+						 this.getMonth() - 1,
+						 this.getDay(),
+						 this.getHour(),
+						 this.getMinute(),
+						 this.getSecond() );
 	}
 }

@@ -123,10 +123,20 @@ public class DateForm extends Form {
 		return Integer.valueOf( value );
 	}
 
+	public void fromDate( Date date ) {
+		if ( date == null ) {
+			return;
+		}
+
+		this.setYear( date.getYear() < 1000 ? date.getYear() + 1900 : date.getYear() );
+		this.setMonth( date.getMonth() );
+		this.setDay( date.getDay() );
+	}
+
 	public Date prepareDate() {
 		return new Date(
-			Integer.valueOf( this.getYear() ),
-			Integer.valueOf( this.getMonth() ),
+			Integer.valueOf( this.getYear() - 1900 ),
+			Integer.valueOf( this.getMonth() - 1 ),
 			Integer.valueOf( this.getDay() )
 		);
 	}
