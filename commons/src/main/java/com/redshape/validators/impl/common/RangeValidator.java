@@ -1,8 +1,10 @@
 package com.redshape.validators.impl.common;
 
+import com.redshape.utils.IFunction;
 import com.redshape.utils.range.IRange;
 import com.redshape.utils.range.RangeBuilder;
 import com.redshape.utils.range.RangeUtils;
+import com.redshape.utils.range.normalizers.NumericNormalizer;
 import com.redshape.validators.AbstractValidator;
 
 /**
@@ -12,19 +14,25 @@ import com.redshape.validators.AbstractValidator;
  */
 public class RangeValidator extends AbstractValidator<String, ValidationResult> {
 	private IRange<Integer> range;
+	private IFunction<?, Integer> normalizer;
 
 	public RangeValidator( IRange<Integer> range ) {
+		this(range, new NumericNormalizer() );
+	}
+
+	public RangeValidator( IRange<Integer> range, IFunction<?, Integer> normalizer ) {
 		if ( range == null ) {
 			throw new IllegalArgumentException("<null>");
 		}
 
+		this.normalizer = normalizer;
 		this.range = range;
 	}
 
 	@Override
 	public boolean isValid(String value) {
 		return value == null || value.isEmpty()
-				|| RangeUtils.checkIntersections( range, RangeBuilder.fromString(value) );
+				|| RangeUtils.checkIntersections( range, RangeBuilder.fromString(value, this.normalizer) );
 	}
 
 	@Override

@@ -10,6 +10,9 @@ import com.redshape.validators.impl.common.LengthValidator;
 import com.redshape.validators.impl.common.NumericStringValidator;
 import com.redshape.validators.impl.common.RangeValidator;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -20,6 +23,11 @@ import java.util.Date;
  */
 public class TimeForm extends DateForm {
 	private IRange<Integer> timeRange;
+
+	private static final DateFormat timeFormatter = new SimpleDateFormat("y.M.d.H.m.s");
+	private static final DateFormat hoursFormatter = new SimpleDateFormat("H");
+	private static final DateFormat minutesFormatter = new SimpleDateFormat("m");
+	private static final DateFormat secondsFormatter = new SimpleDateFormat("s");
 
 	public TimeForm() {
 		super();
@@ -81,12 +89,17 @@ public class TimeForm extends DateForm {
 	}
 
 	public Integer getHour() {
-		String hour = this.getValue("hour");
-		if ( hour == null || hour.equals("null") || hour.isEmpty() ) {
-			return Calendar.getInstance().get( Calendar.HOUR_OF_DAY );
-		}
+		try {
+			if ( !this.hasValue("hour") ) {
+				return 0;
+			}
 
-		return Integer.valueOf( hour );
+			return Integer.valueOf(
+					hoursFormatter.format(
+							hoursFormatter.parse(this.<String>getValue("hour"))));
+		} catch ( ParseException e ) {
+			throw new IllegalArgumentException( e.getMessage(), e );
+		}
 	}
 
 	public void setMinute( Integer value ) {
@@ -94,12 +107,17 @@ public class TimeForm extends DateForm {
 	}
 
 	public Integer getMinute() {
-		String minute = this.getValue("minute");
-		if ( minute == null || minute.equals("null") || minute.isEmpty() ) {
-			return Calendar.getInstance().get( Calendar.MINUTE );
-		}
+		try {
+			if ( !this.hasValue("minute") ) {
+				return 0;
+			}
 
-		return Integer.valueOf( minute );
+			return Integer.valueOf(
+				minutesFormatter.format(
+					minutesFormatter.parse( this.<String>getValue("minute") ) ) );
+		} catch ( ParseException e ) {
+			throw new IllegalArgumentException( e.getMessage(), e );
+		}
 	}
 
 	public void setSecond( Integer value ) {
@@ -107,12 +125,15 @@ public class TimeForm extends DateForm {
 	}
 
 	public Integer getSecond() {
-		String second = this.getValue("second");
-		if ( second == null || second.equals("null") || second.isEmpty() ) {
-			return Calendar.getInstance().get( Calendar.SECOND );
+		try {
+			return Integer.valueOf(
+				secondsFormatter.format(
+					secondsFormatter.parse( this.<String>getValue("second") )
+				)
+			);
+		} catch ( ParseException e ) {
+			throw new IllegalArgumentException( e.getMessage(), e );
 		}
-
-		return Integer.valueOf( second );
 	}
 
 	public void fromDate( Date date ) {
@@ -122,18 +143,21 @@ public class TimeForm extends DateForm {
 			return;
 		}
 
-		this.setHour( date.getHours() );
-		this.setMinute( date.getMinutes() );
-		this.setSecond( date.getSeconds() );
+		this.setHour( Integer.valueOf( hoursFormatter.format(date) ) );
+		this.setMinute( Integer.valueOf( minutesFormatter.format(date) ) );
+		this.setSecond( Integer.valueOf( secondsFormatter.format(date) ) );
 	}
 
 	@Override
 	public Date prepareDate() {
-		return new Date( this.getYear() - 1900,
-						 this.getMonth() - 1,
-						 this.getDay(),
-						 this.getHour(),
-						 this.getMinute(),
-						 this.getSecond() );
+		try {
+			String result = dateFormatter.format( super.prepareDate() )
+			 	+ "." + this.getHour()
+				+ "." + this.getMinute()
+				+ "." + this.getSecond();
+			return timeFormatter.parse( result );
+		} catch ( ParseException e ) {
+			throw new IllegalArgumentException( e.getMessage(), e );
+		}
 	}
 }

@@ -69,7 +69,7 @@ public class StandardExceptionsHandler extends AbstractPageExceptionHandler {
             log.info("Error message (404):");
             log.info( e.getMessage(), e );
 
-            this.sendRedirect( request, response, this.getPage404() );
+            this.sendRedirect( request, response, ViewHelper.url( this.getPage404() ) );
         } catch ( ServletException ex ) {
             log.error( ex.getMessage(), ex );
         }
@@ -83,7 +83,7 @@ public class StandardExceptionsHandler extends AbstractPageExceptionHandler {
             log.info("Error message (401):");
             log.info( e.getMessage(), e );
 
-            this.sendRedirect( request, response, this.getPage401() );
+            this.sendRedirect( request, response, ViewHelper.url( this.getPage401() ) );
         } catch ( ServletException ex ) {
             log.error( ex.getMessage(), ex );
         }
@@ -97,7 +97,7 @@ public class StandardExceptionsHandler extends AbstractPageExceptionHandler {
             log.info("Error message (403):");
             log.info( e.getMessage(), e );
 
-            this.sendRedirect( request, response, this.getPage403() );
+            this.sendRedirect( request, response, ViewHelper.url( this.getPage403() ) );
         } catch ( ServletException ex ) {
             log.error( ex.getMessage(), ex );
         }
@@ -111,7 +111,7 @@ public class StandardExceptionsHandler extends AbstractPageExceptionHandler {
             log.error("Error message (500):");
             log.error( e.getMessage(), e );
 
-            this.sendRedirect( request, response, this.getPage500() );
+            this.sendRedirect( request, response, ViewHelper.url( this.getPage500() ) );
         } catch ( ServletException ex ) {
             log.error( ex.getMessage(), ex );
         }
@@ -119,6 +119,6 @@ public class StandardExceptionsHandler extends AbstractPageExceptionHandler {
 
 	protected void sendRedirect( IHttpRequest request, IHttpResponse response, String path )
 		throws ServletException, IOException {
-		request.getRequestDispatcher( ViewHelper.url(path) ).forward(request, response);
+		response.sendRedirect(path);
 	}
 }

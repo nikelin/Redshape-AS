@@ -20,6 +20,8 @@ public class DefaultRangeParser implements IRangeParser {
 			throw new IllegalArgumentException("<null>");
 		}
 
+		value = this.normalize(value);
+
 		V result;
 		if ( value.contains(PARTS_DELIMITER) ) {
 			result = (V) this.processListExpression( value, normalizer );
@@ -32,6 +34,10 @@ public class DefaultRangeParser implements IRangeParser {
 		}
 
 		return result;
+	}
+
+	protected String normalize( String value ) {
+		return value.replaceAll("\\s", "");
 	}
 
 	protected <T extends Comparable<T>> IRange<T> processListExpression( String value, IFunction<?, T> normalizer ) {

@@ -15,4 +15,6 @@ public interface IRange<T extends Comparable<?>> {
 
 	public boolean isIntersects( IRange<T> range );
 
+	public boolean isEmpty();
+
 }

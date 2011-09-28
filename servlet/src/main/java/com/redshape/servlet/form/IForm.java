@@ -20,7 +20,9 @@ public interface IForm extends com.redshape.servlet.form.IFormItem {
 	public void process( IHttpRequest request ) throws com.redshape.servlet.form.InvalidDataException;
 	
 	public void setLegend( String legend );
-	
+
+	public boolean hasValue( String path );
+
 	public String getLegend();
 	
 	public void setAction( String action );
@@ -31,7 +33,7 @@ public interface IForm extends com.redshape.servlet.form.IFormItem {
 	
 	public String getMethod();
 	
-	public IForm findContext( String name );
+	public <T extends IForm> T findContext( String name );
 	
 	public <T> com.redshape.servlet.form.IFormField<T> findField( String name );
 	

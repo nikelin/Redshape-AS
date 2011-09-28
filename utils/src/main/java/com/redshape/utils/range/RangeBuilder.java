@@ -1,10 +1,9 @@
 package com.redshape.utils.range;
 
-import com.redshape.utils.Function;
 import com.redshape.utils.IFunction;
 import com.redshape.utils.range.impl.DefaultRangeParser;
+import com.redshape.utils.range.normalizers.NumericNormalizer;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,27 +16,27 @@ public final class RangeBuilder {
 	public static IRangeParser parser = new DefaultRangeParser();
 
 	public static <V extends IRange<Integer>> V fromString( String value ) {
-		return parser.<Integer, V>parse( value, new Function<Object, Integer>() {
-			@Override
-			public Integer invoke(Object... arguments) throws InvocationTargetException {
-				if ( arguments.length == 0 ) {
-					throw new IllegalArgumentException("Non-empty arguments list expected");
-				}
+		return fromString( value, new NumericNormalizer() );
+	}
 
-				if ( arguments[0] == null ) {
-					return null;
-				}
+	public static <T extends Comparable<T>, V extends IRange<T>> V fromString(
+			String value, IFunction<?, T> normalizer ) {
+		if ( parser == null ) {
+			throw new IllegalStateException("Ranges parser not defined!");
+		}
 
-				return Integer.valueOf( String.valueOf(arguments[0]) );
-			}
-		});
+		return parser.parse(value, normalizer);
 	}
 
 	public static <V extends IRange<Integer>> V fromBitmask( int mask, int size ) {
+		return fromBitmask(mask, 0, size);
+	}
+
+	public static <V extends IRange<Integer>> V fromBitmask( int mask, int start, int size ) {
 		int intervalStart = -1;
 		int intervalEnd = -1;
 		List<IRange<Integer>> ranges = new ArrayList<IRange<Integer>>();
-		for ( int i = 0; i < size; i++ ) {
+		for ( int i = start; i <= size; i++ ) {
 			if ( (mask & (1 << i) ) != 0 ) {
 				if ( intervalStart == -1 ) {
 					intervalStart = i;
@@ -63,10 +62,14 @@ public final class RangeBuilder {
 		}
 
 		if ( ranges.isEmpty() ) {
-			return (V) ranges.get(0);
+			return (V) RangeBuilder.<Integer>createEmptyRange();
 		}
 
 		return (V) RangeBuilder.createList( ranges );
+	}
+
+	public static <T extends Comparable<T>> IRange<T> createEmptyRange() {
+		return new EmptyRange();
 	}
 
 	public static <T extends Comparable<T>> IRangeList<T> createList( List<IRange<T>> ranges ) {
@@ -76,15 +79,6 @@ public final class RangeBuilder {
 		}
 
 		return list;
-	}
-
-	public static <T extends Comparable<T>, V extends IRange<T>> V fromString(
-			String value, IFunction<?, T> normalizer ) {
-		if ( parser == null ) {
-			throw new IllegalStateException("Ranges parser not defined!");
-		}
-
-		return parser.parse(value, normalizer);
 	}
 
 	public static <T extends Comparable<T>> IRange<T> createSingular(T value) {

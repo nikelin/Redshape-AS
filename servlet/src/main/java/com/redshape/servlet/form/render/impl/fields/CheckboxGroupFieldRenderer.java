@@ -29,7 +29,13 @@ public class CheckboxGroupFieldRenderer extends AbstractFormFieldRenderer<Checkb
 		}
 
 		this.buildAttributes( builder, field );
-		builder.append("name=\"").append( field.getCanonicalName() ).append("\" ");
+
+		String canonicalName = field.getCanonicalName();
+		if ( !canonicalName.endsWith("[]") ) {
+			canonicalName = canonicalName.concat("[]");
+		}
+
+		builder.append("name=\"").append( canonicalName ).append("\" ");
 
         builder.append("/><br/>");
     }

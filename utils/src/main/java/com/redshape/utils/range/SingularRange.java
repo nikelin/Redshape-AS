@@ -37,6 +37,11 @@ public class SingularRange<T extends Comparable<T>> implements IRange<T> {
 	}
 
 	@Override
+	public boolean isEmpty() {
+		return false;
+	}
+
+	@Override
 	public String toString() {
 		return String.valueOf( this.value );
 	}

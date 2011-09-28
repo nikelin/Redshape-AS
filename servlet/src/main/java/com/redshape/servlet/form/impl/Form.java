@@ -107,8 +107,10 @@ public class Form extends AbstractFormItem implements IForm {
 		return field.getValue();
 	}
 
+	@Override
 	public boolean hasValue( String path ) {
-		return !this.getValue(path).equals("null")
+		return this.getValue(path) != null
+				&& !this.getValue(path).equals("null")
 				&& !String.valueOf(this.getValue(path)).isEmpty();
 	}
 
@@ -131,18 +133,18 @@ public class Form extends AbstractFormItem implements IForm {
 	public <T> IFormField<T> findField( String path ) {
 		String[] parts = path.split("\\.");
 		if ( parts.length != 1 ) {
-			return this.findField( this, parts );
+			return this.<T>findField( this, parts );
 		}
 		
-		return this.findField( this, path );
+		return this.<T>findField( this, path );
 	}
 	
 	@Override
-	public IForm findContext( String path ) {
-		return this.findContext( path.split("\\.") );
+	public <T extends IForm> T findContext( String path ) {
+		return this.<T>findContext( path.split("\\.") );
 	}
 	
-	protected IForm findContext( String[] path ) {
+	protected <T extends IForm> T findContext( String[] path ) {
 		Integer index = this.itemsDict.get( path[0] );
 
         IFormItem item = null;
@@ -162,13 +164,12 @@ public class Form extends AbstractFormItem implements IForm {
 			log.error("Current context:" + this.getCanonicalName() + ", full search path: " + Arrays.asList( path )  );
 			throw new IllegalArgumentException("Illegal path");
 		}
-		
-		IForm form = (IForm) item;
+
 		if ( path.length == 1 ) {
-			return form;
+			return (T) item;
 		}
 		
-		return form.findContext( 
+		return ( (IForm) item ).<T>findContext(
 				StringUtils.join( Arrays.copyOfRange( path, 1, path.length ), "." ) );
 	}
 	

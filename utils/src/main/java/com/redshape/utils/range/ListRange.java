@@ -33,6 +33,11 @@ public class ListRange<T extends Comparable<T>> implements IRangeList<T> {
 	}
 
 	@Override
+	public boolean isEmpty() {
+		return this.getSubRanges().isEmpty();
+	}
+
+	@Override
 	public T getStart() {
 		throw new UnsupportedOperationException("Operation not supported on ListRange type");
 	}

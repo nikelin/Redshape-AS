@@ -9,6 +9,9 @@ import com.redshape.utils.range.RangeBuilder;
 import com.redshape.validators.impl.common.NumericStringValidator;
 import com.redshape.validators.impl.common.RangeValidator;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -17,6 +20,10 @@ import java.util.*;
  * @date 8/15/11 12:41 PM
  */
 public class DateForm extends Form {
+	protected static final DateFormat dateFormatter = new SimpleDateFormat("y.M.d");
+	protected static final DateFormat yearFormatter = new SimpleDateFormat("y");
+	protected static final DateFormat monthFormatter = new SimpleDateFormat("M");
+	protected static final DateFormat dayFormatter = new SimpleDateFormat("d");
 
 	public DateForm() {
 		this(null);
@@ -52,7 +59,7 @@ public class DateForm extends Form {
 				BuildersFacade.newFieldBuilder()
 					.withValue( Calendar.getInstance().get( Calendar.MONTH ) )
 					.withValidator(new RangeValidator(
-							RangeBuilder.createInterval(IntervalRange.Type.INCLUSIVE, 0, 11)
+							RangeBuilder.createInterval(IntervalRange.Type.INCLUSIVE, 1, 12)
 					))
 					.withValidator(new NumericStringValidator() )
 					.withName("month")
@@ -76,7 +83,7 @@ public class DateForm extends Form {
 		Map<String, Object> result = new LinkedHashMap<String, Object>();
 
 		Calendar calendar = Calendar.getInstance();
-		for ( int i = 0; i <= 11; i++ ) {
+		for ( int i = 1; i <= 12; i++ ) {
 			calendar.set(Calendar.MONTH, i);
 			result.put( calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()), i );
 		}
@@ -89,12 +96,11 @@ public class DateForm extends Form {
 	}
 
 	public Integer getMonth() {
-		String value = this.getValue("month");
-		if ( value == null || value.isEmpty() || value.equals("null") ) {
-			value = String.valueOf( Calendar.getInstance().get( Calendar.MONTH ) );
+		try {
+			return Integer.valueOf( monthFormatter.format( monthFormatter.parse(this.<String>getValue("month"))));
+		} catch ( ParseException e ) {
+			throw new IllegalArgumentException( e.getMessage(), e );
 		}
-
-		return Integer.valueOf( value );
 	}
 
 	public void setDay( Integer value ) {
@@ -102,12 +108,11 @@ public class DateForm extends Form {
 	}
 
 	public Integer getDay() {
-		String value = this.getValue("day");
-		if ( value == null || value.isEmpty() || value.equals("null") ) {
-			value = String.valueOf( Calendar.getInstance().get( Calendar.DAY_OF_MONTH ) );
+		try {
+			return Integer.valueOf( dayFormatter.format( dayFormatter.parse(this.<String>getValue("day") ) ) );
+		} catch ( ParseException e ) {
+			throw new IllegalArgumentException( e.getMessage(), e );
 		}
-
-		return Integer.valueOf( value );
 	}
 
 	public void setYear( Integer value ) {
@@ -115,12 +120,11 @@ public class DateForm extends Form {
 	}
 
 	public Integer getYear() {
-		String value = this.getValue("year");
-		if ( value == null || value.isEmpty() || value.equals("null") ) {
-			value = String.valueOf( Calendar.getInstance().get( Calendar.YEAR ) );
+		try {
+			return Integer.valueOf( yearFormatter.format( yearFormatter.parse(this.<String>getValue("year") ) ) );
+		} catch ( ParseException e ) {
+			throw new IllegalArgumentException( e.getMessage(), e );
 		}
-
-		return Integer.valueOf( value );
 	}
 
 	public void fromDate( Date date ) {
@@ -128,16 +132,16 @@ public class DateForm extends Form {
 			return;
 		}
 
-		this.setYear( date.getYear() < 1000 ? date.getYear() + 1900 : date.getYear() );
-		this.setMonth( date.getMonth() );
-		this.setDay( date.getDay() );
+		this.setYear(Integer.valueOf(yearFormatter.format(date)));
+		this.setMonth(Integer.valueOf(monthFormatter.format(date)));
+		this.setDay( Integer.valueOf(dayFormatter.format(date)) );
 	}
 
 	public Date prepareDate() {
-		return new Date(
-			Integer.valueOf( this.getYear() - 1900 ),
-			Integer.valueOf( this.getMonth() - 1 ),
-			Integer.valueOf( this.getDay() )
-		);
+		try {
+			return dateFormatter.parse( this.getYear() + "." + this.getMonth() + "." + this.getDay() );
+		} catch ( ParseException e ) {
+			throw new IllegalArgumentException( e.getMessage(), e );
+		}
 	}
 }
