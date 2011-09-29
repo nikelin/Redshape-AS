@@ -64,6 +64,26 @@ public class StringUtils {
         return result;
     }
 
+	public static String trim( String source ) {
+		return trim( source, " ");
+	}
+
+	public static String trim( String source, String needle ) {
+		if ( source == null ) {
+			throw new IllegalArgumentException("<null>");
+		}
+
+		while ( source.startsWith(needle) ) {
+			source = source.substring(1);
+		}
+
+		while ( source.endsWith(needle) ) {
+			source = source.substring(0, source.length() - 1 );
+		}
+
+		return source;
+	}
+
     public static String getFileExtension( File file ) {
         return getFileExtension( file.getPath() );
     }

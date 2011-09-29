@@ -1,6 +1,7 @@
 package com.redshape.utils.range.impl;
 
 import com.redshape.utils.IFunction;
+import com.redshape.utils.StringUtils;
 import com.redshape.utils.range.*;
 
 import java.lang.reflect.InvocationTargetException;
@@ -37,7 +38,10 @@ public class DefaultRangeParser implements IRangeParser {
 	}
 
 	protected String normalize( String value ) {
-		return value.replaceAll("\\s", "");
+		return StringUtils.trim(value)
+						  .replaceAll("\\s-\\s", "-")
+						  .replaceAll("\\s,\\s", ",")
+						  .replaceAll("\\s", ",");
 	}
 
 	protected <T extends Comparable<T>> IRange<T> processListExpression( String value, IFunction<?, T> normalizer ) {
