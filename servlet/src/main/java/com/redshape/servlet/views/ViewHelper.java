@@ -37,6 +37,15 @@ public final class ViewHelper {
 		}
 	}
 
+	public static String actionName( IAction action ) {
+		Action actionMeta = action.getClass().getAnnotation(Action.class);
+		if ( actionMeta == null ) {
+			return null;
+		}
+
+		return actionMeta.name();
+	}
+
 	private static String normalizeUrl( String url ) {
 		if ( url.startsWith("/") ) {
 			return url;

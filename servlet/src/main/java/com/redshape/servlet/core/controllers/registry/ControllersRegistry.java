@@ -2,14 +2,13 @@ package com.redshape.servlet.core.controllers.registry;
 
 import com.redshape.servlet.core.controllers.Action;
 import com.redshape.servlet.core.controllers.IAction;
-import com.redshape.servlet.core.controllers.annotations.IndexAction;
 import com.redshape.servlet.core.controllers.loaders.IActionsLoader;
 import com.redshape.utils.Commons;
 import org.apache.commons.collections.FastHashMap;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,11 +19,11 @@ import java.util.Set;
  * @author Cyril A. Karpenko <self@nikelin.ru>
  */
 public class ControllersRegistry implements IControllersRegistry, ApplicationContextAware{
-    private Set<Class<? extends IAction>> actions = new HashSet<Class<? extends IAction>>();
+    private Map<Integer, Class<? extends IAction>> actions = new FastHashMap();
+	private Map<Integer, IAction> registry = new FastHashMap();
 
     private ApplicationContext context;
 	private IActionsLoader loader;
-    private Map<String, Map<String, IAction>> registry = new FastHashMap();
 
     public ControllersRegistry() {
     	this( (Set<Class<? extends IAction>>) null);
@@ -33,7 +32,7 @@ public class ControllersRegistry implements IControllersRegistry, ApplicationCon
 	public ControllersRegistry( Set<Class<? extends IAction>> actions ) {
 		super();
 
-		this.actions = actions;
+		this.addActions(actions);
 	}
 
 
@@ -49,7 +48,26 @@ public class ControllersRegistry implements IControllersRegistry, ApplicationCon
 			return;
 		}
 
-		this.actions = this.getLoader().load();
+		this.addActions(this.getLoader().load());
+	}
+
+	protected void addActions( Set<Class<? extends IAction>> actions ) {
+		for ( Class<? extends IAction> action : actions ) {
+			this.addAction( action );
+		}
+	}
+
+	private int generateHashId( Class<? extends IAction> action ) {
+		Action actionMeta = action.getAnnotation(Action.class);
+		if ( actionMeta == null ) {
+			return -1;
+		}
+
+		return generateHashId( actionMeta.controller(), actionMeta.name() );
+	}
+
+	private int generateHashId( String controllerName, String actionName ) {
+		return ( this.normalize( controllerName + "/" + actionName ) ).hashCode();
 	}
 
 	protected IActionsLoader getLoader() {
@@ -82,74 +100,61 @@ public class ControllersRegistry implements IControllersRegistry, ApplicationCon
     
     @Override
 	public void addAction( Class<? extends IAction> actionClazz ) {
-        if ( actionClazz.getAnnotation( Action.class ) == null ) {
-            throw new IllegalArgumentException("Invalid class given as action");
-        }
+        int id = this.generateHashId(actionClazz);
+		if ( id == -1 ) {
+			return;
+		}
 
-        this.actions.add( actionClazz );
+		this.actions.put(id, actionClazz);
     }
 
     @Override
-	public Set<Class<? extends IAction> > getActions() {
-        return this.actions;
+	public Collection<Class<? extends IAction> > getActions() {
+        return this.actions.values();
     }
 
     @Override
     public IAction getInstance( String controller, String action ) throws InstantiationException {
-         if ( !this.registry.containsKey(controller) ) {
-             return this.createAction( controller, action );
-         }
+		int hashCode = this.generateHashId( controller, action );
+		if ( hashCode == -1 ) {
+			return null;
+		}
 
-        if ( !this.registry.get( controller ).containsKey(action) ) {
-            return this.createAction( controller, action );
-        }
+       	if ( !this.registry.containsKey( hashCode ) ) {
+			this.registry.put( hashCode, this.createAction( controller, action ) );
+		}
 
-        return this.registry.get(controller).get(action);
+        return this.registry.get(hashCode);
     }
 
 	protected IAction createAction( String controller, String action ) throws InstantiationException {
+		int actionHashCode = this.generateHashId(controller, action);
         IAction actionInstance = null;
+		Class<? extends IAction> actionClazz = this.actions.get( actionHashCode );
+		if ( actionClazz != null ) {
+			actionInstance = _createInstance(actionClazz);
+			this.registry.put( actionHashCode, actionInstance );
+		}
+
+		int controllerHashCode = this.generateHashId(controller, "");
         IAction controllerInstance = null;
-    	for ( Class<? extends IAction> actionClazz : getActions() ) {
-            Action actionMeta = actionClazz.getAnnotation( Action.class );
-            if ( actionMeta == null
-                    || ( actionMeta.controller() == null || actionMeta.name() == null ) ) {
-                continue;
-            }
-
-			String actionController = this.normalize( actionMeta.controller() );
-			String actionName = actionMeta.name().replaceAll("/", "");
-            if ( actionController.equals( controller ) && actionName.equals( action ) ) {
-                actionInstance = _createInstance( actionClazz );
-                break;
-            } else if ( actionController.equals(controller)
-					&& actionClazz.getAnnotation(IndexAction.class) != null ) {
-                controllerInstance = _createInstance( actionClazz );
-            }
-        }
-    	
-    	if ( actionInstance != null ) {
-	    	this.getContext().getAutowireCapableBeanFactory()
-	    			.autowireBean( actionInstance );
-
-            if ( !this.registry.containsKey(controller) ) {
-                this.registry.put( controller, new FastHashMap() );
-            }
-
-            this.registry.get( controller ).put( action, actionInstance );
-			controllerInstance = null;
-    	}
+		Class<? extends IAction> controllerClazz = this.actions.get( controllerHashCode );
+		if ( controllerClazz != null ) {
+			this.registry.put( controllerHashCode, controllerInstance = _createInstance(controllerClazz) );
+		}
 
         return Commons.select( actionInstance, controllerInstance );
     }
 
 	protected String normalize( String value ) {
+		value = value.replace("//", "/");
+
 		if ( value.startsWith("/") ) {
 			value = value.substring(1);
 		}
 
 		if ( value.endsWith("/") ) {
-			value = value.substring( value.length(), value.length() - 1 );
+			value = value.substring( 0, value.length() - 1 );
 		}
 
 		return value;
@@ -157,7 +162,11 @@ public class ControllersRegistry implements IControllersRegistry, ApplicationCon
 
     private IAction _createInstance( Class<? extends IAction> action ) throws InstantiationException {
         try {
-            return action.newInstance();
+            IAction actionInstance = action.newInstance();
+			this.getContext().getAutowireCapableBeanFactory()
+				.autowireBean( actionInstance );
+
+			return actionInstance;
         } catch ( InstantiationException e ) {
         	throw new InstantiationException("Unable to craete action instance");
         } catch ( IllegalAccessException e ) {

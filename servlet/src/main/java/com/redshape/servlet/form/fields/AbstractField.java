@@ -125,7 +125,7 @@ public abstract class AbstractField<T> extends AbstractFormItem implements IForm
 	}
 	
 	@Override
-	public void addValidator(IValidator<T, IValidationResult> validator) {
+	public <V extends IValidator<T, IValidationResult>> void addValidator(V validator) {
 		this.validators.add(validator);
 	}
 

@@ -46,7 +46,7 @@ public interface IFormField<T> extends IFormItem {
 	 * 
 	 * @param validator
 	 */
-	public void addValidator( IValidator<T, IValidationResult> validator );
+	public <V extends IValidator<T, IValidationResult>> void addValidator( V validator );
 	
 	/**
 	 * Add validators collection to constraint current field value range.

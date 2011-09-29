@@ -122,16 +122,17 @@ public class XMLConfig implements IWritableConfig {
 
     @Override
     public IConfig get(String name) throws ConfigException {
-        if (this.node == null) {
-            return new XMLConfig((Element) null);
+        if (this.isNull()) {
+            return this.createNull();
         }
 
-        NodeList list = this.node.getElementsByTagName(name);
-        if (list.getLength() == 0) {
-            return new XMLConfig((Element) null);
-        } else {
-            return new XMLConfig((Element) list.item(0));
-        }
+		for ( IConfig config : this.childs() ) {
+			if ( config.name().equals(name) ) {
+				return config;
+			}
+		}
+
+		return this.createNull();
     }
 
     @Override
@@ -297,7 +298,7 @@ public class XMLConfig implements IWritableConfig {
     @Override
     public IWritableConfig append(IConfig config) {
         if (this.getRawElement() == null) {
-            return null;
+            return this.createNull();
         }
 
         @SuppressWarnings("deprecation")
@@ -342,4 +343,8 @@ public class XMLConfig implements IWritableConfig {
         writer.write(result);
         writer.close();
     }
+
+	private IWritableConfig createNull() {
+		return new XMLConfig( (Element) null );
+	}
 }

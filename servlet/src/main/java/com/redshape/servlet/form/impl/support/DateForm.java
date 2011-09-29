@@ -97,6 +97,10 @@ public class DateForm extends Form {
 
 	public Integer getMonth() {
 		try {
+			if ( !this.hasValue("month") ) {
+				return Calendar.getInstance().get( Calendar.MONTH );
+			}
+
 			return Integer.valueOf( monthFormatter.format( monthFormatter.parse(this.<String>getValue("month"))));
 		} catch ( ParseException e ) {
 			throw new IllegalArgumentException( e.getMessage(), e );
@@ -109,6 +113,10 @@ public class DateForm extends Form {
 
 	public Integer getDay() {
 		try {
+			if ( !this.hasValue("day") ) {
+				return Calendar.getInstance().get( Calendar.DAY_OF_MONTH );
+			}
+
 			return Integer.valueOf( dayFormatter.format( dayFormatter.parse(this.<String>getValue("day") ) ) );
 		} catch ( ParseException e ) {
 			throw new IllegalArgumentException( e.getMessage(), e );
@@ -121,6 +129,10 @@ public class DateForm extends Form {
 
 	public Integer getYear() {
 		try {
+			if ( !this.hasValue("year") ) {
+				return Calendar.getInstance().get( Calendar.YEAR );
+			}
+
 			return Integer.valueOf( yearFormatter.format( yearFormatter.parse(this.<String>getValue("year") ) ) );
 		} catch ( ParseException e ) {
 			throw new IllegalArgumentException( e.getMessage(), e );

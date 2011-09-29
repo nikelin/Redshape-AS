@@ -126,6 +126,10 @@ public class TimeForm extends DateForm {
 
 	public Integer getSecond() {
 		try {
+			if ( !this.hasValue("second") ) {
+				return 0;
+			}
+
 			return Integer.valueOf(
 				secondsFormatter.format(
 					secondsFormatter.parse( this.<String>getValue("second") )
