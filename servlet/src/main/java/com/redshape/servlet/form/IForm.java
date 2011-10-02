@@ -35,9 +35,9 @@ public interface IForm extends com.redshape.servlet.form.IFormItem {
 	
 	public <T extends IForm> T findContext( String name );
 	
-	public <T> com.redshape.servlet.form.IFormField<T> findField( String name );
+	public <T, V extends IFormField<T>> V findField( String name );
 	
-	public void addField( com.redshape.servlet.form.IFormField<?> field );
+	public void addField( IFormField<?> field );
 
 	public void removeField( String path );
 

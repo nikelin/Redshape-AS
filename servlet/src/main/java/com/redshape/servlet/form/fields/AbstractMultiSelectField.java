@@ -76,7 +76,7 @@ public class AbstractMultiSelectField<T> extends AbstractSelectField<T> {
 
 	protected boolean isValue( T value ) {
 		for ( T registered : this.getOptions().values() ) {
-			if ( registered.toString().equals( value ) ) {
+			if ( registered.toString().equals( value.toString() ) ) {
 				return true;
 			}
 		}

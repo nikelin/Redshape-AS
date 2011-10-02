@@ -18,11 +18,11 @@ public class PropertiesConfig implements IWritableConfig {
     private boolean nulled;
     private String name;
     private String value;
-    private IConfig parent;
+    private PropertiesConfig parent;
     private List<IConfig> childs = new ArrayList<IConfig>();
     private Map<String, String> attributes = new HashMap<String, String>();
 
-    protected PropertiesConfig( IConfig parent, String name, String value ) {
+    protected PropertiesConfig( PropertiesConfig parent, String name, String value ) {
         this.parent = parent;
         this.name = name;
         this.value = value;
@@ -230,8 +230,17 @@ public class PropertiesConfig implements IWritableConfig {
 
     @Override
     public IWritableConfig remove() throws ConfigException {
-        throw new UnsupportedOperationException("Not implemented");
+		if ( this.isNull() ) {
+			return this;
+		}
+
+        this.parent.removeChild(this);
+		return this;
     }
+
+	protected void removeChild( PropertiesConfig config ) {
+		this.childs.remove(config);
+	}
 
     @Override
     public String value() {

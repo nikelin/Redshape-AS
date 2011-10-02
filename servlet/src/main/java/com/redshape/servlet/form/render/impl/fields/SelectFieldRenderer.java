@@ -28,7 +28,7 @@ public class SelectFieldRenderer extends AbstractFormFieldRenderer<SelectField<?
 		for ( String key : options.keySet() ) {
 			builder.append("<option value=\"").append( options.get(key) ).append("\" ");
 
-			if ( field.getValue() != null && field.getValue().equals( options.get( key ) ) ) {
+			if ( field.getValue() != null && field.getValue().toString().equals( options.get( key ).toString() ) ) {
 				builder.append(" selected=\"selected\" ");
 			}
 

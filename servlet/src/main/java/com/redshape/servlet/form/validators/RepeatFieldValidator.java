@@ -19,12 +19,12 @@ public class RepeatFieldValidator extends AbstractValidator<String, IValidationR
 
     public RepeatFieldValidator( IForm form, String sourcePath, String targetPath ) {
         this.form = form;
-        this.source = this.form.findField( sourcePath );
+        this.source = this.form.<Object, IFormField<Object>>findField( sourcePath );
 		if ( this.source == null ) {
 			throw new IllegalArgumentException("<null>");
 		}
 
-        this.target = this.form.findField( targetPath );
+        this.target = this.form.<Object, IFormField<Object>>findField( targetPath );
 		if ( this.target == null ) {
 			throw new IllegalArgumentException("<null>");
 		}

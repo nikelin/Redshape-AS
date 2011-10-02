@@ -81,7 +81,7 @@ public class Form extends AbstractFormItem implements IForm {
 			throw new IllegalArgumentException("<null>");
 		}
 
-		IFormField<T> field = this.<T>findField( path );
+		IFormField<T> field = this.<T, IFormField<T>>findField( path );
 		if ( field == null ) {
 			throw new IllegalArgumentException("Path " + path + " not exists!");
 		}
@@ -99,7 +99,7 @@ public class Form extends AbstractFormItem implements IForm {
 			throw new IllegalArgumentException("<null>");
 		}
 
-		IFormField<T> field = this.<T>findField(path);
+		IFormField<T> field = this.<T, IFormField<T>>findField(path);
 		if ( field == null ) {
 			throw new IllegalArgumentException("Path " + path + " not exists!");
 		}
@@ -121,7 +121,7 @@ public class Form extends AbstractFormItem implements IForm {
 			throw new IllegalArgumentException("<null>");
 		}
 
-		IFormField<T> field = this.<T>findField(path);
+		IFormField<T> field = this.<T, IFormField<T>>findField(path);
 		if ( field == null ) {
 			throw new IllegalArgumentException("Path " + path + " not exists!");
 		}
@@ -130,13 +130,13 @@ public class Form extends AbstractFormItem implements IForm {
     }
 
 	@Override
-	public <T> IFormField<T> findField( String path ) {
+	public <T, V extends IFormField<T>> V findField( String path ) {
 		String[] parts = path.split("\\.");
 		if ( parts.length != 1 ) {
-			return this.<T>findField( this, parts );
+			return this.<T, V>findField( this, parts );
 		}
 		
-		return this.<T>findField( this, path );
+		return this.<T, V>findField( this, path );
 	}
 	
 	@Override
@@ -173,7 +173,7 @@ public class Form extends AbstractFormItem implements IForm {
 				StringUtils.join( Arrays.copyOfRange( path, 1, path.length ), "." ) );
 	}
 	
-	protected <T> IFormField<T> findField( IForm context, String[] name ) {
+	protected <T, V extends IFormField<T>> V findField( IForm context, String[] name ) {
 		IForm targetContext = this.findContext( Arrays.copyOfRange( name, 0, name.length - 1  ) );
 		if ( targetContext == null ) {
             if ( name.length == 2
@@ -184,20 +184,20 @@ public class Form extends AbstractFormItem implements IForm {
             }
 		}
 		
-		return this.findField( targetContext, name[name.length-1] );
+		return this.<T, V>findField( targetContext, name[name.length-1] );
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected <T> IFormField<T> findField( IForm context, String subContextName ) {
-		IFormItem item = null;
+	protected <T, V extends IFormField<T>> V findField( IForm context, String subContextName ) {
+		V item = null;
 		
 		if ( context != this ) {
-			item = context.findField( subContextName );
+			item = context.<T, V>findField( subContextName );
 		} else {
 			Integer index = Commons.select( this.itemsDict.get(subContextName),
                                             this.itemsDict.get( subContextName + "[]" ) );
 			if ( index != null ) {
-				item = this.items.get(index);
+				item = (V) this.items.get(index);
 			}
 		}
 		
@@ -208,9 +208,8 @@ public class Form extends AbstractFormItem implements IForm {
 		if ( !( item instanceof IFormField ) ) {
 			throw new IllegalArgumentException("Requested path not related to field");
 		}
-		
-		final IFormField<T> newItem = (IFormField<T>) item;
-        return newItem;
+
+        return (V) item;
 	}
 	
 	protected String getItemId( IFormItem field ) {
@@ -386,7 +385,7 @@ public class Form extends AbstractFormItem implements IForm {
 
 	@Override
 	public void removeField(String path) {
-		IFormField<?> field = this.findField(path);
+		IFormField<?> field = this.<Object, IFormField<Object>>findField(path);
 		if ( field == null ) {
 			throw new IllegalArgumentException("Field not found");
 		}

@@ -19,7 +19,7 @@ public class CheckboxFieldRenderer extends AbstractFormFieldRenderer<CheckboxFie
 		}
 		
 		if ( field.getValue() != null ) {
-            builder.append("value=\"").append( field.getValue() ).append("\" ");
+            builder.append("checked=\"checked\"");
 		}
 
 		this.buildAttributes( builder, field );
