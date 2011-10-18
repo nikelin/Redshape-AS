@@ -23,6 +23,7 @@ import java.util.Map;
 public class AjaxContext implements IResponseContext {
     private static final Logger log = Logger.getLogger( AjaxContext.class );
     private static final String MARKER_HEADER = "XMLHttpRequest";
+	private static final String DISABLE_PARAM = "Disable";
 
     private Collection<String> blackList = new HashSet<String>();
 
@@ -43,7 +44,11 @@ public class AjaxContext implements IResponseContext {
     public SupportType isSupported(IHttpRequest request) {
         String headerValue = request.getHeader("X-Requested-With");
          if (  headerValue != null && headerValue.equals(AjaxContext.MARKER_HEADER) ) {
-            return SupportType.SHOULD;
+			if ( !request.getParameter("_servletContextParam").equals(AjaxContext.DISABLE_PARAM) ) {
+            	return SupportType.SHOULD;
+			} else {
+				return SupportType.NO;
+			}
         } else {
             return SupportType.NO;
         }

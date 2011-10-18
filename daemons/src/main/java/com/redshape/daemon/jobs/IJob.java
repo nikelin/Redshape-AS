@@ -13,7 +13,11 @@ public interface IJob extends Serializable {
     public void setState( JobStatus status );
 
     public JobStatus getState();
-	
+
+	public void setUpdated( Date date );
+
+	public Date getUpdated();
+
 	public Date getCreated();
 	
 }

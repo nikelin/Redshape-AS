@@ -16,9 +16,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class JobsManager implements IJobsManager {
-	private Map<Class<? extends IJob>,
-			IJobHandler<? extends IJob, ?>> handlers = new HashMap<Class<? extends IJob>,
-														  IJobHandler<? extends IJob,?>>();
+	private Map<Class<? extends IJob>, IJobHandler<?, ?>> handlers =
+							new HashMap<Class<? extends IJob>, IJobHandler<?, ?>>();
 	private ApplicationContext context;
 	private ExecutorService threadsExecutor;
 	
@@ -41,11 +40,11 @@ public class JobsManager implements IJobsManager {
 		return this.context;
 	}
 	
-	public void setHandlers( Map<Class<? extends IJob>, IJobHandler<? extends IJob,?>> handlers ) {
+	public void setHandlers( Map<Class<? extends IJob>, IJobHandler<?,?>> handlers ) {
 		this.handlers = handlers;
 	}
 	
-	public Map<Class<? extends IJob>, IJobHandler<? extends IJob,?>> getHandlers() {
+	public Map<Class<? extends IJob>, IJobHandler<?, ?>> getHandlers() {
 		return this.handlers;
 	}
 	
@@ -63,7 +62,7 @@ public class JobsManager implements IJobsManager {
 		}
 		
 		if ( handler == null ) {
-			throw new HandlingException("Handler for given job does not exists");
+			throw new HandlingException("Handler for given job " + job.getClass().getCanonicalName() + " does not exists");
 		}
 
 		return this.getThreadsExecutor().submit( new HandlingDescriptor<T, R>( handler, job ) );

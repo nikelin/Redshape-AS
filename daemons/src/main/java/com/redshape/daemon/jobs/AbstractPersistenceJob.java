@@ -28,6 +28,9 @@ public abstract class AbstractPersistenceJob implements IPersistenceJob, IEntity
     @Temporal( TemporalType.DATE )
     private Date created;
 
+	@Temporal( TemporalType.DATE )
+	private Date updated;
+
     @Temporal( TemporalType.DATE )
     private Date processedDate;
 
@@ -47,7 +50,16 @@ public abstract class AbstractPersistenceJob implements IPersistenceJob, IEntity
         this.state = state;
     }
 
-    @Override
+	@Override
+	public Date getUpdated() {
+		return updated;
+	}
+
+	public void setUpdated(Date updated) {
+		this.updated = updated;
+	}
+
+	@Override
     public void increaseFailuresCount() {
         this.failuresCount = this.getFailuresCount() + 1;
     }

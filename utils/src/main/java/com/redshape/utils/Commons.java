@@ -76,6 +76,25 @@ public final class Commons {
 		}
 	}
 
+	public static <K, V> Map<K, V> pair( K key, V value ) {
+		Map<K, V> map = new HashMap<K, V>();
+		map.put( key, value );
+		return map;
+	}
+
+	public static <K, V> Map<K, V> map( Map<K, V>... pairs ) {
+		Map<K, V> result = new HashMap<K, V>();
+		for ( Map<K, V> pair : pairs ) {
+			result.putAll(pair);
+		}
+
+		return result;
+	}
+
+	public static <T> T[] array( T... items ) {
+		return items;
+	}
+
 	public static <T, V> T switchEnum( IEnum<V> value, Map<IEnum<V>, IFunction<?, T>> values ) {
 		return switchEnum( value, values, null );
 	}
@@ -103,6 +122,18 @@ public final class Commons {
 		} catch ( InvocationTargetException e ) {
 			throw new IllegalStateException("Case activation failed", e.getTargetException() );
 		}
+	}
+
+	public static <T> T firstOrNull( List<T> list ) {
+		if ( list == null ) {
+			throw new IllegalArgumentException("<null>");
+		}
+
+		if ( list.isEmpty() ) {
+			return null;
+		}
+
+		return list.get(0);
 	}
 	
 }

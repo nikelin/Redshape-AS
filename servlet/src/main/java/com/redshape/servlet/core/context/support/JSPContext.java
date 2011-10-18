@@ -65,8 +65,13 @@ public class JSPContext implements IResponseContext {
         view.setAttribute(ViewAttributes.Env.Action, request.getAction() );
         view.setAttribute(ViewAttributes.Env.ResourcesHandler, this.getHandler() );
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher(
+		RequestDispatcher dispatcher;
+		if ( !request.getParameter("_servletContextDisableLayout").equals("Enable") ) {
+        	dispatcher = request.getRequestDispatcher(
 				 this.getFront().getLayout().getScriptPath() );
+		} else {
+			dispatcher = request.getRequestDispatcher( view.getScriptPath() );
+		}
 
         try {
             dispatcher.forward( request, response);

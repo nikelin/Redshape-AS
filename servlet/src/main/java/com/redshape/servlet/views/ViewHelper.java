@@ -6,6 +6,8 @@ import com.redshape.servlet.core.controllers.IAction;
 import com.redshape.utils.config.ConfigException;
 import com.redshape.utils.config.IConfig;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -55,17 +57,41 @@ public final class ViewHelper {
 	}
 
 	public static String action( Class<? extends IAction> action ) {
+		return action( action, new HashMap<String, Object>() );
+	}
+
+	public static String action( Class<? extends IAction> action, Map<String, Object> params ) {
 		Action actionMeta = action.getAnnotation( Action.class );
 		if ( actionMeta == null ) {
 			return null;
 		}
 
+		StringBuilder url = new StringBuilder();
 		try {
-			return getConfig().get("web").get("servletPath")
-					+ "/" + actionMeta.controller() + "/" + actionMeta.name();
+			url.append(getConfig().get("web").get("servletPath"));
 		} catch ( ConfigException e ) {
-			return "/" + actionMeta.controller() + "/" + actionMeta.name();
+			throw new IllegalStateException("Config related exception", e );
 		}
+
+		url.append("/")
+			.append( actionMeta.controller() )
+			.append( "/" )
+			.append( actionMeta.name() );
+
+		if ( !params.isEmpty() ) {
+			url.append("?");
+		}
+
+		int i = 0;
+		for ( String key : params.keySet() ) {
+			url.append( key ).append("=").append( params.get(key) );
+
+			if ( i++ != params.size() - 1 ) {
+				url.append("&");
+			}
+		}
+
+		return url.toString();
 	}
 
 	private static IConfig getConfig() {

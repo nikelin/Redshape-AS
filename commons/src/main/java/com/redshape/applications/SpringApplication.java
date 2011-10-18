@@ -12,17 +12,25 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import java.io.File;
 
 public class SpringApplication extends AbstractApplication {
+	public static String DEFAULT_CONTEXT_PATH = "context.xml";
+	public static String SPRING_CONTEXT_PARAM = "-appContext=";
+
 	private static final Logger log = Logger.getLogger( SpringApplication.class );
 	private static ApplicationContext context;
 	
 	public SpringApplication( String args[] ) throws ApplicationException {
 		super( args );
-		
-		if ( args.length < 1 ) {
-			throw new ApplicationException("Too few startup parameters given");
+
+		String contextPath;
+		if ( args.length < 1
+				|| !( args[0].startsWith("-") && args[0].startsWith(SPRING_CONTEXT_PARAM) ) ) {
+			contextPath = DEFAULT_CONTEXT_PATH;
+		} else {
+			contextPath = args[0].replace(SPRING_CONTEXT_PARAM, "");
 		}
 		
-		context = this.loadContext(args[0]);
+		context = this.loadContext(contextPath);
+
 		this.init();
 	}
 	

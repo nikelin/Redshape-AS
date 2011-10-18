@@ -107,7 +107,12 @@ public class ResourcesLoader implements IResourcesLoader {
 
     public InputStream loadResource( String path ) throws IOException {
         try {
-            return new FileInputStream(this.loadFile(path));
+			InputStream stream = this.getClass().getResourceAsStream(path);
+			if ( stream == null ) {
+            	stream = new FileInputStream(this.loadFile(path));
+			}
+
+			return stream;
         } catch ( IOException e ) {
             return this.getClass().getClassLoader().getResourceAsStream(path);
         }
