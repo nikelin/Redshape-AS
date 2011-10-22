@@ -1,5 +1,6 @@
 package com.redshape.servlet;
 
+import com.redshape.applications.SpringApplication;
 import com.redshape.servlet.core.controllers.FrontController;
 import com.redshape.servlet.dispatchers.DispatchException;
 import org.apache.log4j.Logger;
@@ -8,8 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -38,15 +37,15 @@ public class Servlet extends HttpServlet {
 
     public void init(javax.servlet.ServletConfig config) throws javax.servlet.ServletException {
         try {
-        	List<String> args = new ArrayList<String>();
         	String configPath = config.getInitParameter( CONTEXT_CONFIG_PARAMETER );
             if ( configPath == null || configPath.isEmpty() ) {
         		throw new ServletException("Spring context location must be sepecified as <init-param>!");
         	}
 
-        	args.add( "/" + config.getServletContext().getRealPath("/") + configPath );
-        	
-            this.application = new WebApplication( args.toArray( new String[ args.size() ] ) );
+			System.setProperty(SpringApplication.SPRING_CONTEXT_PARAM,
+					"/" + config.getServletContext().getRealPath("/") + configPath );
+
+            this.application = new WebApplication();
             log.info( config.getInitParameterNames() );
             log.info( "Path to config: " + config.getInitParameter("resources-path") );
             this.application.setEnvArg("dataPath", config.getInitParameter("resources-path") );

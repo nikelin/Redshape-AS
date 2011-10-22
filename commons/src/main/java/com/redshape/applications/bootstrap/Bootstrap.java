@@ -38,6 +38,8 @@ public class Bootstrap implements IBootstrap {
 
     public Bootstrap( List<IBootstrapAction> actions ) {
         this.actions = actions;
+
+		this.addAction( new LoggingStarter() );
     }
 
     public IConfig getConfig() {

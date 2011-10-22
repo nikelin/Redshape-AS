@@ -1,7 +1,5 @@
 package com.redshape.applications.bootstrap;
 
-import org.springframework.stereotype.Component;
-
 import java.util.Collection;
 
 /**
@@ -11,7 +9,6 @@ import java.util.Collection;
  * Time: 2:17:17 PM
  * To change this template use File | Settings | File Templates.
  */
-@Component
 public interface IBootstrapAction {
 
     public void process() throws BootstrapException;

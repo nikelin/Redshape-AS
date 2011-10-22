@@ -6,6 +6,7 @@ import com.redshape.commands.ICommand;
 import com.redshape.commands.ICommandsFactory;
 import com.redshape.commands.annotations.Command;
 import com.redshape.utils.StringUtils;
+import org.apache.log4j.Logger;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -20,6 +21,7 @@ import java.util.Set;
  */
 @Command( module = "migrate", name = "help", helpMessage = "description of available tasks" )
 public class HelpCommand extends AbstractCommand {
+	private static final Logger log = Logger.getLogger(HelpCommand.class);
 
     @Override
     public boolean isSupports( String name ) {
@@ -95,7 +97,7 @@ public class HelpCommand extends AbstractCommand {
         buffer.append("Total commands: ")
               .append( commands.size() );
 
-        System.out.println( buffer.toString() );
+        log.info( buffer.toString() );
     }
     
     public String[] getSupported() {

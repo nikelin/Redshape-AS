@@ -26,6 +26,12 @@
             <groupId>com.yahoo.platform.yui</groupId>
             <version>2.4.6</version>
         </dependency>
+        <dependency>
+            <artifactId>json-lib</artifactId>
+            <groupId>net.sf.json-lib</groupId>
+            <version>2.4</version>
+            <classifier>jdk15</classifier>
+        </dependency>
  		<dependency>
 			<groupId>org.tuckey</groupId>
 			<artifactId>urlrewritefilter</artifactId>

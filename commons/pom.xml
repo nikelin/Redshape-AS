@@ -19,18 +19,22 @@
     <properties>
             <project.build.sourceEncoding>utf8</project.build.sourceEncoding>
     </properties>
-	
 
     <build>
         <finalName>commons</finalName>
     </build>
 
     <dependencies>
-    	<dependency>
-    		<groupId>com.redshape</groupId>
-    		<artifactId>io</artifactId>
-    		<version>${project.version}</version>
-    	</dependency>
+        <dependency>
+            <artifactId>utils</artifactId>
+            <groupId>com.redshape</groupId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>commons-collections</artifactId>
+            <groupId>commons-collections</groupId>
+            <version>3.2.1</version>
+        </dependency>
     </dependencies>
 
 </project>

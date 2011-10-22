@@ -3,6 +3,7 @@ package com.redshape.cmd;
 import com.redshape.applications.ApplicationException;
 import com.redshape.applications.SpringApplication;
 import com.redshape.applications.bootstrap.IBootstrapAction;
+import com.redshape.applications.bootstrap.LoggingStarter;
 import com.redshape.cmd.commands.HelpCommand;
 import com.redshape.commands.ExecutionException;
 import com.redshape.commands.ICommand;
@@ -14,129 +15,129 @@ import org.apache.log4j.Logger;
  * @package com.redshape.cmd
  */
 public final class Main extends SpringApplication {
-    private static final Logger log = Logger.getLogger( Main.class );
-    private ICommand actualTask;
+	static {
+		LoggingStarter.init();
+	}
 
-    public Main( String[] args ) throws ApplicationException {
-        super( args);
+	private static final Logger log = Logger.getLogger( Main.class );
+	private ICommand actualTask;
 
-        this.processCommands();
-    }
+	public Main( String[] args ) throws ApplicationException {
+		super( args);
 
-    protected ICommandsFactory getCommandsFactory() {
-        return getContext().getBean( ICommandsFactory.class );
-    }
+		this.processCommands();
+	}
 
-    @Override 
-    public void start() throws ApplicationException  {
-        if ( this.actualTask == null ) {
-            this.actualTask = new HelpCommand();
-        }
+	protected ICommandsFactory getCommandsFactory() {
+		return getContext().getBean( ICommandsFactory.class );
+	}
 
-        if ( !this.actualTask.isValid() ) {
-            log.error("Illegal arguments given");
-            this.stop();
-        }
+	@Override
+	public void start() throws ApplicationException  {
+		if ( this.actualTask == null ) {
+			this.actualTask = new HelpCommand();
+		}
 
-        for ( IBootstrapAction action : this.actualTask.getBootstrapRequirements() ) {
-            this.getBootstrap().addAction( action );
-        }
+		if ( !this.actualTask.isValid() ) {
+			System.out.println("Illegal arguments given");
+			this.stop();
+		}
 
-        super.start();
+		for ( IBootstrapAction action : this.actualTask.getBootstrapRequirements() ) {
+			this.getBootstrap().addAction( action );
+		}
 
-        try {
-            this.processTask(this.actualTask);
-        } catch ( IllegalArgumentException e ) {
-           System.out.println("Insufficiently or illegal arguments given!");
-           System.exit(4);
-       } catch ( ExecutionException e )  {
-           System.out.println( "Command processing exception");
-           System.exit(2);
-           e.printStackTrace();
-       } catch ( Throwable e ) {
-           System.out.println("Something goes wrong...");
-           System.exit(1);
-           e.printStackTrace();
-       }
+		super.start();
 
-        System.exit(0);
-    }
+		try {
+			this.processTask(this.actualTask);
+		} catch ( IllegalArgumentException e ) {
+			log.error("Insufficiently or illegal arguments given!", e);
+			System.exit(4);
+		} catch ( ExecutionException e )  {
+			log.error( "Command processing exception", e);
+			System.exit(2);
+		} catch ( Throwable e ) {
+			log.error("Something goes wrong...", e);
+			System.exit(1);
+		}
 
-    protected void processCommands() {
-           try {
-               String module = null;
-               ICommand task = null;
-               int i = 0;
-               for ( String arg : this.getEnvArgs() ) {
-                   if ( i++ == 0 ) {
-                       continue;
-                   }
+		System.exit(0);
+	}
 
-                   if ( !arg.startsWith("-") ) {
-                       if ( module != null) {
-                           if ( task != null ) {
-                               this.processTask(task);
-                               task = null;
-                           }
+	protected void processCommands() {
+		try {
+			String module = null;
+			ICommand task = null;
+			int i = 0;
+			for ( String arg : this.getEnvArgs() ) {
+				if ( i++ == 0 ) {
+					continue;
+				}
 
-                           task = this.getCommandsFactory().createTask(module, arg);
-                       } else {
-                           module = arg;
-                       }
-                   } else if ( arg.startsWith("-") && task != null  ) {
-                       String[] propertyParts = arg.split("=");
-                       if ( propertyParts.length < 2 ) {
-                           continue;
-                       }
+				if ( !arg.startsWith("-") ) {
+					if ( module != null) {
+						if ( task != null ) {
+							this.processTask(task);
+							task = null;
+						}
 
-                       task.setProperty(
-                           propertyParts[0].substring(1),
-                           propertyParts[1]
-                       );
-                   }
-               }
+						task = this.getCommandsFactory().createTask(module, arg);
+					} else {
+						module = arg;
+					}
+				} else if ( arg.startsWith("-") && task != null  ) {
+					String[] propertyParts = arg.split("=");
+					if ( propertyParts.length < 2 ) {
+						continue;
+					}
 
-               if ( task != null ) {
-                   this.actualTask = task;
-               } else if ( module != null ) {
-                   task = this.getCommandsFactory().createTask(null, module);
-                   if ( task != null ) {
-                       this.actualTask = task;
-                   }
-               }
-           } catch ( InstantiationException e ) {
-               System.out.println("Requested task does not supports! Write `help` for advice.");
-               System.exit(3);
-           } catch ( IllegalArgumentException e ) {
-               System.out.println("Insufficiently or illegal arguments given!");
-               System.exit(4);
-           } catch ( ExecutionException e )  {
-               System.out.println( "Command processing exception");
-               System.exit(2);
-               e.printStackTrace();
-           } catch ( Throwable e ) {
-               System.out.println("Something goes wrong...");
-               System.exit(1);
-               e.printStackTrace();
-           }
-       }
+					task.setProperty(
+							propertyParts[0].substring(1),
+							propertyParts[1]
+					);
+				}
+			}
 
-       private void processTask( ICommand task ) throws ExecutionException {
-           if ( !task.isValid() ) {
-               throw new IllegalArgumentException();
-           }
+			if ( task != null ) {
+				this.actualTask = task;
+			} else if ( module != null ) {
+				task = this.getCommandsFactory().createTask(null, module);
+				if ( task != null ) {
+					this.actualTask = task;
+				}
+			}
+		} catch ( InstantiationException e ) {
+			log.error("Requested task does not supports! Write `help` for advice.", e );
+			System.exit(3);
+		} catch ( IllegalArgumentException e ) {
+			log.error("Insufficiently or illegal arguments given!", e);
+			System.exit(4);
+		} catch ( ExecutionException e )  {
+			log.error( "Command processing exception", e);
+			System.exit(2);
+		} catch ( Throwable e ) {
+			log.error("Something goes wrong...", e);
+			System.exit(1);
+		}
+	}
 
-           task.process();
-       }
+	private void processTask( ICommand task ) throws ExecutionException {
+		if ( !task.isValid() ) {
+			throw new IllegalArgumentException();
+		}
 
-       public static void main( String[] args ) {
-           try {
-               Main main = new Main( args );
-               main.start();
-           } catch ( Throwable e ) {
-               log.error( "Excecution exception!", e );
-           }
-       }
+		task.process();
+	}
+
+	public static void main( String[] args ) {
+		try {
+			Main main = new Main( args );
+			main.start();
+		} catch ( Throwable e ) {
+			log.error( "Excecution exception!", e );
+		}
+	}
 
 
 }

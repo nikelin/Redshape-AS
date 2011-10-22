@@ -1,19 +1,18 @@
 package com.redshape.i18n.impl;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import org.apache.commons.collections.FastArrayList;
-import org.apache.commons.collections.FastHashMap;
-import org.apache.log4j.Logger;
-
 import com.redshape.i18n.I18NManager;
 import com.redshape.utils.ResourcesLoader;
 import com.redshape.utils.config.ConfigException;
 import com.redshape.utils.config.IConfig;
 import com.redshape.utils.config.XMLConfig;
 import com.redshape.utils.helpers.XMLHelper;
+import org.apache.commons.collections.FastArrayList;
+import org.apache.commons.collections.FastHashMap;
+import org.apache.log4j.Logger;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class StandardI18N implements I18NManager {
 	private static final Logger log = Logger.getLogger( StandardI18N.class );
@@ -67,10 +66,9 @@ public class StandardI18N implements I18NManager {
 	
 	@SuppressWarnings("unchecked")
 	protected void load() throws ConfigException {
-		XMLConfig config = new XMLConfig( new XMLHelper( this.getResourcesLoader() ), 
-										  this.resource );
-		
-		this.searchIndex = new FastHashMap( config.childs().length );
+		XMLConfig config = new XMLConfig( new XMLHelper(this.getResourcesLoader()), this.resource );
+
+		this.searchIndex = new FastHashMap( config.childs().size() );
 		for ( IConfig messageNode : config.childs() ) {
 			this.locales.add( messageNode.get("target").value() );
 			this.searchIndex.put( this.normalize( messageNode.get("orig").value() ),

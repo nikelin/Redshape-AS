@@ -68,7 +68,7 @@ public final class ViewHelper {
 
 		StringBuilder url = new StringBuilder();
 		try {
-			url.append(getConfig().get("web").get("servletPath"));
+			url.append(getConfig().get("web").get("servletPath").value());
 		} catch ( ConfigException e ) {
 			throw new IllegalStateException("Config related exception", e );
 		}

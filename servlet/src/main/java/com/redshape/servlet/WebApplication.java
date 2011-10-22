@@ -4,13 +4,13 @@ import com.redshape.applications.ApplicationException;
 import com.redshape.applications.SpringApplication;
 
 /**
- * Created by IntelliJ IDEA.
- * User: nikelin
- * Date: 10/11/10
- * Time: 3:06 AM
- * To change this template use File | Settings | File Templates.
+ * @author nikelin
  */
 public class WebApplication extends SpringApplication {
+
+	public WebApplication() throws ApplicationException {
+		this( new String[] {} );
+	}
 
     public WebApplication( String args[] ) throws ApplicationException {
         super( args );

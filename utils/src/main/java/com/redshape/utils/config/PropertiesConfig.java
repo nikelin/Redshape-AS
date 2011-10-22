@@ -1,41 +1,32 @@
 package com.redshape.utils.config;
 
+import com.redshape.utils.StringUtils;
+
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
+ * @author Cyril A. Karpenko <self@nikelin.ru>
  * @package com.redshape.utils.config
- * @user cyril
- * @date 6/22/11 4:43 PM
+ * @date 10/20/11 1:05 PM
  */
-public class PropertiesConfig implements IWritableConfig {
-    private static final long serialVersionUID = 3682806047106538553L;
-    private File file;
+public class PropertiesConfig extends AbstractConfig {
+	public static final String[] STANDARD_LINE_DELIMITERS = new String[] { "\n", "\r", ";" };
 
-    private boolean nulled;
-    private String name;
-    private String value;
-    private PropertiesConfig parent;
-    private List<IConfig> childs = new ArrayList<IConfig>();
-    private Map<String, String> attributes = new HashMap<String, String>();
+	private IConfig parent;
+	private String name;
+	private String value;
+	private File file;
 
-    protected PropertiesConfig( PropertiesConfig parent, String name, String value ) {
-        this.parent = parent;
-        this.name = name;
-        this.value = value;
+	protected PropertiesConfig(PropertiesConfig parent, String name, String value) {
+        super(parent, name, value);
     }
 
-    protected PropertiesConfig( String name, String value ) {
+    protected PropertiesConfig(String name, String value) {
         this(null, name, value);
     }
 
-    public PropertiesConfig( File file ) throws ConfigException {
-        this.file = file;
-
-        this.init();
+    public PropertiesConfig(File file) throws ConfigException {
+		super(file);
     }
 
     protected void init() throws ConfigException {
@@ -51,32 +42,7 @@ public class PropertiesConfig implements IWritableConfig {
         }
     }
 
-    protected void processData( String data ) throws ConfigException {
-        String[] lines = data.split("[\\n]+");
-        IWritableConfig context = null;
-        for ( String line : lines ) {
-            if ( line.startsWith("[") ) {
-                if ( !line.endsWith("]") ) {
-                    throw new ConfigException("Syntax exception");
-                }
-
-                String[] parts = line.replace("[", "").replace("]", "").split("\\s");
-                context = this.createChild(parts[0]);
-                if ( parts.length > 1 && !parts[1].isEmpty() ) {
-                    context.set( parts[1] );
-                }
-            } else if ( line.contains("=") ) {
-                if ( context == null ) {
-                    throw new ConfigException("Unbinded property definition!");
-                }
-
-                String[] parts = line.split("=");
-                context.attribute( parts[0].trim(), parts[1].trim() );
-            }
-        }
-    }
-
-    protected String readFile() throws IOException {
+	protected String readFile() throws IOException {
         StringBuilder result = new StringBuilder();
 
         BufferedReader reader = null;
@@ -95,197 +61,36 @@ public class PropertiesConfig implements IWritableConfig {
         return result.toString();
     }
 
-    @Override
-    public String[] attributeNames() {
-        return this.attributes.keySet().toArray( new String[this.attributes.size()] );
-    }
-
-    @Override
-    public boolean isNull() {
-        return this.nulled;
-    }
-
-    @Override
-    public IConfig get(String name) throws ConfigException {
-        for ( IConfig config : this.childs() ) {
-            if ( config.name() != null && config.name().equals(name ) ) {
-                return config;
-            }
-        }
-
-        return null;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T extends IConfig> T[] childs() {
-        return (T[]) this.childs.toArray( new IConfig[this.childs.size()] );
-    }
-
-    @Override
-    public boolean hasChilds() {
-        return this.childs.isEmpty();
-    }
-
-    @Override
-    public String[] list() {
-        String[] names = new String[this.childs().length];
-
-        int i = 0;
-        for ( IConfig child : this.childs() ) {
-            names[i++] = child.name();
-        }
-
-        return names;
-    }
-
-    @Override
-    public String[] list(String name) {
-        List<String> values = new ArrayList<String>();
-        for ( IConfig child : this.childs() ) {
-            values.add( child.value() );
-        }
-
-        return values.toArray( new String[ values.size() ] );
-    }
-
-    @Override
-    public String name() {
-        return this.name;
-    }
-
-    @Override
-    public String[] names() {
-        String[] names = new String[ this.childs().length ];
-        int i = 0;
-        for ( IConfig child : this.childs() ) {
-            names[i++] = child.name();
-        }
-
-        return names;
-    }
-
-    @Override
-    public String attribute(String name) {
-        return this.attributes.get(name);
-    }
-
-    @Override
-    public boolean isWritable() {
-        return true;
-    }
-
-    @Override
-    public IWritableConfig append(IConfig config) {
-        if ( config == null || config.name() == null ) {
-            throw new IllegalArgumentException("<null>");
-        }
-
-        this.childs.add( config );
-        return this;
-    }
-
-    @Override
-    public IWritableConfig makeWritable(boolean value) {
-        return this;
-    }
-
-    @Override
-    public IWritableConfig set(String value) throws ConfigException {
-        this.value = value;
-        return this;
-    }
-
-    @Override
-    public IWritableConfig attribute(String name, String value) {
-        this.attributes.put(name, value);
-        return this;
-    }
-
-    @Override
-    public IWritableConfig createChild(String name) {
-        if ( name == null ) {
-            throw new IllegalArgumentException("<null>");
-        }
-
-        PropertiesConfig config = new PropertiesConfig(this, name, "");
-        this.append(config);
-        return config;
-    }
-
-    public void save() throws ConfigException {
-        if ( this.file == null ) {
-            throw new IllegalStateException("Associated holder not exists");
-        }
-
-        try {
-            BufferedWriter writer = new BufferedWriter(
-                new OutputStreamWriter( new FileOutputStream(this.file) ) );
-            writer.write( this.serialize() );
-            writer.close();
-        } catch ( IOException e ) {
-            throw new ConfigException("File update failed", e );
-        }
-    }
-
-    @Override
-    public IWritableConfig remove() throws ConfigException {
-		if ( this.isNull() ) {
-			return this;
-		}
-
-        this.parent.removeChild(this);
-		return this;
-    }
-
-	protected void removeChild( PropertiesConfig config ) {
-		this.childs.remove(config);
+	@Override
+	protected IConfig createNull() {
+		PropertiesConfig config = new PropertiesConfig(this, null, null);
+		config.nulled = true;
+		return config;
 	}
 
-    @Override
-    public String value() {
-        return this.value;
-    }
+	protected String[] getLineDelimiters() {
+		return STANDARD_LINE_DELIMITERS;
+	}
 
-    @Override
-    public IConfig parent() throws ConfigException {
-        return this.parent;
-    }
+	protected void processData( String data ) throws ConfigException {
+		String[] lines = data.split( StringUtils.join(this.getLineDelimiters(), "") );
+		for ( String line : lines ) {
+			String[] parts = line.split("=");
+			if ( parts.length != 2 ) {
+				throw new ConfigException("Config file is corrupted");
+			}
 
-    @Override
-    public String serialize() throws ConfigException {
-        StringBuffer result = new StringBuffer();
-        for ( IConfig config : this.childs() ) {
-            result.append("[")
-                  .append( config.name() )
-                  .append(" ");
-            if ( config.value() != null && !config.value().isEmpty() ) {
-                result.append( config.value() );
-            }
+			this.append( new PropertiesConfig(this, parts[0], parts[1] ) );
+		}
+	}
 
-            result.append("]")
-                  .append("\n");
+	@Override
+	public String serialize() throws ConfigException {
+		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	}
 
-            for ( String key : config.attributeNames() ) {
-                result.append( key )
-                      .append( "=" )
-                      .append( config.attribute(key) )
-                      .append("\n");
-            }
-        }
-
-        return result.toString();
-    }
-
-    @Override
-    public <V> V getRawElement() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public IWritableConfig asWritable() {
-        return (IWritableConfig) this;
-    }
-
-
+	@Override
+	public IConfig createChild(String name) {
+		return new PropertiesConfig(this, name, null);
+	}
 }

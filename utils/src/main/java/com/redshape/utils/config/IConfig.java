@@ -1,6 +1,7 @@
 package com.redshape.utils.config;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Configurations holder interface.
@@ -31,7 +32,7 @@ public interface IConfig extends Serializable {
     * @param <T>
     * @return T[]
     */
-    public <T extends IConfig> T[] childs();
+    public <T extends IConfig> List<T> childs();
 
     /**
         * Doest current node has ancestors?
@@ -101,20 +102,18 @@ public interface IConfig extends Serializable {
      */
     public String serialize() throws ConfigException;
 
-    /**
-     * Used in XML implementation of IConfig interface to provide
-     * ability of accessing raw org.w3.Element object.
-     *
-     * @deprecated
-     * @param <V>
-     * @return
-     */
-    public <V> V getRawElement();
+	public IConfig append( IConfig config );
 
-    /**
-     * Return writable object instance, if possible
-     *
-     * @return
-     */
-    public IWritableConfig asWritable();
+	public IConfig set(String value) throws ConfigException;
+
+	public IConfig attribute(String name, String value);
+
+	public IConfig createChild(String name) throws ConfigException;
+
+	public IConfig parent( IConfig config );
+
+	public IConfig remove() throws ConfigException;
+
+	public IConfig remove(IConfig config) throws ConfigException;
+
 }

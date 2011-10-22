@@ -13,7 +13,8 @@ import java.io.File;
 
 public class SpringApplication extends AbstractApplication {
 	public static String DEFAULT_CONTEXT_PATH = "context.xml";
-	public static String SPRING_CONTEXT_PARAM = "-appContext=";
+	public static String SPRING_CONTEXT_PARAM = "as.contextPath";
+	public static String IS_LOGS_DISABLED = "as.logsDisabled";
 
 	private static final Logger log = Logger.getLogger( SpringApplication.class );
 	private static ApplicationContext context;
@@ -21,15 +22,7 @@ public class SpringApplication extends AbstractApplication {
 	public SpringApplication( String args[] ) throws ApplicationException {
 		super( args );
 
-		String contextPath;
-		if ( args.length < 1
-				|| !( args[0].startsWith("-") && args[0].startsWith(SPRING_CONTEXT_PARAM) ) ) {
-			contextPath = DEFAULT_CONTEXT_PATH;
-		} else {
-			contextPath = args[0].replace(SPRING_CONTEXT_PARAM, "");
-		}
-		
-		context = this.loadContext(contextPath);
+		context = this.loadContext( System.getProperty(SPRING_CONTEXT_PARAM, DEFAULT_CONTEXT_PATH ) );
 
 		this.init();
 	}
