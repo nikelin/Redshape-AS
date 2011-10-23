@@ -33,6 +33,10 @@ public final class RangeUtils {
 
 	public static <T extends Comparable<T>>
 		boolean checkIntersections( IRange<T> source, IRange<T> target ) {
+		if ( source.isEmpty() || target.isEmpty() ) {
+			return false;
+		}
+
 		if ( null == source || null == target ) {
 			throw new IllegalArgumentException("<null>");
 		}

@@ -212,9 +212,17 @@ public class HttpDispatcher implements IHttpDispatcher {
             view.reset( ResetMode.TRANSIENT );
 
         	String controllerName = Commons.select( request.getController(), "index" );
-            request.setController(controllerName);
+			if ( controllerName.isEmpty() ) {
+				controllerName = "index";
+			}
+			request.setController(controllerName);
+
         	String actionName = Commons.select(request.getAction(), "index");
+			if ( actionName.isEmpty() ) {
+				actionName = "index";
+			}
 			request.setAction(actionName);
+
             if ( actionName == null ) {
                 this.tryRedirectToView(request, response);
                 return;

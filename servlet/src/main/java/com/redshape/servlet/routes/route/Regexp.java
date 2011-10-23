@@ -87,10 +87,11 @@ public class Regexp implements IRoute {
 
 				String nodeValue = sourcePath.substring(
 								start, end );
-				if ( this.controllerGroup.inRange(i) &&
+				if ( this.actionGroup.isEmpty() ||
+						( this.controllerGroup.inRange(i) &&
 							/** controller nodes count must not be
 							 *  higher than total (groups count - 1)**/
-							!lastNode ) {
+							( !lastNode ) ) ) {
 					if ( i != 1 ) {
 						controllerPath.append("/");
 					}
@@ -98,7 +99,9 @@ public class Regexp implements IRoute {
 				} else if ( this.actionGroup.inRange(i) || lastNode ) {
 					actionPath.append( nodeValue );
 					break;
-				} else {
+				}
+
+				if ( lastNode ) {
 					break;
 				}
 			}

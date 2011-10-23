@@ -1,10 +1,13 @@
 package com.redshape.utils.config;
 
+import com.redshape.utils.StringUtils;
 import com.redshape.utils.helpers.XMLHelper;
 import org.apache.log4j.Logger;
 import org.w3c.dom.*;
 
 import java.io.*;
+import java.util.Deque;
+import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * XML configuration files support

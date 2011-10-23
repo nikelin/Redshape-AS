@@ -10,6 +10,14 @@ import java.util.List;
  */
 public interface IConfig extends Serializable {
 
+	/**
+	 * Return full path to current node from most-top
+	 * parent
+	 *
+	 * @return
+	 */
+	public String path() throws ConfigException;
+
     /**
      * Neither node exists or not
      *

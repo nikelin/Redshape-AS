@@ -1,7 +1,10 @@
 package com.redshape.utils.config;
 
+import com.redshape.utils.StringUtils;
+
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
@@ -41,6 +44,19 @@ public abstract class AbstractConfig implements IConfig {
 	@Override
 	public boolean isNull() {
 		return this.nulled;
+	}
+
+	@Override
+	public String path() throws ConfigException {
+		Deque<String> deque = new LinkedBlockingDeque<String>();
+		IConfig parent = this;
+		while ( null != parent ) {
+			deque.add( parent.name() );
+
+			parent = parent.parent();
+		}
+
+		return StringUtils.join(deque, ".");
 	}
 
 	@Override
