@@ -7,6 +7,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
@@ -238,6 +240,12 @@ public class StringUtils {
 
         return IPAddressUtil.textToNumericFormatV4(addrString);
     }
+
+	public static Integer hex( String data ) {
+		return Integer.valueOf(
+			String.format("%x", new BigInteger(1, data.getBytes( Charset.forName("UTF-8") ) ) )
+		);
+	}
 
     public static String IPToString( byte[] address ) {
         String[] result = new String[address.length];

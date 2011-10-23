@@ -1,49 +1,20 @@
 package com.redshape.io;
 
-import com.redshape.io.net.auth.AuthenticatorException;
-import com.redshape.io.net.auth.ICredentials;
-import com.redshape.io.net.auth.ICredentialsProvider;
-import com.redshape.utils.config.IConfig;
+import com.redshape.utils.system.scripts.IScriptExecutor;
 
 import java.io.IOException;
 
 /**
- * @author nikelin
+ * @author Cyril A. Karpenko <self@nikelin.ru>
+ * @package com.redshape.io
+ * @date 10/22/11 9:23 PM
  */
-public interface INetworkInteractor<T> {
+public interface INetworkInteractor {
 
-    public String getServiceID();
+	public void execute( IScriptExecutor executor ) throws IOException;
 
-    public void setCredentialsProvider( ICredentialsProvider provider );
+	public IFilesystemNode getRoot() throws IOException;
 
-    public ICredentialsProvider getCredentialsProvider();
-
-    public void markAnonymousAllowed( boolean value );
-
-    public boolean isAnonymousAllowed();
-
-    public boolean isConnected() throws NetworkInteractionException;
-
-    public void connect() throws NetworkInteractionException, AuthenticatorException;
-
-    public void connect( ICredentials auth ) throws NetworkInteractionException, AuthenticatorException;
-    
-    public void close() throws NetworkInteractionException;
-
-    // public void ping() throws NetworkInteractionException;
-
-    // public boolean isAccessible();
-
-    public String getProtocolId();
-
-    public String getConnectionUri();
-
-    public IFilesystemNode getFile( String path ) throws IOException;
-
-    public void setConfig( IConfig config );
-
-    public IConfig getConfig();
-
-    public T getRawConnection();
+	public IFilesystemNode getFile( String name ) throws IOException;
 
 }

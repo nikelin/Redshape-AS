@@ -17,15 +17,15 @@ import java.util.Collection;
  * Time: 5:07 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class AbstractNetworkInteractor<T>
-                implements INetworkInteractor<T> {
+public abstract class AbstractNetworkConnection<T>
+                implements INetworkConnection<T> {
     private INetworkNode interactableNode;
     private String protocolId;
     private boolean isAnonymousAllowed;
     private ICredentialsProvider credentialsProvider;
     private IConfig config;
 
-    public AbstractNetworkInteractor( String protocolId, INetworkNode node ) {
+    public AbstractNetworkConnection(String protocolId, INetworkNode node) {
         this.protocolId = protocolId;
         this.interactableNode = node;
     }

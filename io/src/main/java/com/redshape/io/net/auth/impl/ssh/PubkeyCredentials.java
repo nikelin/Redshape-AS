@@ -1,6 +1,6 @@
 package com.redshape.io.net.auth.impl.ssh;
 
-import com.redshape.io.interactors.SSHInteractor;
+import com.redshape.io.interactors.ServiceID;
 import com.redshape.io.net.auth.ICredentials;
 
 /**
@@ -13,16 +13,16 @@ import com.redshape.io.net.auth.ICredentials;
 public class PubkeyCredentials implements ICredentials {
     private String username;
 
-    public PubkeyCredentials() {}
-
     public PubkeyCredentials( String user ) {
         this.username = user;
     }
 
-    public String getServiceID() {
-        return SSHInteractor.SERVICE_ID;
+	@Override
+    public ServiceID getServiceID() {
+        return ServiceID.SSH;
     }
 
+	@Override
     public String getUsername() {
         return this.username;
     }

@@ -6,6 +6,7 @@ import com.redshape.servlet.core.controllers.IAction;
 import com.redshape.utils.config.ConfigException;
 import com.redshape.utils.config.IConfig;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -57,10 +58,10 @@ public final class ViewHelper {
 	}
 
 	public static String action( Class<? extends IAction> action ) {
-		return action( action, new HashMap<String, Object>() );
+		return action( action, new HashMap<String, String>() );
 	}
 
-	public static String action( Class<? extends IAction> action, Map<String, Object> params ) {
+	public static <T extends Serializable> String action( Class<? extends IAction> action, Map<String, T> params ) {
 		Action actionMeta = action.getAnnotation( Action.class );
 		if ( actionMeta == null ) {
 			return null;

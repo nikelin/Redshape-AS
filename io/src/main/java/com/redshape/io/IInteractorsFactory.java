@@ -1,6 +1,8 @@
 package com.redshape.io;
 
 
+import com.redshape.io.interactors.ServiceID;
+
 import java.util.Collection;
 
 /**
@@ -8,17 +10,14 @@ import java.util.Collection;
  */
 public interface IInteractorsFactory {
 
-    public Collection< Class<? extends INetworkInteractor> > getInteractors();
+    public Collection< Class<? extends INetworkConnection> > getInteractors();
 
-    public Collection<INetworkInteractor> findInteractors( INetworkNode node ) 
+    public Collection<INetworkConnection> findInteractors( INetworkNode node )
     	throws InstantiationException;
 
-    public INetworkInteractor findInteractor( INetworkNode node, String serviceID ) 
+    public INetworkConnection findInteractor( ServiceID serviceID, INetworkNode node )
     	throws InstantiationException;
 
     public void initialize() throws InstantiationException;
-
-    public INetworkInteractor findInteractor( String serviceId, INetworkNode node ) 
-    	throws InstantiationException;
     
 }

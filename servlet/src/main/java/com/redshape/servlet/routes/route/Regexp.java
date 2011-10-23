@@ -5,6 +5,8 @@ import com.redshape.servlet.routes.IRoute;
 import com.redshape.utils.range.IRange;
 import org.apache.log4j.Logger;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,7 +16,8 @@ public class Regexp implements IRoute {
 	private Pattern pattern;
 	private IRange<Integer> controllerGroup;
 	private IRange<Integer> actionGroup;
-	
+	private List<Integer> allowedGroupsCount = new ArrayList<Integer>();
+
 	public Regexp( String expression, IRange<Integer> controllerGroup,
 									  IRange<Integer> actionGroup ) {
 		if ( expression == null || expression.isEmpty() ) {
@@ -39,12 +42,26 @@ public class Regexp implements IRoute {
 		this.actionGroup = actionGroup;
 	}
 
+	public List<Integer> getAllowedGroupsCount() {
+		return allowedGroupsCount;
+	}
+
+	public void setAllowedGroupsCount(List<Integer> allowedGroupsCount) {
+		this.allowedGroupsCount = allowedGroupsCount;
+	}
+
 	@Override
 	public boolean isApplicatable(IHttpRequest request) {
-		return this.pattern.matcher(
-				request.getRequestURI().startsWith( request.getServletPath() ) ?
-						request.getRequestURI().substring( request.getServletPath().length() )
-						: request.getRequestURI() ).find();
+		Matcher matcher = this.pattern.matcher(
+				request.getRequestURI().startsWith(request.getServletPath()) ?
+						request.getRequestURI().substring(request.getServletPath().length())
+						: request.getRequestURI());
+		if ( !matcher.find() ) {
+			return false;
+		}
+
+		return this.getAllowedGroupsCount().isEmpty()
+				|| this.getAllowedGroupsCount().contains(matcher.groupCount() );
 	}
 
 	@Override

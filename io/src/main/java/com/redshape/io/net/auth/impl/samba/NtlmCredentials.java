@@ -1,8 +1,7 @@
 package com.redshape.io.net.auth.impl.samba;
 
-import com.redshape.io.interactors.SambaInteractor;
+import com.redshape.io.interactors.ServiceID;
 import com.redshape.io.net.auth.impl.SimpleCredentials;
-
 import jcifs.smb.NtlmPasswordAuthentication;
 
 /**
@@ -23,7 +22,7 @@ public class NtlmCredentials extends SimpleCredentials {
     }
 
     public NtlmCredentials( String domain, String username, String password) {
-        super( SambaInteractor.SERVICE_ID, username, password );
+        super(ServiceID.SAMBA, username, password );
         
         this.domain = domain;
     }

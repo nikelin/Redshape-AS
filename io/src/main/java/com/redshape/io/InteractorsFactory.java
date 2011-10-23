@@ -1,15 +1,15 @@
 package com.redshape.io;
 
 
-import org.apache.log4j.Logger;
-
-import com.redshape.utils.config.IConfig;
 import com.redshape.io.annotations.InteractionService;
 import com.redshape.io.annotations.RequiredPort;
+import com.redshape.io.interactors.ServiceID;
 import com.redshape.io.net.auth.ICredentialsProvider;
 import com.redshape.utils.IPackagesLoader;
 import com.redshape.utils.InterfacesFilter;
 import com.redshape.utils.PackageLoaderException;
+import com.redshape.utils.config.IConfig;
+import org.apache.log4j.Logger;
 
 import java.util.*;
 
@@ -25,10 +25,10 @@ public final class InteractorsFactory implements IInteractorsFactory {
 
     private Collection<String> packages;
     private IPackagesLoader packagesLoader;
-    private Map<Class<? extends INetworkInteractor>, ICredentialsProvider> credentialsProviders = new HashMap();
-    private Map<Class<? extends INetworkInteractor>, IConfig> interactorsConfiguration = new HashMap();
-    private Collection<Class<? extends INetworkInteractor>> interactors = new HashSet();
-    private Map<INetworkNode, Collection<INetworkInteractor>> nodeInteractors = new HashMap();
+    private Map<Class<? extends INetworkConnection>, ICredentialsProvider> credentialsProviders = new HashMap();
+    private Map<Class<? extends INetworkConnection>, IConfig> interactorsConfiguration = new HashMap();
+    private Collection<Class<? extends INetworkConnection>> interactors = new HashSet();
+    private Map<INetworkNode, Collection<INetworkConnection>> nodeInteractors = new HashMap();
 
     public InteractorsFactory() throws InstantiationException {
         this( new HashSet() );
@@ -56,47 +56,47 @@ public final class InteractorsFactory implements IInteractorsFactory {
     }
 
     public void setCredentialsProviders( 
-    		Map<Class<? extends INetworkInteractor>, 
+    		Map<Class<? extends INetworkConnection>,
     		ICredentialsProvider> providers ) {
         this.credentialsProviders = providers;
     }
 
     public void addCredentialsProvider( 
-    		Class<? extends INetworkInteractor> interactorClass, 
+    		Class<? extends INetworkConnection> interactorClass,
     		ICredentialsProvider provider ) {
         this.credentialsProviders.put(interactorClass, provider);
     }
 
     protected ICredentialsProvider getCredentialsProvider( 
-    		Class<? extends INetworkInteractor> interactor ) {
+    		Class<? extends INetworkConnection> interactor ) {
         return this.credentialsProviders.get(interactor);
     }
 
     public void setInteractorConfiguration( 
-    		Class<? extends INetworkInteractor> interactorClass, 
+    		Class<? extends INetworkConnection> interactorClass,
     		IConfig config ) {
         this.interactorsConfiguration.put( interactorClass, config );
     }
 
     public void setInteractorsConfiguration( 
-    		Map<Class<? extends INetworkInteractor>, 
+    		Map<Class<? extends INetworkConnection>,
     		IConfig> configuration ) {
         this.interactorsConfiguration = configuration;
     }
 
     public IConfig getInteractorConfiguration( 
-    		Class<? extends INetworkInteractor> interactorClazz ) {
+    		Class<? extends INetworkConnection> interactorClazz ) {
         return this.interactorsConfiguration.get(interactorClazz);
     }
 
     public void addInteractor( 
-    		Class<? extends INetworkInteractor> interactorClazz )
+    		Class<? extends INetworkConnection> interactorClazz )
             throws InstantiationException {
         this.interactors.add( interactorClazz );
     }
 
     public void addInteractor( INetworkNode node, 
-    		INetworkInteractor interactor ) {
+    		INetworkConnection interactor ) {
         this.interactors.add( interactor.getClass() );
 
         if ( this.nodeInteractors.get(node) == null ) {
@@ -107,47 +107,36 @@ public final class InteractorsFactory implements IInteractorsFactory {
     }
 
     public void setInteractors( 
-    		Collection<Class<? extends INetworkInteractor>> interactors ) {
+    		Collection<Class<? extends INetworkConnection>> interactors ) {
         this.interactors = interactors;
     }
 
-    public Collection<Class<? extends INetworkInteractor>> getInteractors() {
+    public Collection<Class<? extends INetworkConnection>> getInteractors() {
         return this.interactors;
     }
 
-    public INetworkInteractor findInteractor( String serviceId, INetworkNode node ) 
+	@Override
+    public INetworkConnection findInteractor( ServiceID serviceId, INetworkNode node )
     	throws InstantiationException {
-    	for ( Class<? extends INetworkInteractor> interactor : this.getInteractors() ) {
+    	for ( Class<? extends INetworkConnection> interactor : this.getInteractors() ) {
     		InteractionService meta = interactor.getAnnotation( InteractionService.class );
     		if ( meta == null ) {
     			continue;
     		}
     		
-    		if ( meta.id() != null && meta.id().toLowerCase().equals( serviceId ) ) {
+    		if ( meta.id() != null && meta.id().toLowerCase().equals( serviceId.name().toLowerCase() ) ) {
     			return this.createInteractor(node, interactor );
     		}
     	}
     	
     	return null;
     }
-    
-    public INetworkInteractor findInteractor( INetworkNode node, String serviceId ) 
-    	throws InstantiationException {
-        Collection<INetworkInteractor> interactors = this.findInteractors( node );
-        for ( INetworkInteractor interactor : interactors ) {
-            if ( interactor.getServiceID().equals( serviceId ) ) {
-                return interactor;
-            }
-        }
 
-        return null;
-    }
-
-    public Collection<INetworkInteractor> findInteractors( INetworkNode node ) 
+    public Collection<INetworkConnection> findInteractors( INetworkNode node )
     		throws InstantiationException {
-        Collection<INetworkInteractor> result = new HashSet<INetworkInteractor>();
+        Collection<INetworkConnection> result = new HashSet<INetworkConnection>();
 
-        for ( Class<? extends INetworkInteractor> interactorClazz : this.getInteractors() ) {
+        for ( Class<? extends INetworkConnection> interactorClazz : this.getInteractors() ) {
             boolean osSatisfied = false;
             InteractionService interactorMeta = interactorClazz.getAnnotation( 
             														InteractionService.class );
@@ -193,7 +182,7 @@ public final class InteractorsFactory implements IInteractorsFactory {
             }
 
 
-            INetworkInteractor interactor = this.createInteractor( node, interactorClazz );
+            INetworkConnection interactor = this.createInteractor( node, interactorClazz );
             log.info("Interactor for node " + node.getNetworkPoint() + " has been created.");
 
             this.addInteractor( node, interactor  );
@@ -203,12 +192,12 @@ public final class InteractorsFactory implements IInteractorsFactory {
         return result;
     }
 
-    protected Collection<INetworkInteractor> getInteractors( INetworkNode node ) {
+    protected Collection<INetworkConnection> getInteractors( INetworkNode node ) {
         return this.nodeInteractors.get(node);
     }
 
-    protected INetworkInteractor getInteractor( INetworkNode node, String serviceId ) {
-        for ( INetworkInteractor interactor : this.getInteractors(node) ) {
+    protected INetworkConnection getInteractor( INetworkNode node, String serviceId ) {
+        for ( INetworkConnection interactor : this.getInteractors(node) ) {
             if ( interactor.getServiceID().equals( serviceId ) ) {
                 return interactor;
             }
@@ -225,12 +214,12 @@ public final class InteractorsFactory implements IInteractorsFactory {
         this.packages.add(path);
     }
 
-    protected INetworkInteractor createInteractor( 
+    protected INetworkConnection createInteractor(
     		INetworkNode node, 
-    		Class<? extends INetworkInteractor> interactorClazz ) 
+    		Class<? extends INetworkConnection> interactorClazz )
     			throws InstantiationException {
         try {
-            INetworkInteractor interactorInstance = interactorClazz.getConstructor( INetworkNode.class ).newInstance( node );
+            INetworkConnection interactorInstance = interactorClazz.getConstructor( INetworkNode.class ).newInstance( node );
             interactorInstance.setCredentialsProvider( this.getCredentialsProvider( interactorClazz ) );
             interactorInstance.setConfig( this.getInteractorConfiguration( interactorClazz ) );
 
@@ -246,16 +235,16 @@ public final class InteractorsFactory implements IInteractorsFactory {
 
         try {
             for ( String packagePath : this.getPackages() ) {
-                Class<? extends INetworkInteractor>[] interactorsClasses =
-                                                        this.packagesLoader.<INetworkInteractor>getClasses(
+                Class<? extends INetworkConnection>[] interactorsClasses =
+                                                        this.packagesLoader.<INetworkConnection>getClasses(
                                                             packagePath,
                                                             new InterfacesFilter(
-                                                                new Class[] { INetworkInteractor.class },
+                                                                new Class[] { INetworkConnection.class },
                                                                 new Class[] {InteractionService.class },
                                                                 true
                                                             )
                                                         );
-                for ( Class<? extends INetworkInteractor> clazz : interactorsClasses ) {
+                for ( Class<? extends INetworkConnection> clazz : interactorsClasses ) {
                     this.addInteractor( clazz );
                 }
             }

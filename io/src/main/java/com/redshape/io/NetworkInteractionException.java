@@ -14,11 +14,15 @@ public class NetworkInteractionException extends IOException {
 	private static final long serialVersionUID = 9148204335399558919L;
 
 	public NetworkInteractionException() {
-        super();
+        this(null);
     }
 
     public NetworkInteractionException( String message ) {
-        super( message );
+        this( message, null );
     }
+
+	public NetworkInteractionException( String message, Throwable e ) {
+		super(message, e);
+	}
 
 }

@@ -1,17 +1,13 @@
 package com.redshape.io.net.fetch.http.jsoup;
 
+import com.redshape.io.net.fetch.AbstractFetcher;
+import com.redshape.io.net.fetch.FetcherException;
+import com.redshape.io.net.fetch.charset.ICharsetConverter;
 import org.apache.log4j.Logger;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
-import com.redshape.io.net.fetch.AbstractFetcher;
-import com.redshape.io.net.fetch.FetcherException;
-import com.redshape.io.net.fetch.charset.ICharsetConverter;
-import com.redshape.io.net.fetch.charset.tika.TikaConverter;
-
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.Map;
 
@@ -24,7 +20,7 @@ import java.util.Map;
  */
 public class HttpFetcher extends AbstractFetcher<HttpFetcher.Attribute> {
     private static final Logger log = Logger.getLogger( HttpFetcher.class );
-    private static ICharsetConverter<?> DEFAULT_CHARSET_CONVERTER = new TikaConverter();
+    public static ICharsetConverter<?> DEFAULT_CHARSET_CONVERTER;
     private SimpleTransformer transformer;
 
     public enum Attribute {

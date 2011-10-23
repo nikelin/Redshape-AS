@@ -1,15 +1,13 @@
 package com.redshape.io.net.auth;
 
+import com.redshape.io.interactors.ServiceID;
+
 /**
- * Created by IntelliJ IDEA.
- * User: user
- * Date: Nov 8, 2010
- * Time: 11:35:33 AM
- * To change this template use File | Settings | File Templates.
+ * @author nikelin
  */
 public interface ICredentials {
 
-    public String getServiceID();
+    public ServiceID getServiceID();
 
     public String getUsername();
 

@@ -1,21 +1,16 @@
 package com.redshape.io.interactors;
 
+import com.redshape.io.*;
+import com.redshape.io.annotations.InteractionService;
+import com.redshape.io.annotations.RequiredPort;
+import com.redshape.io.interactors.samba.SambaAuthenticator;
+import com.redshape.io.interactors.samba.SambaFile;
+import com.redshape.io.interactors.samba.SambaInteractor;
 import com.redshape.io.net.auth.AuthenticatorException;
 import com.redshape.io.net.auth.ICredentials;
 import com.redshape.io.net.auth.impl.samba.NtlmCredentials;
-import com.redshape.io.AbstractNetworkInteractor;
-import com.redshape.io.IFilesystemNode;
-import com.redshape.io.NetworkInteractionException;
-import com.redshape.io.annotations.InteractionService;
-import com.redshape.io.annotations.RequiredPort;
-
-import com.redshape.io.interactors.samba.SambaAuthenticator;
-import com.redshape.io.interactors.samba.SambaFile;
-import com.redshape.io.INetworkNode;
-import com.redshape.io.PlatformType;
 import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbFile;
-
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -29,7 +24,7 @@ import java.net.MalformedURLException;
  * To change this template use File | Settings | File Templates.
  */
 @InteractionService(
-    id = "SAMBA",
+    id = ServiceID.SAMBA_ID,
     platforms = { PlatformType.UNIX, PlatformType.WINNT },
     ports = {
         @RequiredPort( value = 445, protocols = {"tcp", "udp"} ),
@@ -37,20 +32,23 @@ import java.net.MalformedURLException;
         @RequiredPort( value = 137, protocols = {"tcp", "udp"} )
     }
 )
-public class SambaInteractor extends AbstractNetworkInteractor<SmbFile> {
-    private static final Logger log = Logger.getLogger( SambaInteractor.class );
+public class SambaConnection extends AbstractNetworkConnection<SmbFile> {
+    private static final Logger log = Logger.getLogger( SambaConnection.class );
     private static String PROTOCOL = "smb";
-    public static final String SERVICE_ID = "SAMBA";
     
     private SmbFile connection;
     private SambaAuthenticator authenticator;
 
-    public SambaInteractor( INetworkNode node ) {
+    public SambaConnection(INetworkNode node) {
         super(PROTOCOL, node );
     }
 
-    @Override
-    // @todo: rework. not stable condition
+	@Override
+	public INetworkInteractor createInteractor() {
+		return new SambaInteractor(this);
+	}
+
+	@Override
     public boolean isConnected() throws NetworkInteractionException {
         try {
             return this.getConnection().exists();
@@ -60,11 +58,14 @@ public class SambaInteractor extends AbstractNetworkInteractor<SmbFile> {
         }
     }
 
+	@Override
     public void connect() throws NetworkInteractionException {
     	this.connect(null);
     }
 
-    synchronized protected SmbFile getConnection( ICredentials credentials ) throws AuthenticatorException, MalformedURLException  {
+    synchronized public SmbFile getConnection( ICredentials credentials ) throws AuthenticatorException,
+																			MalformedURLException,
+																			NetworkInteractionException {
         if ( this.connection == null ) {
             this.connection = this._createConnection(credentials);
         }
@@ -72,12 +73,15 @@ public class SambaInteractor extends AbstractNetworkInteractor<SmbFile> {
         return this.connection;
     }
     
-    synchronized protected SmbFile getConnection() throws AuthenticatorException, MalformedURLException {
+    synchronized protected SmbFile getConnection() throws AuthenticatorException,
+														MalformedURLException,
+														NetworkInteractionException {
     	return this.getConnection( this.getPasswordCredentials() );
     }
 
     synchronized private SmbFile _createConnection( ICredentials credentials ) throws AuthenticatorException,
-                                                            MalformedURLException {
+                                                            				MalformedURLException,
+																			NetworkInteractionException {
         if ( credentials == null  ) {
             if ( !this.isAnonymousAllowed() ) {
                 throw new AuthenticatorException("Credentials not found");
@@ -88,10 +92,10 @@ public class SambaInteractor extends AbstractNetworkInteractor<SmbFile> {
             throw new AuthenticatorException("Wrong type of credentials given (must extends from NtlmCredentials) !");
         }
 
-        return new SmbFile(
-            this.getConnectionUri(),
-            this.getAuthenticator().createNtlmPasswordAuthentication( (NtlmCredentials) credentials )
-        );
+		return new SmbFile(
+			this.getConnectionUri(),
+			this.getAuthenticator().createNtlmPasswordAuthentication( (NtlmCredentials) credentials )
+		);
     }
 
     protected NtlmCredentials createAnonymousCredentials() {
@@ -106,6 +110,7 @@ public class SambaInteractor extends AbstractNetworkInteractor<SmbFile> {
         return this.authenticator;
     }
 
+	@Override
     public void close() throws NetworkInteractionException {
         log.info("Not implemented");
     }
@@ -118,6 +123,7 @@ public class SambaInteractor extends AbstractNetworkInteractor<SmbFile> {
         }
     }
 
+	@Override
     public SmbFile getRawConnection() {
         return this.connection;
     }

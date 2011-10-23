@@ -7,22 +7,19 @@
         <groupId>com.redshape</groupId>
         <version>3.0.0</version>
     </parent>
+
+    <name>Redshape - Plugins API</name>
+
     <modelVersion>4.0.0</modelVersion>
 
-    <name>Redshape - AScript Engine</name>
     <groupId>com.redshape</groupId>
-    <version>${parent.version}</version>
-    <artifactId>ascript</artifactId>
+    <artifactId>plugins</artifactId>
+    <version>${project.parent.version}</version>
 
     <dependencies>
         <dependency>
             <groupId>com.redshape</groupId>
             <artifactId>commons</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.redshape</groupId>
-            <artifactId>utils</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
