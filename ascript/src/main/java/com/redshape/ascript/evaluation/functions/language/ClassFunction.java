@@ -8,7 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * @author nikelin
  * @date 25/04/11
- * @package com.api.deployer.expressions.evaluation.functions.language
+ * @package com.redshape.ascript.evaluation.functions.language
  */
 public class ClassFunction extends Function<Object, Class<?>> {
     private IEvaluator evaluator;

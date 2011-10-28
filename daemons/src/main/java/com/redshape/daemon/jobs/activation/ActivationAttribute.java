@@ -8,7 +8,7 @@ import java.util.HashSet;
 /**
  * @author nikelin
  * @date 22/04/11
- * @package com.api.deployer.jobs.activation
+ * @package com.redshape.jobs.activation
  */
 public class ActivationAttribute implements IEnum {
 	private String name;

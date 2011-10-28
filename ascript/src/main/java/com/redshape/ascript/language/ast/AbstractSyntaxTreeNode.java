@@ -5,7 +5,7 @@ import com.redshape.ascript.language.DeclarationType;
 /**
  * @author nikelin
  * @date 19/04/11
- * @package com.api.deployer.expressions.language.ast
+ * @package com.redshape.ascript.language.ast
  */
 public abstract class AbstractSyntaxTreeNode implements ISyntaxTreeNode {
 

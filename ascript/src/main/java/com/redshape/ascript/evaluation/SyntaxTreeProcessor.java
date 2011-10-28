@@ -18,7 +18,7 @@ import java.util.*;
 /**
  * @author nikelin
  * @date 21/04/11
- * @package com.api.deployer.expressions.evaluation
+ * @package com.redshape.ascript.expressions.evaluation
  */
 public class SyntaxTreeProcessor implements ISyntaxTreeVisitor {
 	private static final Logger log = Logger.getLogger(SyntaxTreeProcessor.class);

@@ -6,7 +6,7 @@ import com.redshape.utils.Function;
 /**
  * @author nikelin
  * @date 25/04/11
- * @package com.api.deployer.expressions.evaluation.functions.math
+ * @package com.redshape.ascript.evaluation.functions.math
  */
 public class CeilFunction extends Function<Object, Integer> {
     private IEvaluator evaluator;

@@ -19,7 +19,7 @@ import java.util.Enumeration;
  *
  * @author nikelin
  * @date 12/04/11
- * @package com.api.deployer.ui.components
+ * @package com.redshape.ui.components
  */
 public abstract class AbstractTree extends JTree {
 	private static final long serialVersionUID = -5271871795768545970L;

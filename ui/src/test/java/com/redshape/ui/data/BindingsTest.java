@@ -1,34 +1,30 @@
 package com.redshape.ui.data;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
- 
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
 import com.redshape.bindings.BindingException;
-import com.redshape.tests.AbstractContextAwareTest;
-import com.redshape.ui.application.UIException;
-
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import com.redshape.bindings.annotations.Bindable;
 import com.redshape.bindings.annotations.ElementType;
 import com.redshape.bindings.types.BindableType;
 import com.redshape.bindings.types.CollectionType;
-
+import com.redshape.tests.AbstractContextAwareTest;
+import com.redshape.ui.application.UIException;
 import com.redshape.ui.data.bindings.render.ISwingRenderer;
 import com.redshape.ui.data.bindings.render.components.ObjectUI;
-import com.redshape.ui.data.ModelDataTest;
-import com.redshape.ui.data.StoreTest;
+import com.redshape.ui.data.bindings.render.properties.EnumUI;
+import com.redshape.ui.data.bindings.render.properties.IEnumUI;
+import com.redshape.ui.data.bindings.render.properties.ListUI;
+import com.redshape.ui.data.bindings.render.properties.StringUI;
 import com.redshape.ui.data.loaders.AbstractDataLoader;
-
 import com.redshape.ui.utils.UIConstants;
 import com.redshape.ui.utils.UIRegistry;
 import com.redshape.utils.IEnum;
+import org.junit.Test;
+
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class BindingsTest extends AbstractContextAwareTest<Object> {
 	private static final String CONTEXT_PATH = "src/test/resources/context.xml";
@@ -145,25 +141,25 @@ public class BindingsTest extends AbstractContextAwareTest<Object> {
 		ISwingRenderer renderer = UIRegistry.<ISwingRenderer>getViewRendererFacade()
 											.createRenderer( TestMock.class );
 		
-		UIRegistry.getProvidersFactory().registerProvider(TestMock2.class, StoreTest.class );
-		UIRegistry.getProvidersFactory().registerProvider(Z.class, StoreTest.class );
+		UIRegistry.getProvidersFactory().registerProvider(TestMock2.class, Store.class );
+		UIRegistry.getProvidersFactory().registerProvider(Z.class, Store.class );
 		
 		UIRegistry.getProvidersFactory().registerLoader( 
-			renderer, StoreTest.class, 
-			new AbstractDataLoader<ModelDataTest>() {
+			renderer, Store.class,
+			new AbstractDataLoader<ModelData>() {
 				private static final long serialVersionUID = 8104535800948094212L;
 	
 				@Override
-				protected List<ModelDataTest> doLoad() {
-					List<ModelDataTest> result = new ArrayList<ModelDataTest>();
+				protected List<ModelData> doLoad() {
+					List<ModelData> result = new ArrayList<ModelData>();
 					result.add( this.createRecord("a") );
 					result.add( this.createRecord("b") );
 					
 					return result;
 				}
 				
-				private ModelDataTest createRecord( String name ) {
-					ModelDataTest dataTest = new ModelDataTest(name);
+				private ModelData createRecord( String name ) {
+					ModelData dataTest = new ModelData(name);
 					dataTest.setRelatedObject( new Z(name) );
 					
 					return dataTest;
@@ -172,22 +168,22 @@ public class BindingsTest extends AbstractContextAwareTest<Object> {
 		
 		ObjectUI ui = renderer.render( new JPanel(), TestMock.class );
 		assertNotNull( ui.getField("device") );
-		assertTrue( JComboBox.class.isAssignableFrom( ui.getField("device").getClass() ) );
+		assertTrue( ListUI.class.isAssignableFrom( ui.getField("device").getClass() ) );
 		( (JComboBox) ui.getField("enumeration") ).setSelectedIndex(1);
 		assertNotNull( ui.getField("enumeration") );
-		assertEquals( JComboBox.class, ui.getField("enumeration").getClass() );
+		assertEquals( EnumUI.class, ui.getField("enumeration").getClass() );
 		( (JComboBox) ui.getField("enumeration") ).setSelectedItem( X.A );
 		assertNotNull( ui.getField("suchLikeEnumeration") );
-		assertTrue( JComboBox.class.isAssignableFrom( ui.getField("suchLikeEnumeration").getClass() ) );
+		assertTrue( IEnumUI.class.isAssignableFrom( ui.getField("suchLikeEnumeration").getClass() ) );
 		( (JComboBox) ui.getField("suchLikeEnumeration") ).setSelectedItem( SuchLikeEnum.E1 );
 		assertNotNull( ui.getField("x") );
-		assertEquals( JTextField.class, ui.getField("x").getClass() );
+		assertEquals( StringUI.class, ui.getField("x").getClass() );
 		String xValue = "xValue";
 		( (JTextField) ui.getField("x") ).setText( xValue ); 
 		assertNotNull( ui.getNested("y") );
 		assertEquals( ObjectUI.class, ui.getNested("y").getClass() );
 		assertNotNull( ui.getNested("y").getField("name") );
-		assertEquals( JTextField.class, ui.getNested("y").getField("name").getClass() );
+		assertEquals( StringUI.class, ui.getNested("y").getField("name").getClass() );
 		String yNameValue = "yNameValue";
 		( (JTextField) ui.getNested("y").getField("name") ).setText( yNameValue );
 		

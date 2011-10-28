@@ -8,7 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * @author nikelin
  * @date 21/04/11
- * @package com.api.deployer.expressions.evaluation.functions.language
+ * @package com.redshape.ascript.evaluation.functions.language
  */
 public class NotDeclaredFunction extends Function<Object, Object> {
 	private IEvaluator evaluator;

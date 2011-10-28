@@ -5,6 +5,7 @@ import com.redshape.servlet.form.RenderMode;
 import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.fields.InputField;
 import com.redshape.servlet.form.render.IFormFieldRenderer;
+import com.redshape.validators.result.IValidationResult;
 
 import java.util.Map;
 
@@ -31,14 +32,30 @@ public class InputFieldRenderer implements IFormFieldRenderer<InputField> {
                 value = StandardI18NFacade._( value );
             }
 
-			builder.append("value=\"").append( value ).append("\" ");
+			builder.append("value=\"").append( value ).append("\"");
 		}
-		
+
 		Map<String, Object> params = field.getAttributes();
+		if ( !field.getValidationResults().isEmpty() ) {
+			for ( IValidationResult result : field.getValidationResults() ) {
+				if ( !result.isValid() ) {
+					String classValue = (String) params.get("class");
+					if ( classValue == null ) {
+						params.put("class", "error");
+					} else {
+						params.put("class", params.get("class") + " error" );
+					}
+					break;
+				}
+			}
+		}
+
 		for ( String key : params.keySet() ) {
+			String value = params.get(key).toString();
+
 			builder.append( key ).append( "=\"" )
-				   .append( params.get(key) )
-				   .append( "\" ");
+				   .append( value )
+				   .append("\" ");
 		}
 		
 		builder.append("/>");

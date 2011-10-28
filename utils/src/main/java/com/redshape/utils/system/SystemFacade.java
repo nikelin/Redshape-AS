@@ -28,7 +28,7 @@ public class SystemFacade implements ISystemFacade {
     }
 
     /* (non-Javadoc)
-	 * @see com.api.deployer.system.ISystemFacade#getConsole()
+	 * @see com.redshape.system.ISystemFacade#getConsole()
 	 */
     public IConsole getConsole() {
     	return this.console;

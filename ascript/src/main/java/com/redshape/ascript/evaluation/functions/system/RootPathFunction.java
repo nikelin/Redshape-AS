@@ -8,7 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * @author nikelin
  * @date 21/04/11
- * @package com.api.deployer.expressions.evaluation.functions.system
+ * @package com.redshape.ascript.evaluation.functions.system
  */
 public class RootPathFunction extends Function<Object, Object> {
 	private IEvaluator evaluator;

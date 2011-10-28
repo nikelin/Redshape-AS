@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * @author nikelin
  * @date 22/04/11
- * @package com.api.deployer.jobs.activation
+ * @package com.redshape.jobs.activation
  */
 public interface IJobActivationProfile extends Serializable {
 

@@ -24,6 +24,7 @@ public class ErrorsDecorator extends AbstractDecorator {
 
 	protected void buildList( Collection<String> messages, StringBuilder builder ) {
 		boolean first = true;
+		builder.append("<div class=\"errors\">");
 		for ( String message : messages ) {
 			if ( first ) {
 				builder.append("<ul class=\"errors-list\">");
@@ -32,14 +33,15 @@ public class ErrorsDecorator extends AbstractDecorator {
 
 			builder.append("<li>")
 			   .append("<span class=\"error\">")
-			   .append(messages)
+			   .append(message)
 			   .append("</span>")
 			   .append("</li>");
 		}
 		
 		if ( !first ) {
-			builder.append("</ul>");
+			builder.append("</ul><div style=\"clear: both\">&nbsp;</div>");
 		}
+		builder.append("</div>");
 	}
 
 	protected Collection<String> buildMessagesList( IFormItem item ) {

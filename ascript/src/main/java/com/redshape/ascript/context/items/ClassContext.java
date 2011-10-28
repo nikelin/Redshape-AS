@@ -9,7 +9,7 @@ import java.lang.reflect.Method;
 /**
  * @author nikelin
  * @date 20/04/11
- * @package com.api.deployer.expressions.context.items
+ * @package com.redshape.ascript.expressions.context.items
  */
 public class ClassContext implements IEvaluationContextItem {
 	private Class<?> clazz;

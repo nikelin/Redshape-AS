@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @author nikelin
  * @date 20/04/11
- * @package com.api.deployer.expressions.evaluation.functions.arrays
+ * @package com.redshape.ascript.evaluation.functions.arrays
  */
 public class EmptyFunction extends Function<Object, Boolean> {
 

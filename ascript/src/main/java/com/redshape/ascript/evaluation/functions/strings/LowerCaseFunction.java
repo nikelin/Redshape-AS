@@ -8,7 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * @author nikelin
  * @date 25/04/11
- * @package com.api.deployer.expressions.evaluation.functions.strings
+ * @package com.redshape.ascript.evaluation.functions.strings
  */
 public class LowerCaseFunction extends Function<Object, String> {
     private IEvaluator evaluator;

@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * @author nikelin
  * @date 25/04/11
- * @package com.api.deployer.expressions.evaluation.functions.utils
+ * @package com.redshape.ascript.evaluation.functions.utils
  */
 public class CounterFunction extends Function<Object, Integer> {
     private IEvaluator evaluator;

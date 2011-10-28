@@ -54,13 +54,7 @@ public class IntervalRange<T extends Comparable<T>> implements IRange<T> {
 
 	@Override
 	public boolean isEmpty() {
-		switch ( this.getType() ) {
-			case INCLUSIVE:
-				return this.start != null && this.end != null;
-			default:
-			case EXCLUSIVE:
-				return this.start == this.end;
-		}
+		return this.start.compareTo( this.end ) == 0;
 	}
 
 	@Override

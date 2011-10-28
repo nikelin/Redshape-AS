@@ -4,6 +4,7 @@ import com.redshape.i18n.impl.StandardI18NFacade;
 import com.redshape.servlet.form.RenderMode;
 import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.fields.CheckboxGroupField;
+import com.redshape.validators.result.IValidationResult;
 
 import java.util.Map;
 
@@ -26,6 +27,21 @@ public class CheckboxGroupFieldRenderer extends AbstractFormFieldRenderer<Checkb
 
 		if ( field.getValue() != null && field.getValues().contains(value) ) {
 			builder.append(" checked=\"checked\" ");
+		}
+
+		Map<String, Object> params = field.getAttributes();
+		if ( !field.getValidationResults().isEmpty() ) {
+			for ( IValidationResult result : field.getValidationResults() ) {
+				if ( !result.isValid() ) {
+					String classValue = (String) params.get("class");
+					if ( classValue == null ) {
+						params.put("class", "error");
+					} else {
+						params.put("class", params.get("class") + " error" );
+					}
+					break;
+				}
+			}
 		}
 
 		this.buildAttributes( builder, field );

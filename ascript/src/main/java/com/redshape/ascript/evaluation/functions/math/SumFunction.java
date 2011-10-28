@@ -8,7 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * @author nikelin
  * @date 20/04/11
- * @package com.api.deployer.expressions.evaluation.functions.math
+ * @package com.redshape.ascript.evaluation.functions.math
  */
 public class SumFunction extends Function<Object, Double> {
 

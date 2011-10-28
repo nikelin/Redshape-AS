@@ -15,32 +15,32 @@
     	<constructor-arg><ref bean="componentsLocator"/></constructor-arg>
    	</bean>
 
-   	<bean scope="singleton" id="eastPlacement" class="com.redshape.ui.utils.UIConstants.Area" factory-method="valueOf">
+   	<bean scope="singleton" id="eastPlacement" class="com.redshape.ui.utils.UIConstants$Area" factory-method="valueOf">
    		<constructor-arg>
    			<value>EAST</value>
    		</constructor-arg>
    	</bean>
 
-   	<bean scope="singleton" id="centerPlacement" class="com.redshape.ui.utils.UIConstants.Area" factory-method="valueOf">
+   	<bean scope="singleton" id="centerPlacement" class="com.redshape.ui.utils.UIConstants$Area" factory-method="valueOf">
    		<constructor-arg>
    			<value>CENTER</value>
    		</constructor-arg>
    	</bean>
 
    	<!-- UI Contstants -->
-	<bean scope="singleton" id="westPlacement" class="com.redshape.ui.utils.UIConstants.Area" factory-method="valueOf">
+	<bean scope="singleton" id="westPlacement" class="com.redshape.ui.utils.UIConstants$Area" factory-method="valueOf">
 	     <constructor-arg>
 	         <value>WEST</value>
 	     </constructor-arg>
 	 </bean>
 
-	 <bean scope="singleton" id="southPlacement" class="com.redshape.ui.utils.UIConstants.Area" factory-method="valueOf">
+	 <bean scope="singleton" id="southPlacement" class="com.redshape.ui.utils.UIConstants$Area" factory-method="valueOf">
 	 	<constructor-arg>
 	 		<value>SOUTH</value>
 	 	</constructor-arg>
 	 </bean>
 
- 	 <bean scope="singleton" id="northPlacement" class="com.redshape.ui.utils.UIConstants.Area" factory-method="valueOf">
+ 	 <bean scope="singleton" id="northPlacement" class="com.redshape.ui.utils.UIConstants$Area" factory-method="valueOf">
 	 	<constructor-arg>
 	 		<value>NORTH</value>
 	 	</constructor-arg>

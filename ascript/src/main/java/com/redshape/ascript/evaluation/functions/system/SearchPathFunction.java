@@ -9,7 +9,7 @@ import java.util.Collection;
 /**
  * @author nikelin
  * @date 21/04/11
- * @package com.api.deployer.expressions.evaluation.functions.system
+ * @package com.redshape.ascript.evaluation.functions.system
  */
 public class SearchPathFunction extends Function<Object, Object> {
 

@@ -6,7 +6,7 @@ import com.redshape.utils.Function;
 /**
  * @author nikelin
  * @date 25/04/11
- * @package com.api.deployer.expressions.evaluation.functions.strings
+ * @package com.redshape.ascript.evaluation.functions.strings
  */
 public class IndexOfFunction extends Function<Object, Integer> {
     private IEvaluator evaluator;

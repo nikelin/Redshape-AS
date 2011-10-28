@@ -8,7 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * @author nikelin
  * @date 20/04/11
- * @package com.api.deployer.expressions.evaluation.functions.comparable
+ * @package com.redshape.ascript.evaluation.functions.comparable
  */
 public class EqualsFunction extends Function<Object, Boolean> {
 
