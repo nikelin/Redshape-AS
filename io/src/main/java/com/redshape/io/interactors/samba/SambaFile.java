@@ -1,15 +1,13 @@
 package com.redshape.io.interactors.samba;
 
+import com.redshape.io.IFilesystemNode;
+import com.redshape.io.NetworkInteractionException;
+import jcifs.smb.SmbFile;
+import org.apache.log4j.Logger;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import jcifs.smb.SmbFile;
-
-import org.apache.log4j.Logger;
-
-import com.redshape.io.IFilesystemNode;
-import com.redshape.io.NetworkInteractionException;
 
 
 /**
@@ -24,7 +22,12 @@ public class SambaFile implements IFilesystemNode {
         this.context = file;
     }
 
-    protected SmbFile getContext() {
+	@Override
+	public void mkdir() throws IOException {
+		this.getContext().mkdir();
+	}
+
+	protected SmbFile getContext() {
         return this.context;
     }
 

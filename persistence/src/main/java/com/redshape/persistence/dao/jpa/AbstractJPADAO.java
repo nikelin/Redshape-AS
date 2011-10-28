@@ -79,6 +79,7 @@ public abstract class AbstractJPADAO<T extends IEntity> extends JpaDaoSupport im
     }
 
     @Override
+	@Transactional
     public void removeAll() throws DAOException {
         this.executeUpdate("delete from " + this.getEntityName());
     }
@@ -106,6 +107,7 @@ public abstract class AbstractJPADAO<T extends IEntity> extends JpaDaoSupport im
         this.executeUpdate(query, new HashMap<String, Object>());
     }
 
+	@Transactional
     protected void executeUpdate(final String queryString, final Map<String, Object> params) throws DAOException {
 		Query query = this.em.createQuery(queryString);
         for (String key : params.keySet()) {

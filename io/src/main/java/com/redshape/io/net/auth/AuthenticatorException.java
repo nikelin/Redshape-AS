@@ -13,11 +13,14 @@ import com.redshape.io.NetworkInteractionException;
 public class AuthenticatorException extends NetworkInteractionException {
 
     public AuthenticatorException() {
-        super();
+        this(null);
     }
 
     public AuthenticatorException( String message ) {
-        super(message);
+        this(message, null);
     }
 
+	public AuthenticatorException(String message, Throwable e) {
+		super(message, e);
+	}
 }

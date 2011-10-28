@@ -82,4 +82,6 @@ public interface IFilesystemNode extends Closeable {
 	 */
 	public void createNew() throws IOException;
 
+	public void mkdir() throws IOException;
+
 }

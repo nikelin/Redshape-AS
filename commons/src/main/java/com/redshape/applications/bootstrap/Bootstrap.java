@@ -1,5 +1,6 @@
 package com.redshape.applications.bootstrap;
 
+import com.redshape.utils.Commons;
 import com.redshape.utils.IPackagesLoader;
 import com.redshape.utils.config.IConfig;
 import org.apache.log4j.Logger;
@@ -117,7 +118,18 @@ public class Bootstrap implements IBootstrap {
         for ( IBootstrapAction action : actions ) {
             if ( !action.hasMarker( ActionMarker.PROCESSED ) ) {
                 log.info("Processing action: " + action.getId() );
-                this.runAction( action );
+				try {
+                	this.runAction( action );
+				} catch ( Throwable e ) {
+					if ( action.getMarkers().contains(ActionMarker.CRITICAL) ) {
+						throw new BootstrapException("Action bootstrap failed", e );
+					}
+
+					log.error( String.format(
+						"Failed to process action: %s (%s)",
+						action.getClass().getCanonicalName(),
+						Commons.select( action.getId(), "<unknown>" ) ) );
+				}
             }
         }
 

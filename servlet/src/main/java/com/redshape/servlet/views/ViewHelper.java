@@ -88,7 +88,7 @@ public final class ViewHelper {
 			url.append( key ).append("=").append( params.get(key) );
 
 			if ( i++ != params.size() - 1 ) {
-				url.append("&");
+				url.append("&amp;");
 			}
 		}
 

@@ -1,14 +1,16 @@
 package com.redshape.io.interactors.ssh;
 
+import com.redshape.io.IFilesystemNode;
+import com.redshape.utils.StringUtils;
 import net.schmizz.sshj.sftp.*;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.*;
-
-import com.redshape.io.IFilesystemNode;
-import com.redshape.utils.StringUtils;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -71,7 +73,16 @@ public class SSHFile implements IFilesystemNode {
         return this.getSFTPClient().type( this.getCanonicalPath() ).equals( FileMode.Type.DIRECTORY );
     }
 
-    public boolean isFile() throws IOException {
+	@Override
+	public void mkdir() throws IOException {
+		if ( this.isExists() ) {
+			this.remove();
+		}
+
+		this.getSFTPClient().mkdir( this.getCanonicalPath() );
+	}
+
+	public boolean isFile() throws IOException {
         return this.getSFTPClient().type( this.getCanonicalPath() ).equals( FileMode.Type.REGULAR );
     }
 

@@ -10,10 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 
@@ -50,6 +47,16 @@ public class StringUtils {
         
         return builder.toString();
     }
+
+	public static String randomString( int length ) {
+		Random random = new Random();
+		char[] result = new char[length];
+		for ( int i = 0; i < length; i++ ) {
+			result[i] = (char) random.nextInt(128);
+		}
+
+		return String.valueOf(result);
+	}
 
     public static String reverse( String input ) {
           return String.valueOf( reverse( input.toCharArray() ) );
@@ -295,7 +302,7 @@ public class StringUtils {
 		int count = (int) ( sentence.length() / interval );
 		int i = 0;
 		StringBuilder builder = new StringBuilder();
-		while ( i++ != count - 1 ) {
+		while ( i++ != count - 1  && --i < sentence.length() ) {
 			builder.append( sentence.substring( --i * interval, ++i * interval ) )
 				   .append( separator );
 		}

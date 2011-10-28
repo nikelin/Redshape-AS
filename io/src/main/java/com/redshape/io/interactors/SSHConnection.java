@@ -5,6 +5,7 @@ import com.redshape.io.annotations.InteractionService;
 import com.redshape.io.annotations.RequiredPort;
 import com.redshape.io.interactors.ssh.SSHInteractor;
 import com.redshape.io.net.auth.ICredentials;
+import com.redshape.io.net.auth.IKeyedCredentials;
 import com.redshape.io.net.auth.IPasswordCredentials;
 import com.redshape.utils.StringUtils;
 import com.redshape.utils.config.ConfigException;
@@ -17,16 +18,17 @@ import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collection;
 
 /**
  * @author nikelin
  */
 @InteractionService(
-	id = ServiceID.SSH_ID,
-	platforms = { PlatformType.UNIX },
-	ports = {
-		@RequiredPort( value = 22, protocols = {"tcp", "udp"} )
-	}
+		id = ServiceID.SSH_ID,
+		platforms = { PlatformType.UNIX },
+		ports = {
+				@RequiredPort( value = 22, protocols = {"tcp", "udp"} )
+		}
 )
 public class SSHConnection extends AbstractNetworkConnection<SSHClient> {
 	private static final Logger log = Logger.getLogger( SSHConnection.class );
@@ -47,21 +49,21 @@ public class SSHConnection extends AbstractNetworkConnection<SSHClient> {
 
 	@Override
 	public void connect() throws NetworkInteractionException {
-		this.connect( this.getPasswordCredentials() );
+		this.connect( this.getCredentialsProvider().getCredentials(this.getNode().getNetworkPoint()) );
 	}
 
 	@Override
-	public void connect( ICredentials credentials ) throws NetworkInteractionException {
+	public void connect( Collection<ICredentials> credentials ) throws NetworkInteractionException {
 		try {
 			// Close previously opened connection if any
-			this.close();
+			if ( this.isConnected() ) {
+				this.close();
+			}
 
 			this.connection = new SSHClient();
-
 			this.loadVerifiedHosts();
-
 			this.connection.setConnectTimeout( TIMEOUT );
-			this.connection.connect( this.getConnectionUri(), this.getPort() );
+			this.connection.connect( this.getConnectionUri(), 22 );
 			this.authenticate( credentials );
 		} catch ( Throwable e ) {
 			log.error( e.getMessage(), e );
@@ -69,30 +71,33 @@ public class SSHConnection extends AbstractNetworkConnection<SSHClient> {
 		}
 	}
 
-	protected void authenticate( ICredentials credentials ) throws NetworkInteractionException {
-		assert( this.isConnected() );
-
-		try {
+	protected void authenticate( Collection<ICredentials> credentials )
+			throws NetworkInteractionException {
+		for ( ICredentials credentialsData : credentials ) {
 			try {
-				this.getConnection().authPublickey( this.getKeyedCredentials().getUsername() );
-			} catch ( Throwable e ) {
 				try {
-					if ( ! (credentials instanceof IPasswordCredentials ) ) {
-						throw new NetworkInteractionException("Wrong credentials provided");
+					if ( credentialsData instanceof IKeyedCredentials ) {
+						this.getConnection().authPublickey( credentialsData.getUsername() );
+					} else {
+						final IPasswordCredentials passwordCredentials = (IPasswordCredentials) credentialsData;
+						log.info("Trying to authenticate with: "
+								+ passwordCredentials.getUsername() + "<>"
+								+ passwordCredentials.getPassword() );
+						this.getConnection().authPassword(
+								passwordCredentials.getUsername(),
+								passwordCredentials.getPassword()
+						);
 					}
-
-					log.info("Trying to authenticate with: " + credentials.getUsername() + "<>" + ( (IPasswordCredentials) credentials ).getPassword() );
-					this.getConnection().authPassword( credentials.getUsername(), ( (IPasswordCredentials) credentials ).getPassword() );
-				} catch ( UserAuthException e1 ) {
+				} catch ( UserAuthException e ) {
 					if ( !this.isAnonymousAllowed() ) {
-						log.error( e1.getMessage(), e );
+						log.error( e.getMessage(), e );
 						throw new NetworkInteractionException("Remote node authentication failed");
 					}
 				}
+			} catch ( TransportException e ) {
+				log.error( e.getMessage() );
+				throw new NetworkInteractionException( e.getMessage() );
 			}
-		} catch ( TransportException e ) {
-			log.error( e.getMessage() );
-			throw new NetworkInteractionException( e.getMessage() );
 		}
 	}
 
@@ -101,7 +106,7 @@ public class SSHConnection extends AbstractNetworkConnection<SSHClient> {
 	}
 
 	public boolean isConnected() {
-		return this.getConnection().isConnected();
+		return null != this.getConnection() && this.getConnection().isConnected();
 	}
 
 	@Override
@@ -117,7 +122,7 @@ public class SSHConnection extends AbstractNetworkConnection<SSHClient> {
 	}
 
 	public String getConnectionUri() {
-		return StringUtils.IPToString( this.getNetworkNode().getNetworkPoint().getAddress() );
+		return StringUtils.IPToString( this.getNode().getNetworkPoint().getAddress() );
 	}
 
 	protected void loadVerifiedHosts() throws ConfigException, IOException, FileNotFoundException {
@@ -133,6 +138,14 @@ public class SSHConnection extends AbstractNetworkConnection<SSHClient> {
 	@Override
 	public SSHClient getRawConnection() {
 		return this.connection;
+	}
+
+	@Override
+	public String getConnectionUri( INetworkNode node ) {
+		return new StringBuilder().append("ssh://")
+				.append( StringUtils.IPToString(node.getNetworkPoint().getAddress()) )
+				.append( ":22")
+				.toString();
 	}
 
 }

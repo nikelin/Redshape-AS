@@ -1,9 +1,6 @@
 package com.redshape.io.interactors.ssh.console;
 
-import com.redshape.io.IInteractorsFactory;
-import com.redshape.io.INetworkConnection;
-import com.redshape.io.INetworkInteractor;
-import com.redshape.io.INetworkNode;
+import com.redshape.io.*;
 import com.redshape.io.interactors.ServiceID;
 import com.redshape.io.interactors.ssh.SSHFile;
 import com.redshape.utils.system.console.Console;
@@ -14,6 +11,8 @@ import com.redshape.utils.system.scripts.bash.BashScriptListExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
@@ -29,6 +28,19 @@ public class RemoteConsole extends Console {
 
 	public RemoteConsole( INetworkNode node ) {
 		this.node = node;
+	}
+
+	public IFilesystemNode getFile( String path ) throws IOException {
+		return this.getFile(path, true);
+	}
+
+	public IFilesystemNode getFile( String path, boolean createIfNotExists ) throws IOException {
+		IFilesystemNode node = this.getInteractor().getFile(path);
+		if ( ( node == null || !node.isExists() ) && createIfNotExists ) {
+			node = this.getInteractor().createFile(path);
+		}
+
+		return node;
 	}
 
 	public IInteractorsFactory getInteractorsFactory() {
@@ -72,6 +84,23 @@ public class RemoteConsole extends Console {
 	}
 
 	@Override
+	public void deleteFile(String path) throws IOException {
+		IFilesystemNode node = this.provideFile(path, false);
+		if ( !node.isExists() ) {
+			return;
+		}
+
+		node.remove();
+	}
+
+	@Override
+	public boolean checkExists(String path) throws IOException {
+		IFilesystemNode node = this.<IFilesystemNode>provideFile(path, false);
+
+		return node != null && node.isExists();
+	}
+
+	@Override
 	protected IScriptExecutor createExecutorObject(String command) {
 		return new BashScriptExecutor() {
 			@Override
@@ -80,6 +109,26 @@ public class RemoteConsole extends Console {
 				return this.getExecutionResult();
 			}
 		};
+	}
+
+	@Override
+	protected <T> T provideFile(String path, boolean createIfNotExists) throws IOException {
+		IFilesystemNode node = this.getFile(path, createIfNotExists);
+		if ( createIfNotExists && ( null == node || !node.isExists() ) ) {
+			node = this.getFile(path, true);
+		}
+
+		return (T) node;
+	}
+
+	@Override
+	public InputStream openReadStream(String path) throws IOException {
+		return this.<IFilesystemNode>provideFile(path, false).getInputStream();
+	}
+
+	@Override
+	public OutputStream openWriteStream(String path) throws IOException {
+		return this.<IFilesystemNode>provideFile(path, true).getOutputStream();
 	}
 
 	@Override

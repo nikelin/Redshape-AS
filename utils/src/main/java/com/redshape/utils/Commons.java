@@ -1,9 +1,7 @@
 package com.redshape.utils;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Most common static functions.
@@ -122,6 +120,24 @@ public final class Commons {
 		} catch ( InvocationTargetException e ) {
 			throw new IllegalStateException("Case activation failed", e.getTargetException() );
 		}
+	}
+
+	public static <T> List<T> list( T... items ) {
+		List<T> result = new ArrayList<T>();
+		for ( T item : items ) {
+			result.add(item);
+		}
+
+		return result;
+	}
+
+	public static <T> Set<T> set( T... items ) {
+		Set<T> result = new HashSet<T>();
+		for ( T item : items ) {
+			result.add(item);
+		}
+
+		return result;
 	}
 
 	public static <T> T firstOrNull( List<T> list ) {

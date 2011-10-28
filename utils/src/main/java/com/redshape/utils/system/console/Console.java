@@ -5,6 +5,7 @@ import com.redshape.utils.system.scripts.IScriptListExecutor;
 import com.redshape.utils.system.scripts.bash.BashScriptExecutor;
 import com.redshape.utils.system.scripts.bash.BashScriptListExecutor;
 
+import java.io.*;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,6 +24,21 @@ public class Console implements IConsole {
 	 */
 	protected IScriptExecutor createExecutorObject( String command ) {
 		return new BashScriptExecutor(command);
+	}
+
+	@Override
+	public void deleteFile(String path) throws IOException {
+		File file = this.<File>provideFile(path, false);
+		if ( !file.exists() ) {
+			return;
+		}
+
+		file.delete();
+	}
+
+	@Override
+	public boolean checkExists(String path) throws IOException {
+		return this.<File>provideFile(path, false).exists();
 	}
 
 	/**
@@ -55,6 +71,40 @@ public class Console implements IConsole {
 		for ( IScriptExecutor executor : executors ) {
 			executor.kill();
 		}
+	}
+
+	@Override
+	public String readFile(String path) throws IOException {
+		StringBuilder builder = new StringBuilder();
+		BufferedReader bufferedStream = new BufferedReader(
+			new InputStreamReader( this.openReadStream(path) )
+		);
+
+		String tmp;
+		while ( null != ( tmp = bufferedStream.readLine() ) ) {
+			builder.append(tmp).append("\n");
+		}
+
+		return builder.toString();
+	}
+
+	protected <T> T provideFile( String path, boolean createIfNotExists ) throws IOException {
+		File file = new File(path);
+		if ( createIfNotExists ) {
+			file.createNewFile();
+		}
+
+		return (T) file;
+	}
+
+	@Override
+	public InputStream openReadStream(String path) throws IOException {
+		return new FileInputStream( this.<File>provideFile(path, false) );
+	}
+
+	@Override
+	public OutputStream openWriteStream(String path) throws IOException {
+		return new FileOutputStream( this.<File>provideFile(path, true) );
 	}
 
 	@Override

@@ -20,6 +20,14 @@ public class SambaInteractor implements INetworkInteractor {
 	}
 
 	@Override
+	/**
+	 * @FIXME
+	 */
+	public IFilesystemNode createFile(String path) throws IOException {
+		return null;
+	}
+
+	@Override
 	public void execute(IScriptExecutor executor) throws IOException {
 		throw new UnsupportedOperationException("Needs to be implemented");
 	}

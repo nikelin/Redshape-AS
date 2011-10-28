@@ -15,6 +15,8 @@ public interface INetworkInteractor {
 
 	public IFilesystemNode getRoot() throws IOException;
 
-	public IFilesystemNode getFile( String name ) throws IOException;
+	public IFilesystemNode getFile( String path ) throws IOException;
+
+	public IFilesystemNode createFile( String path ) throws IOException;
 
 }
