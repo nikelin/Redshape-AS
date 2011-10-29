@@ -13,13 +13,13 @@ public interface IBinaryTerm extends ISearchTerm {
 	 * Return left member of a binary group
 	 * @return
 	 */
-    public ISearchTerm getLeft();
+    public <T extends ISearchTerm> T getLeft();
 
 	/**
 	 * Return right member of a binary group
 	 * @return
 	 */
-    public ISearchTerm getRight();
+    public <T extends ISearchTerm> T getRight();
 
 	/**
 	 * Return operation which join binary group
