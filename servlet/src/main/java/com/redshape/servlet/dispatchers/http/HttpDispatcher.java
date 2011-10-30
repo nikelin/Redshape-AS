@@ -204,6 +204,8 @@ public class HttpDispatcher implements IHttpDispatcher {
     public void dispatch( IHttpRequest request, IHttpResponse response ) 
     	throws DispatchException {
         try {
+			ViewHelper.setLocalHttpRequest(request);
+
         	if ( request.getRequestURI().endsWith("jsp") ) {
                 return;
         	}

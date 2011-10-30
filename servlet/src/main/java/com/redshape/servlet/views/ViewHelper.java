@@ -1,6 +1,7 @@
 package com.redshape.servlet.views;
 
 import com.redshape.servlet.WebApplication;
+import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.core.controllers.Action;
 import com.redshape.servlet.core.controllers.IAction;
 import com.redshape.utils.config.ConfigException;
@@ -18,6 +19,16 @@ import java.util.regex.Pattern;
  */
 public final class ViewHelper {
 	private static final Pattern protocolMatcher = Pattern.compile("(.+?)://(.*?)");
+
+	private static ThreadLocal<IHttpRequest> localRequest = new ThreadLocal<IHttpRequest>();
+
+	public static void setLocalHttpRequest( IHttpRequest request ) {
+		localRequest.set( request );
+	}
+
+	protected static IHttpRequest getLocalHttpRequest() {
+		return localRequest.get();
+	}
 
 	public static String url( String url ) {
 		try {

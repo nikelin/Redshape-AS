@@ -28,7 +28,13 @@ public class WebResourcesHandler implements IWebResourcesHandler {
         this.writer = writer;
     }
 
-    @Override
+	@Override
+	public void clear() {
+		this.scripts.clear();
+		this.styles.clear();
+	}
+
+	@Override
     public void addScript(String type, String href) {
         Script script = new Script( type, href );
         if ( this.scripts.contains(script) ) {
