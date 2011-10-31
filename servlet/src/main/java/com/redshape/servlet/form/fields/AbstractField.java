@@ -76,6 +76,20 @@ public abstract class AbstractField<T> extends AbstractFormItem implements IForm
 
     @Override
     public void resetMessages() {
+		if ( this.hasAttribute("class") ) {
+			String classAttribute = this.getAttribute("class");
+			String[] classParts = classAttribute.split("\\s");
+			for ( String part : classParts ) {
+				if ( !part.trim().equals("error") ) {
+					continue;
+				}
+
+				classAttribute = classAttribute.replace(part, "");
+			}
+
+			this.setAttribute("class", classAttribute);
+		}
+
         this.validationResults.clear();
     }
 

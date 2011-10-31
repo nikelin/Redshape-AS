@@ -2,14 +2,9 @@ package com.redshape.servlet.form.render.impl.fields;
 
 import com.redshape.i18n.impl.StandardI18NFacade;
 import com.redshape.servlet.form.RenderMode;
-import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.fields.InputField;
-import com.redshape.servlet.form.render.IFormFieldRenderer;
-import com.redshape.validators.result.IValidationResult;
 
-import java.util.Map;
-
-public class InputFieldRenderer implements IFormFieldRenderer<InputField> {
+public class InputFieldRenderer extends AbstractFormFieldRenderer<InputField> {
 
 	@Override
 	public String render(InputField field, RenderMode mode ) {
@@ -35,37 +30,12 @@ public class InputFieldRenderer implements IFormFieldRenderer<InputField> {
 			builder.append("value=\"").append( value ).append("\"");
 		}
 
-		Map<String, Object> params = field.getAttributes();
-		if ( !field.getValidationResults().isEmpty() ) {
-			for ( IValidationResult result : field.getValidationResults() ) {
-				if ( !result.isValid() ) {
-					String classValue = (String) params.get("class");
-					if ( classValue == null ) {
-						params.put("class", "error");
-					} else {
-						params.put("class", params.get("class") + " error" );
-					}
-					break;
-				}
-			}
-		}
-
-		for ( String key : params.keySet() ) {
-			String value = params.get(key).toString();
-
-			builder.append( key ).append( "=\"" )
-				   .append( value )
-				   .append("\" ");
-		}
+		this.applyErrorStateIfNeeds(field);
+		this.buildAttributes(builder, field);
 		
 		builder.append("/>");
-		
-		String data = builder.toString();
-		for ( IDecorator decorator : field.getDecorators() ) {
-			data = decorator.decorate(field, data);
-		}
-		
-		return data;
+
+		return this.applyDecorators(builder, field, mode);
 	}
 	
 

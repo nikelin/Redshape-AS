@@ -22,6 +22,10 @@ import java.util.Date;
  * @date 8/16/11 8:46 PM
  */
 public class TimeForm extends DateForm {
+	public static final String HOUR = "hour";
+	public static final String MINUTE = "minute";
+	public static final String SECOND = "second";
+
 	private IRange<Integer> timeRange;
 
 	private static final DateFormat timeFormatter = new SimpleDateFormat("y.M.d.H.m.s");
@@ -53,7 +57,7 @@ public class TimeForm extends DateForm {
 					.withValidator(new NumericStringValidator())
 					.withValidator(new LengthValidator(0, 2))
 					.withValidator(new RangeValidator(this.timeRange))
-					.withName("hour")
+					.withName(HOUR)
 					.withAttribute("class", "hour-element")
 				.asFieldBuilder()
 				.newInputField(InputField.Type.TEXT)
@@ -65,7 +69,7 @@ public class TimeForm extends DateForm {
 					.withValidator(new NumericStringValidator())
 					.withValidator( new LengthValidator( 0, 2 ) )
 					.withValidator( new RangeValidator( this.timeRange ) )
-					.withName("minute")
+					.withName(MINUTE)
 					.withAttribute("class", "minute-element")
 				.asFieldBuilder()
 				.newInputField( InputField.Type.TEXT )
@@ -77,7 +81,7 @@ public class TimeForm extends DateForm {
 					.withValidator(new NumericStringValidator())
 					.withValidator( new LengthValidator( 0, 2 ) )
 					.withValidator( new RangeValidator( this.timeRange ) )
-					.withName("second")
+					.withName(SECOND)
 					.withAttribute("class", "second-element")
 				.asFieldBuilder()
 				.newInputField( InputField.Type.TEXT )
@@ -85,54 +89,54 @@ public class TimeForm extends DateForm {
 	}
 
 	public void setHour( Integer hour ) {
-		this.setValue("hour", Commons.select( hour, Calendar.getInstance().get(Calendar.HOUR_OF_DAY) ) );
+		this.setValue(HOUR, Commons.select( hour, Calendar.getInstance().get(Calendar.HOUR_OF_DAY) ) );
 	}
 
 	public Integer getHour() {
 		try {
-			if ( !this.hasValue("hour") ) {
+			if ( !this.hasValue(HOUR) ) {
 				return 0;
 			}
 
 			return Integer.valueOf(
 					hoursFormatter.format(
-							hoursFormatter.parse(this.<String>getValue("hour"))));
+							hoursFormatter.parse(this.<String>getValue(HOUR))));
 		} catch ( ParseException e ) {
 			throw new IllegalArgumentException( e.getMessage(), e );
 		}
 	}
 
 	public void setMinute( Integer value ) {
-		this.setValue("minute", Commons.select( value, Calendar.getInstance().get(Calendar.MINUTE) ) );
+		this.setValue(MINUTE, Commons.select( value, Calendar.getInstance().get(Calendar.MINUTE) ) );
 	}
 
 	public Integer getMinute() {
 		try {
-			if ( !this.hasValue("minute") ) {
+			if ( !this.hasValue(MINUTE) ) {
 				return 0;
 			}
 
 			return Integer.valueOf(
 				minutesFormatter.format(
-					minutesFormatter.parse( this.<String>getValue("minute") ) ) );
+					minutesFormatter.parse( this.<String>getValue(MINUTE) ) ) );
 		} catch ( ParseException e ) {
 			throw new IllegalArgumentException( e.getMessage(), e );
 		}
 	}
 
 	public void setSecond( Integer value ) {
-		this.setValue("second", Commons.select(value, 0 ) );
+		this.setValue(SECOND, Commons.select(value, 0 ) );
 	}
 
 	public Integer getSecond() {
 		try {
-			if ( !this.hasValue("second") ) {
+			if ( !this.hasValue(SECOND) ) {
 				return 0;
 			}
 
 			return Integer.valueOf(
 				secondsFormatter.format(
-					secondsFormatter.parse( this.<String>getValue("second") )
+					secondsFormatter.parse( this.<String>getValue(SECOND) )
 				)
 			);
 		} catch ( ParseException e ) {

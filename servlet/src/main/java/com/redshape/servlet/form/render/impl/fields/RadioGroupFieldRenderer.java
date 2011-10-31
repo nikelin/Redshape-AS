@@ -2,7 +2,6 @@ package com.redshape.servlet.form.render.impl.fields;
 
 import com.redshape.servlet.form.IFormField;
 import com.redshape.servlet.form.RenderMode;
-import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.fields.RadioGroupField;
 
 import java.util.Map;
@@ -33,6 +32,7 @@ public class RadioGroupFieldRenderer extends AbstractFormFieldRenderer<RadioGrou
 
         builder.append("name=\"").append( field.getCanonicalName() ).append("\" ");
 
+		this.applyErrorStateIfNeeds(field);
         this.buildAttributes( builder, field );
 
 
@@ -47,12 +47,7 @@ public class RadioGroupFieldRenderer extends AbstractFormFieldRenderer<RadioGrou
             this.renderItem( builder, item, option, options.get(option) );
         }
 
-        String data = builder.toString();
-        for ( IDecorator decorator : item.getDecorators() ) {
-            data = decorator.decorate( item, data );
-        }
-
-        return data;
+		return this.applyDecorators(builder, item, mode);
     }
 
 }

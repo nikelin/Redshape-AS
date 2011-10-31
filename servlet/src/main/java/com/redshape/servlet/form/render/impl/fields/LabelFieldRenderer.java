@@ -2,11 +2,7 @@ package com.redshape.servlet.form.render.impl.fields;
 
 import com.redshape.i18n.impl.StandardI18NFacade;
 import com.redshape.servlet.form.RenderMode;
-import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.fields.LabelField;
-import com.redshape.servlet.form.render.IFormFieldRenderer;
-
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,7 +11,7 @@ import java.util.Map;
  * Time: 23:24
  * To change this template use File | Settings | File Templates.
  */
-public class LabelFieldRenderer implements IFormFieldRenderer<LabelField> {
+public class LabelFieldRenderer extends AbstractFormFieldRenderer<LabelField> {
 
 	@Override
 	public String render(LabelField field, RenderMode mode ) {
@@ -28,6 +24,8 @@ public class LabelFieldRenderer implements IFormFieldRenderer<LabelField> {
 			builder.append("id=\"").append( field.getId() ).append( "\" ");
 		}
 
+		this.buildAttributes(builder, field);
+
         builder.append(">");
 
 		if ( field.getValue() != null ) {
@@ -36,12 +34,7 @@ public class LabelFieldRenderer implements IFormFieldRenderer<LabelField> {
 
         builder.append("</label>");
 
-		String data = builder.toString();
-		for ( IDecorator decorator : field.getDecorators() ) {
-			data = decorator.decorate(field, data);
-		}
-
-		return data;
+		return this.applyDecorators(builder, field, mode);
 	}
 
 

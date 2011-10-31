@@ -3,5 +3,6 @@ package com.redshape.servlet.form;
 public enum RenderMode {
 	FULL,
 	FIELDS,
-	SUBFORMS
+	SUBFORMS,
+	WITHOUT_DECORATORS
 }

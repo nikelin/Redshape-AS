@@ -1,7 +1,6 @@
 package com.redshape.servlet.form.render.impl.fields;
 
 import com.redshape.servlet.form.RenderMode;
-import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.fields.CheckboxField;
 
 public class CheckboxFieldRenderer extends AbstractFormFieldRenderer<CheckboxField> {
@@ -22,16 +21,13 @@ public class CheckboxFieldRenderer extends AbstractFormFieldRenderer<CheckboxFie
             builder.append("checked=\"checked\"");
 		}
 
+		this.applyErrorStateIfNeeds(field);
+
 		this.buildAttributes( builder, field );
 		
 		builder.append("/>");
-		
-		String data = builder.toString();
-		for ( IDecorator decorator : field.getDecorators() ) {
-			data = decorator.decorate( field, data );
-		}
-		
-		return data;
+
+		return this.applyDecorators(builder, field, mode);
 	}
 
 }

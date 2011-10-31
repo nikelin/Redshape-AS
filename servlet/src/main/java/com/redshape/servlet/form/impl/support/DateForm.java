@@ -20,6 +20,10 @@ import java.util.*;
  * @date 8/15/11 12:41 PM
  */
 public class DateForm extends Form {
+	public static final String YEAR = "year";
+	public static final String MONTH = "month";
+	public static final String DAY = "day";
+
 	protected static final DateFormat dateFormatter = new SimpleDateFormat("y.M.d");
 	protected static final DateFormat yearFormatter = new SimpleDateFormat("y");
 	protected static final DateFormat monthFormatter = new SimpleDateFormat("M");
@@ -49,7 +53,7 @@ public class DateForm extends Form {
 					.withValidator(new RangeValidator(
 							RangeBuilder.createInterval(IntervalRange.Type.INCLUSIVE, 1, 31)
 					))
-					.withName("day")
+					.withName(DAY)
 					.withAttribute("class", "day-element")
 				.asFieldBuilder()
 				.newInputField(InputField.Type.TEXT)
@@ -62,7 +66,7 @@ public class DateForm extends Form {
 							RangeBuilder.createInterval(IntervalRange.Type.INCLUSIVE, 1, 12)
 					))
 					.withValidator(new NumericStringValidator() )
-					.withName("month")
+					.withName(MONTH)
 					.withAttribute("class", "month-element")
 				.asFieldBuilder()
 				.newSelectField(this.createMonthsList())
@@ -72,7 +76,7 @@ public class DateForm extends Form {
 				BuildersFacade.newFieldBuilder()
 					.withValue( Calendar.getInstance().get( Calendar.YEAR ) )
 					.withValidator(new NumericStringValidator())
-					.withName("year")
+					.withName(YEAR)
 					.withAttribute("class", "year-element")
 				.asFieldBuilder()
 				.newInputField(InputField.Type.TEXT)
@@ -92,48 +96,52 @@ public class DateForm extends Form {
 	}
 
 	public void setMonth( Integer value ) {
-		this.setValue("month", Commons.select(value, Calendar.getInstance().get(Calendar.MONTH) ) );
+		this.setValue(MONTH, Commons.select(value, Calendar.getInstance().get(Calendar.MONTH) ) );
 	}
 
 	public Integer getMonth() {
 		try {
-			if ( !this.hasValue("month") ) {
+			if ( !this.hasValue(MONTH) ) {
 				return Calendar.getInstance().get( Calendar.MONTH );
 			}
 
-			return Integer.valueOf( monthFormatter.format( monthFormatter.parse(this.<String>getValue("month"))));
+			return Integer.valueOf( monthFormatter.format( monthFormatter.parse(
+					this.<String>getValue(MONTH))));
 		} catch ( ParseException e ) {
 			throw new IllegalArgumentException( e.getMessage(), e );
 		}
 	}
 
 	public void setDay( Integer value ) {
-		this.setValue("day", Commons.select( value, Calendar.getInstance().get(Calendar.DAY_OF_MONTH) ) );
+		this.setValue(DAY, Commons.select( value, Calendar.getInstance().get(Calendar.DAY_OF_MONTH) ) );
 	}
 
 	public Integer getDay() {
 		try {
-			if ( !this.hasValue("day") ) {
+			if ( !this.hasValue(DAY) ) {
 				return Calendar.getInstance().get( Calendar.DAY_OF_MONTH );
 			}
 
-			return Integer.valueOf( dayFormatter.format( dayFormatter.parse(this.<String>getValue("day") ) ) );
+			return Integer.valueOf( dayFormatter.format(
+					dayFormatter.parse(this.<String>getValue(DAY) ) ) );
 		} catch ( ParseException e ) {
 			throw new IllegalArgumentException( e.getMessage(), e );
 		}
 	}
 
 	public void setYear( Integer value ) {
-		this.setValue( "year", Commons.select( value, Calendar.getInstance().get(Calendar.YEAR) ) );
+		this.setValue( YEAR, Commons.select( value, Calendar.getInstance().get(Calendar.YEAR) ) );
 	}
 
 	public Integer getYear() {
 		try {
-			if ( !this.hasValue("year") ) {
+			if ( !this.hasValue(YEAR) ) {
 				return Calendar.getInstance().get( Calendar.YEAR );
 			}
 
-			return Integer.valueOf( yearFormatter.format( yearFormatter.parse(this.<String>getValue("year") ) ) );
+			return Integer.valueOf(
+				yearFormatter.format(
+					yearFormatter.parse(this.<String>getValue(YEAR) ) ) );
 		} catch ( ParseException e ) {
 			throw new IllegalArgumentException( e.getMessage(), e );
 		}
