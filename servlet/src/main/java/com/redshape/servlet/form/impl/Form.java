@@ -55,8 +55,10 @@ public class Form extends AbstractFormItem implements IForm {
 	
 	@Override
 	public void process( IHttpRequest request ) throws InvalidDataException {
-		if ( !request.isPost() ) {
-			throw new IllegalArgumentException("Processing only possible in POST context");
+		if ( !request.getMethod().equals( this.getMethod()) ) {
+			throw new IllegalArgumentException(
+					String.format("Processing only possible in %s context", this.getMethod()
+					) );
 		}
 
         this.resetState();

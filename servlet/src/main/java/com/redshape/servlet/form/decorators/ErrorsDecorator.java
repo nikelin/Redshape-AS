@@ -39,7 +39,7 @@ public class ErrorsDecorator extends AbstractDecorator {
 		}
 		
 		if ( !first ) {
-			builder.append("</ul><div style=\"clear: both\">&nbsp;</div>");
+			builder.append("</ul><div class=\"clear\">&nbsp;</div>");
 		}
 		builder.append("</div>");
 	}

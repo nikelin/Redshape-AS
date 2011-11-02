@@ -60,9 +60,9 @@ public final class Commons {
 	}
 
 
-	public static Map<String, Object> map( Class<? extends Enum> enumClazz ) {
+	public static Map<String, Integer> map( Class<? extends Enum> enumClazz ) {
 		try {
-			Map<String, Object> result = new HashMap<String, Object>();
+			Map<String, Integer> result = new HashMap<String, Integer>();
 			Enum[] enumValues = (Enum[]) enumClazz.getMethod("values").invoke(null);
 			for ( Enum enumValue : enumValues ) {
 				result.put( enumValue.name(), enumValue.ordinal() );
@@ -87,6 +87,10 @@ public final class Commons {
 		}
 
 		return result;
+	}
+
+	public static <T> T[] array( Collection<T> items ) {
+		return (T[]) items.toArray();
 	}
 
 	public static <T> T[] array( T... items ) {

@@ -3,7 +3,10 @@ package com.redshape.validators.impl.common;
 import com.redshape.validators.AbstractValidator;
 import com.redshape.validators.impl.annotations.result.ValidationResult;
 
+import java.util.regex.Pattern;
+
 public class NumericStringValidator extends AbstractValidator<String, ValidationResult> {
+	private static final Pattern pattern = Pattern.compile("^[0-9]+$");
 
 	@Override
 	public ValidationResult validate(String value) {
@@ -12,11 +15,7 @@ public class NumericStringValidator extends AbstractValidator<String, Validation
 
 	@Override
 	public boolean isValid( String value ) {
-		try {
-			return value == null || value.isEmpty() || Integer.valueOf(value) != null;
-		} catch ( NumberFormatException e ) {
-			return false;
-		}
+		return value == null || value.isEmpty() || pattern.matcher(value).find();
 	}
 	
 }

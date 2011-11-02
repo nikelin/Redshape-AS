@@ -24,6 +24,11 @@ public interface IFormField<T> extends IFormItem {
 	public boolean hasMultiValues();
 
 	/**
+	 * Convert value to field values type
+	 */
+	public <T> T convertValue(Class<?> target, T value);
+
+	/**
 	 * Return all selected values related to a field
 	 * @return
 	 */

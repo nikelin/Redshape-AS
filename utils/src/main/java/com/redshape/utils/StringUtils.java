@@ -17,7 +17,28 @@ import java.util.regex.Pattern;
 @SuppressWarnings("restriction")
 public class StringUtils {
     public static List<String> camelCaseDelimiters = Arrays.asList( "_", "-" );
+	private static final String RANDOM_STRING_SOURCE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 	private static final String ESCAPE_SYMBOL = "\\";
+
+	public static String[] chunks( String source, int chunkSize ) {
+		int leastLength = source.length();
+		float chunksCount = leastLength / chunkSize;
+
+		String[] chunks = new String[Math.round(chunksCount) + ( leastLength - chunkSize * chunksCount > 0 ? 1 : 0 )];
+		int i = 0 ;
+		int offset = 0;
+		while ( leastLength >= chunkSize ) {
+			offset = i++ * chunkSize;
+			chunks[i-1] = source.substring( offset, offset + chunkSize );
+			leastLength -= chunkSize;
+		}
+
+		if ( leastLength > 0 ) {
+			chunks[i+1] = source.substring( offset, offset + leastLength );
+		}
+
+		return chunks;
+	}
 
     public static String repeat(String source, int times) {
         String result = "";
@@ -48,14 +69,21 @@ public class StringUtils {
         return builder.toString();
     }
 
-	public static String randomString( int length ) {
-		Random random = new Random();
-		char[] result = new char[length];
-		for ( int i = 0; i < length; i++ ) {
-			result[i] = (char) random.nextInt(128);
+	public static String randomString(int length) {
+		if (length < 1) {
+			return "";
 		}
 
-		return String.valueOf(result);
+		StringBuilder sb = new StringBuilder(length);
+		for (int i = 0; i < length; i++) {
+			sb.append(
+				RANDOM_STRING_SOURCE.charAt(
+					(int)(Math.random() * RANDOM_STRING_SOURCE.length())
+				)
+			);
+		}
+
+		return sb.toString();
 	}
 
     public static String reverse( String input ) {

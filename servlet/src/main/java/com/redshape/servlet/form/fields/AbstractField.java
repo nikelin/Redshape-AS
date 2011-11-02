@@ -1,5 +1,6 @@
 package com.redshape.servlet.form.fields;
 
+import com.redshape.servlet.WebApplication;
 import com.redshape.servlet.form.AbstractFormItem;
 import com.redshape.servlet.form.IFormField;
 import com.redshape.servlet.form.RenderMode;
@@ -7,6 +8,8 @@ import com.redshape.servlet.form.decorators.*;
 import com.redshape.servlet.form.render.IFormFieldRenderer;
 import com.redshape.validators.IValidator;
 import com.redshape.validators.result.IValidationResult;
+import net.sf.ezmorph.MorpherRegistry;
+import org.springframework.beans.BeansException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,6 +44,17 @@ public abstract class AbstractField<T> extends AbstractFormItem implements IForm
 		super(id, name);
 
 		this.setDecorator( new ComposedDecorator( STANDARD_DECORATORS_SET ) );
+	}
+
+	@Override
+	public <T> T convertValue(Class<?> target, T value) {
+		try {
+			MorpherRegistry registry = WebApplication.getContext().getBean("morpherRegistry", MorpherRegistry.class);
+
+			return (T) registry.morph(target, value);
+		} catch ( BeansException e ) {
+			return value;
+		}
 	}
 
 	@Override
