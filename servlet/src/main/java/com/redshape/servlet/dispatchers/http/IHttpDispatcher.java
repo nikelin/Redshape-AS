@@ -1,5 +1,6 @@
 package com.redshape.servlet.dispatchers.http;
 
+import com.redshape.servlet.actions.exceptions.handling.IPageExceptionHandler;
 import org.springframework.context.ApplicationContextAware;
 
 import com.redshape.servlet.core.IHttpRequest;
@@ -15,7 +16,9 @@ import com.redshape.servlet.dispatchers.DispatchException;
  * To change this template use File | Settings | File Templates.
  */
 public interface IHttpDispatcher extends ApplicationContextAware {
-	
+
+	public IPageExceptionHandler getExceptionHandler();
+
     public void dispatch( IHttpRequest request, IHttpResponse response ) throws DispatchException;
 
 }

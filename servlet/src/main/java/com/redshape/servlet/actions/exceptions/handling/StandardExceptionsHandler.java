@@ -119,6 +119,10 @@ public class StandardExceptionsHandler extends AbstractPageExceptionHandler {
 
 	protected void sendRedirect( IHttpRequest request, IHttpResponse response, String path )
 		throws ServletException, IOException {
-		response.sendRedirect(path);
+		if ( !response.isCommitted() ) {
+			response.sendRedirect(path);
+		} else {
+			// Impossible to send redirection headers
+		}
 	}
 }

@@ -4,6 +4,8 @@ import com.redshape.servlet.WebApplication;
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.core.controllers.Action;
 import com.redshape.servlet.core.controllers.IAction;
+import com.redshape.servlet.core.controllers.registry.IControllersRegistry;
+import com.redshape.servlet.dispatchers.http.IHttpDispatcher;
 import com.redshape.utils.config.ConfigException;
 import com.redshape.utils.config.IConfig;
 
@@ -21,6 +23,16 @@ public final class ViewHelper {
 	private static final Pattern protocolMatcher = Pattern.compile("(.+?)://(.*?)");
 
 	private static ThreadLocal<IHttpRequest> localRequest = new ThreadLocal<IHttpRequest>();
+
+	public static IView getLocalView() {
+		if ( getLocalHttpRequest() == null ) {
+			return null;
+		}
+
+		return WebApplication.getContext()
+			.getBean(IViewsFactory.class)
+			.getView( getLocalHttpRequest() );
+	}
 
 	public static void setLocalHttpRequest( IHttpRequest request ) {
 		localRequest.set( request );
@@ -66,6 +78,27 @@ public final class ViewHelper {
 		}
 
 		return "/" + url;
+	}
+
+	public static <T extends Serializable> String action( String controller,
+														  String action )
+		throws InstantiationException {
+		return action(controller, action, new HashMap<String, Serializable>() );
+	}
+
+	public static <T extends Serializable> String action( String controller,
+														  String action,
+														  Map<String, T> params )
+		throws InstantiationException {
+		IAction actionInstance = WebApplication.getContext().getBean(IControllersRegistry.class)
+																		  .getInstance(controller, action);
+		if ( actionInstance == null ) {
+			return url( WebApplication.getContext().getBean(IHttpDispatcher.class)
+												.getExceptionHandler()
+												.getPage404() );
+		}
+
+		return action( actionInstance.getClass(), params );
 	}
 
 	public static String action( Class<? extends IAction> action ) {

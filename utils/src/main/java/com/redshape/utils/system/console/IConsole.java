@@ -28,13 +28,10 @@ public interface IConsole {
 
     public IScriptExecutor createExecutor( String command );
 
-    public IScriptExecutor
-    	createExecutor( Object context, String command );
+    public IScriptExecutor createExecutor( Object context, String command );
 
-    public <T extends IScriptExecutor> IScriptListExecutor<T>
-    	createListExecutor();
+    public <T extends IScriptExecutor> IScriptListExecutor<T> createListExecutor();
 
-    public <T extends IScriptExecutor> IScriptListExecutor<T>
-    	createListExecutor( Object context );
+    public <T extends IScriptExecutor> IScriptListExecutor<T> createListExecutor( Object context );
 
 }

@@ -35,4 +35,13 @@ public interface IPageExceptionHandler {
                                  IHttpResponse response )
 		throws IOException ;
 
+	public String getPage500();
+
+	public String getPage404();
+
+	public String getPage403();
+
+	public String getPage401();
+
+
 }
