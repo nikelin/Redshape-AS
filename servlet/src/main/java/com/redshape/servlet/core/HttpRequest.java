@@ -125,6 +125,7 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
 
 		if ( this.isMultiPart() ) {
 			this.initMultipartParameters();
+			return;
 		}
 
         String data = this.readRequest();
