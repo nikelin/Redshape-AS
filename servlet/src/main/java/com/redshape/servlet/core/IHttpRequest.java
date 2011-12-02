@@ -25,6 +25,16 @@ public interface IHttpRequest extends HttpServletRequest {
 
     public String getCookie( String name );
 
+	public Long getLongParameter( String name );
+
+	public Integer getIntegerParameter( String name );
+
+	public Boolean getBooleanParameter( String name );
+
+	public Boolean getCheckboxParameter( String name );
+
+	public Float getFloatParameter( String name );
+
     public <T> T getObjectParameter( String name ) throws IOException;
 
 	public void setParameter( String name, Object value );

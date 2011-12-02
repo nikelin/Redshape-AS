@@ -167,7 +167,32 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
         this.initialized = true;
     }
 
-    @Override
+	@Override
+	public Long getLongParameter(String name) {
+		return Long.valueOf( this.getParameter(name) );
+	}
+
+	@Override
+	public Integer getIntegerParameter(String name) {
+	    return Integer.valueOf( this.getParameter(name) );
+	}
+
+	@Override
+	public Boolean getBooleanParameter(String name) {
+		return Boolean.valueOf( this.getRequest().getParameter(name) );
+	}
+
+	@Override
+	public Boolean getCheckboxParameter(String name) {
+		return this.getParameter(name).equals("on");
+	}
+
+	@Override
+	public Float getFloatParameter(String name) {
+		return Float.valueOf( this.getParameter(name) );
+	}
+
+	@Override
     public <T> T getObjectParameter( String name ) throws IOException {
 		if ( name == null ) {
 			throw new IllegalArgumentException("<null>");
