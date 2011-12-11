@@ -13,7 +13,11 @@ import java.io.OutputStream;
  * @TODO: add cleaning up interface for cached executors
  */
 public interface IConsole {
-
+    
+    public boolean isDirectory( String path ) throws IOException;
+    
+    public void mkdir( String path ) throws IOException;
+    
 	public void deleteFile( String path ) throws IOException;
 
 	public boolean checkExists( String path ) throws IOException;

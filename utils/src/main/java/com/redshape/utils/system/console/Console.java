@@ -26,7 +26,17 @@ public class Console implements IConsole {
 		return new BashScriptExecutor(command);
 	}
 
-	@Override
+    @Override
+    public boolean isDirectory(String path) throws IOException {
+        return this.<File>provideFile(path, false).isDirectory();
+    }
+
+    @Override
+    public void mkdir(String path) throws IOException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
 	public void deleteFile(String path) throws IOException {
 		File file = this.<File>provideFile(path, false);
 		if ( !file.exists() ) {

@@ -1,4 +1,4 @@
-package com.redshape.tests;
+package com.redshape.utils.tests;
 
 import java.util.HashMap;
 import java.util.Map;
