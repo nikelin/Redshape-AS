@@ -1,6 +1,8 @@
 package com.redshape.utils.config;
 
 import com.redshape.utils.StringUtils;
+import com.redshape.utils.config.sources.FileSource;
+import com.redshape.utils.config.sources.IConfigSource;
 import com.redshape.utils.helpers.XMLHelper;
 import org.apache.log4j.Logger;
 import org.w3c.dom.*;
@@ -23,7 +25,7 @@ public class XMLConfig extends AbstractConfig {
 	public XMLConfig( XMLHelper helper, String filePath ) throws ConfigException {
 		try {
 			this.xmlHelper = helper;
-			this.file = this.getXmlHelper().getLoader().loadFile(filePath);
+			this.source = new FileSource( this.getXmlHelper().getLoader().loadFile(filePath) );
 			this.init();
 		} catch ( IOException e ) {
 			throw new ConfigException( e.getMessage(), e );
@@ -38,14 +40,19 @@ public class XMLConfig extends AbstractConfig {
 		super(name, value);
 	}
 
-	public XMLConfig( XMLHelper helper, File file) throws ConfigException {
+    @Deprecated
+    public XMLConfig( XMLHelper helper, File file ) throws ConfigException {
+        this(helper, new FileSource(file) );
+    }
+    
+	public XMLConfig( XMLHelper helper, IConfigSource source) throws ConfigException {
 		this.xmlHelper = helper;
-		this.file = file;
+        this.source = source;
 		this.init();
 	}
 
-	public XMLConfig(File file) throws ConfigException {
-		super(file);
+	public XMLConfig(IConfigSource source) throws ConfigException {
+		super(source);
 	}
 
 	public void setXmlHelper(XMLHelper helper) {
@@ -59,7 +66,7 @@ public class XMLConfig extends AbstractConfig {
 	@Override
     protected void init() throws ConfigException {
 		try {
-			this.init( this, this.getXmlHelper().buildDocument(this.file).getDocumentElement() );
+			this.init( this, this.getXmlHelper().buildDocument(this.source.getReader()).getDocumentElement() );
 		} catch ( Throwable e ) {
 			throw new ConfigException( e.getMessage(), e );
 		}

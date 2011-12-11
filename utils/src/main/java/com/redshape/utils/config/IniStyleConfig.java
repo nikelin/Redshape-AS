@@ -1,5 +1,7 @@
 package com.redshape.utils.config;
 
+import com.redshape.utils.config.sources.IConfigSource;
+
 import java.io.*;
 
 /**
@@ -18,8 +20,8 @@ public class IniStyleConfig extends AbstractConfig {
         this(null, name, value);
     }
 
-    public IniStyleConfig(File file) throws ConfigException {
-		super(file);
+    public IniStyleConfig(IConfigSource source) throws ConfigException {
+		super(source);
     }
 
     protected void init() throws ConfigException {
@@ -72,7 +74,7 @@ public class IniStyleConfig extends AbstractConfig {
 
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader( new InputStreamReader( new FileInputStream( file ) ) );
+            reader = new BufferedReader( this.source.getReader() );
             String tmp;
             while ( null != ( tmp = reader.readLine() ) ) {
                 result.append( tmp ).append("\n");
@@ -98,13 +100,12 @@ public class IniStyleConfig extends AbstractConfig {
     }
 
     public void save() throws ConfigException {
-        if ( this.file == null ) {
+        if ( this.source == null ) {
             throw new IllegalStateException("Associated holder not exists");
         }
 
         try {
-            BufferedWriter writer = new BufferedWriter(
-                new OutputStreamWriter( new FileOutputStream(this.file) ) );
+            BufferedWriter writer = new BufferedWriter( this.source.getWriter() );
             writer.write( this.serialize() );
             writer.close();
         } catch ( IOException e ) {

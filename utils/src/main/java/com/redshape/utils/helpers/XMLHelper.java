@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -126,6 +127,10 @@ public final class XMLHelper {
 		return _buildDocument( domBuilder, data );
 	}
 
+    public Document buildDocument( Reader reader ) throws IOException, SAXException, ParserConfigurationException {
+        return _buildDocument( domBuilder, reader );
+    }
+    
 	public Document buildDocument( InputStream stream ) throws IOException, SAXException, ParserConfigurationException {
 		return _buildDocument( domBuilder, stream );
 	}
@@ -173,7 +178,9 @@ public final class XMLHelper {
 			doc = builder.parse( (File) source );
 		} else if ( InputStream.class.isAssignableFrom( source.getClass() ) ) {
 			doc = builder.parse( (InputStream) source );
-		} else if ( String.class.isAssignableFrom( source.getClass()) ) {
+		} else if ( InputStreamReader.class.isAssignableFrom( source.getClass() ) ) {
+            doc = builder.parse( new InputSource( (Reader) source ) );
+        } else if ( String.class.isAssignableFrom( source.getClass()) ) {
 			log.info( source );
 			doc = builder.parse( new StringBufferInputStream( (String) source ) );
 		} else {

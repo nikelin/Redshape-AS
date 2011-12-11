@@ -1,6 +1,7 @@
 package com.redshape.utils.config;
 
 import com.redshape.utils.StringUtils;
+import com.redshape.utils.config.sources.IConfigSource;
 
 import java.io.*;
 
@@ -15,7 +16,6 @@ public class PropertiesConfig extends AbstractConfig {
 	private IConfig parent;
 	private String name;
 	private String value;
-	private File file;
 
 	protected PropertiesConfig(PropertiesConfig parent, String name, String value) {
         super(parent, name, value);
@@ -25,8 +25,8 @@ public class PropertiesConfig extends AbstractConfig {
         this(null, name, value);
     }
 
-    public PropertiesConfig(File file) throws ConfigException {
-		super(file);
+    public PropertiesConfig(IConfigSource source) throws ConfigException {
+		super(source);
     }
 
     protected void init() throws ConfigException {
@@ -47,7 +47,7 @@ public class PropertiesConfig extends AbstractConfig {
 
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader( new InputStreamReader( new FileInputStream( file ) ) );
+            reader = new BufferedReader(this.source.getReader());
             String tmp;
             while ( null != ( tmp = reader.readLine() ) ) {
                 result.append( tmp ).append("\n");

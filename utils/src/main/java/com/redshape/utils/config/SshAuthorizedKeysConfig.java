@@ -1,6 +1,7 @@
 package com.redshape.utils.config;
 
 import com.redshape.utils.StringUtils;
+import com.redshape.utils.config.sources.IConfigSource;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,14 +31,14 @@ public class SshAuthorizedKeysConfig extends AbstractConfig {
         super(name, value);
     }
 
-    public SshAuthorizedKeysConfig(File file) throws ConfigException {
-        super(file);
+    public SshAuthorizedKeysConfig(IConfigSource source) throws ConfigException {
+        super(source);
     }
 
     @Override
     protected void init() throws ConfigException {
         try {
-            BufferedReader reader = new BufferedReader( new FileReader( this.file ) );
+            BufferedReader reader = new BufferedReader( this.source.getReader() );
             List<String> parts = new ArrayList<String>();
             String buff;
             while ( null != ( buff = reader.readLine() ) ) {

@@ -1,6 +1,7 @@
 package com.redshape.utils.config;
 
 import com.redshape.utils.StringUtils;
+import com.redshape.utils.config.sources.IConfigSource;
 
 import java.io.File;
 import java.util.*;
@@ -18,7 +19,7 @@ public abstract class AbstractConfig implements IConfig {
 	protected String name;
 	protected Map<String, String> attributes = new HashMap<String, String>();
 	protected List<IConfig> childs = new ArrayList<IConfig>();
-	protected File file;
+	protected IConfigSource source;
 
 	protected AbstractConfig() {
 		this(null, null, null);
@@ -34,8 +35,8 @@ public abstract class AbstractConfig implements IConfig {
         this(null, name, value);
     }
 
-    public AbstractConfig(File file) throws ConfigException {
-        this.file = file;
+    public AbstractConfig(IConfigSource source) throws ConfigException {
+        this.source = source;
 		this.init();
 	}
 

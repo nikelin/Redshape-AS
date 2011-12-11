@@ -1,5 +1,6 @@
 package com.redshape.utils.config;
 
+import com.redshape.utils.config.sources.FileSource;
 import com.redshape.utils.tests.AbstractContextAwareTest;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -24,7 +25,7 @@ public class SshAuthorizedKeysConfigTest extends AbstractContextAwareTest {
 
     @Test
     public void testMain() throws ConfigException {
-        SshAuthorizedKeysConfig config = new SshAuthorizedKeysConfig( this.file );
+        SshAuthorizedKeysConfig config = new SshAuthorizedKeysConfig( new FileSource(this.file) );
         for ( IConfig commandNode : config.childs() ) {
             assertFalse( commandNode.get("user").isNull() );
             assertFalse( commandNode.get("ssh-rsa").isNull() );
