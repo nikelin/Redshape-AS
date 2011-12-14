@@ -1,5 +1,7 @@
 package com.redshape.plugins.loaders;
 
+import java.net.URI;
+
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
  * @package com.redshape.plugins.loaders
@@ -7,6 +9,8 @@ package com.redshape.plugins.loaders;
  */
 public interface IPluginLoadersRegistry {
 
-	public IPluginsLoader selectLoader( String path );
+    public void registerLoader( String scheme, IPluginsLoader loader );
+    
+	public IPluginsLoader selectLoader( URI path );
 
 }

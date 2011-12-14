@@ -1,10 +1,7 @@
 package com.redshape.ui.application;
 
 import com.redshape.ui.Dispatcher;
-import com.redshape.ui.application.events.AppEvent;
-import com.redshape.ui.application.events.EventType;
-import com.redshape.ui.application.events.IEventHandler;
-import com.redshape.ui.application.events.UIEvents;
+import com.redshape.ui.application.events.*;
 import com.redshape.ui.application.events.handlers.ErrorsHandler;
 import com.redshape.ui.application.handlers.ExitHandler;
 import com.redshape.ui.application.handlers.RepaintHandler;
@@ -19,6 +16,7 @@ import com.redshape.ui.views.widgets.IWidgetsManager;
 import com.redshape.ui.windows.AbstractMainWindow;
 import com.redshape.utils.config.ConfigException;
 import com.redshape.utils.config.IConfig;
+import com.redshape.utils.events.AbstractEventDispatcher;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -36,9 +34,18 @@ import java.util.Collection;
 /**
  * @author nikelin
  */
-public abstract class AbstractApplication implements IApplication {
+public abstract class AbstractApplication extends EventDispatcher implements IApplication {
 	private static final Logger log = Logger.getLogger( AbstractApplication.class );
-	
+
+    public static class Events extends EventType {
+        protected Events(String code) {
+            super(code);
+        }
+        
+        public static final Events Start = new Events("Application.Events.Started");
+        public static final Events Stop = new Events("Application.Events.Stop");
+    }
+    
 	private JFrame context;
 	private ApplicationContext applicationContext;
 
@@ -203,6 +210,8 @@ public abstract class AbstractApplication implements IApplication {
         });
 
         Dispatcher.get().forwardEvent( UIEvents.Core.Init );
+        
+        this.forwardEvent( Events.Start );
     }
 
     protected Menu createMenu( IComponent component ) {

@@ -2,6 +2,7 @@ package com.redshape.ui.utils;
 
 import javax.swing.*;
 
+import com.redshape.ui.application.status.IStatusBar;
 import com.redshape.ui.application.notifications.INotificationsManager;
 import com.redshape.ui.application.notifications.NotificationsManager;
 import com.redshape.ui.data.state.IUIStateManager;
@@ -19,6 +20,8 @@ import java.awt.MenuBar;
 import java.util.HashMap;
 import java.util.Map;
 
+import java.util.Timer;
+
 /**
  * Created by IntelliJ IDEA.
  * User: nikelin
@@ -30,13 +33,24 @@ public final class UIRegistry {
     private static Map<UIConstants.Attribute, Object> values = new HashMap<UIConstants.Attribute, Object>();
     private static JFrame context;
     private static MenuBar menu;
+    private static IStatusBar progressBar;
 	private static Settings settings;
+    private static Timer timer = new Timer();
 	private static INotificationsManager notificationsManager;
 
 	public static void setSettings( Settings settings ) {
 		UIRegistry.settings = settings;
 	}
 
+    public static void restartTimer() {
+        timer.cancel();
+        timer = new Timer();
+    }
+    
+    public static Timer getTimer() {
+        return timer;
+    }
+    
 	public static Settings getSettings() {
 		if ( UIRegistry.settings == null ) {
 			UIRegistry.settings = new Settings();
@@ -44,6 +58,14 @@ public final class UIRegistry {
 
 		return UIRegistry.settings;
 	}
+
+    public static IStatusBar getStatusBar() {
+        return progressBar;
+    }
+
+    public static void setStatusBar(IStatusBar progressBar) {
+        UIRegistry.progressBar = progressBar;
+    }
 
     @SuppressWarnings("unchecked")
 	public static <V> V set( UIConstants.Attribute id, Object value ) {

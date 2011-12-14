@@ -1,6 +1,8 @@
 package com.redshape.utils.events;
 
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Abstract events dispatcher
@@ -8,12 +10,21 @@ import java.util.*;
  * @author nikelin
  * @see IEventListener
  * @see IEvent
- * @param <T extends IEvent>
  */
 public abstract class AbstractEventDispatcher implements IEventDispatcher {
     private Map<Class<? extends IEvent>, 
     			Collection<IEventListener<IEvent>>> listeners 
     			= new HashMap<Class<? extends IEvent>, Collection<IEventListener<IEvent>>>();
+
+    private ExecutorService listenersActivator = Executors.newFixedThreadPool(150);
+
+    protected AbstractEventDispatcher() {
+        this.listenersActivator = Executors.newFixedThreadPool(150);
+    }
+
+    protected ExecutorService getListenersActivator() {
+        return listenersActivator;
+    }
 
     @SuppressWarnings("unchecked")
 	@Override
@@ -49,11 +60,18 @@ public abstract class AbstractEventDispatcher implements IEventDispatcher {
     	return results;
     }
     
-    protected <Z extends IEvent> void raiseEvent( Z event ) {
+    protected <Z extends IEvent> void raiseEvent( final Z event ) {
     	Collection<IEventListener<IEvent>> listeners = this.getEventListeners(event);
-    	
-        for ( IEventListener<IEvent> listener : listeners ) {
-        	listener.handleEvent( event );
+
+        for ( final IEventListener<IEvent> listener : listeners ) {
+            this.getListenersActivator().execute(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.handleEvent(event);
+                    }
+                }
+            );
         }
     }
 }

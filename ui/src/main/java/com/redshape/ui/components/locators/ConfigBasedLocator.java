@@ -5,10 +5,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import com.redshape.ui.views.widgets.IWidget;
+import com.redshape.ui.components.AbstractComponent;
+import com.redshape.ui.components.IComponent;
 import com.redshape.utils.config.IConfig;
 
-public class ConfigBasedLocator<T extends IWidget> implements IComponentsLocator<T> {
+public class ConfigBasedLocator<T extends IComponent> implements IComponentsLocator<T> {
 	public static String DEFAULT_CONFIG_PATH = "ui.components";
 	private IConfig config;
 	private IConfig contextPart;

@@ -5,7 +5,6 @@ import com.redshape.bindings.annotations.Bindable;
 import com.redshape.bindings.annotations.ElementType;
 import com.redshape.bindings.types.BindableType;
 import com.redshape.bindings.types.CollectionType;
-import com.redshape.tests.AbstractContextAwareTest;
 import com.redshape.ui.application.UIException;
 import com.redshape.ui.data.bindings.render.ISwingRenderer;
 import com.redshape.ui.data.bindings.render.components.ObjectUI;
@@ -17,6 +16,7 @@ import com.redshape.ui.data.loaders.AbstractDataLoader;
 import com.redshape.ui.utils.UIConstants;
 import com.redshape.ui.utils.UIRegistry;
 import com.redshape.utils.IEnum;
+import com.redshape.utils.tests.AbstractContextAwareTest;
 import org.junit.Test;
 
 import javax.swing.*;

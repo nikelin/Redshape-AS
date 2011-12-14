@@ -2,6 +2,8 @@ package com.redshape.plugins.loaders;
 
 import com.redshape.plugins.LoaderException;
 
+import java.net.URI;
+
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
  * @package com.redshape.plugins.loaders
@@ -9,6 +11,11 @@ import com.redshape.plugins.LoaderException;
  */
 public interface IPluginsLoader {
 
-	public void load() throws LoaderException;
+    /**
+     * Load plugin by a given URI
+     * @param path
+     * @throws LoaderException
+     */
+	public void load( URI path ) throws LoaderException;
 
 }

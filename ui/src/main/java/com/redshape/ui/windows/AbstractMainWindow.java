@@ -5,6 +5,8 @@ import com.redshape.ui.utils.UIRegistry;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,9 +18,37 @@ import java.awt.*;
 public abstract class AbstractMainWindow extends JFrame {
 	private static final long serialVersionUID = -3138024523185479599L;
 
-	public AbstractMainWindow() {
+    public AbstractMainWindow() {
+        this(null);
+    }
+    
+    public AbstractMainWindow( String title ) {
+        this(title, null);
+    }
+    
+	public AbstractMainWindow( String title, Dimension dimension ) {
         super();
 
+        this.addComponentListener( new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                super.componentShown(e);    //To change body of overridden methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void componentResized(ComponentEvent e) {
+                AbstractMainWindow.this.doLayout();
+            }
+        });
+
+        if ( title != null ) {
+            this.setTitle(title);
+        }
+        
+        if ( dimension != null ) {
+            this.setSize(dimension);
+        }
+        
         this.configUI();
         this.buildUI();
     }

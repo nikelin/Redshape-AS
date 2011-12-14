@@ -3,6 +3,7 @@ package com.redshape.ui.utils;
 import com.redshape.utils.config.AbstractConfig;
 import com.redshape.utils.config.ConfigException;
 import com.redshape.utils.config.IConfig;
+import com.redshape.utils.config.sources.IConfigSource;
 
 import java.io.File;
 
@@ -26,8 +27,8 @@ public class Settings extends AbstractConfig {
 		super(name, value);
 	}
 
-	public Settings(File file) throws ConfigException {
-		super(file);
+	public Settings(IConfigSource source) throws ConfigException {
+		super(source);
 	}
 
 

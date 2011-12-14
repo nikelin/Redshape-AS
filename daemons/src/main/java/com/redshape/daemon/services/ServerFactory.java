@@ -29,9 +29,7 @@ public class ServerFactory implements RMIServerSocketFactory, Serializable {
 		InetAddress address = InetAddress.getByName( this.host );
 		return ServerSocketFactory.getDefault()
 		  .createServerSocket( 
-			  	port, 
-			  	this.maxConnections == null ? 10 : this.maxConnections,
-			  	address
+			  	port
 		  	);
 	}
 	

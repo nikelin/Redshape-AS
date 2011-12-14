@@ -71,7 +71,12 @@ public abstract class AbstractController implements IController {
             if ( annotation.eventType() != null &&
                     event.getType().getCode().equals( annotation.eventType() ) ) {
                 try {
-                    method.invoke( this, event );
+                    if ( method.getParameterTypes().length == 1 ) {
+                        method.invoke( this, event );
+                    } else if ( method.getParameterTypes().length == 0 ) {
+                        method.invoke( this );
+                    }
+
                     break;
                 } catch ( InvocationTargetException e ) {
                     throw new UnhandledUIException("View dispatching exception", e.getTargetException() );

@@ -1,5 +1,6 @@
 package com.redshape.ui.application.events;
 
+import java.awt.*;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,11 +33,18 @@ public class EventDispatcher implements IEventDispatcher {
         this.forwardEvent( new AppEvent( type, args  ) );
     }
 
-    public void forwardEvent( AppEvent event ) {
+    public void forwardEvent( final AppEvent event ) {
         Collection<IEventHandler> handlers = this.listeners.get( event.getType() );
         if ( handlers != null && !handlers.isEmpty() ) {
-            for ( IEventHandler handler : handlers ) {
-                handler.handle( event );
+            for ( final IEventHandler handler : handlers ) {
+                EventQueue.invokeLater(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            handler.handle( event );
+                        }
+                    }
+                );
             }
         }
     }

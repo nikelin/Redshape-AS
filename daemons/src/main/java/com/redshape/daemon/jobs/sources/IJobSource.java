@@ -1,23 +1,18 @@
 package com.redshape.daemon.jobs.sources;
 
 import com.redshape.daemon.jobs.IJob;
-import com.redshape.daemon.jobs.JobException;
-
-import java.util.List;
+import com.redshape.daemon.jobs.result.IJobResult;
+import com.redshape.utils.events.IEventDispatcher;
 
 /**
- * @package com.redshape.daemon.jobs.sources
- * @user cyril
- * @date 6/21/11 5:51 PM
+ * Created by IntelliJ IDEA.
+ * User: cyril
+ * Date: 12/9/11
+ * Time: 4:47 PM
+ * To change this template use File | Settings | File Templates.
  */
-public interface IJobSource<T extends IJob> {
+public interface IJobSource extends IEventDispatcher {
 
-    public int getPeriod();
-
-    public int getChunkSize();
-
-    public void save( T entity ) throws JobException;
-
-    public List<T> fetch() throws JobException;
+    public void complete( IJob job, IJobResult result);
 
 }

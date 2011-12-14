@@ -66,15 +66,14 @@ public abstract class AbstractRMIDaemon<T extends IDaemonAttributes>
 
     private ExecutorService threadExecutor = Executors.newSingleThreadExecutor();
 
-	public AbstractRMIDaemon( String contextPath ) throws DaemonException, ConfigException {
+    public AbstractRMIDaemon(String context ) throws DaemonException, ConfigException {
+        this( loadContext(context) );
+    }
+    
+	public AbstractRMIDaemon( ApplicationContext context ) throws DaemonException, ConfigException {
 		super();
-		
-		log.info("Started with context location: " + contextPath );
-		
-		if ( contextPath != null && !contextPath.isEmpty() ) {
-			this.setContext( this.loadContext( contextPath ) );
-		}
-		
+
+        this.setContext(context);
 		this.changeState( DaemonState.INITIALIZED );
 	}
 
@@ -100,7 +99,9 @@ public abstract class AbstractRMIDaemon<T extends IDaemonAttributes>
 	 * @return
 	 * @throws DaemonException
 	 */
-    public ApplicationContext loadContext( String contextPath ) throws DaemonException {
+    public static ApplicationContext loadContext( String contextPath ) throws DaemonException {
+        log.info("Loading context location: " + contextPath );
+
         File file = new File(contextPath);
         AbstractXmlApplicationContext result;
         if (file.exists()) {
@@ -258,7 +259,7 @@ public abstract class AbstractRMIDaemon<T extends IDaemonAttributes>
 	
 	protected void startRegistry() throws RemoteException, DaemonException  {
 		this.registry = LocateRegistry.createRegistry( this.getPort(),
-				this.clientsFactory, 
+				this.clientsFactory,
 				this.serverFactory);
 		
 		log.info( "RMI Daemon Started!" );

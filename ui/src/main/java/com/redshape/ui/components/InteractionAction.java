@@ -11,8 +11,10 @@ import com.redshape.ui.application.events.AppEvent;
 import com.redshape.ui.application.events.EventType;
 import com.redshape.ui.application.events.IEventHandler;
 import com.redshape.utils.IFunction;
+import org.apache.log4j.Logger;
 
 public class InteractionAction extends AbstractAction {
+    private static final Logger log = Logger.getLogger(InteractionAction.class);
 	private static final long serialVersionUID = 323352518927504082L;
 	
 	private AppEvent event;
@@ -36,11 +38,15 @@ public class InteractionAction extends AbstractAction {
 	
 	@Override
 	public void actionPerformed( ActionEvent e ) {
-		if ( this.handler == null ) {
-			Dispatcher.get().forwardEvent( this.event );
-		} else {
-			this.handler.handle( new AppEvent() );
-		}
+        try {
+            if ( this.handler == null ) {
+                Dispatcher.get().forwardEvent( this.event );
+            } else {
+                this.handler.handle( new AppEvent(null, e.getSource() ) );
+            }
+        } catch ( Throwable ex ) {
+            log.error( ex.getMessage(), ex );
+        }
 	}
 	
 	public static <T, V> InteractionAction createAction( String name, 

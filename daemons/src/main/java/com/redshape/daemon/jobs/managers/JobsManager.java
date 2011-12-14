@@ -5,6 +5,11 @@ import com.redshape.daemon.jobs.handlers.AbstractAwareJobHandler;
 import com.redshape.daemon.jobs.handlers.HandlingException;
 import com.redshape.daemon.jobs.handlers.IJobHandler;
 import com.redshape.daemon.jobs.result.IJobResult;
+import com.redshape.daemon.jobs.sources.IDAOJobSource;
+import com.redshape.daemon.jobs.sources.IJobSource;
+import com.redshape.daemon.jobs.sources.SourceEvent;
+import com.redshape.utils.events.IEventListener;
+import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 
 import java.util.HashMap;
@@ -16,16 +21,53 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class JobsManager implements IJobsManager {
+    private static final Logger log = Logger.getLogger(JobsManager.class);
+
 	private Map<Class<? extends IJob>, IJobHandler<?, ?>> handlers =
 							new HashMap<Class<? extends IJob>, IJobHandler<?, ?>>();
 	private ApplicationContext context;
 	private ExecutorService threadsExecutor;
-	
+	private IJobSource source;
+    
 	private Map<UUID, HandlingDescriptor<?,?>> jobs = new HashMap<UUID, HandlingDescriptor<?,?>>();
 	
-	public JobsManager() {
+    public JobsManager() {
+        this(null);
+    }
+    
+	public JobsManager( IJobSource source ) {
+        this.source = source;
 		this.threadsExecutor = Executors.newFixedThreadPool(100);
+
+        if ( this.source != null ) {
+            this.initSource();
+        }
 	}
+
+    protected void initSource() {
+        this.source.addEventListener(SourceEvent.class, new IEventListener<SourceEvent>() {
+            @Override
+            public void handleEvent(SourceEvent event) {
+                try {
+                    switch ( event.getType() ) {
+                        case SCHEDULED:
+                            JobsManager.this.execute( event.<IJob>getArg(0) );
+                        break;
+                        case CANCELLED:
+                            JobsManager.this.cancel( event.<UUID>getArg(0) );
+                        break;
+                        default:
+                            log.warn(String.format(
+                                "Unknown jobs source event type: *%s*",
+                                event.getType().name()
+                            ));
+                    }
+                } catch ( Throwable e ) {
+                    log.error( e.getMessage(), e );
+                }
+            }
+        });
+    }
 	
 	protected ExecutorService getThreadsExecutor() {
 		return this.threadsExecutor;
@@ -65,21 +107,28 @@ public class JobsManager implements IJobsManager {
 			throw new HandlingException("Handler for given job " + job.getClass().getCanonicalName() + " does not exists");
 		}
 
-		return this.getThreadsExecutor().submit( new HandlingDescriptor<T, R>( handler, job ) );
+		return this.getThreadsExecutor().submit( new HandlingDescriptor<T, R>( this.source, handler, job ) );
 	}
-	
+
 	public class HandlingDescriptor<T extends IJob, R extends IJobResult> implements Callable<R> {
+        private IJobSource source;
 		private IJobHandler<T, R> handler;
 		private T job;
 		
-		public HandlingDescriptor( IJobHandler<T, R> handler, T job ) {
+		public HandlingDescriptor( IJobSource source, IJobHandler<T, R> handler, T job ) {
+            this.source = source;
 			this.job = job;
 			this.handler = handler;
 		}
 
 		@Override
 		public R call() throws Exception {
-			return this.handler.handle(this.job);
+			R result = this.handler.handle(this.job);
+            if ( this.source != null ) {
+                this.source.complete( this.job, result );
+            }
+            
+            return result;
 		}
 		
 		public void cancel() throws HandlingException {

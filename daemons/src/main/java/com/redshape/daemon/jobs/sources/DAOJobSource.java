@@ -6,6 +6,7 @@ import com.redshape.daemon.jobs.JobException;
 import com.redshape.daemon.jobs.JobStatus;
 import com.redshape.persistence.dao.DAOException;
 import com.redshape.persistence.utils.EntityManagerUtils;
+import com.redshape.utils.events.AbstractEventDispatcher;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -18,8 +19,8 @@ import java.util.List;
  * @user cyril
  * @date 6/21/11 5:52 PM
  */
-public class DAOJobSource implements IJobSource<IPersistenceJob>, ApplicationContextAware {
-    private static final Logger log = Logger.getLogger(IJobSource.class);
+public class DAOJobSource extends AbstractEventDispatcher implements IDAOJobSource<IPersistenceJob>, ApplicationContextAware {
+    private static final Logger log = Logger.getLogger(IDAOJobSource.class);
 
 	private ApplicationContext context;
     private IJobsDAO<?> source;

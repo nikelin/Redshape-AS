@@ -1,5 +1,7 @@
 package com.redshape.ui.utils;
 
+import com.redshape.utils.IEnum;
+
 /**
  * Created by IntelliJ IDEA.
  * User: nikelin
@@ -8,7 +10,7 @@ package com.redshape.ui.utils;
  * To change this template use File | Settings | File Templates.
  */
 public final class UIConstants {
-	public interface Attribute {
+	public interface Attribute extends IEnum<String> {
 	}
 	
 	public enum Area implements Attribute {

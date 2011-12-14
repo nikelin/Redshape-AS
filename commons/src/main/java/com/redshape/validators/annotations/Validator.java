@@ -14,7 +14,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Validator {
 
-	public Class<? extends IValidator<Object,?>> value();
+	public Class<? extends IValidator> value();
 
 	public boolean required() default true;
 

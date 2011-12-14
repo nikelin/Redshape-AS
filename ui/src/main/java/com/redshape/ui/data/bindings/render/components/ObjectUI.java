@@ -194,8 +194,6 @@ public class ObjectUI extends JPanel implements Cloneable {
 	}
 	
 	protected void configUI() {
-		this.setLayout( new BoxLayout( this, BoxLayout.Y_AXIS ) );
-		
 		if ( null != this.model ) {
 			this.setBorder( this.createTitle( this.model.getTitle() ) );
 		}

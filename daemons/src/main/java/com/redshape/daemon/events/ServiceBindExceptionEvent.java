@@ -8,15 +8,15 @@ import com.redshape.utils.events.AbstractEvent;
  * @package com.redshape.daemon.events
  */
 public class ServiceBindExceptionEvent extends AbstractEvent {
-	private Exception exception;
+	private Throwable exception;
 
-	public ServiceBindExceptionEvent( Exception exception ) {
+	public ServiceBindExceptionEvent( Throwable exception ) {
 		super();
 
 		this.exception = exception;
 	}
 
-	public Exception getException() {
+	public Throwable getException() {
 		return this.exception;
 	}
 

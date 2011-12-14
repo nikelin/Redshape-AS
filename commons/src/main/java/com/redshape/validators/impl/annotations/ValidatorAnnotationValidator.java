@@ -18,12 +18,12 @@ public class ValidatorAnnotationValidator extends AbstractValidator<AnnotatedObj
 	public boolean isValid(AnnotatedObject value) {
 		Validator annotation = value.getAnnotation( Validator.class );
 
-		IValidator<Object,?> validator = ValidatorsFacade.getInstance().getValidator( annotation.value() );
+		IValidator<Object,?> validator = ValidatorsFacade.getInstance().<Object>getValidator( (Class<? extends IValidator<Object, ?>>) annotation.value() );
 		if ( validator == null ) {
 			return true;
 		}
 
-		return validator.isValid( value.getContext() );
+		return validator.isValid( value.<AnnotatedObject>getContext() );
 	}
 
 	@Override

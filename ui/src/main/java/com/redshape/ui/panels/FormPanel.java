@@ -152,6 +152,15 @@ public class FormPanel extends JPanel {
 
     	return result;
     }
+    
+    public Map<String, Object> getValues() {
+        Map<String, Object> result = new HashMap<String, Object>();
+        for ( FormField<?> field : this.getFields() ) {
+            result.put( String.valueOf( field.getId() ), field.getValue() );
+        }
+        
+        return result;
+    }
 
 	public void removeFields() {
         FormField<?>[] fields = this.fields.values().toArray( new FormField<?>[ this.fields.size() ]);

@@ -337,4 +337,20 @@ public class StringUtils {
 
 		return builder.toString();
 	}
+
+    public static String toHEX(String str) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < str.length(); i++) {
+            byte c = (byte)str.charAt(i);
+            String tmp = Integer.toHexString(c).toUpperCase();
+            for (int j = 0; j < 2 - tmp.length(); j++) {
+                tmp = "0" + tmp;
+            }
+            
+            builder.append( tmp );
+        }
+
+        return builder.toString();
+    }
+    
 }

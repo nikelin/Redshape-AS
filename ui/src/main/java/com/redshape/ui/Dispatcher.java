@@ -5,6 +5,7 @@ import com.redshape.ui.application.events.EventDispatcher;
 import com.redshape.ui.application.events.AppEvent;
 import com.redshape.ui.application.events.UIEvents;
 
+import java.awt.*;
 import java.util.*;
 
 /**
@@ -36,8 +37,13 @@ public final class Dispatcher extends EventDispatcher {
         }
     }
     
-    public void forwardToController( IController controller, AppEvent event ) {
-    	controller.handle( event );
+    public void forwardToController( final IController controller, final AppEvent event ) {
+        EventQueue.invokeLater( new Runnable() {
+            @Override
+            public void run() {
+                controller.handle( event );
+            }
+        });
     }
 
     public void addController( IController controller ) {
