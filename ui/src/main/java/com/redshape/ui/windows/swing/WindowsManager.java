@@ -31,6 +31,13 @@ public class WindowsManager implements ISwingWindowsManager {
         return this.register( result );
     }
 
+    @Override
+    public void close( final Class<? extends JFrame> windowClazz) {
+        for ( JFrame window : this.filter( new ClassFilter(windowClazz) ) ) {
+            this.close(window);
+        }
+    }
+
     protected <T extends JFrame> T register( T window ) {
         window.addWindowFocusListener( new WindowFocusListener() {
             @Override
@@ -167,6 +174,20 @@ public class WindowsManager implements ISwingWindowsManager {
 		return this.registry.values();
 	}
 	
+    private static class ClassFilter implements IFilter<JFrame> {
+        private Class<? extends JFrame> clazz;
+        
+        public ClassFilter( Class<? extends JFrame> clazz ) {
+            this.clazz = clazz;
+        }
+        
+        @Override
+        public boolean filter( JFrame filterable ) {
+            return clazz.isAssignableFrom( filterable.getClass() );
+        }
+        
+    }
+    
 	private static class ClosedFilter implements IFilter<JFrame> {
 		@Override
 		public boolean filter(JFrame filterable) {

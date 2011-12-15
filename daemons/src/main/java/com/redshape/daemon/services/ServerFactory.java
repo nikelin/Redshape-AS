@@ -6,7 +6,9 @@ import javax.net.ServerSocketFactory;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.net.SocketAddress;
 import java.rmi.server.RMIServerSocketFactory;
 
 public class ServerFactory implements RMIServerSocketFactory, Serializable {
@@ -27,10 +29,11 @@ public class ServerFactory implements RMIServerSocketFactory, Serializable {
 	public ServerSocket createServerSocket(int port) throws IOException {
 		log.info("Starting repository on host: " + this.host + ":" + port );
 		InetAddress address = InetAddress.getByName( this.host );
-		return ServerSocketFactory.getDefault()
-		  .createServerSocket( 
-			  	port
-		  	);
+		ServerSocket socket = ServerSocketFactory.getDefault()
+		  .createServerSocket();
+        socket.bind( new InetSocketAddress(address, port) );
+
+        return socket;
 	}
 	
 }

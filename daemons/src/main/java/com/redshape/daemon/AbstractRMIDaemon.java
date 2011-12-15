@@ -125,7 +125,12 @@ public abstract class AbstractRMIDaemon<T extends IDaemonAttributes>
 		return this.getAttribute( (T) Attributes.MAX_CONNECTIONS );
 	}
 
-	@Override
+    @Override
+    public void setConfigured(boolean value) {
+        this.configured = value;
+    }
+
+    @Override
 	public void setPath(String path) {
 		this.setAttribute( (T) Attributes.SERVICE_NAME, path );
 	}

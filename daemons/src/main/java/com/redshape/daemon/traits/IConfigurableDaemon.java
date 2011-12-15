@@ -20,5 +20,7 @@ public interface IConfigurableDaemon<T>
     public void loadConfiguration(IConfig configLocation) throws DaemonException, ConfigException;
 
     public boolean isConfigured();
+
+    public void setConfigured( boolean value );
     
 }

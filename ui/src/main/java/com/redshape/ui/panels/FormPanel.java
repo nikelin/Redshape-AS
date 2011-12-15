@@ -32,6 +32,7 @@ public class FormPanel extends JPanel {
     private boolean typeWritable;
     @SuppressWarnings("unused")
 	private IModelData model;
+    private int lastY;
     
     public FormPanel() {
     	this(null, false);
@@ -103,7 +104,7 @@ public class FormPanel extends JPanel {
 
     protected void buildUI() {
     	this.centerPane = new JPanel();
-        this.centerPane.setLayout( new GridLayout(0, 2) );
+        this.centerPane.setLayout( new GridBagLayout() );
         this.add( this.centerPane );
 
         this.buttonsPane = new JPanel();
@@ -194,17 +195,61 @@ public class FormPanel extends JPanel {
     }
     
     public void addRaw( JComponent component ) {
-    	this.centerPane.add( component );
+        int row = this.lastY++;
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.gridwidth = 1;
+        constraints.weightx = 1;
+        constraints.gridx = 0;
+        constraints.gridy = row;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+
+    	this.centerPane.add( component, constraints );
     }
     
     public <T> FormField<T> addField( Object id, String label, JComponent component ) {
+        int row = this.lastY++;
+        GridBagConstraints labelConstraints = new GridBagConstraints();
+        labelConstraints.gridwidth = 1;
+        labelConstraints.weightx = 0.3;
+        labelConstraints.gridx = 0;
+        labelConstraints.gridy = row;
+        labelConstraints.fill = GridBagConstraints.HORIZONTAL;
+
+        GridBagConstraints componentConstraints = new GridBagConstraints();
+        componentConstraints.gridwidth = 1;
+        componentConstraints.weightx = 0.7;
+        componentConstraints.gridx = 1;
+        componentConstraints.gridy = row;
+        componentConstraints.fill = GridBagConstraints.HORIZONTAL;
+
+        if ( this.isComplex( component ) ) {
+            componentConstraints.gridy = this.lastY++;
+            componentConstraints.gridx = 0;
+            componentConstraints.gridwidth = 2;
+            labelConstraints.gridwidth = 2;
+            labelConstraints.weightx = 1;
+            labelConstraints.gridx = 0;
+            labelConstraints.gridwidth = 2;
+            componentConstraints.weightx = 1;
+        }
+
         FormField<T> field = this.<T>createField( id, label, component );
         this.fields.put( id, field );
-        this.centerPane.add( field.getLabel() );
-        this.centerPane.add( field.getComponent() );
+        this.centerPane.add( field.getLabel(), labelConstraints );
+        this.centerPane.add( field.getComponent(), componentConstraints );
         
         return field;
     }
+
+    protected boolean isComplex( JComponent component ) {
+        return component instanceof JComboBox
+                || component instanceof JList
+                || component instanceof JTextArea
+                || component instanceof JTable
+                || component instanceof JScrollPane
+                || component instanceof JPanel;
+    }
+
 
     public class FormField<T> extends JComponent {
 		private static final long serialVersionUID = -6212118336463716252L;

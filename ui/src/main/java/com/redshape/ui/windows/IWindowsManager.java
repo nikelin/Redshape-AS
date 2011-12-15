@@ -36,6 +36,12 @@ public interface IWindowsManager<V> {
 	 * @param window
 	 */
 	public void close( V window );
+
+    /**
+     * Close all windows which is ancestors of a given class
+     * @param windowClazz
+     */
+    public void close( Class<? extends V> windowClazz );
 	
 	/**
 	 * Delete window object instance from registry

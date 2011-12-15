@@ -62,6 +62,7 @@ public class TableAdapter<T extends IModelData> extends JTable {
 
 			@Override
 			public void handle(AppEvent event) {
+                TableAdapter.this.removeAll();
 				Dispatcher.get().forwardEvent( new AppEvent( UIEvents.Core.Repaint, TableAdapter.this ) );
 			}
 		});

@@ -71,7 +71,7 @@ public class Connector<T extends IRemoteService> extends AbstractEventDispatcher
                     String locationURI = this.prepareServiceLocation(host, port, path);
                     log.info("Starting lookup for a: " + locationURI );
 
-                    Registry registry = LocateRegistry.getRegistry(host, port);
+                    Registry registry = LocateRegistry.getRegistry(host, port, new ClientsFactory(host) );
                     String[] list = registry.list();
                     for ( String service : list ) {
                         log.info( String.format("Service bound withing located registry: %s", service) );
