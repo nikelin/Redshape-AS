@@ -1,6 +1,7 @@
 package com.redshape.plugins.loaders;
 
 import com.redshape.plugins.LoaderException;
+import com.redshape.plugins.loaders.resources.IPluginResource;
 
 import java.net.URI;
 
@@ -16,6 +17,6 @@ public interface IPluginsLoader {
      * @param path
      * @throws LoaderException
      */
-	public void load( URI path ) throws LoaderException;
+	public IPluginResource load( URI path ) throws LoaderException;
 
 }

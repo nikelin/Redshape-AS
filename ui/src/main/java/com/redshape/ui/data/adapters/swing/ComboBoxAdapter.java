@@ -84,9 +84,12 @@ public class ComboBoxAdapter<T extends IModelData> extends JComboBox {
     }
 
     protected void onStoreRefresh() {
+        for ( int i = 0; i < this.getItemCount(); i++ ) {
+            this.removeItemAt(i);
+        }
+
         this.revalidate();
         this.repaint();
-        Dispatcher.get().forwardEvent(UIEvents.Core.Repaint, this );
     }
 
     protected void onRecordRemoved( T record ) {
@@ -111,6 +114,15 @@ public class ComboBoxAdapter<T extends IModelData> extends JComboBox {
 				ComboBoxAdapter.this.onRecordAdd( event.<T>getArg(0) );
 			}
 		});
+
+        this.store.addListener( StoreEvents.Refresh, new IEventHandler() {
+            private static final long serialVersionUID = -3661096688247159237L;
+
+            @Override
+            public void handle(AppEvent event) {
+                ComboBoxAdapter.this.onStoreRefresh();
+            }
+        });
 
 		this.store.addListener( StoreEvents.Refresh, new IEventHandler() {
 			private static final long serialVersionUID = -3661096688247159237L;

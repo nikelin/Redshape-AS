@@ -28,12 +28,18 @@ public class ServerFactory implements RMIServerSocketFactory, Serializable {
 	@Override
 	public ServerSocket createServerSocket(int port) throws IOException {
 		log.info("Starting repository on host: " + this.host + ":" + port );
-		InetAddress address = InetAddress.getByName( this.host );
-		ServerSocket socket = ServerSocketFactory.getDefault()
-		  .createServerSocket();
-        socket.bind( new InetSocketAddress(address, port) );
-
+        SocketAddress address = new InetSocketAddress( this.host, port );
+		ServerSocket socket = new ServerSocket();
+        socket.setReuseAddress(true);
+        socket.bind( address );
+        
         return socket;
 	}
+
+    public int hashCode() { return 57; }
+
+    public boolean equals(Object o) {
+        return this.getClass().equals(o.getClass());
+    }
 	
 }

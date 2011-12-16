@@ -123,12 +123,17 @@ public class JobsManager implements IJobsManager {
 
 		@Override
 		public R call() throws Exception {
-			R result = this.handler.handle(this.job);
-            if ( this.source != null ) {
-                this.source.complete( this.job, result );
+            try {
+                R result = this.handler.handle(this.job);
+                if ( this.source != null ) {
+                    this.source.complete( this.job, result );
+                }
+                
+                return result;
+            } catch ( Throwable e ) {
+                log.error( e.getMessage(), e );
+                throw new HandlingException( e.getMessage(), e);
             }
-            
-            return result;
 		}
 		
 		public void cancel() throws HandlingException {

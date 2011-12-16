@@ -1,6 +1,8 @@
 package com.redshape.plugins.packagers;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
@@ -8,24 +10,11 @@ import java.io.File;
  * @date 10/11/11 1:09 PM
  */
 public interface IPackageSupport {
+    
+    public IPackageEntry getEntry( String path ) throws IOException;
 
-	/**
-	 * Unpack target path (if required) and return package structure
-	 * descriptor.
-	 *
-	 * @param path
-	 * @return
-	 */
-	public IPackageDescriptor unpack( String path );
-
-	/**
-	 * Unpack target path (if required) and return package structure
-	 * descriptor.
-	 *
-	 * @param path
-	 * @return
-	 */
-	public IPackageDescriptor unpack( File file ) throws PackagerException;
+    public List<IPackageEntry> getEntries() throws IOException;
+    
 
 	/**
 	 * Check that a given packaging type supported by a current provider

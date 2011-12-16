@@ -194,7 +194,9 @@ public abstract class AbstractRMIDaemon<T extends IDaemonAttributes>
 	@Override
 	public void start() throws DaemonException {
 		try {
-            System.setSecurityManager( new RMISecurityManager() );
+            if ( System.getSecurityManager() == null ) {
+                System.setSecurityManager( new RMISecurityManager() );
+            }
 
 			if ( this.getState().equals( DaemonState.STARTED ) ){
 				this.stop();
@@ -216,23 +218,13 @@ public abstract class AbstractRMIDaemon<T extends IDaemonAttributes>
 			if ( this.serverFactory == null ) {
 				throw new DaemonException("Server sockets factory not set");
 			}
-			
-			Thread registrationThread = new Thread( new Runnable() {
-				@Override
-				public void run() {
-					try {
-						AbstractRMIDaemon.this.startRegistry();
-						AbstractRMIDaemon.this.onStarted();
-					} catch ( Throwable exception ) {
-						AbstractRMIDaemon.this.changeState(DaemonState.ERROR);
-					}
-				}
-			});
-			registrationThread.setDaemon(true);
-			registrationThread.setName("RMI Serving Thread");
-			
-			this.getThreadExecutor().execute(registrationThread);
-		} finally {
+
+            AbstractRMIDaemon.this.startRegistry();
+            AbstractRMIDaemon.this.onStarted();
+		} catch ( Throwable e ) {
+            log.error( e.getMessage(), e );
+            this.changeState( DaemonState.ERROR );
+        } finally {
 			if ( this.getState() == null || this.getState().equals( DaemonState.ERROR ) ) {
 				this.stop();
 			}
@@ -248,7 +240,7 @@ public abstract class AbstractRMIDaemon<T extends IDaemonAttributes>
 		final Integer port = this.getUnusedPort();
 
 		Remote stub = UnicastRemoteObject.exportObject(
-			service, 
+			service,
 			port,
 			this.clientsFactory,
 			this.serverFactory
