@@ -73,6 +73,12 @@ public class ComboBoxAdapter<T extends IModelData> extends JComboBox {
 		if ( this.filter != null && !this.filter.filter( (T) item ) ) {
 			return;
 		}
+        
+        for ( int i = 0; i < this.getItemCount(); i++ ) {
+            if ( item.equals( this.getItemAt(i) ) ) {
+                return;
+            }
+        }
 		
 		super.addItem(item);
 	}
