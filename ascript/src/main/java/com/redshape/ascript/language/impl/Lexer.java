@@ -107,6 +107,7 @@ public class Lexer implements ILexer {
 				new LexicalRule( LexicalType.FSCOPE, LexicalType.FUNCTION ),
 				new LexicalRule( LexicalType.DECLSCOPE, LexicalType.FUNCTION ),
 				new LexicalRule( LexicalType.LITERAL, LexicalType.FUNCTION ),
+                new LexicalRule( LexicalType.FUNCTION, LexicalType.FUNCTION ),
 				new LexicalRule( LexicalType.VARIABLE, LexicalType.FUNCTION ),
 				new LexicalRule( LexicalType.STRING, LexicalType.STRING ),
 				new LexicalRule( LexicalType.ENDSCOPE, LexicalType.FUNCTION )

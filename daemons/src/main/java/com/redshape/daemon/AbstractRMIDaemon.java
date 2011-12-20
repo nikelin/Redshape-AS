@@ -54,6 +54,9 @@ public abstract class AbstractRMIDaemon<T extends IDaemonAttributes>
 	 * Configuration state flag
 	 */
 	private boolean configured;
+    
+    private static Remote service;
+    private static Remote remote;
 	
 	/**
 	 * Current spring application context
@@ -239,8 +242,8 @@ public abstract class AbstractRMIDaemon<T extends IDaemonAttributes>
 	protected <E extends Remote> E exportService( IRemoteService service ) throws RemoteException, AlreadyBoundException, IOException {
 		final Integer port = this.getUnusedPort();
 
-		Remote stub = UnicastRemoteObject.exportObject(
-			service,
+		Remote stub = AbstractRMIDaemon.remote = UnicastRemoteObject.exportObject(
+			AbstractRMIDaemon.service = service,
 			port,
 			this.clientsFactory,
 			this.serverFactory
@@ -250,7 +253,7 @@ public abstract class AbstractRMIDaemon<T extends IDaemonAttributes>
 		
 		this.getRegistry().bind( service.getServiceName(), stub);
 		
-		return (E) stub;
+		return (E) AbstractRMIDaemon.service;
 	}
 	
 	
