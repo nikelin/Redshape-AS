@@ -3,6 +3,7 @@ package com.redshape.utils;
 import org.apache.log4j.Logger;
 
 import java.io.*;
+import java.net.URI;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -56,6 +57,11 @@ public class ResourcesLoader implements IResourcesLoader {
 
     public String getRootDirectory() {
         return this.rootDirectory;
+    }
+
+    @Override
+    public File loadFile(URI uri) throws IOException {
+        return new File(uri);
     }
 
     public File loadFile( String path, boolean searchPath ) throws IOException {

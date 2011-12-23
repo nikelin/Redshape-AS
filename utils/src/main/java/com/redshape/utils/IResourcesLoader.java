@@ -3,6 +3,7 @@ package com.redshape.utils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.Collection;
 
 /**
@@ -21,6 +22,8 @@ public interface IResourcesLoader {
 	public void setSearchPath( Collection<String> path );
 
 	public File loadFile( String path ) throws IOException;
+    
+    public File loadFile( URI uri ) throws IOException;
 
 	public File loadFile( String path, boolean searchPath ) throws IOException;
 

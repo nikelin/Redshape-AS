@@ -1,6 +1,7 @@
 package com.redshape.plugins.loaders;
 
 import com.redshape.plugins.loaders.compression.ICompressionSupport;
+import com.redshape.plugins.loaders.impl.HttpPluginLoader;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -17,7 +18,13 @@ import java.util.Map;
  */
 public class StandardPluginLoadersRegistry implements IPluginLoadersRegistry {
     private Map<String, IPluginsLoader> loaders = new HashMap<String, IPluginsLoader>();
-    
+
+    public StandardPluginLoadersRegistry() {
+        super();
+
+        this.registerLoader("http", new HttpPluginLoader() );
+    }
+
     @Override
     public IPluginsLoader selectLoader(URI path) {
         return this.loaders.get( path.getScheme() );

@@ -1,5 +1,7 @@
 package com.redshape.plugins.packagers;
 
+import com.redshape.plugins.loaders.resources.IPluginResource;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;

@@ -13,16 +13,12 @@ import java.net.URI;
  */
 public interface IPackageEntry {
     
-    public String getName();
-    
     public String getPath();
     
     public int getSize();
     
-    public InputStream getInputStream();
+    public byte[] getData();
     
     public String getMimeType();
-    
-    public URI getURI();
 
 }
