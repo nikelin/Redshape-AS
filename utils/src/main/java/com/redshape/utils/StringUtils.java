@@ -328,11 +328,13 @@ public class StringUtils {
 
 	public static String wordWrap( String sentence, int interval, String separator ) {
 		int count = (int) ( sentence.length() / interval );
-		int i = 0;
+		int i = 1;
 		StringBuilder builder = new StringBuilder();
-		while ( i++ != count - 1  && --i < sentence.length() ) {
-			builder.append( sentence.substring( --i * interval, ++i * interval ) )
+		while ( (i + 1) != count - 1  && (i - 1) < sentence.length() ) {
+			builder.append( sentence.substring( (i - 1) * interval, (i + 1) * interval ) )
 				   .append( separator );
+
+            i++;
 		}
 
 		return builder.toString();
