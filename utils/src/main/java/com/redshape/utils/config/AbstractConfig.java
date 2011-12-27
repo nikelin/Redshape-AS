@@ -17,7 +17,7 @@ public abstract class AbstractConfig implements IConfig {
 	protected String value;
 	protected IConfig parent;
 	protected String name;
-	protected Map<String, String> attributes = new HashMap<String, String>();
+	protected Map<String, String> attributes = new LinkedHashMap<String, String>();
 	protected List<IConfig> childs = new ArrayList<IConfig>();
 	protected IConfigSource source;
 

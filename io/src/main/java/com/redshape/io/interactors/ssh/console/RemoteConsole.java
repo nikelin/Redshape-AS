@@ -123,12 +123,22 @@ public class RemoteConsole extends Console {
 
 	@Override
 	public InputStream openReadStream(String path) throws IOException {
-		return this.<IFilesystemNode>provideFile(path, false).getInputStream();
+		IFilesystemNode node = this.<IFilesystemNode>provideFile(path, false);
+        if ( node == null ) {
+            return null;
+        }
+
+        return node.getInputStream();
 	}
 
 	@Override
 	public OutputStream openWriteStream(String path) throws IOException {
-		return this.<IFilesystemNode>provideFile(path, true).getOutputStream();
+		IFilesystemNode node = this.<IFilesystemNode>provideFile(path, true);
+        if ( node == null ) {
+            return null;
+        }
+
+        return node.getOutputStream();
 	}
 
 	@Override

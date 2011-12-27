@@ -1,5 +1,6 @@
 package com.redshape.utils.config;
 
+import com.redshape.utils.Commons;
 import com.redshape.utils.StringUtils;
 import com.redshape.utils.config.sources.IConfigSource;
 
@@ -89,9 +90,39 @@ public class SshAuthorizedKeysConfig extends AbstractConfig {
         return new SshAuthorizedKeysConfig();
     }
 
+    /**
+     * @todo: reword
+     * @return
+     * @throws ConfigException
+     */
     @Override
     public String serialize() throws ConfigException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        StringBuilder builder = new StringBuilder();
+        for ( IConfig node : this.childs() ) {
+            builder.append("command=\"")
+               .append( node.value() )
+               .append("\",");
+
+            int i = 0;
+            for ( String attribute : node.attributeNames() ) {
+                String value = node.attribute(attribute);
+                if ( value == null || value.isEmpty() ) {
+                    builder.append(attribute);
+                } else {
+                    builder.append(attribute)
+                           .append(" ")
+                           .append( value );
+                }
+                
+                if ( i++ < node.attributeNames().length - 2 ) {
+                    builder.append(",");
+                }
+            }
+
+            builder.append("\n");
+        }
+
+        return builder.toString();
     }
 
     @Override
