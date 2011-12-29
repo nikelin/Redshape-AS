@@ -7,10 +7,13 @@ import com.redshape.servlet.form.data.IFieldDataProvider;
 import com.redshape.servlet.form.decorators.DecoratorAttribute;
 import com.redshape.servlet.form.decorators.IDecorator;
 import com.redshape.servlet.form.fields.*;
+import com.redshape.servlet.form.render.IFormFieldRenderer;
 import com.redshape.servlet.form.render.impl.fields.*;
+import com.redshape.servlet.form.render.registry.StandardFormItemRenderersRegistry;
 import com.redshape.utils.Commons;
 import com.redshape.validators.IValidator;
 import com.redshape.validators.result.IValidationResult;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,6 +22,8 @@ import java.util.Map;
 
 public class StandardFormFieldBuilder extends AbstractFormItemBuilder
 									  implements IFormFieldBuilder {
+    private static final Logger log = Logger.getLogger( StandardFormFieldBuilder.class );
+
 	private List<IValidator<?, ?>> validators
 							= new ArrayList<IValidator<?, ?>>();
 	private String label;
@@ -59,7 +64,7 @@ public class StandardFormFieldBuilder extends AbstractFormItemBuilder
     public LabelField newLabelField() {
         LabelField field = new LabelField();
         this.processField(field);
-        field.setRenderer( new LabelFieldRenderer() );
+        field.setRenderer( this.getRenderer(LabelField.class, LabelFieldRenderer.class ) );
         return field;
     }
 
@@ -67,7 +72,7 @@ public class StandardFormFieldBuilder extends AbstractFormItemBuilder
 	public CheckboxField newCheckboxField() {
 		CheckboxField field = new CheckboxField();
 		this.processField(field);
-		field.setRenderer( new CheckboxFieldRenderer() );
+		field.setRenderer( this.getRenderer(CheckboxField.class, CheckboxFieldRenderer.class ));
 		return field;
 	}
 	
@@ -75,7 +80,8 @@ public class StandardFormFieldBuilder extends AbstractFormItemBuilder
 	public InputField newInputField( InputField.Type type ) {
 		InputField field = new InputField(type);
 		this.processField(field);
-		field.setRenderer( new InputFieldRenderer() );
+        field.setRenderer( this.getRenderer( InputField.class, InputFieldRenderer.class ) );
+
 		return field;
 	}
 
@@ -83,7 +89,7 @@ public class StandardFormFieldBuilder extends AbstractFormItemBuilder
 	public <T> SelectField<T> newSelectField(IFieldDataProvider<T> dataProvider ) {
 		SelectField<T> field = new SelectField<T>();
 		this.processField(field);
-		field.setRenderer( new SelectFieldRenderer() );
+		field.setRenderer( this.getRenderer(SelectField.class, SelectFieldRenderer.class ) );
 		field.setDataProvider(dataProvider);
 		return field;
 	}
@@ -97,7 +103,7 @@ public class StandardFormFieldBuilder extends AbstractFormItemBuilder
 	public <T> SelectField<T> newSelectField( Map<String, T> options) {
 		SelectField<T> field = new SelectField<T>();
 		this.processField(field);
-		field.setRenderer( new SelectFieldRenderer() );
+		field.setRenderer( this.getRenderer(SelectField.class, SelectFieldRenderer.class ) );
 		field.addOptions(options);
 		return field;
 	}
@@ -106,7 +112,7 @@ public class StandardFormFieldBuilder extends AbstractFormItemBuilder
     public TextAreaField newTextAreaField() {
         TextAreaField field = new TextAreaField();
         this.processField(field);
-        field.setRenderer( new TextAreaRenderer() );
+        field.setRenderer( this.getRenderer(TextAreaField.class, TextAreaRenderer.class) );
         return field;
     }
 
@@ -114,7 +120,7 @@ public class StandardFormFieldBuilder extends AbstractFormItemBuilder
 	public <T> RadioGroupField<T> newRadioGroupField(IFieldDataProvider<T> dataProvider, T selected) {
 		RadioGroupField<T> field = new RadioGroupField<T>();
 		this.processField(field);
-        field.setRenderer( new RadioGroupFieldRenderer() );
+        field.setRenderer( this.getRenderer(RadioGroupField.class, RadioGroupFieldRenderer.class) );
 		field.setDataProvider(dataProvider);
 		field.setValue(selected);
 		return field;
@@ -134,7 +140,7 @@ public class StandardFormFieldBuilder extends AbstractFormItemBuilder
 	public <T> RadioGroupField<T> newRadioGroupField(Map<String, T> values, T selected) {
 		RadioGroupField<T> field = new RadioGroupField<T>();
 		this.processField(field);
-        field.setRenderer( new RadioGroupFieldRenderer() );
+        field.setRenderer( this.getRenderer(RadioGroupField.class, RadioGroupFieldRenderer.class) );
 		field.addOptions(values);
 		field.setValue(selected);
 		return field;
@@ -153,7 +159,7 @@ public class StandardFormFieldBuilder extends AbstractFormItemBuilder
 	@Override
 	public <T> CheckboxGroupField<T> newCheckboxGroupField(IFieldDataProvider<T> dataProvider, List<T> values) {
 		CheckboxGroupField<T> field = new CheckboxGroupField<T>();
-        field.setRenderer( new CheckboxGroupFieldRenderer() );
+        field.setRenderer( this.getRenderer(CheckboxGroupField.class, CheckboxGroupFieldRenderer.class));
 		this.processField(field);
 		field.setDataProvider(dataProvider);
 		field.setValues( values );
@@ -168,7 +174,7 @@ public class StandardFormFieldBuilder extends AbstractFormItemBuilder
 	@Override
 	public <T> CheckboxGroupField<T> newCheckboxGroupField( Map<String, T> names, List<T> values) {
 		CheckboxGroupField<T> field = new CheckboxGroupField<T>();
-        field.setRenderer( new CheckboxGroupFieldRenderer() );
+        field.setRenderer( this.getRenderer( CheckboxGroupField.class, CheckboxGroupFieldRenderer.class ) );
 		this.processField(field);
 		field.addOptions(names);
 		field.setValues( values );
@@ -219,4 +225,19 @@ public class StandardFormFieldBuilder extends AbstractFormItemBuilder
 		field.setName( this.name );
 	}
 	
+    protected <T extends IFormField<?>> IFormFieldRenderer<T> getRenderer( Class<T> fieldClazz,
+                                                       Class<? extends IFormFieldRenderer<T>> defaultRendererClass ) {
+        IFormFieldRenderer<T> renderer = StandardFormItemRenderersRegistry.getDefault().getRenderer(fieldClazz);
+        if ( renderer != null ) {
+            return renderer;
+        }
+
+        try {
+            return defaultRendererClass.newInstance();
+        } catch ( Throwable e ) {
+            log.error( e.getMessage(), e );
+            return null;
+        }
+    }
+    
 }

@@ -16,7 +16,7 @@ import java.util.Map;
  * Time: 1:16
  * To change this template use File | Settings | File Templates.
  */
-public abstract class AbstractFormFieldRenderer<T extends IFormField<?>>
+public abstract class AbstractFormFieldRenderer<T extends IFormField>
 									extends AbstractFormItemRenderer<T>
 									implements IFormFieldRenderer<T> {
 

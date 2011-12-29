@@ -3,6 +3,7 @@ package com.redshape.servlet.form.render.impl.fields;
 import com.redshape.i18n.impl.StandardI18NFacade;
 import com.redshape.servlet.form.RenderMode;
 import com.redshape.servlet.form.fields.LabelField;
+import com.redshape.utils.Commons;
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,8 +29,9 @@ public class LabelFieldRenderer extends AbstractFormFieldRenderer<LabelField> {
 
         builder.append(">");
 
-		if ( field.getValue() != null ) {
-			builder.append( StandardI18NFacade._( field.getValue() ) );
+        String value = Commons.select( field.getValue(), field.getLabel() );
+		if ( value != null ) {
+			builder.append( StandardI18NFacade._(value) );
 		}
 
         builder.append("</label>");

@@ -6,10 +6,10 @@ import com.redshape.servlet.form.fields.SelectField;
 
 import java.util.Map;
 
-public class SelectFieldRenderer extends AbstractFormFieldRenderer<SelectField<?>> {
+public class SelectFieldRenderer extends AbstractFormFieldRenderer<SelectField> {
 
 	@Override
-	public String render(SelectField<?> field, RenderMode mode ) {
+	public String render(SelectField field, RenderMode mode ) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("<select ");
 

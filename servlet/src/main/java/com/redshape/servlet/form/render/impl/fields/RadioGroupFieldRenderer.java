@@ -11,7 +11,7 @@ import java.util.Map;
  * @user cyril
  * @date 7/12/11 7:31 PM
  */
-public class RadioGroupFieldRenderer extends AbstractFormFieldRenderer<RadioGroupField<?>> {
+public class RadioGroupFieldRenderer extends AbstractFormFieldRenderer<RadioGroupField> {
 
     public RadioGroupFieldRenderer() {
         super();
@@ -40,7 +40,7 @@ public class RadioGroupFieldRenderer extends AbstractFormFieldRenderer<RadioGrou
     }
 
     @Override
-    public String render(RadioGroupField<?> item, RenderMode mode) {
+    public String render(RadioGroupField item, RenderMode mode) {
         StringBuilder builder = new StringBuilder();
         Map<String, Object> options = (Map<String, Object>) item.getOptions();
         for ( String option : options.keySet() ) {

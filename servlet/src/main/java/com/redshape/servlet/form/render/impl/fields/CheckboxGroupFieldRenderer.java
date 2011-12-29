@@ -11,7 +11,7 @@ import java.util.Map;
  * @user cyril
  * @date 6/27/11 10:42 PM
  */
-public class CheckboxGroupFieldRenderer extends AbstractFormFieldRenderer<CheckboxGroupField<?>> {
+public class CheckboxGroupFieldRenderer extends AbstractFormFieldRenderer<CheckboxGroupField> {
 
     public CheckboxGroupFieldRenderer() {
         super();
@@ -41,7 +41,7 @@ public class CheckboxGroupFieldRenderer extends AbstractFormFieldRenderer<Checkb
     }
 
     @Override
-    public String render(CheckboxGroupField<?> item, RenderMode mode) {
+    public String render(CheckboxGroupField item, RenderMode mode) {
         StringBuilder builder = new StringBuilder();
 		builder.append("<fieldset>");
         Map<String, Object> options = (Map<String, Object>) item.getOptions();
