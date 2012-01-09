@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <plugin>
+    <name>Test Plugin</name>
     <version>1.0.0</version>
     <archVersion>3.0.0</archVersion>
     <mainClass>com.redshape.projectshost.worker.plugins.statisticsGatherer.Starter</mainClass>
@@ -9,8 +10,8 @@
         <date>20/02/2012</date>
     </publisher>
     <starter>
-        <type>java</type>
-        <version>1.7</version>
+        <engine>ascript</engine>
+        <version>1.0.0</version>
     </starter>
     <permissions>
         <permission>

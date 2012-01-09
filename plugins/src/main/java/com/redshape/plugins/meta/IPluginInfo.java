@@ -61,6 +61,12 @@ public interface IPluginInfo {
     public IPublisherInfo createPublisherInfo();
 
     /**
+     * Get plugin main class path
+     * @return
+     */
+    public String getEntryPoint();
+
+    /**
      * Create empty starter info data object
      * @param type
      * @param version

@@ -28,6 +28,10 @@ class PluginInfo implements IPluginInfo {
 		this.descriptor = descriptor;
 	}
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getEntryPoint() {
         return entryPoint;
     }
@@ -86,6 +90,10 @@ class PluginInfo implements IPluginInfo {
     @Override
     public String getName() {
         return this.name;
+    }
+
+    public void setStarterInfo( IPackageStarter starter ) {
+        this.starterInfo = starter;
     }
 
     @Override

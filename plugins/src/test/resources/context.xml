@@ -85,7 +85,7 @@
                     <key>
                         <bean class="com.redshape.plugins.starters.EngineType" factory-method="valueOf">
                             <constructor-arg>
-                                <value>EngineType.JAVA</value>
+                                <value>java</value>
                             </constructor-arg>
                         </bean>
                     </key>
@@ -95,7 +95,7 @@
                     <key>
                         <bean class="com.redshape.plugins.starters.EngineType" factory-method="valueOf">
                             <constructor-arg>
-                                <value>EngineType.PYTHON</value>
+                                <value>python</value>
                             </constructor-arg>
                         </bean>
                     </key>
@@ -105,7 +105,7 @@
                     <key>
                         <bean class="com.redshape.plugins.starters.EngineType" factory-method="valueOf">
                             <constructor-arg>
-                                <value>EngineType.RUBY</value>
+                                <value>ruby</value>
                             </constructor-arg>
                         </bean>
                     </key>

@@ -28,12 +28,12 @@ public class EngineType implements IEnum<String> {
 
     public static final Map<String, EngineType> REGISTRY = new HashMap<String, EngineType>();
     
-    public static final EngineType Java = new EngineType("EngineType.Java");
-    public static final EngineType Python = new EngineType("EngineType.Python");
-    public static final EngineType Ruby = new EngineType("EngineType.Ruby");
+    public static final EngineType Java = new EngineType("java");
+    public static final EngineType Python = new EngineType("python");
+    public static final EngineType Ruby = new EngineType("ruby");
     
     public static EngineType valueOf( String name ) {
-        return REGISTRY.get(name);
+        return REGISTRY.get(name.toLowerCase());
     }
 
     @Override
@@ -51,6 +51,6 @@ public class EngineType implements IEnum<String> {
             return false;
         }
 
-        return ((EngineType) obj).name().equals( this.name() );
+        return ((EngineType) obj).name().toLowerCase().equals( this.name() );
     }
 }

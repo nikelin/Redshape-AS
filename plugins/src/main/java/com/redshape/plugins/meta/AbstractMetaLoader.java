@@ -1,6 +1,8 @@
 package com.redshape.plugins.meta;
 
 import com.redshape.plugins.packagers.IPackageDescriptor;
+import com.redshape.plugins.packagers.IPackageStarter;
+import com.redshape.plugins.starters.EngineType;
 import com.redshape.utils.config.ConfigException;
 import com.redshape.utils.config.IConfig;
 
@@ -40,7 +42,13 @@ public abstract class AbstractMetaLoader implements IMetaLoader {
             info.setSourcesPath(config.get("sources").value());
         }
 
-        info.setEntryPoint( config.get("mainClass").value() );
+        IConfig nameNode = config.get("name");
+        if ( !nameNode.isNull() ) {
+            info.setName( nameNode.value() );
+        }
+        
+        info.setStarterInfo( this.parseStarterInfo(info, config) );
+        info.setEntryPoint(config.get("mainClass").value());
         info.setPublisher(this.parsePublisher(info, config));
         info.setArchVersion( this.parseArchVersion(config) );
 
@@ -49,6 +57,13 @@ public abstract class AbstractMetaLoader implements IMetaLoader {
         }
 
         return info;
+    }
+    
+    protected IPackageStarter parseStarterInfo( IPluginInfo info, IConfig config ) throws ConfigException {
+        return info.createStarterInfo(
+            EngineType.valueOf(config.get("starter.engine").value()),
+            config.get("starter.version").value()
+        );
     }
 
     protected List<Permission> parsePermissions( IConfig config ) throws ConfigException {

@@ -1,0 +1,9 @@
+(:module com.redshape.projectshost.statisticsGatherer)
+
+(:define init (:list)
+    (begin
+        (print "Initialized!") ) )
+
+(:define unload (:list)
+    (begin
+        (print "Unloaded") ) ).
