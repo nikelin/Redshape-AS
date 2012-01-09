@@ -2,6 +2,10 @@ package com.redshape.plugins.packagers;
 
 import com.redshape.utils.IEnum;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
  * @package com.redshape.plugins.loaders
@@ -14,8 +18,12 @@ public class PackagingType implements IEnum<String> {
 	protected PackagingType( String name, String[] extensions ) {
 		this.name = name;
 		this.extensions = extensions;
+        
+        REGISTRY.put( name, this );
 	}
 
+    public static final Map<String, PackagingType> REGISTRY = new HashMap<String, PackagingType>();
+    
 	/**
 	 * Must be used in a cases when package type detection makes impossible
 	 */
@@ -52,6 +60,25 @@ public class PackagingType implements IEnum<String> {
 	 */
 	public static final PackagingType PHAR = new PackagingType("Package.PHAR", new String[] { "phar" } );
 
+    public static PackagingType valueOf( String path ) {
+        PackagingType type = REGISTRY.get(path);
+        if ( null != type ) {
+            return type;
+        }
+
+        for ( PackagingType packagingType : REGISTRY.values() ) {
+            if ( -1 != Arrays.binarySearch(packagingType.extensions(), path) ) {
+                return packagingType;
+            }
+        }
+
+        return null;
+    }
+    
+    public String[] extensions() {
+        return this.extensions;
+    }
+    
 	@Override
 	public String name() {
 		return this.name;

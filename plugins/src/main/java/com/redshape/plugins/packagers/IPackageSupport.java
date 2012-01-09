@@ -12,11 +12,8 @@ import java.util.List;
  * @date 10/11/11 1:09 PM
  */
 public interface IPackageSupport {
-    
-    public IPackageEntry getEntry( String path ) throws IOException;
 
-    public List<IPackageEntry> getEntries() throws IOException;
-    
+    public IPackageDescriptor processResource( PackagingType type, IPluginResource resource) throws PackagerException;
 
 	/**
 	 * Check that a given packaging type supported by a current provider

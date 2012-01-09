@@ -14,7 +14,7 @@ import java.net.URI;
  * To change this template use File | Settings | File Templates.
  */
 public interface IPluginResource {
-    
+
     public URI getURI();
     
     public int getSize();

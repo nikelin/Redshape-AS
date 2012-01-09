@@ -2,6 +2,7 @@ package com.redshape.plugins.loaders.impl;
 
 import com.redshape.plugins.LoaderException;
 import com.redshape.plugins.loaders.IPluginsLoader;
+import com.redshape.plugins.loaders.resources.DirectoryResource;
 import com.redshape.plugins.loaders.resources.IPluginResource;
 import com.redshape.plugins.loaders.resources.PluginResource;
 import com.redshape.utils.IResourcesLoader;
@@ -36,7 +37,15 @@ public class FilePluginLoader implements IPluginsLoader {
     @Override
     public IPluginResource load(URI path) throws LoaderException {
         try {
-            File file = new File(path);
+            File file = this.getResourcesLoader().loadFile(path);
+            if ( !file.exists() ) {
+                throw new LoaderException("Plugin source not founded withing provided path");
+            }
+
+            if ( file.isDirectory() ) {
+                return new DirectoryResource(file);
+            }
+
             FileInputStream inputStream = new FileInputStream(file);
             FileOutputStream outputStream = new FileOutputStream(file);
 

@@ -11,16 +11,18 @@ import java.net.URI;
  * Time: 4:55 PM
  * To change this template use File | Settings | File Templates.
  */
-public class PackageEntry implements IPackageEntry {
+class PackageEntry implements IPackageEntry {
     private String path;
     private int size;
     private byte[] data;
     private String mimeType;
     
-    public PackageEntry( String path, byte[] data ) {
+    PackageEntry( String path, byte[] data ) {
         this.path = path;
         this.data = data;
-        this.size = data.length;
+        if ( data != null ) {
+            this.size = data.length;
+        }
     }
 
     @Override

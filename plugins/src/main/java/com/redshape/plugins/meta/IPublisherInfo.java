@@ -10,9 +10,15 @@ import java.net.URI;
  */
 public interface IPublisherInfo {
 
+    public void setCompany( String value );
+    
 	public String getCompany();
 
+    public void setPublishedOn( Date date );
+    
 	public Date getPublishedOn();
+    
+    public void setURI( URI uri );
 
 	public URI getURI();
 

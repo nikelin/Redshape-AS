@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<plugin>
+    <version>1.0.0</version>
+    <archVersion>3.0.0</archVersion>
+    <mainClass>com.redshape.projectshost.worker.plugins.statisticsGatherer.Starter</mainClass>
+    <publisher>
+        <company>Redshape Ltd.</company>
+        <url>http://redshape.ru</url>
+        <date>20/02/2012</date>
+    </publisher>
+    <starter>
+        <type>java</type>
+        <version>1.7</version>
+    </starter>
+    <permissions>
+        <permission>
+            <type>java.net.SocketPermission</type>
+            <parameters>
+                <parameter>*</parameter>
+                <parameter>accept,resolve,connect</parameter>
+            </parameters>
+        </permission>
+    </permissions>
+</plugin>

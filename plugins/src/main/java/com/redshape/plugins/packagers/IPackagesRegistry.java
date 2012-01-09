@@ -1,5 +1,7 @@
 package com.redshape.plugins.packagers;
 
+import com.redshape.plugins.loaders.resources.IPluginResource;
+
 import java.io.File;
 
 /**
@@ -9,7 +11,7 @@ import java.io.File;
  */
 public interface IPackagesRegistry {
 
-	public PackagingType detectType( File path );
+	public PackagingType detectType( IPluginResource resource );
 
 	public IPackageSupport getSupport( PackagingType type );
 

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+    <context:component-scan base-package="com.redshape"/>
+
+    <bean id="pluginPath" class="java.lang.String">
+        <constructor-arg><value>file:///projects/framework/plugins/src/test/resources/test-plugin</value></constructor-arg>
+    </bean>
+    
+    <bean class="com.redshape.utils.ResourcesLoader" id="resourcesLoader"
+          scope="singleton">
+        <constructor-arg>
+            <value>./</value>
+        </constructor-arg>
+    </bean>
+    
+    <bean class="com.redshape.utils.helpers.XMLHelper" id="xmlHelper">
+        <constructor-arg>
+            <ref bean="resourcesLoader"/>
+        </constructor-arg>
+    </bean>
+    
+    <bean id="descriptorsRegistry" class="com.redshape.plugins.packagers.StandardDescriptorsRegistry"
+          scope="singleton"/>
+    
+    <bean id="loadersRegistry"
+          scope="singleton"
+          class="com.redshape.plugins.loaders.StandardPluginLoadersRegistry">
+        <property name="loaders">
+            <map>
+                <entry>
+                    <key><value>http</value></key>
+                    <bean class="com.redshape.plugins.loaders.impl.HttpPluginLoader"/>
+                </entry>
+                <entry>
+                    <key><value>file</value></key>
+                    <bean class="com.redshape.plugins.loaders.impl.FilePluginLoader"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+    
+    <bean id="metaLoadersRegistry" class="com.redshape.plugins.meta.StandardMetaLoadersRegistry">
+        <constructor-arg>
+            <set>
+                <bean class="com.redshape.plugins.meta.impl.XMLMetaLoader"/>
+            </set>
+        </constructor-arg>
+    </bean>
+
+    <bean id="packageSupportRegistry" class="com.redshape.plugins.packagers.StandardPackagesRegistry">
+        <constructor-arg>
+            <map>
+                <entry>
+                    <key>
+                        <bean class="com.redshape.plugins.packagers.PackagingType" factory-method="valueOf">
+                            <constructor-arg>
+                                <value>Package.JAR</value>
+                            </constructor-arg>
+                        </bean>
+                    </key>
+                    <bean class="com.redshape.plugins.packagers.engines.JARPackageSupport"/>
+                </entry>
+                <entry>
+                    <key>
+                        <bean class="com.redshape.plugins.packagers.PackagingType" factory-method="valueOf">
+                            <constructor-arg>
+                                <value>Package.Inline</value>
+                            </constructor-arg>
+                        </bean>
+                    </key>
+                    <bean class="com.redshape.plugins.packagers.engines.InlinePackageSupport"/>
+                </entry>
+            </map>
+        </constructor-arg>
+    </bean>
+    
+    <bean id="startersRegistry" class="com.redshape.plugins.starters.StandardStartersRegistry">
+        <constructor-arg>
+            <map>
+                <entry>
+                    <key>
+                        <bean class="com.redshape.plugins.starters.EngineType" factory-method="valueOf">
+                            <constructor-arg>
+                                <value>EngineType.JAVA</value>
+                            </constructor-arg>
+                        </bean>
+                    </key>
+                    <bean class="com.redshape.plugins.starters.JavaStarter"/>
+                </entry>
+                <entry>
+                    <key>
+                        <bean class="com.redshape.plugins.starters.EngineType" factory-method="valueOf">
+                            <constructor-arg>
+                                <value>EngineType.PYTHON</value>
+                            </constructor-arg>
+                        </bean>
+                    </key>
+                    <bean class="com.redshape.plugins.starters.JythonStarter"/>
+                </entry>
+                <entry>
+                    <key>
+                        <bean class="com.redshape.plugins.starters.EngineType" factory-method="valueOf">
+                            <constructor-arg>
+                                <value>EngineType.RUBY</value>
+                            </constructor-arg>
+                        </bean>
+                    </key>
+                    <bean class="com.redshape.plugins.starters.JRubyStarter"/>
+                </entry>
+            </map>
+        </constructor-arg>
+    </bean>
+    
+</beans>

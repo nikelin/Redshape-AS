@@ -1,6 +1,7 @@
 package com.redshape.plugins.meta;
 
 import com.redshape.plugins.LoaderException;
+import com.redshape.plugins.loaders.resources.IPluginResource;
 import com.redshape.plugins.packagers.IPackageDescriptor;
 
 /**
@@ -11,5 +12,7 @@ import com.redshape.plugins.packagers.IPackageDescriptor;
 public interface IMetaLoader {
 
 	public IPluginInfo load( IPackageDescriptor descriptor ) throws LoaderException;
+
+    public boolean isSupports( IPackageDescriptor descriptor );
 
 }

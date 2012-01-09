@@ -2,6 +2,7 @@ package com.redshape.plugins.packagers.engines;
 
 import com.redshape.plugins.loaders.resources.IPluginResource;
 import com.redshape.plugins.packagers.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,67 +18,54 @@ import java.util.jar.JarInputStream;
  * To change this template use File | Settings | File Templates.
  */
 public class JARPackageSupport implements IPackageSupport {
-    private IPluginResource resource;
-    private JarInputStream dataStream;
+    @Autowired( required = true )
+    private IDescriptorsRegistry registry;
 
-    public JARPackageSupport( IPluginResource resource ) throws PackagerException {
-        this.resource = resource;
-        this.init();
+    public IDescriptorsRegistry getRegistry() {
+        return registry;
     }
 
-    protected void init() throws PackagerException {
+    public void setRegistry(IDescriptorsRegistry registry) {
+        this.registry = registry;
+    }
+
+    @Override
+    public IPackageDescriptor processResource( PackagingType type, IPluginResource resource) throws PackagerException {
+        JarInputStream dataStream = null;
+
         try {
-            this.dataStream = new JarInputStream( resource.getInputStream() );
+            IPackageDescriptor descriptor = this.getRegistry().getDescriptor(resource);
+            if ( descriptor != null ) {
+                return descriptor;
+            }
+
+            descriptor = this.getRegistry().createDescriptor(type, resource.getURI() );
+
+            dataStream = new JarInputStream( resource.getInputStream() );
+            JarEntry entry;
+            int offset = 0;
+            while ( ( entry = dataStream.getNextJarEntry() ) != null ) {
+                int entrySize = (int) entry.getSize();
+
+                byte[] data = new byte[offset + entrySize];
+                dataStream.read(data, offset, entrySize);
+                offset += entry.getSize();
+
+                descriptor.addEntry( descriptor.createEntry(entry.getName(), data ) );
+            }
+
+            return descriptor;
         } catch ( IOException e ) {
             throw new PackagerException("I/O related exception", e );
-        }
-    }
-
-    @Override
-    public List<IPackageEntry> getEntries() throws IOException {
-        List<IPackageEntry> entries = new ArrayList<IPackageEntry>();
-        synchronized (this.dataStream) {
-            try {
-                this.dataStream.reset();
-
-                JarEntry entry;
-                while ( null != ( entry = this.dataStream.getNextJarEntry() ) ) {
-                    entries.add( this.createPackageEntry(entry) );
+        } finally {
+            if ( dataStream != null ) {
+                try {
+                    dataStream.close();
+                } catch ( IOException e ) {
+                    throw new IllegalStateException( "Critical I/O exception", e );
                 }
-            } finally {
-                this.dataStream.reset();
             }
         }
-
-        return entries;
-    }
-
-    @Override
-    public IPackageEntry getEntry(String path) throws IOException {
-        synchronized (this.dataStream ) {
-            try {
-                this.dataStream.reset();
-                IPackageEntry result = null;
-                JarEntry entry;
-                while ( null != ( entry = this.dataStream.getNextJarEntry()  ) ) {
-                    if ( entry.getName().equals(path) ) {
-                        result = this.createPackageEntry(entry);
-                        break;
-                    }
-                }
-
-                return result;
-            } finally {
-                this.dataStream.reset();
-            }
-        }
-    }
-
-    protected IPackageEntry createPackageEntry( JarEntry entry ) throws IOException {
-        byte[] data = new byte[(int)entry.getSize()];
-        this.dataStream.read( data, 0 , (int) entry.getSize() );
-
-        return new PackageEntry( entry.getName(), data );
     }
 
     @Override

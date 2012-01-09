@@ -25,6 +25,10 @@ public class StandardPluginLoadersRegistry implements IPluginLoadersRegistry {
         this.registerLoader("http", new HttpPluginLoader() );
     }
 
+    public void setLoaders(Map<String, IPluginsLoader> loaders) {
+        this.loaders = loaders;
+    }
+
     @Override
     public IPluginsLoader selectLoader(URI path) {
         return this.loaders.get( path.getScheme() );
