@@ -3,15 +3,15 @@
     <name>Test Plugin</name>
     <version>1.0.0</version>
     <archVersion>3.0.0</archVersion>
-    <mainClass>com.redshape.projectshost.worker.plugins.statisticsGatherer.Starter</mainClass>
+    <mainClass>com.redshape.plugins.testPlugin.TestPlugin</mainClass>
     <publisher>
         <company>Redshape Ltd.</company>
         <url>http://redshape.ru</url>
         <date>20/02/2012</date>
     </publisher>
     <starter>
-        <engine>ascript</engine>
-        <version>1.0.0</version>
+        <engine>java</engine>
+        <version>1.6</version>
     </starter>
     <permissions>
         <permission>

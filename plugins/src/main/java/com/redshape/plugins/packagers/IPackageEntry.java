@@ -12,7 +12,9 @@ import java.net.URI;
  * To change this template use File | Settings | File Templates.
  */
 public interface IPackageEntry {
-    
+
+    public IPackageDescriptor getDescriptor();
+
     public String getPath();
     
     public int getSize();

@@ -12,17 +12,24 @@ import java.net.URI;
  * To change this template use File | Settings | File Templates.
  */
 class PackageEntry implements IPackageEntry {
+    private IPackageDescriptor descriptor;
     private String path;
     private int size;
     private byte[] data;
     private String mimeType;
     
-    PackageEntry( String path, byte[] data ) {
+    PackageEntry( IPackageDescriptor descriptor, String path, byte[] data ) {
+        this.descriptor = descriptor;
         this.path = path;
         this.data = data;
         if ( data != null ) {
             this.size = data.length;
         }
+    }
+
+    @Override
+    public IPackageDescriptor getDescriptor() {
+        return descriptor;
     }
 
     @Override

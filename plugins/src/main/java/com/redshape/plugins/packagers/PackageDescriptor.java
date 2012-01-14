@@ -72,7 +72,7 @@ class PackageDescriptor implements IPackageDescriptor {
 
     @Override
     public IPackageEntry createEntry(String path, byte[] data) {
-        return new PackageEntry( path, data );
+        return new PackageEntry( this, path, data );
     }
 
 }
