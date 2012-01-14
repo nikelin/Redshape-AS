@@ -6,7 +6,9 @@ import com.redshape.utils.config.sources.IConfigSource;
 import com.redshape.utils.helpers.XMLHelper;
 import org.apache.log4j.Logger;
 import org.w3c.dom.*;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.util.Deque;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -140,6 +142,20 @@ public class XMLConfig extends AbstractConfig {
 
         writer.write(result);
         writer.close();
+    }
+    
+    public static XMLConfig build( XMLHelper helper, String declaration ) throws ConfigException {
+        try {
+            XMLConfig config = new XMLConfig("config", null);
+            config.init( config, helper.buildDocumentByData(declaration).getDocumentElement() );
+            return config;
+        } catch ( SAXException e ) {
+            throw new ConfigException("XML data parsing failed", e );
+        } catch ( ParserConfigurationException e ) {
+            throw new ConfigException("XML data parsing failed", e );
+        } catch ( IOException e ) {
+            throw new ConfigException("I/O related exception", e );
+        }
     }
 
 }

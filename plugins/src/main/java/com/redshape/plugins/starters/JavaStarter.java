@@ -4,6 +4,7 @@ import com.redshape.plugins.IPlugin;
 import com.redshape.plugins.PluginInitException;
 import com.redshape.plugins.meta.IPluginInfo;
 import com.redshape.plugins.packagers.IPackageEntry;
+import com.redshape.utils.ReflectionUtils;
 
 import java.io.File;
 import java.io.FilePermission;
@@ -15,6 +16,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.*;
 import java.security.cert.Certificate;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -119,6 +121,19 @@ public class JavaStarter implements IStarterEngine {
                 clazz = loader.loadClass( plugin.getEntryPoint() );
             } catch ( Throwable e ) {
                 throw new IllegalStateException("Unable to load entry point class");
+            }
+
+            boolean found = false;
+            for ( Class<?> interfaceClass : clazz.getInterfaces() ) {
+                if ( interfaceClass.equals( IPlugin.class ) ) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if ( !found ) {
+                throw new IllegalStateException("Plugin must implements "
+                        + IPlugin.class.getCanonicalName() + " interface!");
             }
 
             IPlugin pluginInstance;
