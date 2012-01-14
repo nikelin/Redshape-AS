@@ -51,6 +51,8 @@
         </constructor-arg>
     </bean>
 
+    <bean id="pluginsRegistry" class="com.redshape.plugins.registry.StandardPluginsRegistry"/>
+    
     <bean id="packageSupportRegistry" class="com.redshape.plugins.packagers.StandardPackagesRegistry">
         <constructor-arg>
             <map>
@@ -89,7 +91,9 @@
                             </constructor-arg>
                         </bean>
                     </key>
-                    <bean class="com.redshape.plugins.starters.JavaStarter"/>
+                    <bean class="com.redshape.plugins.starters.JavaStarter">
+                        <constructor-arg><value>100</value></constructor-arg>
+                    </bean>
                 </entry>
                 <entry>
                     <key>

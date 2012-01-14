@@ -1,7 +1,9 @@
 package com.redshape.plugins.registry;
 
+import com.redshape.plugins.IPlugin;
 import com.redshape.plugins.meta.IPluginInfo;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -11,6 +13,10 @@ import java.util.List;
  */
 public interface IPluginsRegistry {
 
-	public List<IPluginInfo> getPluginsList();
+	public void registerPlugin( IPluginInfo info, IPlugin plugin );
+    
+    public IPluginInfo findInfo( IPlugin plugin );
+    
+    public Collection<IPlugin> list();
 
 }

@@ -1,6 +1,9 @@
 package com.redshape.plugins.starters;
 
+import com.redshape.plugins.IPlugin;
 import com.redshape.plugins.meta.IPluginInfo;
+
+import java.util.List;
 
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
@@ -9,6 +12,10 @@ import com.redshape.plugins.meta.IPluginInfo;
  */
 public interface IStarterEngine {
 
-	public void start( IPluginInfo plugin );
+	public IPlugin resolve( IPluginInfo plugin );
 
+    public void start( IPlugin plugin );
+
+    public void stop( IPlugin plugin );
+    
 }

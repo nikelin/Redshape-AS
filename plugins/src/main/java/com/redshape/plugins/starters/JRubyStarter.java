@@ -1,5 +1,6 @@
 package com.redshape.plugins.starters;
 
+import com.redshape.plugins.IPlugin;
 import com.redshape.plugins.meta.IPluginInfo;
 
 /**
@@ -9,8 +10,18 @@ import com.redshape.plugins.meta.IPluginInfo;
  */
 public class JRubyStarter implements IStarterEngine {
 
-	@Override
-	public void start(IPluginInfo plugin) {
-		//To change body of implemented methods use File | Settings | File Templates.
-	}
+    @Override
+    public IPlugin resolve(IPluginInfo plugin) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void start(IPlugin plugin) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void stop(IPlugin plugin) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

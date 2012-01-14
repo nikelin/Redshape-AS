@@ -7,6 +7,7 @@ import com.redshape.plugins.meta.IMetaLoader;
 import com.redshape.plugins.meta.IMetaLoadersRegistry;
 import com.redshape.plugins.meta.IPluginInfo;
 import com.redshape.plugins.packagers.*;
+import com.redshape.plugins.registry.IPluginsRegistry;
 import com.redshape.plugins.starters.EngineType;
 import com.redshape.plugins.starters.IStarterEngine;
 import com.redshape.plugins.starters.IStartersRegistry;
@@ -30,6 +31,10 @@ public class WorkflowTest extends AbstractContextAwareTest<String> {
     
     public WorkflowTest() {
         super("src/test/resources/context.xml");
+    }
+
+    protected IPluginsRegistry getPluginsRegistry() {
+        return this.getContext().getBean( IPluginsRegistry.class );
     }
 
     protected IPluginLoadersRegistry getLoadersRegistry() {
@@ -85,7 +90,12 @@ public class WorkflowTest extends AbstractContextAwareTest<String> {
 
         IStarterEngine engine = this.getStartersRegistry().selectEngine( info.getStarterInfo().getEngineType() );
         assertNotNull(engine);
-        engine.start(info);
+        
+        IPlugin plugin = engine.resolve(info);
+        IPluginsRegistry registry = this.getPluginsRegistry();
+        registry.registerPlugin( info, plugin );
+        engine.start(plugin);
+        engine.stop(plugin);
     }
 
 }
