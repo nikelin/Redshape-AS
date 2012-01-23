@@ -33,11 +33,20 @@ public abstract class AbstractQueryExecutor<T, P, E> implements IQueryExecutor<T
 
     @Override
     public T execute() throws QueryExecutorException {
-        return this.processResult( this.processExpression(this.getQuery().getExpression() ) );
+        P predicate = null;
+        if ( this.getQuery().getExpression() != null ) {
+            predicate = this.processExpression(this.getQuery().getExpression() );
+        }
+        
+        return this.processResult( predicate );
     }
 
     abstract protected T processResult( P predicate ) throws QueryExecutorException;
 
+    abstract public E processExpression( InExpression expression ) throws QueryExecutorException;
+    
+    abstract public E processExpression( LikeExpression expression ) throws QueryExecutorException;
+    
     abstract public E processExpression( UnaryOperation operation ) throws QueryExecutorException;
 
     abstract public E processExpression( BinaryOperation operation ) throws QueryExecutorException;

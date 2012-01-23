@@ -3,9 +3,7 @@ package com.redshape.persistence.dao.query;
 import com.redshape.persistence.dao.query.expressions.*;
 import com.redshape.persistence.dao.query.expressions.operations.BinaryOperation;
 import com.redshape.persistence.dao.query.expressions.operations.UnaryOperation;
-import com.redshape.persistence.dao.query.statements.IStatement;
-import com.redshape.persistence.dao.query.statements.ReferenceStatement;
-import com.redshape.persistence.dao.query.statements.ScalarStatement;
+import com.redshape.persistence.dao.query.statements.*;
 import com.redshape.persistence.entities.IEntity;
 
 /**
@@ -66,13 +64,43 @@ public class QueryBuilder implements IQueryBuilder {
     }
 
     @Override
+    public IExpression in(IStatement source, IArrayStatement range) {
+        return new InExpression(source, range);
+    }
+
+    @Override
+    public IExpression like(IStatement source, IStatement mask) {
+        return new LikeExpression(source, mask);
+    }
+
+    @Override
+    public IArrayStatement array(IStatement... statements) {
+        return new ArrayStatement(statements);
+    }
+
+    @Override
     public IExpression not(IExpression term) {
         return new NotOperation(term);
     }
 
     @Override
     public IQuery query( Class<? extends IEntity> clazz ) {
-        return new Query(clazz);
+        return Query.createSelect(clazz);
+    }
+
+    @Override
+    public IQuery removeQuery(Class<? extends IEntity> clazz) {
+        return Query.createRemove(clazz);
+    }
+
+    @Override
+    public IQuery nativeQuery(String name) {
+        return Query.createNative(name);
+    }
+
+    @Override
+    public IQuery updateQuery(Class<? extends IEntity> clazz) {
+        return Query.createUpdate(clazz);
     }
 
     @Override
@@ -98,6 +126,16 @@ public class QueryBuilder implements IQueryBuilder {
     @Override
     public IStatement reference(String value) {
         return new ReferenceStatement(value);
+    }
+
+    @Override
+    public <T> IStatement[] scalar(T... values) {
+        IStatement[] statements = new IStatement[values.length];
+        for ( int i = 0; i < values.length; i++ ) {
+            statements[i++] = this.scalar(values[i]);
+        }
+
+        return statements;
     }
 }
 

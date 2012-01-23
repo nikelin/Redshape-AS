@@ -5,9 +5,10 @@ import com.redshape.persistence.dao.query.QueryExecutorException;
 import com.redshape.persistence.dao.query.expressions.*;
 import com.redshape.persistence.dao.query.expressions.operations.BinaryOperation;
 import com.redshape.persistence.dao.query.expressions.operations.UnaryOperation;
+import com.redshape.persistence.dao.query.statements.IArrayStatement;
 import com.redshape.persistence.dao.query.statements.ReferenceStatement;
 import com.redshape.persistence.dao.query.statements.ScalarStatement;
- 
+
 @SuppressWarnings("rawtypes")
 public class StaticQueryExecutor extends AbstractQueryExecutor<Boolean, Boolean, Comparable> 
 									implements IStaticQueryExecutor<Boolean> {
@@ -111,6 +112,42 @@ public class StaticQueryExecutor extends AbstractQueryExecutor<Boolean, Boolean,
         }
 
         return finalResult;
+    }
+
+    @Override
+    public Comparable processExpression(InExpression expression) throws QueryExecutorException {
+        Comparable source = this.processStatement(expression.getField());
+        for ( Comparable value : this.processStatement(expression.getRange()) ) {
+            if ( value.compareTo(source) == 0 ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    /**
+     * @TODO
+     * @FIXME
+     * Re-work me with support of a real masks!!!
+     * plz
+     */
+    public Comparable processExpression(LikeExpression expression) throws QueryExecutorException {
+        return String.valueOf( this.processStatement( expression.getField() ) )
+              .contains( 
+                  String.valueOf( this.processStatement(expression.getMask()) )
+              );
+    }
+
+    @Override
+    public Comparable[] processStatement(IArrayStatement statement) throws QueryExecutorException {
+        Comparable[] result = new Comparable[statement.getSize()];
+        for ( int i = 0; i < statement.getSize(); i++ ) {
+            result[i] = this.processStatement(statement.getStatement(i));
+        }
+
+        return result;
     }
 
     @Override

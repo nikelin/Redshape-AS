@@ -1,6 +1,7 @@
 package com.redshape.persistence.dao.query;
 
 import com.redshape.persistence.dao.query.expressions.IExpression;
+import com.redshape.persistence.dao.query.statements.IArrayStatement;
 import com.redshape.persistence.dao.query.statements.IStatement;
 import com.redshape.persistence.entities.IEntity;
 
@@ -10,7 +11,7 @@ import com.redshape.persistence.entities.IEntity;
  * Time: 16:08
  */
 public interface IQueryBuilder {
-
+    
     public IExpression function( String name );
 
     public IExpression function( String name, IStatement... terms );
@@ -20,8 +21,6 @@ public interface IQueryBuilder {
     public IExpression or(IExpression term1, IExpression term2);
 
     public IExpression not(IExpression term);
-
-    public IQuery query(Class<? extends IEntity> clazz);
 
     public IExpression lessThan(IStatement left, IStatement right);
 
@@ -41,9 +40,26 @@ public interface IQueryBuilder {
 
     public IExpression negate( IStatement term1 );
 
+    public IExpression in(IStatement source, IArrayStatement range);
+
+    public IExpression like( IStatement source, IStatement mask );
+    
+    public IArrayStatement array( IStatement... statements );
+
+    public <T> IStatement[] scalar( T... values );
+    
     public <T> IStatement scalar(T value);
 
     public IStatement reference(String value);
+
+    public IQuery query(Class<? extends IEntity> clazz);
+
+    public IQuery nativeQuery( String name );
+
+    public IQuery updateQuery(Class<? extends IEntity> clazz);
+
+    public IQuery removeQuery( Class<? extends IEntity> clazz );
+
 }
 
 

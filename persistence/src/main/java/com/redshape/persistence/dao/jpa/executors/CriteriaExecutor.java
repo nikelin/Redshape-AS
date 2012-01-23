@@ -6,11 +6,14 @@
 package com.redshape.persistence.dao.jpa.executors;
 
 import com.redshape.persistence.dao.query.IQuery;
+import com.redshape.persistence.dao.query.OrderDirection;
 import com.redshape.persistence.dao.query.QueryExecutorException;
 import com.redshape.persistence.dao.query.executors.AbstractQueryExecutor;
+import com.redshape.persistence.dao.query.executors.IDynamicQueryExecutor;
 import com.redshape.persistence.dao.query.expressions.*;
 import com.redshape.persistence.dao.query.expressions.operations.BinaryOperation;
 import com.redshape.persistence.dao.query.expressions.operations.UnaryOperation;
+import com.redshape.persistence.dao.query.statements.ArrayStatement;
 import com.redshape.persistence.dao.query.statements.IStatement;
 import com.redshape.persistence.dao.query.statements.ReferenceStatement;
 import com.redshape.persistence.dao.query.statements.ScalarStatement;
@@ -20,12 +23,14 @@ import com.redshape.utils.Commons;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.criteria.*;
+import java.util.List;
 
 /**
  *
  * @author user
  */
-public class CriteriaExecutor extends AbstractQueryExecutor<Query, Predicate, Expression<?>>   {
+public class CriteriaExecutor extends AbstractQueryExecutor<Query, Predicate, Expression<?>>
+                              implements IDynamicQueryExecutor<Query> {
     private EntityManager manager;
     private CriteriaBuilder builder;
     private CriteriaQuery<IEntity> criteria;
@@ -55,8 +60,41 @@ public class CriteriaExecutor extends AbstractQueryExecutor<Query, Predicate, Ex
 
     @Override
     protected Query processResult( Predicate expression  ) throws QueryExecutorException {
-    	this.getCriteria().where( expression );
+        if ( expression != null ) {
+    	    this.getCriteria().where( expression );
+        }
+        
+        List<IStatement> paths = this.getQuery().select();
+        if ( !paths.isEmpty() ) {
+            for ( int i = 0; i < paths.size(); i++ ) {
+                this.getCriteria().select( (Selection<? extends IEntity>) this.processStatement( paths.get(i) ) );
+            }
+        }
 
+        if ( this.getQuery().orderField() != null ) {
+            Expression<?> fieldStm = this.processStatement( this.getQuery().orderField() );
+            OrderDirection direction = Commons.select( this.getQuery().orderDirection(), OrderDirection.DESC );
+            switch( direction ) {
+                case ASC:
+                    this.getCriteria().orderBy( this.getBuilder().asc( fieldStm ) );
+                break;
+                case DESC:
+                    this.getCriteria().orderBy( this.getBuilder().desc( fieldStm ) );
+                break;
+                default:
+                    throw new QueryExecutorException("Unknown order direction");
+            }
+        }
+            
+        List<IStatement> groupBy = this.getQuery().groupBy();
+        if ( !groupBy.isEmpty() ) {
+            Expression<?>[] groupByFields = new Expression<?>[ this.getQuery().groupBy().size() ];
+            for ( int i = 0; i < groupBy.size(); i++ ) {
+                groupByFields[i] = this.processStatement(groupBy.get(i));
+            }
+            this.getCriteria().groupBy( groupByFields );
+        }
+        
         Query nativeQuery = this.getManager().createQuery( this.getCriteria() );
         for ( String key : this.getQuery().getAttributes().keySet() ) {
         	if ( !this.getQuery().hasAttribute( key ) ) {
@@ -67,6 +105,19 @@ public class CriteriaExecutor extends AbstractQueryExecutor<Query, Predicate, Ex
         }
 
         return nativeQuery;
+    }
+
+    @Override
+    public Expression<?> processExpression(InExpression expression) throws QueryExecutorException {
+        return this.processStatement( expression.getField() ).in( this.processStatement(expression.getRange()) );
+    }
+
+    @Override
+    public Expression<?> processExpression(LikeExpression expression) throws QueryExecutorException {
+        return this.getBuilder().like(
+                (Expression<String>) this.processStatement(expression.getField()),
+                (Expression<String>) this.processStatement(expression.getMask())
+        );
     }
 
     @Override
@@ -95,7 +146,8 @@ public class CriteriaExecutor extends AbstractQueryExecutor<Query, Predicate, Ex
                     (Expression<Number>) this.processStatement( operation.getRight() )
                 );
             case DIVIDE:
-                return this.getBuilder().quot(
+                return this.getBuilder()
+                .quot(
                     (Expression<Number>) this.processStatement( operation.getLeft() ),
                     (Expression<Number>) this.processStatement( operation.getRight() )
                 );
@@ -133,6 +185,16 @@ public class CriteriaExecutor extends AbstractQueryExecutor<Query, Predicate, Ex
     }
 
     @Override
+    public CompoundSelection<?> processStatement(ArrayStatement statement) throws QueryExecutorException {
+        Expression<?>[] statements = new Expression<?>[statement.getSize()];
+        for ( int i = 0; i < statements.length; i++ ) {
+            statements[i++] = this.processStatement( statement.getStatement(i) );
+        }
+
+        return this.getBuilder().array( statements );
+    }
+
+    @Override
     public Expression<?> processStatement(ScalarStatement<?> scalar) throws QueryExecutorException {
         Object value = scalar.getValue();
         if ( value instanceof IEntity ) {
@@ -148,7 +210,10 @@ public class CriteriaExecutor extends AbstractQueryExecutor<Query, Predicate, Ex
 
     @Override
     public Expression<?> processStatement(ReferenceStatement reference) throws QueryExecutorException {
-    	String path = reference.getValue();
+        return this.resolvePath(reference.getValue());
+    }
+    
+    protected Expression<?> resolvePath( String path ) throws QueryExecutorException {
         if ( path == null ) {
             return this.getBuilder().nullLiteral(Object.class);
         }
