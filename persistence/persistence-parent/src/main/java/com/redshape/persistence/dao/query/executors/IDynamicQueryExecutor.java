@@ -6,9 +6,9 @@ import com.redshape.persistence.dao.query.statements.ArrayStatement;
 
 import javax.persistence.criteria.CompoundSelection;
 
-public interface IDynamicQueryExecutor<T> extends IQueryExecutor<T> {
+public interface IDynamicQueryExecutor<T, A> extends IQueryExecutor<T> {
 
-    public CompoundSelection<?> processStatement(ArrayStatement statement) throws QueryExecutorException;
+    public A processStatement(ArrayStatement statement) throws QueryExecutorException;
 
 }
 

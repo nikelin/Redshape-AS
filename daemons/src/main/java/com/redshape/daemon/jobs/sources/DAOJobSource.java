@@ -64,7 +64,7 @@ public class DAOJobSource extends AbstractEventDispatcher implements IDAOJobSour
     @Override
     public void save( IPersistenceJob entity) throws JobException {
         try {
-			EntityManagerUtils.openEntityManager( this.getContext() );
+			EntityManagerUtils.openEntityManager(this.getContext());
             this.getSource().save( entity );
         } catch ( DAOException e ) {
             throw new JobException( e.getMessage(), e );

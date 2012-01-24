@@ -14,7 +14,7 @@
   <dependencies>
     <dependency>
       <groupId>com.redshape.persistence</groupId>
-      <artifactId>persistence-parent</artifactId>
+      <artifactId>jpa</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>

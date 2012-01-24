@@ -8,6 +8,11 @@
         <module>persistence-parent</module>
     </modules>
 
+    <properties>
+        <hbase.version>0.89.20100924-28</hbase.version>
+        <hibernate.version>3.5.1-Final</hibernate.version>
+    </properties>
+
     <parent>
         <groupId>com.redshape</groupId>
         <artifactId>as</artifactId>

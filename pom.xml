@@ -30,6 +30,13 @@
     </properties>
 
     <repositories>
+
+        <repository>
+            <id>cloudera-releases</id>
+            <name>Cloudera Central</name>
+            <url>https://repository.cloudera.com/content/repositories/releases</url>
+        </repository>
+
         <repository>
             <id>EVIWare</id>
             <url>http://www.eviware.com/repository/maven2</url>

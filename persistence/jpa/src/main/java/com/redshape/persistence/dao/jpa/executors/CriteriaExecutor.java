@@ -30,7 +30,7 @@ import java.util.List;
  * @author user
  */
 public class CriteriaExecutor extends AbstractQueryExecutor<Query, Predicate, Expression<?>>
-                              implements IDynamicQueryExecutor<Query> {
+                              implements IDynamicQueryExecutor<Query, CompoundSelection<?>> {
     private EntityManager manager;
     private CriteriaBuilder builder;
     private CriteriaQuery<IEntity> criteria;
