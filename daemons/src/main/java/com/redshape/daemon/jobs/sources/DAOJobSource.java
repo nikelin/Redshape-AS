@@ -77,7 +77,11 @@ public class DAOJobSource extends AbstractEventDispatcher implements IDAOJobSour
     public List<IPersistenceJob> fetch() throws JobException {
 		try {
 			EntityManagerUtils.openEntityManager( this.getContext() );
-            List<IPersistenceJob> jobs = this.getSource().findByStatus( JobStatus.WAITING, 0, this.chunkSize );
+            List<IPersistenceJob> jobs = this.getSource()
+                            .findByStatus( JobStatus.WAITING )
+                                .offset(0)
+                                .limit(this.chunkSize)
+                                    .list();
             for ( IPersistenceJob job : jobs ) {
                 job.setState( JobStatus.PROCESSING );
 

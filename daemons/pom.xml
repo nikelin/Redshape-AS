@@ -13,10 +13,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.redshape</groupId>
-      <artifactId>persistence</artifactId>
+      <groupId>com.redshape.persistence</groupId>
+      <artifactId>persistence-parent</artifactId>
       <version>${project.version}</version>
-      <scope>compile</scope>
     </dependency>
   </dependencies>
 </project>

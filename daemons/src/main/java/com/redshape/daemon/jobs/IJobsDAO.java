@@ -2,9 +2,8 @@ package com.redshape.daemon.jobs;
 
 import com.redshape.persistence.dao.DAOException;
 import com.redshape.persistence.dao.IDAO;
+import com.redshape.persistence.dao.query.executors.IExecutionRequest;
 import com.redshape.persistence.entities.IEntity;
-
-import java.util.List;
 
 /**
  * @package com.redshape.projectshost.persistence.dao
@@ -13,8 +12,6 @@ import java.util.List;
  */
 public interface IJobsDAO<T extends IJob & IEntity> extends IDAO<T> {
 
-    public List<T> findByStatus( JobStatus status ) throws DAOException;
-
-    public List<T> findByStatus(JobStatus status, int offset, int limit) throws DAOException;
+    public IExecutionRequest<T> findByStatus( JobStatus status ) throws DAOException;
 
 }

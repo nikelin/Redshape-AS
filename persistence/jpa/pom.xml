@@ -2,37 +2,25 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <name>Redshape - Search API</name>
-
     <parent>
-        <artifactId>as</artifactId>
+        <artifactId>persistence</artifactId>
         <groupId>com.redshape</groupId>
         <version>3.0.0</version>
     </parent>
-
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.redshape</groupId>
-    <version>${project.parent.version}</version>
-    <artifactId>search</artifactId>
+    <name>Redshape - Persistence - JPA 2.0</name>
+    <groupId>com.redshape.persistence</groupId>
     <packaging>jar</packaging>
+    <artifactId>jpa</artifactId>
 
     <dependencies>
-       <dependency>
-           <artifactId>utils</artifactId>
-           <groupId>com.redshape</groupId>
-           <version>${project.version}</version>
-       </dependency>
         <dependency>
-            <artifactId>jpa</artifactId>
+            <artifactId>persistence-parent</artifactId>
             <groupId>com.redshape.persistence</groupId>
             <version>${project.version}</version>
         </dependency>
-       <dependency>
-           <artifactId>lucene-core</artifactId>
-           <groupId>org.apache.lucene</groupId>
-           <version>3.0.2</version>
-       </dependency>
     </dependencies>
-    
+
+
 </project>
