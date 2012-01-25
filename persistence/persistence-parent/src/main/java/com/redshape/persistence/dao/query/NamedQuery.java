@@ -158,6 +158,11 @@ public class NamedQuery implements IQuery {
     }
 
     @Override
+    public boolean isCount() {
+        return query.isUpdate();
+    }
+
+    @Override
     public boolean isRemove() {
         return query.isRemove();
     }
