@@ -65,6 +65,8 @@ public interface IQueryBuilder {
     public IQuery updateQuery(Class<? extends IEntity> clazz);
 
     public IQuery removeQuery( Class<? extends IEntity> clazz );
+    
+    public IQuery countQuery( Class<? extends IEntity> clazz );
 
 }
 

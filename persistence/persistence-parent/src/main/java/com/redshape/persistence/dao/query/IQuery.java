@@ -7,6 +7,11 @@ import com.redshape.persistence.entities.IEntity;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Data source query object
+ *
+ * @author Cyril A. Karpenko <self@nikelin.ru>
+ */
 public interface IQuery {
 
     public boolean hasAttribute( String name );
@@ -20,49 +25,190 @@ public interface IQuery {
     public <T> T getAttribute(String name) throws QueryExecutorException;
     
     public IQuery setAttributes( Map<String, Object> attributes );
-    
+
+    /**
+     * Return attributes which applyed on this query object.
+     *
+     * @param <T>
+     * @return
+     */
     public <T> Map<String, T> getAttributes();
 
+    /**
+     * Return current querying results offset
+     * @return
+     */
     public int getOffset();
 
+    /**
+     * Apply offset on query results
+     * @param offset
+     * @return
+     */
     public IQuery setOffset( int offset );
 
+    /**
+     * Returns value of maximum results size
+     * constraint.
+     *
+     * @return
+     */
     public int getLimit();
 
+    /**
+     * Return list of fields which requested to be include
+     * in each record from the querying results list.
+     *
+     * @return
+     */
     public List<IStatement> select();
-    
+
+    /**
+     * Accepts list of field references which should be
+     * included in execution result
+     *
+     * @param statements
+     * @return
+     */
     public IQuery select( IStatement... statements );
 
+    /**
+     * Return direction of results ordering
+     * @return
+     */
     public OrderDirection orderDirection();
-    
+
+    /**
+     * Return ordering point (field)
+     * @return
+     */
     public IStatement orderField();
-    
+
+    /**
+     * Change querying result ordering point and direction
+     * @param field
+     * @param direction
+     * @return
+     */
     public IQuery orderBy(IStatement field, OrderDirection direction );
 
+    /**
+     * Return list of fields which is used to arrange querying results
+     * on groups.
+     *
+     * @return
+     */
     public List<IStatement> groupBy();
 
+    /**
+     * Accepts list of field references which will
+     * be used to group querying result.
+     * @param statements
+     * @return
+     */
     public IQuery groupBy( IStatement... statements );
-    
+
+    /**
+     * Bind conditional expression to this query object
+     * which will be used as a filter applied to records
+     * from data source to make decision of adopting them
+     * to the querying results.
+     *
+     * @param expression
+     * @return
+     */
     public IQuery where( IExpression expression );
 
+    /**
+     * Apply maximum size constraint on querying results
+     * list.
+     * @param limit
+     * @return
+     */
     public IQuery setLimit( int limit );
 
+    /**
+     * Returns entities class which relates to this query
+     * @param <T>
+     * @return
+     */
     public <T extends IEntity> Class<T> getEntityClass();
 
     public IEntity entity();
-    
+
+    /**
+     * Binds some entity to this query.
+     *
+     * This method must be used when query objects is used
+     * to save, update or remove some entity from data source.
+     *
+     * @param entity
+     * @return
+     */
     public IQuery entity( IEntity entity );
-    
+
+    /**
+     * Returns true if this query should be treated as a holder
+     * of named query which must be executed instead.
+     *
+     * @return
+     */
     public boolean isNative();
 
+    /**
+     * Returns true if this query goal is to
+     * update existing record in data source.
+     *
+     * @return
+     */
     public boolean isUpdate();
 
+    /**
+     * Returns true if this is boolean query which must be executed
+     * on a client side instead of invocation server-side executor.
+     *
+     * @important Create, remove and update queries must be always have entity which is bound
+     * on them; elsewhere there is QueryExecutorException will be thrown by
+     * IQueryExecutor on attempt to process such query by execute(IQuery) of
+     * some target dao.
+     *
+     * @return
+     */
     public boolean isStatic();
 
+    /**
+     * Returns true if this query goal is to remove
+     * some record from the data source.
+     *
+     * @important Create, remove and update queries must be always have entity which is bound
+     * on them; elsewhere there is QueryExecutorException will be thrown by
+     * IQueryExecutor on attempt to process such query by execute(IQuery) of
+     * some target dao.
+     *
+     * @return
+     */
     public boolean isRemove();
 
+    /**
+     * Returns true if this query goal is to save
+     * some record information in remote data source.
+     *
+     * @important Create, remove and update queries must be always have entity which is bound
+     * on them; elsewhere there is QueryExecutorException will be thrown by
+     * IQueryExecutor on attempt to process such query by execute(IQuery) of
+     * some target dao.
+     *
+     * @return
+     */
     public boolean isCreate();
-    
+
+    public boolean isCount();
+
+    /**
+     * Clone this query object and return copied one.
+     *
+     * @return
+     */
     public IQuery duplicate();
 
 }

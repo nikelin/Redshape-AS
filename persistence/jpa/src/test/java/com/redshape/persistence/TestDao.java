@@ -1,7 +1,7 @@
 package com.redshape.persistence;
 
 import com.redshape.persistence.dao.DAOException;
-import com.redshape.persistence.dao.jpa.AbstractJPADAO;
+import com.redshape.persistence.dao.jpa.AbstractDao;
 import com.redshape.persistence.dao.query.IQuery;
 import com.redshape.persistence.dao.query.IQueryBuilder;
 import com.redshape.persistence.dao.query.executors.services.IQueryExecutorService;
@@ -15,7 +15,7 @@ import java.util.List;
  * Time: 4:31 PM
  * To change this template use File | Settings | File Templates.
  */
-public class TestDao extends AbstractJPADAO<TestEntity> implements ITestDAO {
+public class TestDao extends AbstractDao<TestEntity> implements ITestDAO {
 
     public TestDao(IQueryExecutorService executor, IQueryBuilder builder) {
         super(TestEntity.class, executor, builder);

@@ -105,11 +105,18 @@ public class JPAExecutorService extends JpaDaoSupport implements IQueryExecutorS
             value = this.executeUpdate(query);
         } else if ( query.isNative() ) {
             value = this.executeNamedQuery( query.getEntityClass(), query.getName(), query.getAttributes() );
+        } else if ( query.isCount() ) {
+            value = this.executeCountQuery(query);
         } else {
             value = this.executeSelect(query);
         }
         
         return new ExecutionResult<T>(value);
+    }
+    
+    protected int executeCountQuery( IQuery query ) throws DAOException {
+        return this.em.createNativeQuery("select count(*) from " + this.getEntityName(query) )
+                    .getFirstResult();
     }
 
     protected <T extends IEntity> List<T> executeSelect( IQuery query ) throws DAOException {

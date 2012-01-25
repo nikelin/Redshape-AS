@@ -11,7 +11,7 @@ import com.redshape.persistence.entities.IEntity;
  * Date: 25.11.10
  * Time: 16:14
  */
-public class QueryBuilder implements IQueryBuilder {
+public class StandardQueryBuilder implements IQueryBuilder {
 
     @Override
     public IStatement nullScalar() {
@@ -101,6 +101,11 @@ public class QueryBuilder implements IQueryBuilder {
     @Override
     public IQuery query( Class<? extends IEntity> clazz ) {
         return Query.createSelect(clazz);
+    }
+
+    @Override
+    public IQuery countQuery(Class<? extends IEntity> clazz) {
+        return Query.createCountQuery(clazz);
     }
 
     @Override

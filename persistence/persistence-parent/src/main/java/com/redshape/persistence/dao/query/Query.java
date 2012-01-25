@@ -16,7 +16,8 @@ class Query implements IQuery {
         UPDATE,
         REMOVE,
         CREATE,
-        STATIC
+        STATIC,
+        COUNT
     }
 
     private IStatement orderField;
@@ -200,6 +201,11 @@ class Query implements IQuery {
     }
 
     @Override
+    public boolean isCount() {
+        return this.type.equals( Type.COUNT );
+    }
+
+    @Override
     public IQuery setAttributes(Map<String, Object> attributes) {
         this.attributes = new HashMap<String, Object>( attributes );
         return this;
@@ -239,5 +245,9 @@ class Query implements IQuery {
     
     public static IQuery createNative( String name ) {
         return new Query(Type.SELECT, name);
+    }
+    
+    public static IQuery createCountQuery( Class<? extends IEntity> type ) {
+        return new Query(Type.COUNT, type );
     }
 }
