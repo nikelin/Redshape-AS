@@ -105,6 +105,7 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
         return builder;
     }
 
+    @Transactional
     protected IExecutionRequest<T> execute( final IQuery query ) throws DAOException {
         return new ExecutorRequest<T>() {
             @Override
@@ -179,10 +180,12 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
 
     @Override
     public Long count() throws DAOException {
-        return this.service.execute(
+        return Long.valueOf(
+            this.service.execute(
                 this.getBuilder()
                         .countQuery( this.getEntityClass() )
-        ).getSingleValue();
+            ).<Integer>getSingleValue()
+        );
     }
 
 

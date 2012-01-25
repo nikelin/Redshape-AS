@@ -17,6 +17,7 @@ import org.springframework.orm.jpa.support.JpaDaoSupport;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
+import java.math.BigInteger;
 import java.util.*;
 
 /**
@@ -114,9 +115,10 @@ public class JPAExecutorService extends JpaDaoSupport implements IQueryExecutorS
         return new ExecutionResult<T>(value);
     }
     
-    protected int executeCountQuery( IQuery query ) throws DAOException {
-        return this.em.createNativeQuery("select count(*) from " + this.getEntityName(query) )
-                    .getFirstResult();
+    protected Integer executeCountQuery( IQuery query ) throws DAOException {
+        this.em.flush();
+        Query countQuery = this.em.createNativeQuery("select count(id) from " + this.getEntityName(query) );
+        return ( (BigInteger) countQuery.getSingleResult() ).intValue();
     }
 
     protected <T extends IEntity> List<T> executeSelect( IQuery query ) throws DAOException {
@@ -160,7 +162,9 @@ public class JPAExecutorService extends JpaDaoSupport implements IQueryExecutorS
 
     @Transactional
     protected <T extends IEntity> T executeSave( IQuery query ) throws DAOException {
-        return (T) this.em.merge( query.entity() );
+        T result = (T) this.em.merge( query.entity() );
+        this.em.flush();
+        return result;
     }
     
     @Transactional

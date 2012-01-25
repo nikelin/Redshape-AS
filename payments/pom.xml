@@ -8,7 +8,6 @@
   
   <groupId>com.redshape</groupId>
   <artifactId>payments</artifactId>
-  <version>${project.parent.version}</version>
   <name>Redshape - Payments API</name>
   
   <dependencies>

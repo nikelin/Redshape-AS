@@ -13,6 +13,7 @@
     <groupId>com.redshape.persistence</groupId>
     <artifactId>hbase</artifactId>
     <packaging>jar</packaging>
+    <version>${project.parent.version}</version>
 
     <dependencies>
         <dependency>

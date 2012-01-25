@@ -13,6 +13,7 @@
     <groupId>com.redshape.persistence</groupId>
     <artifactId>persistence-parent</artifactId>
     <packaging>jar</packaging>
+    <version>${project.parent.version}</version>
 
     <properties>
         <hibernate-version>3.5.1-Final</hibernate-version>

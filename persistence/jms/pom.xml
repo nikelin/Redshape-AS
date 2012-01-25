@@ -9,11 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <name>Redshape - Persistence - JPA 2.0</name>
     <groupId>com.redshape.persistence</groupId>
-    <packaging>jar</packaging>
-    <version>${project.parent.version}</version>
-    <artifactId>jpa</artifactId>
+    <artifactId>jms</artifactId>
 
     <dependencies>
         <dependency>
@@ -22,6 +19,5 @@
             <version>${project.version}</version>
         </dependency>
     </dependencies>
-
 
 </project>
