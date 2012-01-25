@@ -1,4 +1,4 @@
-package com.redshape.persistence.dao.jpa;
+package com.redshape.persistence.dao;
 
 import com.redshape.persistence.dao.DAOException;
 import com.redshape.persistence.dao.IDAO;
