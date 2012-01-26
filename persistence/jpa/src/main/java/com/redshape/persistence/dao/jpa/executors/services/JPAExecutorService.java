@@ -105,7 +105,10 @@ public class JPAExecutorService extends JpaDaoSupport implements IQueryExecutorS
         if ( this.isUpdateQuery(query) ) {
             value = this.executeUpdate(query);
         } else if ( query.isNative() ) {
-            value = this.executeNamedQuery( query.getEntityClass(), query.getName(), query.getAttributes() );
+            value = this.executeNamedQuery( query.getEntityClass(),
+                    query.getName(), query.getAttributes(),
+                    query.getOffset() > 0 ? query.getOffset() : -1,
+                    query.getLimit() > 0 ? query.getLimit() : -1 );
         } else if ( query.isCount() ) {
             value = this.executeCountQuery(query);
         } else {
@@ -193,25 +196,7 @@ public class JPAExecutorService extends JpaDaoSupport implements IQueryExecutorS
                 || query.isRemove();
     }
 
-    @Override
-    public <T extends IEntity> IExecutorResult<T> executeNamedQuery( Class<? extends IEntity> entityClazz,
-                                                          String queryName,
-                                                          Map<String, Object> params )
-        throws DAOException {
-        return this.executeNamedQuery(entityClazz, queryName, params, -1 );
-    }
-
-    @Override
-    public <T extends IEntity> IExecutorResult<T> executeNamedQuery( Class<? extends IEntity> entityClazz,
-                                                          String queryName,
-                                                          Map<String, Object> params,
-                                                          int offset )
-        throws DAOException {
-        return this.executeNamedQuery(entityClazz, queryName, params, offset, -1 );
-    }
-
-    @Override
-    public <T extends IEntity> IExecutorResult<T> executeNamedQuery( Class<? extends IEntity> entityClazz,
+    protected <T extends IEntity> IExecutorResult<T> executeNamedQuery( Class<? extends IEntity> entityClazz,
                                                           String queryName,
                                                           Map<String, Object> params,
                                                           int offset,

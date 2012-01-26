@@ -5,6 +5,10 @@ import com.redshape.persistence.entities.IEntity;
 
 import java.util.Collection;
 
+/**
+ * @param <T>
+ * @author Cyril A. Karpenko <self@nikelin.ru>
+ */
 public interface IDAO<T extends IEntity> {
     
     public T findById( Long id ) throws DAOException;

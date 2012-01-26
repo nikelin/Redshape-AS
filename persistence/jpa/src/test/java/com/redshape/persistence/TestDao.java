@@ -1,7 +1,7 @@
 package com.redshape.persistence;
 
 import com.redshape.persistence.dao.DAOException;
-import com.redshape.persistence.dao.jpa.AbstractDao;
+import com.redshape.persistence.dao.AbstractDao;
 import com.redshape.persistence.dao.query.IQuery;
 import com.redshape.persistence.dao.query.IQueryBuilder;
 import com.redshape.persistence.dao.query.executors.services.IQueryExecutorService;

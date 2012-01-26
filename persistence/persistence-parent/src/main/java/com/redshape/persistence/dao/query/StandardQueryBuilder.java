@@ -114,6 +114,11 @@ public class StandardQueryBuilder implements IQueryBuilder {
     }
 
     @Override
+    public IQuery staticQuery(Class<? extends IEntity> clazz) {
+        return Query.createStatic(clazz);
+    }
+
+    @Override
     public IQuery nativeQuery(String name) {
         return Query.createNative(name);
     }

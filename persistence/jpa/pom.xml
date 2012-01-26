@@ -12,7 +12,6 @@
     <name>Redshape - Persistence - JPA 2.0</name>
     <groupId>com.redshape.persistence</groupId>
     <packaging>jar</packaging>
-    <version>${project.parent.version}</version>
     <artifactId>jpa</artifactId>
 
     <dependencies>

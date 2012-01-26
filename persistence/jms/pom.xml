@@ -12,11 +12,39 @@
     <groupId>com.redshape.persistence</groupId>
     <artifactId>jms</artifactId>
 
+    <properties>
+        <activemq.version>5.5.0</activemq.version>
+    </properties>
+
     <dependencies>
         <dependency>
-            <artifactId>persistence-parent</artifactId>
+            <artifactId>slf4j-api</artifactId>
+            <groupId>org.slf4j</groupId>
+            <version>1.6.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-core</artifactId>
+            <version>5.5.0</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>jms</artifactId>
+            <groupId>javax.jms</groupId>
+            <version>1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-core</artifactId>
+            <version>${activemq.version}</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>jpa</artifactId>
             <groupId>com.redshape.persistence</groupId>
-            <version>${project.version}</version>
+            <version>3.0.0</version>
         </dependency>
     </dependencies>
 

@@ -2,6 +2,7 @@ package com.redshape.persistence.dao.query.executors;
 
 import com.redshape.persistence.entities.IEntity;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -11,7 +12,7 @@ import java.util.List;
  * Time: 3:51 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface IExecutorResult<T extends IEntity> {
+public interface IExecutorResult<T extends IEntity> extends Serializable {
     
     public <Z> List<Z> getValuesList();
     

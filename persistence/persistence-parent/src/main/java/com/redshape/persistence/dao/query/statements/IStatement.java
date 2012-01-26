@@ -1,5 +1,7 @@
 package com.redshape.persistence.dao.query.statements;
 
-public interface IStatement {
+import java.io.Serializable;
+
+public interface IStatement extends Serializable {
 }
 

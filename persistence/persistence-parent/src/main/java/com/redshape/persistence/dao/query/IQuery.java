@@ -4,6 +4,7 @@ import com.redshape.persistence.dao.query.expressions.IExpression;
 import com.redshape.persistence.dao.query.statements.IStatement;
 import com.redshape.persistence.entities.IEntity;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +13,7 @@ import java.util.Map;
  *
  * @author Cyril A. Karpenko <self@nikelin.ru>
  */
-public interface IQuery {
+public interface IQuery extends Serializable {
 
     public boolean hasAttribute( String name );
 

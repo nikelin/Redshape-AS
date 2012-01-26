@@ -62,8 +62,10 @@ public interface IQueryBuilder {
 
     public IQuery nativeQuery( String name );
 
-    public IQuery updateQuery(Class<? extends IEntity> clazz);
-
+    public IQuery staticQuery( Class<? extends IEntity> clazz );
+    
+    public IQuery updateQuery( Class<? extends IEntity> clazz );
+    
     public IQuery removeQuery( Class<? extends IEntity> clazz );
     
     public IQuery countQuery( Class<? extends IEntity> clazz );

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <import resource="db.conf.xml" />
+
+    <context:component-scan base-package="com.redshape"/>
+
+    <bean id="queryBuilder" class="com.redshape.persistence.dao.query.StandardQueryBuilder"/>
+
+    <bean id="connectionUtil" class="com.redshape.persistence.utils.JMSConnectionUtil"/>
+
+    <bean id="actualExecutor" class="com.redshape.persistence.dao.jpa.executors.services.JPAExecutorService"
+            p:entityManagerFactory-ref="entityManagerFactory"/>
+    
+    <bean id="protocol" class="com.redshape.persistence.protocol.DefaultMarshaller"/>
+    
+    <bean id="servingQueue" class="java.lang.String">
+        <constructor-arg>
+            <value>Service.DAO.JMS.Queue</value>
+        </constructor-arg>
+    </bean>
+
+    <bean id="requestsHandler" class="com.redshape.persistence.jms.RequestsHandlingService"
+          scope="singleton">
+        <constructor-arg type="javax.jms.QueueConnection">
+            <bean class="com.redshape.persistence.utils.JMSConnectionUtil"
+                  factory-method="createConnection"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="actualExecutor"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="queryBuilder"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="protocol"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="servingQueue"/>
+        </constructor-arg>
+    </bean>
+    
+    <bean id="executorService" class="com.redshape.persistence.dao.query.executors.services.JMSExecutorsService">
+        <constructor-arg type="javax.jms.QueueConnection">
+            <bean class="com.redshape.persistence.utils.JMSConnectionUtil"
+                  factory-method="createConnection"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="protocol"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="servingQueue"/>
+        </constructor-arg>
+    </bean>
+    
+    <bean id="testDAO" class="com.redshape.persistence.jms.TestDao">
+        <constructor-arg><ref bean="queryBuilder"/></constructor-arg>
+        <constructor-arg><ref bean="executorService"/></constructor-arg>
+    </bean>
+
+</beans>

@@ -1,7 +1,5 @@
 package com.redshape.persistence.dao;
 
-import com.redshape.persistence.dao.DAOException;
-import com.redshape.persistence.dao.IDAO;
 import com.redshape.persistence.dao.query.IQuery;
 import com.redshape.persistence.dao.query.IQueryBuilder;
 import com.redshape.persistence.dao.query.executors.IExecutionRequest;
@@ -17,11 +15,8 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: nikelin
- * Date: 1/23/12
- * Time: 2:25 PM
- * To change this template use File | Settings | File Templates.
+ * @param <T>
+ * @author Cyril A. Karpenko <self@nikelin.ru>
  */
 public class AbstractDao<T extends IEntity> implements IDAO<T> {
 

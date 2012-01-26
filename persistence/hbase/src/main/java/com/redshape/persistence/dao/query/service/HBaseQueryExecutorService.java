@@ -304,29 +304,12 @@ public class HBaseQueryExecutorService implements IQueryExecutorService {
                 || query.isRemove();
     }
 
-    @Override
-    public <T extends IEntity> IExecutorResult<T> executeNamedQuery( Class<? extends IEntity> entityClazz,
-                                                                     String queryName,
-                                                                     Map<String, Object> params )
-            throws DAOException {
-        return this.executeNamedQuery(entityClazz, queryName, params, -1 );
-    }
-
-    @Override
-    public <T extends IEntity> IExecutorResult<T> executeNamedQuery( Class<? extends IEntity> entityClazz,
-                                                                     String queryName,
-                                                                     Map<String, Object> params,
-                                                                     int offset )
-            throws DAOException {
-        return this.executeNamedQuery(entityClazz, queryName, params, offset, -1 );
-    }
-
-    @Override
-    public <T extends IEntity> IExecutorResult<T> executeNamedQuery( Class<? extends IEntity> entityClazz,
-                                                                     String queryName,
-                                                                     Map<String, Object> params,
-                                                                     int offset,
-                                                                     int limit )
+    protected <T extends IEntity> IExecutorResult<T> executeNamedQuery(
+                                                            Class<? extends IEntity> entityClazz,
+                                                             String queryName,
+                                                             Map<String, Object> params,
+                                                             int offset,
+                                                             int limit )
             throws DAOException {
         IQueryHolder queryHolder = this.getQueryHolder(entityClazz);
         if ( queryHolder == null ) {
@@ -350,7 +333,7 @@ public class HBaseQueryExecutorService implements IQueryExecutorService {
         }
     }
 
-    private Long processPrimaryKey(IEntity entity) throws DAOException, SerializationException {
+    protected Long processPrimaryKey(IEntity entity) throws DAOException, SerializationException {
         try {
             PrimaryKey annotation = entity.getClass().getAnnotation(PrimaryKey.class);
             if (annotation != null) {
