@@ -29,10 +29,94 @@
           p:entityManagerFactory-ref="entityManagerFactory"
           p:dataSource-ref="dataSource"/>
 
+    <bean id="shardConfiguration" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+                <bean class="com.redshape.persistence.shard.util.ShardUtils"
+                      factory-method="createConfiguration">
+                    <constructor-arg>
+                        <value>192.168.0.1</value>
+                    </constructor-arg>
+                    <constructor-arg>
+                        <value>root</value>
+                    </constructor-arg>
+                    <constructor-arg>
+                        <value>1</value>
+                    </constructor-arg>
+                    <constructor-arg>
+                        <value></value>
+                    </constructor-arg>
+                    <constructor-arg>
+                        <value>0</value>
+                    </constructor-arg>
+                    <constructor-arg>
+                        <value>persistence_entities_test</value>
+                    </constructor-arg>
+                    <constructor-arg>
+                        <value>hb0</value>
+                    </constructor-arg>
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="shardIds" class="java.util.ArrayList">
+        <constructor-arg>
+            <bean class="com.redshape.persistence.shard.util.ShardUtils"
+                  factory-method="shardsToIds">
+                <constructor-arg>
+                    <ref bean="shardConfiguration"/>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+    </bean>
+
     <bean id="entityManagerFactory"
           class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
           p:dataSource-ref="dataSource"
-          p:jpaVendorAdapter-ref="vendorAdapter"/>
+          p:jpaVendorAdapter-ref="vendorAdapter">
+        <property name="persistenceProvider">
+            <bean class="com.redshape.persistence.shard.ShardedHibernatePersistence">
+                <constructor-arg>
+                    <ref bean="shardIds"/>
+                </constructor-arg>
+                <constructor-arg>
+                    <bean class="com.redshape.persistence.shard.strategy.DefaultShardStrategyFactory">
+                        <constructor-arg>
+                            <bean class="org.hibernate.shards.strategy.selection.RoundRobinShardSelectionStrategy">
+                                <constructor-arg>
+                                    <bean class="org.hibernate.shards.loadbalance.RoundRobinShardLoadBalancer">
+                                        <constructor-arg>
+                                            <ref bean="shardIds"/>
+                                        </constructor-arg>
+                                    </bean>
+                                </constructor-arg>
+                            </bean>
+                    `    </constructor-arg>
+                        <constructor-arg>
+                            <bean class="org.hibernate.shards.strategy.resolution.AllShardsShardResolutionStrategy">
+                                <constructor-arg>
+                                    <ref bean="shardIds"/>
+                                </constructor-arg>
+                            </bean>
+                        </constructor-arg>
+                        <constructor-arg>
+                            <bean class="org.hibernate.shards.strategy.access.ParallelShardAccessStrategy">
+                                <constructor-arg>
+                                    <bean class="java.util.concurrent.Executors"
+                                          factory-method="newFixedThreadPool">
+                                        <constructor-arg>
+                                            <value>125</value>
+                                        </constructor-arg>
+                                    </bean>
+                                </constructor-arg>
+                            </bean>
+                        </constructor-arg>
+                    </bean>
+                </constructor-arg>
+            </bean>
+        </property>
+    </bean>
 
     <bean id="vendorAdapter"
           class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"

@@ -16,6 +16,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>hibernate</groupId>
+            <artifactId>shards</artifactId>
+            <version>3.0.0B2</version>
+        </dependency>
+        <dependency>
             <artifactId>persistence-parent</artifactId>
             <groupId>com.redshape.persistence</groupId>
             <version>${project.version}</version>

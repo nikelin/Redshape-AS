@@ -36,6 +36,18 @@ public final class Commons {
 	public static <T> T select( T first, T second ) {
 		return first == null ? second : first;
 	}
+    
+    public static void checkArgument( boolean argument ) {
+        if ( argument ) {
+            throw new IllegalArgumentException("<false>");
+        }
+    }
+    
+    public static void checkNotNull( Object x ) {
+        if ( x == null ) {
+            throw new IllegalArgumentException("<null>");
+        }
+    }
 	
 	@SuppressWarnings("unchecked")
 	public static <K, V> Map<K, V> map( List<K> keys, List<V> values ) {
