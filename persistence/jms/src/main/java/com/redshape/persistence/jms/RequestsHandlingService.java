@@ -11,6 +11,8 @@ import javax.jms.*;
 import java.lang.IllegalStateException;
 
 /**
+ * Default DAO requests handling service
+ *
  * @author Cyril A. Karpenko <self@nikelin.ru>
  * @package com.redshape.persistence.jms
  * @date 1/25/12 {3:37 PM}
