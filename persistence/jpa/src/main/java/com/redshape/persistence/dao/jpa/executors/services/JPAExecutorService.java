@@ -1,6 +1,7 @@
 package com.redshape.persistence.dao.jpa.executors.services;
 
 import com.redshape.persistence.dao.DAOException;
+import com.redshape.persistence.dao.ExecutorResult;
 import com.redshape.persistence.dao.annotations.QueryHolder;
 import com.redshape.persistence.dao.jpa.executors.CriteriaExecutor;
 import com.redshape.persistence.dao.query.IQuery;
@@ -10,7 +11,6 @@ import com.redshape.persistence.dao.query.QueryExecutorException;
 import com.redshape.persistence.dao.query.executors.IExecutorResult;
 import com.redshape.persistence.dao.query.executors.services.IQueryExecutorService;
 import com.redshape.persistence.entities.IEntity;
-import com.redshape.utils.Commons;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.orm.jpa.support.JpaDaoSupport;
@@ -29,52 +29,7 @@ import java.util.*;
  */
 public class JPAExecutorService extends JpaDaoSupport implements IQueryExecutorService {
     private static final Logger log = Logger.getLogger(JPAExecutorService.class);
-    
-    public class ExecutionResult<T extends IEntity> implements IExecutorResult<T> {
-        private List<? extends Object> results = new ArrayList<Object>();
-        
-        public ExecutionResult( Object object ) {
-            if ( object == null ) {
-                return;
-            }
-            
-            if ( object instanceof Collection ) {
-                this.results.addAll( (Collection) object );
-            } else {
-                this.results = Commons.list(object);
-            }
-        }
-        
-        public ExecutionResult(List<?> results) {
-            this.results = (List<Object>) results;
-        }
 
-        @Override
-        public <Z> List<Z> getValuesList() {
-            return (List<Z>) this.results;
-        }
-
-        @Override
-        public <Z> Z getSingleValue() {
-            return (Z) Commons.firstOrNull(this.results);
-        }
-
-        @Override
-        public List<T> getResultsList() {
-            return (List<T>) this.results;
-        }
-
-        @Override
-        public T getSingleResult() {
-            return (T) Commons.firstOrNull( this.results );
-        }
-
-        @Override
-        public int count() {
-            return this.results.size();
-        }
-    }
-    
     @PersistenceContext( name = "persistenceManager", type = PersistenceContextType.TRANSACTION )
     protected EntityManager em;
 
@@ -101,7 +56,7 @@ public class JPAExecutorService extends JpaDaoSupport implements IQueryExecutorS
     @Override
     @Transactional
     public <T extends IEntity> IExecutorResult<T> execute(IQuery query) throws DAOException {
-        Object value = null;
+        Object value;
         if ( this.isUpdateQuery(query) ) {
             value = this.executeUpdate(query);
         } else if ( query.isNative() ) {
@@ -115,7 +70,7 @@ public class JPAExecutorService extends JpaDaoSupport implements IQueryExecutorS
             value = this.executeSelect(query);
         }
         
-        return new ExecutionResult<T>(value);
+        return new ExecutorResult(value);
     }
     
     protected Integer executeCountQuery( IQuery query ) throws DAOException {
@@ -229,7 +184,7 @@ public class JPAExecutorService extends JpaDaoSupport implements IQueryExecutorS
             query.setFirstResult(offset);
         }
 
-        return new ExecutionResult<T>( query.getResultList() );
+        return new ExecutorResult( query.getResultList() );
     }
 
     protected IQueryHolder getQueryHolder( Class<? extends IEntity> entityClazz ) throws DAOException {

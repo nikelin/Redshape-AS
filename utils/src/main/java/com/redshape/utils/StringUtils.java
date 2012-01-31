@@ -16,10 +16,19 @@ import java.util.regex.Pattern;
 
 @SuppressWarnings("restriction")
 public class StringUtils {
+    
     public static List<String> camelCaseDelimiters = Arrays.asList( "_", "-" );
 	private static final String RANDOM_STRING_SOURCE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 	private static final String ESCAPE_SYMBOL = "\\";
 
+    public static String preparePathByClass( Class<?> clazz ) {
+        return preparePathByClass( clazz.getCanonicalName() );
+    }
+    
+    public static String preparePathByClass( String className ) {
+        return className.replaceAll(Pattern.quote("."), "\\" + File.separator ) + ".class";
+    }
+    
 	public static String[] chunks( String source, int chunkSize ) {
 		int leastLength = source.length();
 		float chunksCount = leastLength / chunkSize;

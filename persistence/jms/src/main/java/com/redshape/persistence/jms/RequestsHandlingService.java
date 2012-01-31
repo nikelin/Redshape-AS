@@ -76,9 +76,13 @@ public class RequestsHandlingService implements IRequestHandlingService {
         try {
             this.connection.start();
             this.session = this.getConnection().createQueueSession(true, Session.AUTO_ACKNOWLEDGE);
+            if ( this.session == null ) {
+                throw new DAOException("Session initialization failed");
+            }
+
             Queue queue = session.createQueue( this.getQueueName() );
             this.consumer = session.createConsumer(queue);
-            session.run();
+            this.session.run();
         } catch ( JMSException e ) {
             throw new DAOException("Queue consumer creating failed", e );
         }
@@ -106,13 +110,21 @@ public class RequestsHandlingService implements IRequestHandlingService {
     protected Message processRequest( Message message ) throws DAOException {
         try {
             return this.getProtocol().marshal(
-                message,
+                this.session.createObjectMessage(),
                 this.getExecutionService().execute(
                     this.getProtocol().unmarshalQuery( this.getBuilder() , message)
                 )
             );
         } catch ( ProtocolException e ) {
             throw new DAOException("Failed to marshal/unmarshal message!", e );
+        } catch ( JMSException e ) {
+            throw new DAOException("JMS interaction failed", e );
+        } finally {
+            try {
+                message.setJMSRedelivered(false);
+            } catch ( JMSException e ) {
+                log.error( e.getMessage(), e );
+            }
         }
     }
     

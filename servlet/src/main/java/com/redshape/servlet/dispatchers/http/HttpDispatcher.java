@@ -210,6 +210,10 @@ public class HttpDispatcher implements IHttpDispatcher {
                 return;
         	}
 
+            if ( this.getFront().getLayout().getDispatchAction() != null ) {
+                this.getFront().getLayout().getDispatchAction().process();
+            }
+
             IView view = this.getView(request);
             view.reset( ResetMode.TRANSIENT );
 

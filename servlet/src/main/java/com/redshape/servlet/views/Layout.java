@@ -1,5 +1,7 @@
 package com.redshape.servlet.views;
 
+import com.redshape.servlet.core.controllers.IAction;
+
 /**
  * Created by IntelliJ IDEA.
  * User: nikelin
@@ -9,9 +11,22 @@ package com.redshape.servlet.views;
  */
 public class Layout extends AbstractView implements ILayout {
     private IView content;
+    
+    private IAction dispatchAction;
 
     public Layout( String basePath, String viewPath, String extension ) {
+        this(null, basePath, viewPath, extension);
+    }
+
+    public Layout( IAction dispatchAction, String basePath, String viewPath, String extension ) {
         super(basePath, viewPath, extension);
+        
+        this.dispatchAction = dispatchAction;
+    }
+
+    @Override
+    public IAction getDispatchAction() {
+        return this.dispatchAction;
     }
 
     public void setContent( IView content ) {

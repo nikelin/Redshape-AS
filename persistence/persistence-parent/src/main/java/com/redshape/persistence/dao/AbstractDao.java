@@ -20,9 +20,24 @@ import java.util.List;
  */
 public class AbstractDao<T extends IEntity> implements IDAO<T> {
 
-    protected abstract class ExecutorRequest<Z extends IEntity> implements IExecutionRequest<Z> {
+    protected class ExecutorRequest<Z extends IEntity> implements IExecutionRequest<Z> {
         private int offset;
         private int limit;
+        
+        private IQueryExecutorService service;
+        private IQuery query;
+        
+        public ExecutorRequest( IQueryExecutorService service, IQuery query ) {
+            this.service = service;
+            this.query = query;
+        }
+
+        public List<Z> list() throws DAOException {
+            query.setOffset( Commons.select(query.getOffset(), this.offset()) );
+            query.setLimit( Commons.select(query.getLimit(), this.limit()) );
+
+            return (List<Z>) AbstractDao.this.service.execute(query).getResultsList();
+        }
 
         protected int offset() {
             return this.offset;
@@ -102,15 +117,7 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
 
     @Transactional
     protected IExecutionRequest<T> execute( final IQuery query ) throws DAOException {
-        return new ExecutorRequest<T>() {
-            @Override
-            public List<T> list() throws DAOException {
-                query.setOffset( Commons.select(query.getOffset(), this.offset()) );
-                query.setLimit( Commons.select(query.getLimit(), this.limit()) );
-
-                return (List<T>) AbstractDao.this.service.execute(query);
-            }
-        };
+        return new ExecutorRequest<T>(this.service, query);
     }
 
     @Override
@@ -201,18 +208,9 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
 
     @Override
     public IExecutionRequest<T> findAll() throws DAOException {
-        final IQuery query = this.getBuilder().query(this.getEntityClass());
-
-        return new ExecutorRequest<T>() {
-            @Override
-            public List<T> list() throws DAOException {
-                query.setOffset( this.offset() );
-                query.setLimit( this.limit() );
-
-                return AbstractDao.this.getService()
-                        .<T>execute(query)
-                        .getResultsList();
-            }
-        };
+        return new ExecutorRequest<T>(
+            this.getService(),
+            this.getBuilder().query(this.getEntityClass())
+        );
     }
 }

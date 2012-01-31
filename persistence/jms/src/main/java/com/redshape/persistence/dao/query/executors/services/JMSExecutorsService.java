@@ -93,7 +93,7 @@ public class JMSExecutorsService implements IQueryExecutorService {
             throw new DAOException( "Unable to start messages consuming thread", e );
         }
     }
-
+    
     @Override
     public <T extends IEntity> IExecutorResult<T> execute(IQuery query) throws DAOException {
         try {

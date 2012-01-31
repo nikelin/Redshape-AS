@@ -23,6 +23,8 @@ public interface IScriptExecutor {
 
 	public String execute() throws IOException;
 
+    public ISystemProcess spawn() throws IOException;
+
 	public String getExecCommand();
 
 	public IScriptExecutor addUnnamedParameter( Object value );

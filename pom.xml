@@ -28,6 +28,7 @@
         <module>shaper</module>
         <module>plugins</module>
         <module>ascript</module>
+        <module>forker</module>
     </modules>
 
     <repositories>

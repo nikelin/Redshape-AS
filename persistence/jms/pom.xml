@@ -9,6 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <name>Redshape - Persistence - JMS DAO Broker</name>
     <groupId>com.redshape.persistence</groupId>
     <artifactId>jms</artifactId>
 
@@ -44,7 +45,7 @@
         <dependency>
             <artifactId>jpa</artifactId>
             <groupId>com.redshape.persistence</groupId>
-            <version>3.0.0</version>
+            <version>${as.version}</version>
         </dependency>
     </dependencies>
 
