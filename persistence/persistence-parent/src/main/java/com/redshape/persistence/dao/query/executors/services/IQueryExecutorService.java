@@ -2,7 +2,8 @@ package com.redshape.persistence.dao.query.executors.services;
 
 import com.redshape.persistence.dao.DAOException;
 import com.redshape.persistence.dao.query.IQuery;
-import com.redshape.persistence.dao.query.executors.IExecutorResult;
+import com.redshape.persistence.dao.query.executors.result.IExecutorResult;
+import com.redshape.persistence.dao.query.executors.result.IExecutorResultFactory;
 import com.redshape.persistence.entities.IEntity;
 
 /**
@@ -13,6 +14,8 @@ import com.redshape.persistence.entities.IEntity;
  * To change this template use File | Settings | File Templates.
  */
 public interface IQueryExecutorService {
+
+    public void setResultObjectsFactory( IExecutorResultFactory factory );
 
     public <T extends IEntity> IExecutorResult<T> execute( IQuery query ) throws DAOException;
 

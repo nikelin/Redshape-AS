@@ -15,7 +15,7 @@ import javax.persistence.MappedSuperclass;
  * To change this template use File | Settings | File Templates.
  */
 @MappedSuperclass
-public class AbstractPayableEntity<V extends ICurrencyAmount<V, ?>> 
+public abstract class AbstractPayableEntity<V extends ICurrencyAmount<V, ?>>
 						extends AbstractEntity 
 						implements IPayable<V> {
 	private static final long serialVersionUID = -111976587910694505L;

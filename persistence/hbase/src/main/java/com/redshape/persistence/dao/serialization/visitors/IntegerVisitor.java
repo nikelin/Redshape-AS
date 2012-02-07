@@ -25,7 +25,7 @@ public class IntegerVisitor extends AbstractSerializerVisitor {
     }
 
     @Override
-    public Class getEntityType() {
+    public Class<?> getEntityType() {
         return Integer.class;
     }
 }

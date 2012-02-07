@@ -42,10 +42,14 @@ public final class Commons {
             throw new IllegalArgumentException("<false>");
         }
     }
-    
+
     public static void checkNotNull( Object x ) {
+        checkNotNull(x, "<null>");
+    }
+    
+    public static void checkNotNull( Object x, String assertMessage ) {
         if ( x == null ) {
-            throw new IllegalArgumentException("<null>");
+            throw new IllegalArgumentException(assertMessage);
         }
     }
 	

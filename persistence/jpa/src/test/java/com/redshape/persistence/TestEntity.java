@@ -1,6 +1,7 @@
 package com.redshape.persistence;
 
 import com.redshape.persistence.entities.AbstractEntity;
+import com.redshape.persistence.entities.IDTO;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
@@ -25,4 +26,10 @@ public class TestEntity extends AbstractEntity {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public IDTO createDTO() {
+        return null;
+    }
+
 }

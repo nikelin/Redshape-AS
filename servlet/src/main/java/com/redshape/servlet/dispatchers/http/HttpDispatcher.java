@@ -12,10 +12,7 @@ import com.redshape.servlet.core.controllers.ProcessingException;
 import com.redshape.servlet.core.controllers.registry.IControllersRegistry;
 import com.redshape.servlet.dispatchers.DispatchException;
 import com.redshape.servlet.dispatchers.interceptors.IDispatcherInterceptor;
-import com.redshape.servlet.views.IView;
-import com.redshape.servlet.views.IViewsFactory;
-import com.redshape.servlet.views.ResetMode;
-import com.redshape.servlet.views.ViewHelper;
+import com.redshape.servlet.views.*;
 import com.redshape.utils.Commons;
 import com.redshape.utils.ResourcesLoader;
 import org.apache.log4j.Logger;
@@ -210,12 +207,14 @@ public class HttpDispatcher implements IHttpDispatcher {
                 return;
         	}
 
-            if ( this.getFront().getLayout().getDispatchAction() != null ) {
-                this.getFront().getLayout().getDispatchAction().process();
-            }
-
             IView view = this.getView(request);
             view.reset( ResetMode.TRANSIENT );
+
+            ILayout layoutView = this.getFront().getLayout();
+            if ( layoutView.getDispatchAction() != null ) {
+                layoutView.getDispatchAction().setView(view);
+                layoutView.getDispatchAction().process();
+            }
 
         	String controllerName = Commons.select( request.getController(), "index" );
 			if ( controllerName.isEmpty() ) {

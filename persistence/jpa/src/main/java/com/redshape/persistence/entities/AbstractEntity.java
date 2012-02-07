@@ -3,30 +3,18 @@ package com.redshape.persistence.entities;
 import org.apache.log4j.Logger;
 
 import javax.persistence.*;
-import java.lang.reflect.Field;
 
 /**
  * @author nikelin
  */
 @MappedSuperclass
 @PersistenceContext( type = PersistenceContextType.EXTENDED )
-public abstract class AbstractEntity implements IEntity {
+public abstract class AbstractEntity<T extends IDTO> implements IEntity, IDtoCapable<T> {
     private static final long serialVersionUID = 4734062738612714789L;
     private static final Logger log = Logger.getLogger( AbstractEntity.class );
 
     @Id @GeneratedValue( strategy = GenerationType.AUTO )
     private Long id;
-
-    @Transient
-    private Integer entityLockVersion = 0;
-
-    public Integer getEntityLockVersion() {
-        return this.entityLockVersion;
-    }
-
-    public void setEntityLockVersion( Integer version ) {
-        this.entityLockVersion = version;
-    }
 
     @Override
     public Long getId() {
@@ -56,7 +44,6 @@ public abstract class AbstractEntity implements IEntity {
         try {
             return (Boolean) this.getClass().getMethod("equals", o.getClass() ).invoke( this, o );
         } catch ( Throwable e ) {
-            log.info( e.getMessage() );
             return super.equals( o );
         }
     }
@@ -65,11 +52,13 @@ public abstract class AbstractEntity implements IEntity {
         return this.getId() != null && e.getId() != null && this.getId().equals( e.getId() );
     }
 
-
-    protected boolean isCollectionMember( Field field ) {
-    	return field.getAnnotation( ManyToOne.class ) != null
-    			|| field.getAnnotation( OneToOne.class ) != null
-    				|| field.getAnnotation( ManyToMany.class ) != null;
+    @Override
+    public T toDTO() {
+        return DtoUtils.toDTO( this );
     }
-    
+
+    @Override
+    public boolean isDto() {
+        return false;
+    }
 }

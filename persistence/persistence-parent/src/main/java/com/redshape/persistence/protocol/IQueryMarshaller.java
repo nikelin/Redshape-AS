@@ -2,7 +2,7 @@ package com.redshape.persistence.protocol;
 
 import com.redshape.persistence.dao.query.IQuery;
 import com.redshape.persistence.dao.query.IQueryBuilder;
-import com.redshape.persistence.dao.query.executors.IExecutorResult;
+import com.redshape.persistence.dao.query.executors.result.IExecutorResult;
 import com.redshape.persistence.entities.IEntity;
 
 import javax.jms.Message;

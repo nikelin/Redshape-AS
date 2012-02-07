@@ -2,7 +2,8 @@ package com.redshape.persistence.dao.query.executors.services;
 
 import com.redshape.persistence.dao.DAOException;
 import com.redshape.persistence.dao.query.IQuery;
-import com.redshape.persistence.dao.query.executors.IExecutorResult;
+import com.redshape.persistence.dao.query.executors.result.IExecutorResult;
+import com.redshape.persistence.dao.query.executors.result.IExecutorResultFactory;
 import com.redshape.persistence.entities.IEntity;
 import com.redshape.persistence.protocol.IQueryMarshaller;
 import com.redshape.persistence.protocol.ProtocolException;
@@ -32,7 +33,7 @@ public class JMSExecutorsService implements IQueryExecutorService {
     
     private Object sendingLock = new Object();
     
-    private int timeout = Constants.TIME_SECOND * 15;
+    private int timeout = Constants.TIME_SECOND * 1;
 
     public JMSExecutorsService( QueueConnection connection,
                                 IQueryMarshaller marshaller,
@@ -44,7 +45,12 @@ public class JMSExecutorsService implements IQueryExecutorService {
         this.checkFields();
         this.init();
     }
-    
+
+    @Override
+    public void setResultObjectsFactory(IExecutorResultFactory factory) {
+        throw new UnsupportedOperationException();
+    }
+
     protected int getTimeout() {
         return this.timeout;
     }
@@ -73,7 +79,7 @@ public class JMSExecutorsService implements IQueryExecutorService {
 
     protected void init() throws DAOException {
         try {
-            this.session = this.connection.createQueueSession(true, Session.AUTO_ACKNOWLEDGE);
+            this.session = this.connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
             this.session.run();
         } catch ( JMSException e ) {
             throw new DAOException("Unable to establish JMS session through provided connection");
@@ -98,16 +104,19 @@ public class JMSExecutorsService implements IQueryExecutorService {
     public <T extends IEntity> IExecutorResult<T> execute(IQuery query) throws DAOException {
         try {
             synchronized (this.sendingLock) {
-                Message message = this.getProtocol().marshal(this.session.createObjectMessage(), query);
+                this.session.run();
+                Message message = this.session.createObjectMessage();
                 message.setJMSReplyTo( this.destination );
+                this.getProtocol().marshal(message, query);
+
                 this.producer.send( this.destinationQueueAddr, message );
-                this.session.commit();
                 
                 Message respond = this.consumer.receive( this.getTimeout() );
                 if ( respond == null ) {
                     throw new DAOException("Request processing failed!");
                 }
 
+                respond.acknowledge();
 
                 return this.getProtocol().unmarshalResult( respond );
             }

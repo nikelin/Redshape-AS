@@ -1,4 +1,4 @@
-package com.redshape.persistence.dao.query.executors;
+package com.redshape.persistence.dao.query.executors.result;
 
 import com.redshape.persistence.entities.IEntity;
 

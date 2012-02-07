@@ -53,7 +53,22 @@ public class BashScriptExecutor implements IScriptExecutor {
 		}
 	}
 
-	@Override
+    @Override
+    public ISystemProcess spawn() throws IOException {
+        this.process = new SystemProcess(
+            Runtime.getRuntime().exec( this.getExecCommand().toString() )
+        );
+
+        try {
+            this.process.waitFor();
+        } catch (InterruptedException e) {
+            log.error( e.getMessage(), e );
+        }
+
+        return this.process;
+    }
+
+    @Override
 	public synchronized String execute(ISystemProcess process) throws IOException {
 		this.proceedResult(process);
 
@@ -82,18 +97,7 @@ public class BashScriptExecutor implements IScriptExecutor {
 
 	@Override
 	public synchronized String execute() throws IOException {
-		String command = this.getExecCommand().toString();
-		log.info(command);
-
-		this.process = new SystemProcess(
-			Runtime.getRuntime().exec( command )
-		);
-
-		try {
-			this.process.waitFor();
-		} catch (InterruptedException e) {
-            log.error( e.getMessage(), e );
-        }
+		this.process = this.spawn();
 
 		this.proceedResult(this.process);
 

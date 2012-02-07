@@ -1,16 +1,18 @@
 package com.redshape.persistence.dao.jpa.executors.services;
 
 import com.redshape.persistence.dao.DAOException;
-import com.redshape.persistence.dao.ExecutorResult;
 import com.redshape.persistence.dao.annotations.QueryHolder;
 import com.redshape.persistence.dao.jpa.executors.CriteriaExecutor;
 import com.redshape.persistence.dao.query.IQuery;
 import com.redshape.persistence.dao.query.IQueryHolder;
 import com.redshape.persistence.dao.query.QueryBuilderException;
 import com.redshape.persistence.dao.query.QueryExecutorException;
-import com.redshape.persistence.dao.query.executors.IExecutorResult;
+import com.redshape.persistence.dao.query.executors.result.IExecutorResult;
+import com.redshape.persistence.dao.query.executors.result.IExecutorResultFactory;
+import com.redshape.persistence.dao.query.executors.result.StandardExecutorResultFactory;
 import com.redshape.persistence.dao.query.executors.services.IQueryExecutorService;
 import com.redshape.persistence.entities.IEntity;
+import com.redshape.utils.Commons;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.orm.jpa.support.JpaDaoSupport;
@@ -18,7 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,9 +39,24 @@ public class JPAExecutorService extends JpaDaoSupport implements IQueryExecutorS
     protected EntityManager em;
 
     private Map<Class<? extends IEntity>, IQueryHolder> queryHolders = new HashMap<Class<? extends IEntity>, IQueryHolder>();
+    private IExecutorResultFactory resultsFactory;
 
     public JPAExecutorService() {
-        this( new HashMap<Class<? extends IEntity>, IQueryHolder>() );
+        this( new StandardExecutorResultFactory() );
+    }
+
+    public JPAExecutorService(IExecutorResultFactory factory) {
+        this( factory, new HashMap<Class<? extends IEntity>, IQueryHolder>() );
+    }
+
+    public JPAExecutorService( IExecutorResultFactory factory,
+                               Map<Class<? extends IEntity>,IQueryHolder> queryHolders) {
+        super();
+
+        Commons.checkNotNull(factory);
+        
+        this.resultsFactory = factory;
+        this.queryHolders = queryHolders;
     }
 
     public EntityManager getEm() {
@@ -47,10 +67,13 @@ public class JPAExecutorService extends JpaDaoSupport implements IQueryExecutorS
         this.em = em;
     }
 
-    public JPAExecutorService(Map<Class<? extends IEntity>, IQueryHolder> queryHolders) {
-        super();
+    protected IExecutorResultFactory getResultObjectsFactory() {
+        return this.resultsFactory;
+    }
 
-        this.queryHolders = queryHolders;
+    @Override
+    public void setResultObjectsFactory(IExecutorResultFactory factory) {
+        this.resultsFactory = factory;
     }
 
     @Override
@@ -70,7 +93,7 @@ public class JPAExecutorService extends JpaDaoSupport implements IQueryExecutorS
             value = this.executeSelect(query);
         }
         
-        return new ExecutorResult(value);
+        return this.getResultObjectsFactory().createResult(value);
     }
     
     protected Integer executeCountQuery( IQuery query ) throws DAOException {
@@ -184,7 +207,7 @@ public class JPAExecutorService extends JpaDaoSupport implements IQueryExecutorS
             query.setFirstResult(offset);
         }
 
-        return new ExecutorResult( query.getResultList() );
+        return this.getResultObjectsFactory().createResult(query.getResultList());
     }
 
     protected IQueryHolder getQueryHolder( Class<? extends IEntity> entityClazz ) throws DAOException {

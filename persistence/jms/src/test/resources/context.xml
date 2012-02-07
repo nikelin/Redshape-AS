@@ -16,7 +16,11 @@
     <bean id="connectionUtil" class="com.redshape.persistence.utils.JMSConnectionUtil"/>
 
     <bean id="actualExecutor" class="com.redshape.persistence.dao.jpa.executors.services.JPAExecutorService"
-            p:entityManagerFactory-ref="entityManagerFactory"/>
+            p:entityManagerFactory-ref="entityManagerFactory">
+        <constructor-arg>
+            <bean class="com.redshape.persistence.dao.query.executors.result.DTOExecutorResultFactory"/>
+        </constructor-arg>
+    </bean>
     
     <bean id="protocol" class="com.redshape.persistence.protocol.DefaultMarshaller"/>
     

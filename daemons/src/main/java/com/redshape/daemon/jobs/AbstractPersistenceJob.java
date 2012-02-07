@@ -1,7 +1,11 @@
 package com.redshape.daemon.jobs;
 
-import com.redshape.persistence.entities.IEntity;
+import com.redshape.persistence.entities.AbstractDTO;
+import com.redshape.persistence.entities.DtoUtils;
+import com.redshape.persistence.entities.IDTO;
+import com.redshape.persistence.entities.IDtoCapable;
 import com.redshape.utils.Commons;
+import org.apache.log4j.Logger;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -15,7 +19,90 @@ import java.util.UUID;
  * To change this template use File | Settings | File Templates.
  */
 @MappedSuperclass
-public abstract class AbstractPersistenceJob implements IPersistenceJob, IEntity {
+public abstract class AbstractPersistenceJob<T extends IDTO> implements IPersistenceJob, IDtoCapable<T> {
+    private static final Logger log = Logger.getLogger(AbstractPersistenceJob.class);
+    
+    public static class DTO extends AbstractDTO implements IPersistenceJob {
+        private Long id;
+        private UUID jobId;
+        private JobStatus state;
+        private Integer failuresCount;
+        private Date created;
+        private Date updated;
+        private Date processedDate;
+
+        protected DTO( Class<? extends IPersistenceJob> clazz ) {
+            super(clazz);
+        }
+        
+        @Override
+        public Long getId() {
+            return this.id;
+        }
+        
+        @Override
+        public void setId( Long id ) {
+            this.id = id;
+        }
+
+        @Override
+        public JobStatus getState() {
+            return state;
+        }
+
+        @Override
+        public void setState(JobStatus state) {
+            this.state = state;
+        }
+
+        @Override
+        public Date getUpdated() {
+            return updated;
+        }
+
+        public void setUpdated(Date updated) {
+            this.updated = updated;
+        }
+
+        @Override
+        public void increaseFailuresCount() {
+            this.failuresCount = this.getFailuresCount() + 1;
+        }
+
+        @Override
+        public Integer getFailuresCount() {
+            return Commons.select( failuresCount, 0 );
+        }
+
+        public void setFailuresCount(Integer failuresCount) {
+            this.failuresCount = failuresCount;
+        }
+
+        @Override
+        public UUID getJobId() {
+            return this.jobId;
+        }
+
+        @Override
+        public void setJobId(UUID id) {
+            this.jobId = id;
+        }
+
+        @Override
+        public Date getCreated() {
+            return this.created;
+        }
+
+        public Date getProcessedDate() {
+            return processedDate;
+        }
+
+        public void setProcessedDate(Date processedDate) {
+            this.processedDate = processedDate;
+        }
+
+    }
+    
     @Basic
     private UUID jobId;
 
@@ -94,5 +181,15 @@ public abstract class AbstractPersistenceJob implements IPersistenceJob, IEntity
 
     public void setProcessedDate(Date processedDate) {
         this.processedDate = processedDate;
+    }
+
+    @Override
+    public boolean isDto() {
+        return false;
+    }
+
+    @Override
+    public T toDTO() {
+        return DtoUtils.toDTO(this);
     }
 }

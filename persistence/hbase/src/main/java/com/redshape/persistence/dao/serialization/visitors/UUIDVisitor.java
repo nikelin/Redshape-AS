@@ -25,7 +25,7 @@ public class UUIDVisitor extends AbstractSerializerVisitor {
     }
 
     @Override
-    public Class getEntityType() {
+    public Class<?> getEntityType() {
         return UUID.class;
     }
 }

@@ -27,7 +27,7 @@ public interface IDAO<T extends IEntity> {
 
     public Long count() throws DAOException;
 
-    public Class<T> getEntityClass();
+    public Class<? extends T> getEntityClass();
 
 }
 

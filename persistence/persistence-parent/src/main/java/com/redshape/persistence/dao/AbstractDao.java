@@ -79,9 +79,9 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
 
     private IQueryExecutorService service;
 
-    protected Class<T> entityClass;
+    protected Class<? extends T> entityClass;
 
-    protected AbstractDao(Class<T> entityClass, IQueryExecutorService executor, IQueryBuilder builder) {
+    protected AbstractDao(Class<? extends T> entityClass, IQueryExecutorService executor, IQueryBuilder builder) {
         this.entityClass = entityClass;
         this.service = executor;
         this.builder = builder;
@@ -103,7 +103,7 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
     }
 
     @Override
-    public Class<T> getEntityClass() {
+    public Class<? extends T> getEntityClass() {
         return this.entityClass;
     }
 

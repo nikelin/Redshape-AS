@@ -30,7 +30,7 @@ public class LongVisitor extends AbstractSerializerVisitor<Long> {
     }
 
     @Override
-    public Class getEntityType() {
+    public Class<?> getEntityType() {
         return Long.class;
     }
 }

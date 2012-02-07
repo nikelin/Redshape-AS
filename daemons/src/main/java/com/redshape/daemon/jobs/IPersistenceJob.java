@@ -1,5 +1,6 @@
 package com.redshape.daemon.jobs;
 
+import com.redshape.persistence.entities.IDtoCapable;
 import com.redshape.persistence.entities.IEntity;
 
 /**

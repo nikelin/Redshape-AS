@@ -1,5 +1,6 @@
 package com.redshape.projectshost.payments.entities.payment.impl;
 
+import com.redshape.persistence.entities.IDTO;
 import com.redshape.projectshost.payments.ICurrencyAmount;
 import com.redshape.persistence.entities.AbstractEntity;
 import com.redshape.utils.CompareResult;
@@ -66,6 +67,11 @@ public class CreditsAmount extends AbstractEntity
                     ( amount.isNull() ? CompareResult.NULL :
                         ( amount.amount > this.amount ? CompareResult.GREATER :
                             CompareResult.LESS ) ) );
+    }
+
+    @Override
+    public IDTO createDTO() {
+        return null;
     }
 
 }

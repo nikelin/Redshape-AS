@@ -26,7 +26,7 @@ public class DateVisitor extends AbstractSerializerVisitor {
     }
 
     @Override
-    public Class getEntityType() {
+    public Class<?> getEntityType() {
         return Date.class;
     }
 }

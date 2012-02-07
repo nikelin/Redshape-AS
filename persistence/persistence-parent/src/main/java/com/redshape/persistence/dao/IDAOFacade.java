@@ -12,6 +12,6 @@ import org.springframework.context.ApplicationContextAware;
  */
 public interface IDAOFacade extends ApplicationContextAware {
 
-	public <V extends IEntity, T extends IDAO<V>> T getDAO( Class<V> clazz );
+	public <V extends IEntity, T extends IDAO<V>> T getDAO( Class<? extends V> clazz );
 
 }

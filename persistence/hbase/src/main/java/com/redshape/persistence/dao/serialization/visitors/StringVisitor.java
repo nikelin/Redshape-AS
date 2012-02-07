@@ -29,7 +29,7 @@ public class StringVisitor extends AbstractSerializerVisitor {
     }
 
     @Override
-    public Class getEntityType() {
+    public Class<?> getEntityType() {
         return String.class;
     }
 }

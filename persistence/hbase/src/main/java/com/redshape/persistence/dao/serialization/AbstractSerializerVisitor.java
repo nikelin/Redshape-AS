@@ -14,5 +14,5 @@ public abstract class AbstractSerializerVisitor<T> {
 
     public abstract T deserialize(byte[] value);
 
-    public abstract Class getEntityType();
+    public abstract Class<?> getEntityType();
 }

@@ -4,7 +4,8 @@ import com.redshape.persistence.dao.*;
 import com.redshape.persistence.dao.annotations.PrimaryKey;
 import com.redshape.persistence.dao.annotations.QueryHolder;
 import com.redshape.persistence.dao.query.*;
-import com.redshape.persistence.dao.query.executors.IExecutorResult;
+import com.redshape.persistence.dao.query.executors.result.IExecutorResult;
+import com.redshape.persistence.dao.query.executors.result.IExecutorResultFactory;
 import com.redshape.persistence.dao.query.executors.services.IQueryExecutorService;
 import com.redshape.persistence.dao.utils.IHBaseCountingManager;
 import com.redshape.persistence.dao.utils.IHBaseTableManager;
@@ -34,51 +35,6 @@ public class HBaseQueryExecutorService implements IQueryExecutorService {
     
     public static final String COLUMNS_FAMILY_ID = "columns_family_id";
     public static final String SERIALIZED_OBJECT_FIELD_ID = "serialized_object_data";
-    
-    public class ExecutionResult<T extends IEntity> implements IExecutorResult<T> {
-        private List<? extends Object> results = new ArrayList<Object>();
-
-        public ExecutionResult( Object object ) {
-            if ( object == null ) {
-                return;
-            }
-
-            if ( object instanceof Collection ) {
-                this.results.addAll( (Collection) object );
-            } else {
-                this.results = Commons.list(object);
-            }
-        }
-
-        public ExecutionResult(List<?> results) {
-            this.results = (List<Object>) results;
-        }
-
-        @Override
-        public <Z> List<Z> getValuesList() {
-            return (List<Z>) this.results;
-        }
-
-        @Override
-        public <Z> Z getSingleValue() {
-            return (Z) Commons.firstOrNull(this.results);
-        }
-
-        @Override
-        public List<T> getResultsList() {
-            return (List<T>) this.results;
-        }
-
-        @Override
-        public T getSingleResult() {
-            return (T) Commons.firstOrNull( this.results );
-        }
-
-        @Override
-        public int count() {
-            return this.results.size();
-        }
-    }
 
     private static final Logger log = Logger.getLogger(HBaseQueryExecutorService.class);
 
@@ -92,14 +48,26 @@ public class HBaseQueryExecutorService implements IQueryExecutorService {
     private IIndexBuilder indexBuilder;
     private ISerializer entitySerializer;
     private ISerializer fieldsSerializer;
+    private IExecutorResultFactory resultObjectsFactory;
 
     public HBaseQueryExecutorService( IHBaseTableManager tablesManager,
                                       IHBaseCountingManager countingManager,
                                       ISerializer entitiesSerializer,
                                       ISerializer fieldsSerializer,
                                       IIndexBuilder indexBuilder )
+        throws SerializationException {
+        this(null, tablesManager, countingManager, entitiesSerializer, fieldsSerializer, indexBuilder );
+    }
+
+    public HBaseQueryExecutorService( IExecutorResultFactory resultsFactory,
+                                      IHBaseTableManager tablesManager,
+                                      IHBaseCountingManager countingManager,
+                                      ISerializer entitiesSerializer,
+                                      ISerializer fieldsSerializer,
+                                      IIndexBuilder indexBuilder )
             throws SerializationException {
         this.tablesManager = tablesManager;
+        this.resultObjectsFactory = resultsFactory;
         this.countingManager = countingManager;
         this.entitySerializer = entitiesSerializer;
         this.fieldsSerializer = fieldsSerializer;
@@ -167,6 +135,15 @@ public class HBaseQueryExecutorService implements IQueryExecutorService {
         return this.columnsFamily;
     }
 
+    protected IExecutorResultFactory getResultObjectsFactory() {
+        return this.resultObjectsFactory;
+    }
+
+    @Override
+    public void setResultObjectsFactory(IExecutorResultFactory factory) {
+        this.resultObjectsFactory = factory;
+    }
+
     @Override
     @Transactional
     public <T extends IEntity> IExecutorResult<T> execute(IQuery query) throws DAOException {
@@ -190,7 +167,7 @@ public class HBaseQueryExecutorService implements IQueryExecutorService {
                 }
             }
 
-            return new ExecutionResult<T>(value);
+            return this.getResultObjectsFactory().createResult(value);
         } catch ( QueryExecutorException e ) {
             throw new DAOException( e.getMessage(), e );
         } catch ( SerializationException e ) {

@@ -1,8 +1,12 @@
 package com.redshape.persistence.jms;
 
 import com.redshape.persistence.dao.DAOException;
+import com.redshape.persistence.dao.query.IQuery;
 import com.redshape.persistence.dao.query.IQueryBuilder;
+import com.redshape.persistence.dao.query.executors.result.IExecutorResult;
+import com.redshape.persistence.dao.query.executors.result.IExecutorResultFactory;
 import com.redshape.persistence.dao.query.executors.services.IQueryExecutorService;
+import com.redshape.persistence.entities.DtoUtils;
 import com.redshape.persistence.protocol.IQueryMarshaller;
 import com.redshape.persistence.protocol.ProtocolException;
 import org.apache.log4j.Logger;
@@ -27,6 +31,7 @@ public class RequestsHandlingService implements IRequestHandlingService {
     private IQueryExecutorService executionService;
     private MessageConsumer consumer;
     private IQueryBuilder builder;
+    private IExecutorResultFactory resultsFactory;
 
     private boolean state = true;
 
@@ -38,6 +43,17 @@ public class RequestsHandlingService implements IRequestHandlingService {
                                     IQueryMarshaller marshaller,
                                     String queueId )
         throws DAOException {
+        this(null, connection, service, builder, marshaller, queueId );
+    }
+
+    public RequestsHandlingService( IExecutorResultFactory resultsFactory,
+                                    QueueConnection connection,
+                                    IQueryExecutorService service,
+                                    IQueryBuilder builder,
+                                    IQueryMarshaller marshaller,
+                                    String queueId )
+        throws DAOException {
+        this.resultsFactory = resultsFactory;
         this.builder = builder;
         this.connection = connection;
         this.protocol = marshaller;
@@ -45,6 +61,10 @@ public class RequestsHandlingService implements IRequestHandlingService {
         this.queueName = queueId;
         this.checkFields();
         this.init();
+    }
+
+    protected IExecutorResultFactory getResultsFactory() {
+        return this.resultsFactory;
     }
 
     @Override
@@ -75,7 +95,7 @@ public class RequestsHandlingService implements IRequestHandlingService {
     protected void init() throws DAOException {
         try {
             this.connection.start();
-            this.session = this.getConnection().createQueueSession(true, Session.AUTO_ACKNOWLEDGE);
+            this.session = this.getConnection().createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
             if ( this.session == null ) {
                 throw new DAOException("Session initialization failed");
             }
@@ -109,12 +129,22 @@ public class RequestsHandlingService implements IRequestHandlingService {
 
     protected Message processRequest( Message message ) throws DAOException {
         try {
-            return this.getProtocol().marshal(
-                this.session.createObjectMessage(),
-                this.getExecutionService().execute(
-                    this.getProtocol().unmarshalQuery( this.getBuilder() , message)
-                )
+            Message result = this.session.createObjectMessage();
+            result.setJMSDestination( message.getJMSReplyTo() );
+
+            IQuery query = this.getProtocol().unmarshalQuery(this.getBuilder(), message);
+            if ( query.entity() != null ) {
+                query.entity( DtoUtils.fromDTO(query.entity()) );
+            }
+
+            IExecutorResult execResult = this.getExecutionService().execute(query);
+
+            this.getProtocol().marshal(
+                result,
+                this.getResultsFactory().createResult( execResult.getResultsList() )
             );
+
+            return result;
         } catch ( ProtocolException e ) {
             throw new DAOException("Failed to marshal/unmarshal message!", e );
         } catch ( JMSException e ) {
@@ -151,6 +181,8 @@ public class RequestsHandlingService implements IRequestHandlingService {
                 }
                 
                 this.sendRespond( (Queue) replyDestination, this.processRequest( message) );
+
+                message.acknowledge();
             } catch ( JMSException e ) {
                 log.error( e.getMessage(), e );
             } catch ( DAOException e ) {

@@ -1,6 +1,6 @@
-package com.redshape.persistence.dao;
+package com.redshape.persistence.dao.query.executors.result;
 
-import com.redshape.persistence.dao.query.executors.IExecutorResult;
+import com.redshape.persistence.dao.query.executors.result.IExecutorResult;
 import com.redshape.persistence.entities.IEntity;
 import com.redshape.utils.Commons;
 

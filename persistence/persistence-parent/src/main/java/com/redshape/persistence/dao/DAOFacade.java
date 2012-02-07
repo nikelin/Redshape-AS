@@ -29,7 +29,7 @@ public class DAOFacade implements IDAOFacade {
 	}
 
     @Override
-	public <V extends IEntity, T extends IDAO<V>> T getDAO( Class<V> clazz ) {
+	public <V extends IEntity, T extends IDAO<V>> T getDAO( Class<? extends V> clazz ) {
         T result = (T) this.cached.get(clazz);
         if ( result != null ) {
             return result;

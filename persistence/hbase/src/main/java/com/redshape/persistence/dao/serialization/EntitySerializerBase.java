@@ -13,18 +13,16 @@ import java.util.ArrayList;
 public abstract class EntitySerializerBase {
 
     protected ArrayList<AbstractSerializerVisitor> visitors = new ArrayList<AbstractSerializerVisitor>();
-
+    protected Class<? extends IEntity> entityClass;
     protected ISerializer serializer;
 
     public void addVisitor(AbstractSerializerVisitor vistor) {
         visitors.add(vistor);
     }
 
-    AbstractSerializerVisitor[] getVisitor() {
+    protected AbstractSerializerVisitor[] getVisitor() {
         return visitors.toArray(new AbstractSerializerVisitor[visitors.size()]);
     }
-
-    protected Class<? extends IEntity> entityClass;
 
     public Class<? extends IEntity> getEntityClass() {
         return entityClass;

@@ -29,7 +29,7 @@ public class URIVisitor extends AbstractSerializerVisitor {
     }
 
     @Override
-    public Class getEntityType() {
+    public Class<?> getEntityType() {
         return URI.class;
     }
 }

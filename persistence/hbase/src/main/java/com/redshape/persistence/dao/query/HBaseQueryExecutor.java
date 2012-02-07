@@ -39,7 +39,7 @@ public class HBaseQueryExecutor extends AbstractQueryExecutor<Filter, Filter, Ob
     }
 
     private void init() throws SerializationException {
-        this.coulmnFamily = serializer.serialize("navirara");
+        this.coulmnFamily = serializer.serialize("redshape");
     }
 
     public ISerializer getSerializer() {
