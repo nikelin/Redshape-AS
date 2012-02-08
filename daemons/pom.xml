@@ -9,14 +9,13 @@
 
   <groupId>com.redshape</groupId>
   <artifactId>daemons</artifactId>
-  <version>${project.parent.version}</version>
   <name>Redshape - Daemons API</name>
 
   <dependencies>
     <dependency>
-      <groupId>com.redshape.persistence</groupId>
-      <artifactId>jpa</artifactId>
-      <version>${project.version}</version>
+        <artifactId>commons</artifactId>
+        <groupId>com.redshape</groupId>
+        <version>${project.version}</version>
     </dependency>
   </dependencies>
 </project>

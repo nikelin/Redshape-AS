@@ -53,17 +53,11 @@
     </profiles>
 
     <properties>
-        <gwt.version>1.5.3</gwt.version>
-        <gwt.platform>1.5.3</gwt.platform>
+        <gwt.version>1.5.0-rc1</gwt.version>
+        <gwt.platform>linux</gwt.platform>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-servlet</artifactId>
-            <version>${gwt.version}</version>
-            <scope>runtime</scope>
-        </dependency>
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
@@ -72,17 +66,9 @@
         </dependency>
         <dependency>
             <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-dev</artifactId>
+            <artifactId>gwt-${gwt.platform}</artifactId>
             <version>${gwt.version}</version>
-            <classifier>${gwt.platform}-libs</classifier>
             <type>zip</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-dev</artifactId>
-            <version>${gwt.version}</version>
-            <classifier>${gwt.platform}</classifier>
             <scope>provided</scope>
         </dependency>
         <dependency>

@@ -29,6 +29,7 @@
         <module>plugins</module>
         <module>ascript</module>
         <module>forker</module>
+        <module>jobs</module>
     </modules>
 
     <repositories>
