@@ -3,10 +3,23 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.redshape</groupId>
     <artifactId>ui</artifactId>
-    <name>Redshape - UI Core</name>
-    <version>${project.parent.version}</version>
+    <name>Redshape - UI</name>
+    <packaging>pom</packaging>
 
-    <packaging>jar</packaging>
+    <repositories>
+        <repository>
+            <id>gwt-maven</id>
+            <url>
+                http://gwt-maven.googlecode.com/svn/trunk/mavenrepo/
+            </url>
+        </repository>
+    </repositories>
+
+    <modules>
+        <module>swing</module>
+        <module>gwt</module>
+        <module>ui-parent</module>
+    </modules>
 
     <parent>
         <artifactId>as</artifactId>
@@ -27,22 +40,4 @@
         </plugins>
     </build>
 
-    <dependencies>
-        <dependency>
-            <artifactId>ascript</artifactId>
-            <groupId>com.redshape</groupId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <artifactId>json-lib</artifactId>
-            <groupId>net.sf.json-lib</groupId>
-            <version>2.4</version>
-            <classifier>jdk15</classifier>
-        </dependency>
-        <dependency>
-            <artifactId>commons</artifactId>
-            <groupId>com.redshape</groupId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
 </project>

@@ -9,4 +9,12 @@
   <groupId>com.redshape</groupId>
   <artifactId>shaper</artifactId>
   <version>${project.parent.version}</version>
+
+  <dependencies>
+      <dependency>
+          <artifactId>commons</artifactId>
+          <groupId>com.redshape</groupId>
+          <version>${as.version}</version>
+      </dependency>
+  </dependencies>
 </project>

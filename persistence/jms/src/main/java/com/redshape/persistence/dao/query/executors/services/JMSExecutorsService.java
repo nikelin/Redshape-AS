@@ -33,7 +33,7 @@ public class JMSExecutorsService implements IQueryExecutorService {
     
     private Object sendingLock = new Object();
     
-    private int timeout = Constants.TIME_SECOND * 1;
+    private int timeout = Constants.TIME_SECOND * 15;
 
     public JMSExecutorsService( QueueConnection connection,
                                 IQueryMarshaller marshaller,
