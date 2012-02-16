@@ -1,13 +1,8 @@
 package com.redshape.ui.swing.test;
 
-import com.redshape.ui.data.bindings.render.IViewRendererBuilder;
-import com.redshape.utils.beans.bindings.BindingException;
-import com.redshape.utils.beans.bindings.annotations.Bindable;
-import com.redshape.utils.beans.bindings.annotations.ElementType;
-import com.redshape.utils.beans.bindings.types.BindableType;
-import com.redshape.utils.beans.bindings.types.CollectionType;
 import com.redshape.ui.application.UIException;
 import com.redshape.ui.data.bindings.render.ISwingRenderer;
+import com.redshape.ui.data.bindings.render.IViewRendererBuilder;
 import com.redshape.ui.data.bindings.render.components.ObjectUI;
 import com.redshape.ui.data.bindings.render.properties.EnumUI;
 import com.redshape.ui.data.bindings.render.properties.IEnumUI;
@@ -17,8 +12,12 @@ import com.redshape.ui.data.loaders.AbstractDataLoader;
 import com.redshape.ui.utils.UIConstants;
 import com.redshape.ui.utils.UIRegistry;
 import com.redshape.utils.IEnum;
+import com.redshape.utils.beans.bindings.BindingException;
+import com.redshape.utils.beans.bindings.annotations.Bindable;
+import com.redshape.utils.beans.bindings.annotations.ElementType;
+import com.redshape.utils.beans.bindings.types.BindableType;
+import com.redshape.utils.beans.bindings.types.CollectionType;
 import com.redshape.utils.tests.AbstractContextAwareTest;
-import org.junit.Test;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -137,7 +136,6 @@ public class BindingsTest extends AbstractContextAwareTest<Object> {
         UIRegistry.set( UIConstants.System.APP_CONTEXT, this.getContext() );
     }
 
-    @Test
     public void testMain() throws UIException, NoSuchMethodException, BindingException, InstantiationException {
         ISwingRenderer renderer = UIRegistry.<IViewRendererBuilder<ISwingRenderer>>get(
                                 UIConstants.System.VIEW_RENDERER)
