@@ -2,7 +2,6 @@ package com.redshape.persistence.jms;
 
 import com.redshape.persistence.dao.DAOException;
 import com.redshape.utils.tests.AbstractContextAwareTest;
-import org.junit.Test;
 
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
@@ -23,7 +22,6 @@ public class DaoTest extends AbstractContextAwareTest {
         return this.getContext().getBean(IRequestHandlingService.class);
     }
 
-    @Test
     public void testMain() throws DAOException {
         new Thread( this.getService() ).start();
 
