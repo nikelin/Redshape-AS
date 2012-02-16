@@ -1,9 +1,9 @@
 package com.redshape.ui.data.bindings.render.components;
 
-import com.redshape.bindings.BeanConstructor;
-import com.redshape.bindings.BindingException;
-import com.redshape.bindings.IBeanInfo;
-import com.redshape.bindings.types.IBindable;
+import com.redshape.utils.beans.bindings.BeanConstructor;
+import com.redshape.utils.beans.bindings.BindingException;
+import com.redshape.utils.beans.bindings.IBeanInfo;
+import com.redshape.utils.beans.bindings.types.IBindable;
 import com.redshape.ui.application.UIException;
 import com.redshape.ui.application.UnhandledUIException;
 import com.redshape.ui.data.bindings.properties.IPropertyUI;

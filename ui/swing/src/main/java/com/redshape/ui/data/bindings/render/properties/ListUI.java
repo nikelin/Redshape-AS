@@ -1,7 +1,7 @@
 package com.redshape.ui.data.bindings.render.properties;
 
-import com.redshape.bindings.annotations.BindableAttributes;
-import com.redshape.bindings.types.IBindable;
+import com.redshape.utils.beans.bindings.annotations.BindableAttributes;
+import com.redshape.utils.beans.bindings.types.IBindable;
 import com.redshape.ui.application.UIException;
 import com.redshape.ui.data.IModelData;
 import com.redshape.ui.data.adapters.swing.ComboBoxAdapter;

@@ -17,8 +17,7 @@ public class SwingBuilder implements IViewRendererBuilder<ISwingRenderer> {
 	}
 	
 	@Override
-	public ISwingRenderer createRenderer(Class<?> clazz)
-			throws InstantiationException {
+	public ISwingRenderer createRenderer(Class<?> clazz) {
 		return new ViewRenderer(this.modelsBuilder, this.uiBuilder);
 	}
 	

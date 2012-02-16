@@ -90,19 +90,13 @@ public class ViewRenderer implements ISwingRenderer {
 	}
 	
 	protected void process( ObjectUI parent, IPropertyModel model ) throws UIException {
-		try {
-			parent.addField( model, this.getUIBuilder().<Object, JComponent>createRenderer( model.getDescriptor() ) );
-		} catch ( InstantiationException e ) {
-			throw new UIException( e.getMessage(), e );
-		}
+        parent.addField( model,
+                this.getUIBuilder().<Object, JComponent>createRenderer( model.getDescriptor() ) );
 	}
 	
 	protected void process( ObjectUI parent, IChoiceModel model ) throws UIException {
-		try {
-			parent.addField( model, this.getUIBuilder().<Object, JComponent>createListRenderer( this, model.getDescriptor() ) );
-		} catch ( InstantiationException e ) {
-			throw new UIException( e.getMessage(), e );
-		}
+        parent.addField( model,
+            this.getUIBuilder().<Object, JComponent>createListRenderer( this, model.getDescriptor() ) );
 	}
 
 	protected ObjectUI process( Container parent, IComposedModel model ) throws UIException {

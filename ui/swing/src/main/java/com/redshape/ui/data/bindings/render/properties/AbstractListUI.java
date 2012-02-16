@@ -1,7 +1,7 @@
 package com.redshape.ui.data.bindings.render.properties;
 
-import com.redshape.bindings.BindingException;
-import com.redshape.bindings.types.IBindable;
+import com.redshape.utils.beans.bindings.BindingException;
+import com.redshape.utils.beans.bindings.types.IBindable;
 import com.redshape.ui.application.UIException;
 import com.redshape.ui.data.IModelData;
 import com.redshape.ui.data.IStore;
@@ -70,8 +70,6 @@ public abstract class AbstractListUI<T> extends JPanel implements IPropertyUI<T,
 			}
 			
 			return store;
-		} catch ( InstantiationException e ) {
-			throw new UIException("Provider exception", e );
 		} catch ( LoaderException e ) {
 			throw new UIException("Data loader exception", e );
 		} catch ( BindingException e ) {
