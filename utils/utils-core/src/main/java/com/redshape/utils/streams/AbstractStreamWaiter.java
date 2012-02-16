@@ -29,7 +29,6 @@ public abstract class AbstractStreamWaiter implements IStreamWaiter {
         return this.stream;
     }
 
-    @Override
     public void setPriority(Priority priority) {
         this.priority = priority;
     }

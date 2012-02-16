@@ -3,6 +3,7 @@ package com.redshape.ui.application.handlers;
 import com.redshape.ui.application.IApplication;
 import com.redshape.ui.application.events.AppEvent;
 import com.redshape.ui.application.events.IEventHandler;
+import com.redshape.ui.utils.UIConstants;
 import com.redshape.ui.utils.UIRegistry;
 
 import javax.swing.*;
@@ -26,7 +27,7 @@ public class ExitHandler implements IEventHandler {
     @Override
     public void handle(AppEvent event) {
         if ( JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(
-                UIRegistry.<JFrame>getRootContext(), "Are you really want to exit?") ) {
+                UIRegistry.<JFrame>get(UIConstants.System.WINDOW), "Are you really want to exit?") ) {
             System.out.println("Exiting...");
 
             this.context.exit();

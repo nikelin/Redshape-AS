@@ -29,17 +29,18 @@ public class SimpleBeansProvider implements IBeansProvider {
     }
     
     @Override
-    public <T> T getBean(Class<T> clazz) {
+    public <T> T getBean(Class<T> clazz) {    	
         List<Object> matches = new ArrayList<Object>();
         for ( Map.Entry<BeanDescriptor, Object> entry : this.registry.entrySet() ) {
-            if ( clazz.isAssignableFrom( entry.getKey().getClazz() ) ) {
-                matches.add( clazz );
+            BeanDescriptor descriptor = entry.getKey();
+            if ( descriptor.isMatch(clazz) ) {
+                matches.add( entry.getValue() );
             }
         }
 
         if ( matches.size() > 1 ) {
             throw new IllegalArgumentException("There is ambiguous choice for the given class "
-                    + clazz.getCanonicalName() );
+                    + clazz.getName() );
         }
 
         if ( matches.isEmpty() ) {
@@ -52,11 +53,11 @@ public class SimpleBeansProvider implements IBeansProvider {
     @Override
     public <T> T getBean(Class<T> clazz, String name) {
         Object bean = this.getBean(name);
-        if ( !clazz.isAssignableFrom( bean.getClass() ) ) {
-            throw new IllegalArgumentException("Unable to convert class " + clazz.getCanonicalName() 
-                    + " to " + bean.getClass().getCanonicalName() );
+        if ( !clazz.equals( bean.getClass() ) )  {
+            throw new IllegalArgumentException("Unable to convert class " + clazz.getName()
+                    + " to " + bean.getClass().getName() );
         }
-        
+
         return (T) bean;
     }
 
@@ -80,7 +81,34 @@ public class SimpleBeansProvider implements IBeansProvider {
             this.name = name;
             this.clazz = clazz;
         }
+        
+        public boolean isMatch( Class<?> clazz ) {
+        	if ( this.isAncestor(clazz, this.getClazz() ) ) {
+                return true;
+            }
+            
+            if ( this.isAncestor(this.getClazz(), clazz) ) {
+                return true;
+            }
+               
+            return false;
+        }
+        
+        protected boolean isAncestor( Class<?> source, Class<?> target ) {
+            Class<?> parent = source;
+            do {
+                if ( parent.equals( target )
+                        || parent.toString().equals( target.toString() )
+                        || parent.toString().replace("interface", "")
+                        					.trim()
+                    							.equals( this.getName() ) ) {
+                    return true;
+                }
+            } while ( null != ( parent = parent.getSuperclass() ) );
 
+            return false;
+        } 
+        
         public String getName() {
             return name;
         }

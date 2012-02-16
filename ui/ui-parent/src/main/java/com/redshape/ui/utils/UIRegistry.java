@@ -1,23 +1,18 @@
 package com.redshape.ui.utils;
 
+import com.redshape.ui.application.IBeansProvider;
 import com.redshape.ui.application.events.IEventQueue;
 import com.redshape.ui.application.notifications.INotificationsManager;
 import com.redshape.ui.application.status.IStatusBar;
-import com.redshape.ui.data.bindings.render.IViewRenderer;
-import com.redshape.ui.data.bindings.render.IViewRendererBuilder;
 import com.redshape.ui.data.providers.IProvidersFactory;
 import com.redshape.ui.data.state.IUIStateManager;
 import com.redshape.ui.data.stores.IStoresManager;
 import com.redshape.ui.views.IViewsManager;
 import com.redshape.ui.windows.IWindowsManager;
-import com.redshape.utils.clonners.IObjectsCloner;
-import org.springframework.context.ApplicationContext;
+import com.redshape.utils.clonners.IObjectsClonner;
 
-import javax.swing.*;
-import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,14 +23,10 @@ import java.util.Timer;
  */
 public final class UIRegistry {
     private static Map<UIConstants.Attribute, Object> values = new HashMap<UIConstants.Attribute, Object>();
-    private static JFrame context;
-    private static MenuBar menu;
     private static IStatusBar progressBar;
 	private static Settings settings;
-    private static Timer timer = new Timer();
     private static IEventQueue eventsQueue;
 	private static INotificationsManager notificationsManager;
-
 
     public static IEventQueue getEventQueue() {
         return getContext().getBean(IEventQueue.class);
@@ -45,15 +36,6 @@ public final class UIRegistry {
 		UIRegistry.settings = settings;
 	}
 
-    public static void restartTimer() {
-        timer.cancel();
-        timer = new Timer();
-    }
-    
-    public static Timer getTimer() {
-        return timer;
-    }
-    
 	public static Settings getSettings() {
 		if ( UIRegistry.settings == null ) {
 			UIRegistry.settings = new Settings();
@@ -61,6 +43,10 @@ public final class UIRegistry {
 
 		return UIRegistry.settings;
 	}
+    
+    public static void scheduleTask( Runnable task, int delay, int interval ) {
+
+    }
 
     public static IStatusBar getStatusBar() {
         return progressBar;
@@ -80,31 +66,9 @@ public final class UIRegistry {
 	public static <V> V get( UIConstants.Attribute id ) {
         return (V) values.get(id);
     }
-
-    public static MenuBar getMenu() {
-    	return UIRegistry.menu;
-    }
     
-    public static void setMenu( MenuBar menu ) {
-    	UIRegistry.menu = menu;
-    }
-    
-	public static void setRootContext( JFrame context ) {
-        UIRegistry.context = context;
-    }
-
-    @SuppressWarnings("unchecked")
-	public static <V extends JFrame> V getRootContext() {
-        return (V) context;
-    }
-    
-    public static IObjectsCloner getObjectsClonner() {
-    	return getContext().getBean( IObjectsCloner.class );
-    }
-    
-    @SuppressWarnings("unchecked")
-	public static <V extends IViewRenderer<?, ?>> IViewRendererBuilder<V> getViewRendererFacade() {
-    	return (IViewRendererBuilder<V>) getContext().getBean( IViewRendererBuilder.class );
+    public static IObjectsClonner getObjectsClonner() {
+    	return getContext().getBean( IObjectsClonner.class );
     }
     
     public static IProvidersFactory getProvidersFactory() {
@@ -136,7 +100,7 @@ public final class UIRegistry {
     	return (V) getContext().getBean( IWindowsManager.class );
     }
     
-    public static ApplicationContext getContext() {
+    public static IBeansProvider getContext() {
     	return get( UIConstants.System.APP_CONTEXT);
     }
 

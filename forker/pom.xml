@@ -11,12 +11,13 @@
 
     <groupId>com.redshape.as</groupId>
     <artifactId>forker</artifactId>
+    <name>Redshape - Forker</name>
 
     <dependencies>
         <dependency>
-            <artifactId>utils</artifactId>
-            <groupId>com.redshape</groupId>
-            <version>${as.version}</version>
+            <artifactId>utils-core</artifactId>
+            <groupId>com.redshape.utils</groupId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

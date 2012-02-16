@@ -1,12 +1,10 @@
 package com.redshape.migration;
 
 import com.redshape.migration.components.Table;
-import com.redshape.migration.renderers.engine.MySQLRenderersFactory;
 import com.redshape.migration.renderers.mysql.CreateTableRenderer;
 import com.redshape.migration.renderers.mysql.DropTableRenderer;
-import com.redshape.renderer.AbstractRenderersFactory;
+import com.redshape.renderer.IRenderersFactory;
 import com.redshape.utils.config.ConfigException;
-
 import org.apache.log4j.Logger;
 
 import java.sql.Connection;
@@ -25,14 +23,21 @@ import java.util.Set;
 public abstract class AbstractMigrator implements Migrator {
     private static final Logger log = Logger.getLogger( AbstractMigrator.class );
     private Connection connection;
+    private IRenderersFactory renderersFactory;
 
-    public AbstractMigrator() throws MigrationException {
+    protected AbstractMigrator( IRenderersFactory renderersFactory ) throws MigrationException {
         log.info("Trying to create adapters to process migrations...");
+        this.renderersFactory = renderersFactory;
+
         try {
             this.connection = this.createConnection();
         } catch ( Throwable e ) {
             throw new MigrationException( e.getMessage() );
         }
+    }
+
+    protected IRenderersFactory getRenderersFactory() {
+        return this.renderersFactory;
     }
 
     public Connection getConnection() {
@@ -46,7 +51,7 @@ public abstract class AbstractMigrator implements Migrator {
 
     protected void create( Table table ) throws MigrationException, SQLException {
         try {
-            String query = AbstractRenderersFactory.getFactory(MySQLRenderersFactory.class)
+            String query = this.getRenderersFactory()
                                 .getRenderer(CreateTableRenderer.class )
                                 .render(table)
                                 .toString();
@@ -89,7 +94,7 @@ public abstract class AbstractMigrator implements Migrator {
 
     protected void remove( Table table ) throws MigrationException {
         try {
-            String query = AbstractRenderersFactory.getFactory(MySQLRenderersFactory.class)
+            String query = this.getRenderersFactory()
                                    .getRenderer(DropTableRenderer.class)
                                    .render( table )
                                    .toString();

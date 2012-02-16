@@ -3,7 +3,7 @@ package com.redshape.ui.panels;
 import com.redshape.ui.data.IModelData;
 import com.redshape.ui.data.IModelField;
 import com.redshape.ui.data.IModelType;
-import com.redshape.validators.IValidator;
+import com.redshape.utils.validators.IValidator;
 
 import javax.swing.*;
 import javax.swing.text.JTextComponent;

@@ -17,6 +17,7 @@
         <module>swing</module>
         <module>gwt</module>
         <module>ui-parent</module>
+        <module>ui-bindings</module>
     </modules>
 
     <parent>

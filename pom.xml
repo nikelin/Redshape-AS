@@ -4,7 +4,7 @@
     <groupId>com.redshape</groupId>
     <artifactId>as</artifactId>
     <name>Redshape AS</name>
-    <version>3.0.0</version>
+    <version>3.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -30,6 +30,8 @@
         <module>ascript</module>
         <module>forker</module>
         <module>jobs</module>
+        <module>renderers</module>
+        <module>forms</module>
     </modules>
 
     <repositories>
@@ -79,14 +81,13 @@
         	<name>iBiblio Central</name>
         </repository>
 
-        	<repository>
-        <id>terracotta-releases</id>
-        <url>http://www.terracotta.org/download/reflector/releases</url>
-        <releases><enabled>true</enabled></releases>
-        <snapshots><enabled>true</enabled></snapshots>
-    </repository>
+        <repository>
+            <id>terracotta-releases</id>
+            <url>http://www.terracotta.org/download/reflector/releases</url>
+            <releases><enabled>true</enabled></releases>
+            <snapshots><enabled>true</enabled></snapshots>
+        </repository>
     </repositories>
-    
 
     <developers>
         <developer>
@@ -113,24 +114,6 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
-
-            <!-- <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                  <execution>
-                    <id>copy-dependencies</id>
-                    <phase>package</phase>
-                    <goals>
-                      <goal>copy-dependencies</goal>
-                    </goals>
-                    <configuration>
-                        <useRepositoryLayout>true</useRepositoryLayout>
-                        <outputAbsoluteArtifactFilename>true</outputAbsoluteArtifactFilename>
-                    </configuration>
-                  </execution>
-                </executions>
-              </plugin> -->
         </plugins>
         <extensions>
             <extension>
@@ -175,7 +158,12 @@
             </exclusions>
         </dependency>
     </dependencies>
-    
+
+    <scm>
+        <developerConnection>scm:git:ssh://git@github.com:nikelin/Redshape-AS</developerConnection>
+        <url>http://github.com/nikelin/Redshape-AS</url>
+    </scm>
+
     <distributionManagement>
     	<repository>
     		<id>redshape.central</id>

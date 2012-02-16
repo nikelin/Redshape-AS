@@ -3,7 +3,7 @@ package com.redshape.utils.beans.bindings;
 import java.util.List;
 
 import com.redshape.utils.beans.bindings.types.IBindable;
-import com.redshape.validators.result.IResultsList;
+import com.redshape.utils.validators.result.IResultsList;
 
 public interface IBeanInfo {
 

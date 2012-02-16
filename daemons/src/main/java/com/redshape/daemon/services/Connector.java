@@ -5,7 +5,6 @@ import com.redshape.daemon.events.ServiceBindedEvent;
 import com.redshape.utils.events.AbstractEventDispatcher;
 import com.redshape.daemon.DaemonException;
 import com.redshape.daemon.events.ServiceBindExceptionEvent;
-import com.redshape.daemon.traits.IBindableDaemon;
 import org.apache.log4j.Logger;
 
 import java.rmi.ConnectException;
@@ -14,10 +13,6 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 /**
  * @author nikelin

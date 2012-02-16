@@ -3,8 +3,6 @@ package com.redshape.utils.config;
 import com.redshape.utils.StringUtils;
 import com.redshape.utils.config.sources.IConfigSource;
 
-import java.io.*;
-
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
  * @package com.redshape.utils.config
@@ -30,35 +28,12 @@ public class PropertiesConfig extends AbstractConfig {
     }
 
     protected void init() throws ConfigException {
-        try {
-            String data = this.readFile();
-            if ( data.isEmpty() ) {
-                return;
-            }
-
-            this.processData( data );
-        } catch ( IOException e ) {
-            throw new ConfigException( e.getMessage(), e );
-        }
-    }
-
-	protected String readFile() throws IOException {
-        StringBuilder result = new StringBuilder();
-
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(this.source.getReader());
-            String tmp;
-            while ( null != ( tmp = reader.readLine() ) ) {
-                result.append( tmp ).append("\n");
-            }
-        } finally {
-            if ( reader != null ) {
-                reader.close();
-            }
+        String data = this.source.read();
+        if ( data.isEmpty() ) {
+            return;
         }
 
-        return result.toString();
+        this.processData( data );
     }
 
 	@Override

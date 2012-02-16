@@ -1,8 +1,6 @@
 package com.redshape.utils.config.sources;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
+import com.redshape.utils.config.ConfigException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,9 +11,9 @@ import java.io.Writer;
  */
 public interface IConfigSource {
     
-    public Reader getReader() throws IOException;
+    public String read() throws ConfigException;
     
-    public Writer getWriter() throws IOException;
+    public void write( String data ) throws ConfigException;
     
     public boolean isWritable();
     

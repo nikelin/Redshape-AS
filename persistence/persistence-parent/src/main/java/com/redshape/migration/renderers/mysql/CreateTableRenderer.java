@@ -4,10 +4,7 @@ import com.redshape.migration.components.Field;
 import com.redshape.migration.components.Table;
 import com.redshape.migration.components.TableOption;
 import com.redshape.migration.renderers.MySQLRenderer;
-import com.redshape.migration.renderers.engine.MySQLRenderersFactory;
-import com.redshape.renderer.AbstractRenderersFactory;
 import com.redshape.renderer.IRenderersFactory;
-import com.redshape.renderer.RendererException;
 import com.redshape.renderer.TargetEntity;
 
 /**
@@ -21,28 +18,57 @@ import com.redshape.renderer.TargetEntity;
 @TargetEntity( entity = Table.class )
 public class CreateTableRenderer extends MySQLRenderer<Table> {
 
-    public String render( Table table ) throws RendererException {
-        try {
-            IRenderersFactory factory = AbstractRenderersFactory.getFactory( MySQLRenderersFactory.class);
+    public CreateTableRenderer(IRenderersFactory renderersFactory) {
+        super(renderersFactory);
+    }
 
-            StringBuilder builder = new StringBuilder();
-            builder.append( "create table " );
-            builder.append( this.escapeField( table.getName() ) );
-            builder.append( "(" );
+    public String render( Table table ) {
+        StringBuilder builder = new StringBuilder();
+        builder.append( "create table " );
+        builder.append( this.escapeField( table.getName() ) );
+        builder.append( "(" );
+        builder.append( this.renderFields(table) );
+        builder.append( ")" );
+        builder.append( this.renderOptions(table) );
+
+        return builder.toString();
+    }
+    
+    protected String renderFields( Table table ) {
+        StringBuilder builder = new StringBuilder();
+
+        int i = 0;
+        for ( Field field : table.getFields() ) {
             builder.append(
-                factory.forEntity(Field.class)
-                        .render(table.getFields() )
-            );
-            builder.append(")");
-            builder.append(
-                factory.forEntity(TableOption.class)
-                    .render( table.getOptions() )
+                    this.getRenderersFactory()
+                            .forEntity(Field.class)
+                            .render(field)
             );
 
-            return builder.toString();
-        } catch ( Throwable e ) {
-            throw new RendererException();
+            if ( i++ != table.getFields().size() - 1 ) {
+                builder.append(" ");
+            }
         }
+
+        return builder.toString();
+    }
+    
+    protected String renderOptions( Table table ) {
+        StringBuilder builder = new StringBuilder();
+
+        int i = 0;
+        for ( TableOption option : table.getOptions() ) {
+            builder.append(
+                    this.getRenderersFactory()
+                            .forEntity(TableOption.class)
+                            .render(option));
+
+            if ( i++ != table.getOptions().size() - 1 ) {
+                builder.append(" ");
+            }
+        }
+
+        return builder.toString();
     }
 
 }

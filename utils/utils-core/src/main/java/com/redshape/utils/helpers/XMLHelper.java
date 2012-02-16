@@ -26,168 +26,169 @@ import java.io.*;
  *
  */
 public final class XMLHelper {
-	private static final Logger log = Logger.getLogger( XMLHelper.class );
+    private static final Logger log = Logger.getLogger( XMLHelper.class );
 
-	private static DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-	private static DocumentBuilder domBuilder;
-	static {
-		try {
-			// factory.setValidating(false);
-			// factory.setNamespaceAware(true);
+    private static DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    private static DocumentBuilder domBuilder;
+    static {
+        try {
+            factory.setValidating(false);
+            factory.setNamespaceAware(true);
 
-			domBuilder = createBuilder();
-			domBuilder.setErrorHandler( new ErrorHandler() {
-				@Override
-				public void warning(SAXParseException exception) throws SAXException {
-					log.error( exception.getMessage(), exception );
-				}
+            domBuilder = createBuilder();
+            domBuilder.setErrorHandler( new ErrorHandler() {
+                @Override
+                public void warning(SAXParseException exception) throws SAXException {
+                    log.error( exception.getMessage(), exception );
+                }
 
-				@Override
-				public void error(SAXParseException exception) throws SAXException {
-					log.error( exception.getException(), exception );
-				}
+                @Override
+                public void error(SAXParseException exception) throws SAXException {
+                    log.error( exception.getException(), exception );
+                }
 
-				@Override
-				public void fatalError(SAXParseException exception) throws SAXException {
-					log.error( exception.getMessage(), exception );
-				}
-			});
-		} catch ( Throwable e ) {
-			log.error( e.getMessage(), e );
-		}
-	}
+                @Override
+                public void fatalError(SAXParseException exception) throws SAXException {
+                    log.error( exception.getMessage(), exception );
+                }
+            });
+        } catch ( Throwable e ) {
+            log.error( e.getMessage(), e );
+        }
+    }
 
-	private static TransformerFactory transformersFactory = TransformerFactory.newInstance();
-	private static Transformer transformer;
-	static {
-		try {
-			transformer = transformersFactory.newTransformer();
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-		} catch ( Throwable e ) {
-			log.error( e.getMessage(), e );
-		}
-	}
+    private static TransformerFactory transformersFactory = TransformerFactory.newInstance();
+    private static Transformer transformer;
+    static {
+        try {
+            transformer = transformersFactory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        } catch ( Throwable e ) {
+            log.error( e.getMessage(), e );
+        }
+    }
 
-	public ResourcesLoader loader;
+    public ResourcesLoader loader;
 
-	public XMLHelper() {
+    public XMLHelper() {
 
-	}
+    }
 
-	public XMLHelper( ResourcesLoader loader ) {
-		this.loader = loader;
-	}
+    public XMLHelper( ResourcesLoader loader ) {
+        this.loader = loader;
+    }
 
-	public void setLoader( ResourcesLoader loader ) {
-		this.loader = loader;
-	}
+    public void setLoader( ResourcesLoader loader ) {
+        this.loader = loader;
+    }
 
-	public ResourcesLoader getLoader() {
-		return this.loader;
-	}
+    public ResourcesLoader getLoader() {
+        return this.loader;
+    }
 
-	public String getNamespace( Node node ) {
-		String[] nameParts = node.getNodeName().split(":");
-		if ( nameParts.length > 1 ) {
-			return nameParts[1];
-		}
+    public String getNamespace( Node node ) {
+        String[] nameParts = node.getNodeName().split(":");
+        if ( nameParts.length > 1 ) {
+            return nameParts[1];
+        }
 
-		if ( node.getParentNode() != null ) {
-			return getNamespace( node.getParentNode() );
-		}
+        if ( node.getParentNode() != null ) {
+            return getNamespace( node.getParentNode() );
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	public String getSchemaLocation( String namespace, Node node ) {
-		String location = null;
+    public String getSchemaLocation( String namespace, Node node ) {
+        String location = null;
 
-		for ( Node attr = node.getAttributes().item(0); location == null && attr != null; attr = attr.getNextSibling() ) {
-			if ( attr.getNodeName().startsWith("xmlns") && attr.getNodeName().endsWith( namespace ) ) {
-				location = attr.getNodeValue();
-			}
-		}
+        for ( Node attr = node.getAttributes().item(0); location == null && attr != null; attr = attr.getNextSibling() ) {
+            if ( attr.getNodeName().startsWith("xmlns") && attr.getNodeName().endsWith( namespace ) ) {
+                location = attr.getNodeValue();
+            }
+        }
 
-		if ( location == null ) {
-			location = getSchemaLocation( namespace, node.getParentNode() );
-		}
+        if ( location == null ) {
+            location = getSchemaLocation( namespace, node.getParentNode() );
+        }
 
-		return location;
-	}
+        return location;
+    }
 
-	public Document buildDocument( String path ) throws IOException,  SAXException,  ParserConfigurationException {
-		return buildDocument( this.getLoader().loadResource(path) );
-	}
+    public Document buildDocument( String path ) throws IOException,  SAXException,  ParserConfigurationException {
+        return buildDocument( this.getLoader().loadResource(path) );
+    }
 
-	@Deprecated
-	/**
-	 * @todo: for versions compitability ( currently exists method buildDocument( String filePath ) )
-	 */
-	public Document buildDocumentByData( String data ) throws IOException, SAXException, ParserConfigurationException {
-		return _buildDocument( domBuilder, data );
-	}
+    @Deprecated
+    /**
+     * @todo: for versions compitability ( currently exists method buildDocument( String filePath ) )
+     */
+    public Document buildDocumentByData( String data ) throws IOException, SAXException, ParserConfigurationException {
+        return _buildDocument( domBuilder, data );
+    }
 
     public Document buildDocument( Reader reader ) throws IOException, SAXException, ParserConfigurationException {
         return _buildDocument( domBuilder, reader );
     }
-    
-	public Document buildDocument( InputStream stream ) throws IOException, SAXException, ParserConfigurationException {
-		return _buildDocument( domBuilder, stream );
-	}
 
-	public Document buildDocument( File file ) throws IOException, SAXException, ParserConfigurationException {
-		return _buildDocument( domBuilder, file );
-	}
+    public Document buildDocument( InputStream stream ) throws IOException, SAXException, ParserConfigurationException {
+        return _buildDocument( domBuilder, stream );
+    }
 
-	public Document buildEmptyDocument() throws ParserConfigurationException {
-		return domBuilder.newDocument();
-	}
+    public Document buildDocument( File file ) throws IOException, SAXException, ParserConfigurationException {
+        return _buildDocument( domBuilder, file );
+    }
 
-	public String parseToXml( Document document ) throws TransformerException {
-		return parseToXml( document.getDocumentElement() );
-	}
+    public Document buildEmptyDocument() throws ParserConfigurationException {
+        return domBuilder.newDocument();
+    }
 
-	public String parseToXml( Node node ) throws TransformerException {
-		if ( node == null ) {
-			throw new IllegalArgumentException("<null>");
-		}
+    public String parseToXml( Document document ) throws TransformerException {
+        return parseToXml( document.getDocumentElement() );
+    }
 
-		StreamResult result = new StreamResult(new StringWriter());
-		DOMSource source = new DOMSource(node);
+    public String parseToXml( Node node ) throws TransformerException {
+        if ( node == null ) {
+            throw new IllegalArgumentException("<null>");
+        }
 
-		transformer.transform(source, result);
+        StreamResult result = new StreamResult(new StringWriter());
+        DOMSource source = new DOMSource(node);
 
-		return result.getWriter().toString();
-	}
+        transformer.transform(source, result);
 
-	protected static DocumentBuilder createBuilder() throws ParserConfigurationException {
-		DocumentBuilder builder = factory.newDocumentBuilder();
-		builder.setErrorHandler(null);
+        return result.getWriter().toString();
+    }
 
-		return builder;
-	}
+    protected static DocumentBuilder createBuilder() throws ParserConfigurationException {
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        builder.setErrorHandler(null);
 
-	@SuppressWarnings("deprecation")
-	protected Document _buildDocument( DocumentBuilder builder, Object source ) throws IOException, SAXException, ParserConfigurationException {
-		if ( source == null ) {
-			throw new IllegalArgumentException("Source must not be null");
-		}
+        return builder;
+    }
 
-		Document doc = null;
-		if ( File.class.isAssignableFrom( source.getClass() ) ) {
-			doc = builder.parse( (File) source );
-		} else if ( InputStream.class.isAssignableFrom( source.getClass() ) ) {
-			doc = builder.parse( (InputStream) source );
-		} else if ( InputStreamReader.class.isAssignableFrom( source.getClass() ) ) {
+    @SuppressWarnings("deprecation")
+    protected Document _buildDocument( DocumentBuilder builder, Object source ) throws IOException, SAXException, ParserConfigurationException {
+        if ( source == null ) {
+            throw new IllegalArgumentException("Source must not be null");
+        }
+
+        Document doc = null;
+        if ( File.class.isAssignableFrom( source.getClass() ) ) {
+            doc = builder.parse( (File) source );
+        } else if ( InputStream.class.isAssignableFrom( source.getClass() ) ) {
+            doc = builder.parse( (InputStream) source );
+        } else if ( InputStreamReader.class.isAssignableFrom( source.getClass() ) ) {
             doc = builder.parse( new InputSource( (Reader) source ) );
         } else if ( String.class.isAssignableFrom( source.getClass()) ) {
-			log.info( source );
-			doc = builder.parse( new StringBufferInputStream( (String) source ) );
-		} else {
-			throw new ParserConfigurationException("Unknown source");
-		}
+            doc = builder.parse( new InputSource( new StringReader( (String) source ) ) );
+        } else {
+            throw new ParserConfigurationException("Unknown source");
+        }
 
-		return doc;
-	}
+        return doc;
+
+
+    }
 
 }

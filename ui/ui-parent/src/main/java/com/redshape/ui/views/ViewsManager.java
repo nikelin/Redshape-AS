@@ -5,7 +5,6 @@ import com.redshape.ui.application.events.UIEvents;
 import com.redshape.ui.utils.UIConstants;
 import com.redshape.ui.utils.UIRegistry;
 
-import java.awt.*;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -109,7 +108,7 @@ public class ViewsManager implements IViewsManager {
 		this.area = area;
 	}
 
-	protected Container getViewArea() {
+	protected <T> T getViewArea() {
 		return UIRegistry.get( area );
 	}
 

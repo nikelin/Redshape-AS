@@ -12,7 +12,7 @@ public class JSONRenderersFactory extends AbstractRenderersFactory {
     						     IResourcesLoader resourcesLoader, 
     						     IPackagesLoader packagesLoader )
     	throws ConfigException {
-        super( JSONRenderersFactory.class, config, packagesLoader, resourcesLoader );
+        super( config, packagesLoader, resourcesLoader );
     }
 
     public String getFactoryId() {

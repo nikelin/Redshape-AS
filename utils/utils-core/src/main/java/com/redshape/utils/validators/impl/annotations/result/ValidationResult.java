@@ -1,8 +1,8 @@
 package com.redshape.utils.validators.impl.annotations.result;
 
-import java.lang.annotation.Annotation;
-
 import com.redshape.utils.validators.result.IValidationResult;
+
+import java.lang.annotation.Annotation;
 
 /**
  * @author nikelin

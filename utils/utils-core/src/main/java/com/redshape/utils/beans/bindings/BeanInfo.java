@@ -11,9 +11,9 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 
 import com.redshape.utils.beans.bindings.annotations.*;
-import com.redshape.validators.IValidator;
-import com.redshape.validators.impl.annotations.BeansValidator;
-import com.redshape.validators.result.IResultsList;
+import com.redshape.utils.validators.IValidator;
+import com.redshape.utils.validators.impl.annotations.BeansValidator;
+import com.redshape.utils.validators.result.IResultsList;
 
 import org.apache.commons.collections.ListUtils;
 import org.apache.log4j.Logger;

@@ -12,7 +12,7 @@ import java.io.OutputStream;
  * @date 07/04/11
  * @package com.redshape.utils.serializing
  */
-public class BeansFlusher extends AbstractBeansSerializer implements ObjectsFlusher {
+public class BeansFlusher extends AbstractBeansSerializer implements ObjectsFlusher{
 
     @Override
     public void flush(Object object, OutputStream target) throws ObjectsLoaderException {

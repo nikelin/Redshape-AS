@@ -3,10 +3,9 @@ package com.redshape.utils.serializing.beans;
 import com.redshape.utils.serializing.ObjectsLoader;
 import com.redshape.utils.serializing.ObjectsLoaderException;
 import com.thoughtworks.xstream.XStream;
+import org.apache.log4j.Logger;
 
 import java.io.*;
-
-import org.apache.log4j.Logger;
 
 /**
  * XStream-based beans unmarshaller
@@ -19,6 +18,15 @@ import org.apache.log4j.Logger;
 public class BeansLoader extends AbstractBeansSerializer implements ObjectsLoader {
     private static final Logger log = Logger.getLogger( BeansLoader.class );
 
+    @Override
+    public <T extends Object> T loadObject( T source, String path ) throws ObjectsLoaderException {
+        try {
+            return this.loadObject( source, this.getResourcesLoader().loadFile(path) );
+        } catch ( IOException e ) {
+            throw new ObjectsLoaderException( e.getMessage(), e );
+        }
+    }
+    
     @SuppressWarnings("unchecked")
 	public <T extends Object> T loadObject( T object, File source ) throws ObjectsLoaderException {
         try {
@@ -29,6 +37,7 @@ public class BeansLoader extends AbstractBeansSerializer implements ObjectsLoade
         }
     }
 
+    @Override
     @SuppressWarnings("unchecked")
 	public <T extends Object> T loadObject( T object, InputStream source ) throws ObjectsLoaderException {
         try {
@@ -39,6 +48,7 @@ public class BeansLoader extends AbstractBeansSerializer implements ObjectsLoade
         }
     }
 
+    @Override
 	public Iterable<?> loadObjects( InputStream stream ) throws ObjectsLoaderException {
         try {
             return (Iterable<?>) this.getLoader().fromXML( stream );
@@ -48,6 +58,7 @@ public class BeansLoader extends AbstractBeansSerializer implements ObjectsLoade
         }
 	}
 
+    @Override
     public Iterable<?> loadObjects( String path ) throws ObjectsLoaderException {
         try {
             return this.loadObjects( this.getResourcesLoader().loadFile( path ) );

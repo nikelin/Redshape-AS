@@ -13,8 +13,10 @@ import java.util.Set;
  * To change this template use File | Settings | File Templates.
  */
 public interface IController extends IEventHandler {
-
-    public Set<? extends EventType> getRegisteredEvents();
+	
+	public void registerHandler( EventType type, IEventHandler handler );
+	
+	public Set<? extends EventType> getRegisteredEvents();
 
     public void addChild( IController controller );
 

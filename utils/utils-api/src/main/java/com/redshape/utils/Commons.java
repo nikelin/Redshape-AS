@@ -1,6 +1,5 @@
 package com.redshape.utils;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
@@ -96,35 +95,6 @@ public final class Commons {
 
 	public static <T> T[] array( T... items ) {
 		return items;
-	}
-
-	public static <T, V> T switchEnum( IEnum<V> value, Map<IEnum<V>, IFunction<?, T>> values ) {
-		return switchEnum( value, values, null );
-	}
-
-	public static <T, V> T switchEnum( IEnum<V> value, Map<IEnum<V>, IFunction<?, T>> values,
-															 IFunction<?, T> defaultCase ) {
-		IEnum<V> resultCase = null;
-		for ( IEnum<V> enumMember : values.keySet() ) {
-			if ( enumMember.equals(value) ) {
-				resultCase = enumMember;
-				break;
-			}
-		}
-
-		try {
-			if ( resultCase == null ) {
-				if ( defaultCase != null ) {
-					defaultCase.invoke();
-				}
-
-				return null;
-			}
-
-			return values.get(resultCase).invoke();
-		} catch ( InvocationTargetException e ) {
-			throw new IllegalStateException("Case activation failed", e.getTargetException() );
-		}
 	}
 
 	public static <T> List<T> list( T... items ) {

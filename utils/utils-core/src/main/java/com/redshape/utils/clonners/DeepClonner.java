@@ -1,19 +1,19 @@
 package com.redshape.utils.clonners;
 
+import org.apache.log4j.Logger;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.apache.log4j.Logger;
 
-
-public class DeepClonner implements IObjectsCloner {
+public class DeepClonner implements IObjectsClonner {
 	private static final Logger log = Logger.getLogger( DeepClonner.class );
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T clone(T orig) throws CloneNotSupportedException {
+	public <T> T clone(T orig) {
 		try {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream(10000);
 			ObjectOutputStream out = new ObjectOutputStream(bos);
@@ -32,7 +32,7 @@ public class DeepClonner implements IObjectsCloner {
 			return clone;
 		} catch ( Throwable e ) {
 			log.error( e.getMessage(), e );
-			throw new CloneNotSupportedException();
+            throw new IllegalStateException( e.getMessage(), e );
 		}
 	}
 

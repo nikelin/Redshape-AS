@@ -22,6 +22,11 @@
 
     <dependencies>
         <dependency>
+            <artifactId>renderers-base</artifactId>
+            <groupId>com.redshape.renderers</groupId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <artifactId>jms</artifactId>
             <groupId>javax.jms</groupId>
             <version>1.1</version>

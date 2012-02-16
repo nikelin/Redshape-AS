@@ -11,6 +11,14 @@
 
     <groupId>com.redshape.renderers</groupId>
     <artifactId>renderers-json</artifactId>
+    <name>Redshape - Renderers - JSON</name>
 
+    <dependencies>
+        <dependency>
+            <artifactId>renderers-base</artifactId>
+            <groupId>com.redshape.renderers</groupId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>

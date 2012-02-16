@@ -31,6 +31,8 @@ public class ForkClassLoader extends ClassLoader {
     private Object protocolLock = new Object();
     
     public ForkClassLoader( IForkProtocol protocol, DataInputStream input, DataOutputStream output ) {
+        super();
+
         Commons.checkNotNull(input);
         Commons.checkNotNull(output);
         Commons.checkNotNull(protocol);

@@ -5,6 +5,7 @@ import com.redshape.ui.application.IApplication;
 import com.redshape.ui.application.events.AppEvent;
 import com.redshape.ui.application.events.IEventHandler;
 import com.redshape.ui.application.events.UIEvents;
+import com.redshape.ui.utils.UIConstants;
 import com.redshape.ui.utils.UIRegistry;
 import com.redshape.utils.StringUtils;
 
@@ -34,7 +35,7 @@ public class ErrorsHandler implements IEventHandler {
             Throwable exception = event.getArg(0);
 
             int option = JOptionPane.showConfirmDialog(
-                    UIRegistry.getRootContext(),
+                    UIRegistry.<JFrame>get(UIConstants.System.WINDOW),
                     "Some internal exception throwed. See details?",
                     "Error!",
                     JOptionPane.YES_NO_CANCEL_OPTION,
@@ -50,7 +51,7 @@ public class ErrorsHandler implements IEventHandler {
             UIRegistry.getNotificationsManager().error( String.valueOf( event.getArg(0) ) );
         } else {
             JOptionPane.showMessageDialog(
-                UIRegistry.<JFrame>getRootContext(),
+                    UIRegistry.<JFrame>get(UIConstants.System.WINDOW),
                 errorDescription != null ?
                         errorDescription.toString()
                         : "Unknow exception",

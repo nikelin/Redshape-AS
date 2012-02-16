@@ -10,8 +10,7 @@ import java.io.IOException;
  */
 public interface IScriptExecutionHandler {
 
-	public Integer onProgressRequested( ISystemProcess process )
-		throws IOException;
+	public Integer onProgressRequested( ISystemProcess process ) throws IOException;
 
 	public boolean onExit( String output );
 

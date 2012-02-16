@@ -1,6 +1,9 @@
 package com.redshape.utils.config.sources;
 
+import com.redshape.utils.config.ConfigException;
+
 import java.io.*;
+import java.util.Arrays;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,13 +20,34 @@ public class FileSource implements IConfigSource {
     }
 
     @Override
-    public Reader getReader() throws IOException {
-        return new FileReader(this.file);
+    public String read() throws ConfigException {
+        try {
+            InputStreamReader reader = new InputStreamReader( new FileInputStream(this.file) );
+            StringBuilder builder = new StringBuilder();
+            int read = 0;
+            do {
+                char[] data = new char[512];
+                read = reader.read(data);
+
+                if ( read > 0 ) {
+                    builder.append( Arrays.copyOfRange( data, 0, read ) );
+                }
+            } while ( read > 0 );
+
+            return builder.toString();
+        } catch ( IOException e ) {
+            throw new ConfigException( e.getMessage(), e );
+        }
     }
 
     @Override
-    public Writer getWriter() throws IOException {
-        return new FileWriter(this.file);
+    public void write( String data ) throws ConfigException {
+        try {
+            FileWriter writer = new FileWriter(this.file);
+            writer.write(data);
+        } catch ( IOException e ) {
+            throw new ConfigException( e.getMessage(), e );
+        }
     }
 
     @Override

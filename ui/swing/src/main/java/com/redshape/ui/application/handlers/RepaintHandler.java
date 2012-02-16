@@ -50,8 +50,9 @@ public class RepaintHandler implements IEventHandler {
                 component.repaint();
             }
 
-            UIRegistry.getRootContext().invalidate();
-            UIRegistry.getRootContext().repaint();
+            JFrame window = UIRegistry.<JFrame>get(UIConstants.System.WINDOW);
+            window.invalidate();
+            window.repaint();
         }
     }
 }

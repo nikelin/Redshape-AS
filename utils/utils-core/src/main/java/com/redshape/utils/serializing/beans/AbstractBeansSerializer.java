@@ -19,7 +19,7 @@ import java.io.InputStream;
  * @date 07/04/11
  * @package com.redshape.utils.serializing.beans
  */
-public class AbstractBeansSerializer {
+public abstract class AbstractBeansSerializer {
     private XStream loader;
     private XMLHelper xmlHelper;
     private ResourcesLoader resourcesLoader;

@@ -1,10 +1,8 @@
 package com.redshape.utils.config;
 
-import com.redshape.utils.StringUtils;
 import com.redshape.utils.config.sources.IConfigSource;
 
 import java.util.*;
-import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
@@ -48,15 +46,25 @@ public abstract class AbstractConfig implements IConfig {
 
 	@Override
 	public String path() throws ConfigException {
-		Deque<String> deque = new LinkedBlockingDeque<String>();
+		List<String> route = new ArrayList<String>();
 		IConfig parent = this;
 		while ( null != parent ) {
-			deque.add( parent.name() );
+			route.add( parent.name() );
 
 			parent = parent.parent();
 		}
+        
+        String[] routes = route.toArray( new String[route.size()] );
+        StringBuilder result = new StringBuilder();
+        for ( int i = routes.length; i > 0; i-- ) {
+            result.append( routes[i] );
 
-		return StringUtils.join(deque, ".");
+            if ( i != routes.length - 1 ) {
+                result.append(".");
+            }
+        }
+        
+        return result.toString();
 	}
 
 	@Override
@@ -192,6 +200,15 @@ public abstract class AbstractConfig implements IConfig {
 		this.childs.remove(config);
 		return this;
 	}
+
+    @Override
+    public void save() throws ConfigException {
+        if ( this.source == null ) {
+            throw new IllegalStateException("Associated holder not exists");
+        }
+
+        this.source.write( this.serialize() );
+    }
 
 	abstract protected IConfig createNull();
 }

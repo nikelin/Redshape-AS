@@ -14,7 +14,11 @@ import java.io.*;
 public class BinaryLoader implements ObjectsLoader {
 	private static final Logger log = Logger.getLogger( ObjectsLoader.class );
 
-	@Override
+    @Override
+    public <T extends Object> T loadObject(T source, String path) throws ObjectsLoaderException {
+        return this.loadObject( source, new File(path) );
+    }
+    
 	public <T extends Object> T loadObject(T source, File data) throws ObjectsLoaderException {
 		try {
 			return this.loadObject( source, new FileInputStream(data) );
@@ -46,7 +50,6 @@ public class BinaryLoader implements ObjectsLoader {
 		throw new RuntimeException("Operation not supports");
 	}
 
-	@Override
 	public Iterable<?> loadObjects(File path) throws ObjectsLoaderException {
 		throw new RuntimeException("Operation not supports");
 	}

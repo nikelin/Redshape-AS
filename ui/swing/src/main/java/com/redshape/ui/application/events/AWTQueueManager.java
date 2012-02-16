@@ -1,7 +1,6 @@
 package com.redshape.ui.application.events;
 
 import java.awt.*;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
@@ -11,9 +10,12 @@ import java.lang.reflect.InvocationTargetException;
 public class AWTQueueManager implements IEventQueue {
 
     @Override
-    public void invokeAndWait( Runnable runnable ) throws InterruptedException,
-            InvocationTargetException {
-        EventQueue.invokeAndWait(runnable);
+    public void invokeAndWait( Runnable runnable ) {
+        try {
+            EventQueue.invokeAndWait(runnable);
+        } catch ( Throwable e ) {
+            throw new IllegalStateException( e.getMessage(), e );
+        }
     }
 
     @Override

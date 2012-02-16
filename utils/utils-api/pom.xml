@@ -11,6 +11,6 @@
 
     <groupId>com.redshape.utils</groupId>
     <artifactId>utils-api</artifactId>
-
+    <name>Redshape - Utils - API</name>
 
 </project>

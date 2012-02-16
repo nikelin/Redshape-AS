@@ -3,15 +3,15 @@ package com.redshape.utils.clonners;
 import org.apache.commons.beanutils.BeanUtils;
 
 
-public class BeanClonner implements IObjectsCloner {
+public class BeanClonner implements IObjectsClonner {
 
 	@SuppressWarnings("unchecked")
-	public <T> T clone ( T orig ) throws CloneNotSupportedException {
+	public <T> T clone ( T orig ) {
 		try {
 			return (T) BeanUtils.cloneBean(orig);
 		} catch ( Throwable e ) {
-			throw new CloneNotSupportedException();
-		}
+            throw new IllegalStateException( e.getMessage(), e );
+        }
 	}
 	
 }

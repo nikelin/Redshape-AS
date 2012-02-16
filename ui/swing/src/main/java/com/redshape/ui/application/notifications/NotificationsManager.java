@@ -1,6 +1,7 @@
 package com.redshape.ui.application.notifications;
 
 import com.redshape.ui.application.events.IEventHandler;
+import com.redshape.ui.utils.UIConstants;
 import com.redshape.ui.utils.UIRegistry;
 import com.redshape.ui.windows.ISwingWindowsManager;
 
@@ -21,12 +22,13 @@ public class NotificationsManager implements INotificationsManager {
 
     @Override
     public String request( String message ) {
-        return JOptionPane.showInputDialog( UIRegistry.<JFrame>getRootContext(), message );
+        return JOptionPane.showInputDialog( UIRegistry.<JFrame>get(UIConstants.System.WINDOW), message );
     }
 
     @Override
     public void ask(String message, IEventHandler yesCase, IEventHandler noCase) {
-        if ( JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog( UIRegistry.<JFrame>getRootContext(), message ) ) {
+        if ( JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(
+                UIRegistry.<JFrame>get(UIConstants.System.WINDOW), message ) ) {
             if ( yesCase != null ) {
                 yesCase.handle( null );
             }

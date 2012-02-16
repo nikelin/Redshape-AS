@@ -2,7 +2,7 @@ package com.redshape.migration.renderers.mysql;
 
 import com.redshape.migration.components.FieldOption;
 import com.redshape.migration.renderers.MySQLRenderer;
-import com.redshape.renderer.RendererException;
+import com.redshape.renderer.IRenderersFactory;
 import com.redshape.renderer.TargetEntity;
 
 /**
@@ -16,7 +16,11 @@ import com.redshape.renderer.TargetEntity;
 @TargetEntity( entity = FieldOption.class )
 public class FieldOptionRenderer extends MySQLRenderer<FieldOption> {
 
-    public String render( FieldOption option ) throws RendererException {
+    public FieldOptionRenderer(IRenderersFactory renderersFactory) {
+        super(renderersFactory);
+    }
+
+    public String render( FieldOption option ) {
         StringBuilder builder = new StringBuilder();
 
         String fieldOption = option.getOption().name();

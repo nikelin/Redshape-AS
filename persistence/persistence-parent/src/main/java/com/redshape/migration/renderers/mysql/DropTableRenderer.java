@@ -2,6 +2,7 @@ package com.redshape.migration.renderers.mysql;
 
 import com.redshape.migration.components.Table;
 import com.redshape.migration.renderers.MySQLRenderer;
+import com.redshape.renderer.IRenderersFactory;
 import com.redshape.renderer.RendererException;
 import com.redshape.renderer.TargetEntity;
 
@@ -18,30 +19,15 @@ import java.util.Collection;
 @TargetEntity( entity = Table.class )
 public class DropTableRenderer extends MySQLRenderer<Table> {
 
-    public String render( Table table ) throws RendererException {
+    public DropTableRenderer(IRenderersFactory renderersFactory) {
+        super(renderersFactory);
+    }
+
+    public String render( Table table ) {
         StringBuilder builder = new StringBuilder();
         builder.append("drop table ");
         builder.append( table.getName() );
         builder.append(";");
-
-        return builder.toString();
-    }
-
-    @Override
-    public String render( Collection<Table> tables ) throws RendererException {
-        StringBuilder builder = new StringBuilder();
-        builder.append("drop table ");
-
-        int num = 0;
-        for ( Table table : tables ) {
-            builder.append( table.getName() );
-
-            if ( num < tables.size() )  {
-                builder.append(",");
-            }
-
-            num++;
-        }
 
         return builder.toString();
     }

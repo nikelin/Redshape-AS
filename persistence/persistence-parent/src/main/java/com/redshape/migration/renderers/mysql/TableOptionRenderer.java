@@ -2,6 +2,7 @@ package com.redshape.migration.renderers.mysql;
 
 import com.redshape.migration.components.TableOption;
 import com.redshape.migration.renderers.MySQLRenderer;
+import com.redshape.renderer.IRenderersFactory;
 import com.redshape.renderer.TargetEntity;
 
 /**
@@ -14,6 +15,10 @@ import com.redshape.renderer.TargetEntity;
  */
 @TargetEntity( entity = TableOption.class )
 public class TableOptionRenderer extends MySQLRenderer<TableOption> {
+
+    public TableOptionRenderer(IRenderersFactory renderersFactory) {
+        super(renderersFactory);
+    }
 
     public String render( TableOption option ) {
         StringBuilder builder = new StringBuilder();

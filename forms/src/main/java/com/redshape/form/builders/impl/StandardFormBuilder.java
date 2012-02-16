@@ -7,7 +7,6 @@ import com.redshape.form.IFormProcessHandler;
 import com.redshape.form.builders.AbstractFormItemBuilder;
 import com.redshape.form.builders.IFormBuilder;
 import com.redshape.form.impl.Form;
-import com.redshape.renderer.forms.impl.StandardFormRenderer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,7 +18,8 @@ public class StandardFormBuilder extends AbstractFormItemBuilder implements IFor
 	private String method;
 	private IFormProcessHandler processHandler;
 	private List<IFormItem> items = new ArrayList<IFormItem>();
-	
+
+
 	@Override
 	public IFormBuilder withAction(String path) {
 		this.action = path;
@@ -66,8 +66,7 @@ public class StandardFormBuilder extends AbstractFormItemBuilder implements IFor
 	@Override
 	public IForm build() {
 		IForm form = new Form(this.id);
-		form.setRenderer( new StandardFormRenderer() );
-		form.setProcessHandler( this.processHandler );
+		form.setProcessHandler(this.processHandler);
 		form.setName( this.name );
 		form.setAction( this.action );
 		form.setLegend( this.legend );

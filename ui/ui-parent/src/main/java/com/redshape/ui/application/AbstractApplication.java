@@ -1,7 +1,9 @@
 package com.redshape.ui.application;
 
 import com.redshape.ui.Dispatcher;
-import com.redshape.ui.application.events.*;
+import com.redshape.ui.application.events.EventDispatcher;
+import com.redshape.ui.application.events.EventType;
+import com.redshape.ui.application.events.UIEvents;
 import com.redshape.ui.components.IComponent;
 import com.redshape.ui.components.IComponentsRegistry;
 import com.redshape.ui.utils.UIConstants;
@@ -11,7 +13,6 @@ import com.redshape.ui.views.widgets.IWidgetsManager;
 import com.redshape.utils.Commons;
 import com.redshape.utils.config.ConfigException;
 import com.redshape.utils.config.IConfig;
-import org.apache.log4j.Logger;
 
 import java.util.Collection;
 
@@ -19,7 +20,6 @@ import java.util.Collection;
  * @author nikelin
  */
 public abstract class AbstractApplication extends EventDispatcher implements IApplication {
-	private static final Logger log = Logger.getLogger( AbstractApplication.class );
 
     public static class Events extends EventType {
         protected Events(String code) {
@@ -43,11 +43,6 @@ public abstract class AbstractApplication extends EventDispatcher implements IAp
 
         this.init();
     }
-    
-    @Override
-    public void exit() {
-    	System.exit(1);
-    }
 
     protected IBeansProvider getContext() {
         return this.appContext;
@@ -64,10 +59,16 @@ public abstract class AbstractApplication extends EventDispatcher implements IAp
     protected IConfig getConfig() {
         return this.getContext().getBean( IConfig.class );
     }
+
+    /**
+     * With a mind of GWT-compiler (which do not understand Class.isAssignableFrom)
+     * @param source
+     * @param target
+     * @return
+     */
+    protected abstract boolean isAssignableFrom( Class<?> source, Class<?> target );
     
     protected void init() throws ApplicationException {
-        Thread.currentThread().setUncaughtExceptionHandler( this.createUncaughtHandler() );
-
         for ( IComponent component : this.getComponentsRegistry().getComponents() ) {
     		this.initComponent(component);
     	}
@@ -90,35 +91,11 @@ public abstract class AbstractApplication extends EventDispatcher implements IAp
         }
     }
     
-    protected void initInterceptor( IConfig node ) throws ConfigException, ApplicationException {
-        String signal = node.get("signal").value();
-        String className = node.get("class").value();
-        if ( className == null ) {
-            return;
-        }
+    protected abstract void initInterceptor( IConfig node ) throws ConfigException, ApplicationException;
 
-        try {
-            Class<?> clazz = this.getClass().getClassLoader().loadClass( className );
-            if ( ! IEventHandler.class.isAssignableFrom(clazz) ) {
-                return;
-            }
+    protected abstract void initComponent( IComponent<?> component );
 
-            Dispatcher.get().addListener(
-                EventType.valueOf( signal ),
-                (IEventHandler) clazz.newInstance()
-            );
-        } catch ( Throwable e ) {
-            if ( e instanceof ApplicationException ) {
-                throw (ApplicationException) e;
-            }
-
-            log.error("Unable to initialized interceptor " + className, e);
-        }
-    }
-
-    protected abstract void initComponent( IComponent component );
-
-    protected abstract void initWidget( UIConstants.Area area, IWidget widget );
+    protected abstract void initWidget( UIConstants.Area area, IWidget<?> widget );
 
     @Override
     public void start() throws ApplicationException {
@@ -137,15 +114,6 @@ public abstract class AbstractApplication extends EventDispatcher implements IAp
         Dispatcher.get().forwardEvent( UIEvents.Core.Init );
         
         this.forwardEvent( Events.Start );
-    }
-
-    protected Thread.UncaughtExceptionHandler createUncaughtHandler() {
-        return new Thread.UncaughtExceptionHandler() {
-			@Override
-			public void uncaughtException(Thread t, Throwable e) {
-				Dispatcher.get().forwardEvent( UIEvents.Core.Error, e );
-			}
-		};
     }
 
 }

@@ -1,11 +1,8 @@
 package com.redshape.form;
 
-import com.redshape.renderer.forms.IFormRenderer;
-import com.redshape.servlet.core.IHttpRequest;
-
 import java.util.List;
 
-public interface IForm extends com.redshape.form.IFormItem {
+public interface IForm extends IFormItem {
 
 	public void copy( IForm form );
 
@@ -15,9 +12,9 @@ public interface IForm extends com.redshape.form.IFormItem {
 
 	public <T> T getValue( String name );
 
-	public void setProcessHandler( com.redshape.form.IFormProcessHandler handler );
+	public void setProcessHandler( IFormProcessHandler handler );
 	
-	public void process( IHttpRequest request ) throws com.redshape.form.InvalidDataException;
+	public void process( IUserRequest request ) throws InvalidDataException;
 	
 	public void setLegend( String legend );
 
@@ -45,20 +42,16 @@ public interface IForm extends com.redshape.form.IFormItem {
 
 	public void remove();
 
-	public void removeField( com.redshape.form.IFormField<?> field );
+	public void removeField( IFormField<?> field );
 	
-	public List<com.redshape.form.IFormField<?>> getFields();
+	public List<IFormField<?>> getFields();
 	
 	public void addSubForm( IForm form, String name );
 	
 	public void removeSubForm( String name );
 	
 	public List<IForm> getSubForms();
-	
-	public List<com.redshape.form.IFormItem> getItems();
 
-	public IFormRenderer getRenderer();
-	
-	public void setRenderer( IFormRenderer renderer );
+	public List<IFormItem> getItems();
 	
 }

@@ -19,37 +19,36 @@ import com.redshape.renderer.TargetEntity;
 @TargetEntity( entity = FieldType.class )
 public class FieldTypeRenderer extends MySQLRenderer<FieldType> {
 
-    public String render( FieldType type ) throws RendererException {
-        try {
-            IRenderersFactory factory = AbstractRenderersFactory.getFactory(MySQLRenderersFactory.class);
+    public FieldTypeRenderer(IRenderersFactory renderersFactory) {
+        super(renderersFactory);
+    }
 
-            StringBuilder builder = new StringBuilder();
-            builder.append( type.getType().name() )
-                   .append(" ");
+    @Override
+    public String render( FieldType type ) {
+        StringBuilder builder = new StringBuilder();
+        builder.append( type.getType().name() )
+               .append(" ");
 
-            if ( type.getLength() != null && type.getDecimalLength() != null ) {
-                builder.append( "(" )
-                       .append( type.getLength() )
-                       .append( "," )
-                       .append( type.getDecimalLength() )
-                       .append( ")" );
-            } else if ( type.getLength() != null ) {
-                builder.append( "(" )
-                       .append( type.getLength() )
-                       .append( ")" );
-            }
-
-            builder.append(" ");
-
-            for ( String option : type.getOptions() ) {
-                builder.append(option)
-                       .append(" ");
-            }
-
-            return builder.toString();
-        } catch ( Throwable e ) {
-            throw new RendererException();
+        if ( type.getLength() != null && type.getDecimalLength() != null ) {
+            builder.append( "(" )
+                   .append( type.getLength() )
+                   .append( "," )
+                   .append( type.getDecimalLength() )
+                   .append( ")" );
+        } else if ( type.getLength() != null ) {
+            builder.append( "(" )
+                   .append( type.getLength() )
+                   .append( ")" );
         }
+
+        builder.append(" ");
+
+        for ( String option : type.getOptions() ) {
+            builder.append(option)
+                   .append(" ");
+        }
+
+        return builder.toString();
     }
 
 }

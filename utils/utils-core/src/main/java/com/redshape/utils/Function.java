@@ -128,10 +128,10 @@ public class Function<V, T> implements com.redshape.utils.IFunction<V, T> {
 	public com.redshape.utils.IFunction<V, T> pass(Object... arguments) {
 		return new Function<V, T>( this.getMethod(), arguments);
 	}
-	
-	@Override
-	public Method toMethod() {
-		return this.method;
-	}
 
+
+    @Override
+    public Method toMethod() {
+        return this.method;
+    }
 }

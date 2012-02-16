@@ -65,7 +65,7 @@ public class XMLConfig extends AbstractConfig {
 	@Override
     protected void init() throws ConfigException {
 		try {
-			this.init( this, this.getXmlHelper().buildDocument(this.source.getReader()).getDocumentElement() );
+			this.init( this, this.getXmlHelper().buildDocumentByData(this.source.read()).getDocumentElement() );
 		} catch ( Throwable e ) {
 			throw new ConfigException( e.getMessage(), e );
 		}

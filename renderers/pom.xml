@@ -11,6 +11,17 @@
 
     <groupId>com.redshape</groupId>
     <artifactId>renderers</artifactId>
+    <packaging>pom</packaging>
+    <name>Redshape - Renderers</name>
 
+    <modules>
+        <module>renderers-base</module>
+        <module>renderers-json</module>
+        <module>renderers-forms-http</module>
+    </modules>
+
+    <dependencies>
+
+    </dependencies>
 
 </project>

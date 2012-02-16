@@ -20,7 +20,6 @@ public class Form extends com.redshape.form.impl.Form {
     public Form(String id, String name) {
         super(id, name);
 
-
         this.setDecorator( new ErrorsDecorator() );
     }
 }

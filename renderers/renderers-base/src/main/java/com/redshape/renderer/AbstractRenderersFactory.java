@@ -1,14 +1,9 @@
 package com.redshape.renderer;
 
-import com.redshape.utils.Commons;
-import com.redshape.utils.IPackagesLoader;
-import com.redshape.utils.IResourcesLoader;
-import com.redshape.utils.InterfacesFilter;
-import com.redshape.utils.PackageLoaderException;
+import com.redshape.utils.*;
 import com.redshape.utils.config.ConfigException;
 import com.redshape.utils.config.IConfig;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
@@ -16,22 +11,18 @@ public abstract class AbstractRenderersFactory implements IRenderersFactory {
     private static final Logger log = Logger.getLogger( AbstractRenderersFactory.class );
 
     public static String PACKAGES_PATH = "settings.renderers.packages";
-    
-    private static Map<Class<? extends IRenderersFactory>, IRenderersFactory> factories 
-				= new HashMap<Class<? extends IRenderersFactory>, IRenderersFactory>();
 
     private Map<Class<?>, Class<? extends IRenderer<?, ?>> > entities 
 				= new HashMap<Class<?>, Class<? extends IRenderer<?,?>>>();
     
     private Map<Class<? extends IRenderer<?, ?>>, IRenderer<?, ?>> renderers 
 				= new HashMap<Class<? extends IRenderer<?,?>>, IRenderer<?,?>>();
-    
+
     private IResourcesLoader resourcesLoader;
     private IPackagesLoader packagesLoader;
     private IConfig config;
 
-    protected AbstractRenderersFactory( Class<? extends IRenderersFactory> clazz,
-    									IConfig config,
+    protected AbstractRenderersFactory( IConfig config,
     									IPackagesLoader packagesLoader,
 										IResourcesLoader resourcesLoader )
     	throws ConfigException {
@@ -64,33 +55,15 @@ public abstract class AbstractRenderersFactory implements IRenderersFactory {
     	return this.config;
     }
 
-    @SuppressWarnings("unchecked")
-	public static <T extends IRenderersFactory> T getFactory( Class<T> factoryClass ) 
-			throws InstantiationException {
-        T factory = (T) factories.get( factoryClass );
-        if ( factory != null ) {
-            return factory;
-        }
-
-        try {
-        	factories.put( factoryClass, factory = factoryClass.newInstance() );
-        } catch ( Throwable e ) {
-            throw new InstantiationException();
-        }
-
-        return factory;
-    }
-
     @Override
     @SuppressWarnings("unchecked")
-    public <T, V> IRenderer<T, V> getRenderer( Class<? extends IRenderer<T, V>> clazz ) 
-    		throws RendererException {
+    public <T, V> IRenderer<T, V> getRenderer( Class<? extends IRenderer<T, V>> clazz ) {
 		IRenderer<T, V> renderer = (IRenderer<T,V>) this.renderers.get(clazz);
 
         try {
             renderer = clazz.newInstance();
         } catch ( Throwable e ) {
-            throw new RendererException( e.getMessage(), e );
+            return null;
         }
 
         this.addRenderer( clazz, renderer );
@@ -105,41 +78,36 @@ public abstract class AbstractRenderersFactory implements IRenderersFactory {
     }
 
     @Override
-    public <T, V> IRenderer<T, V> forEntity( Object object ) throws RendererException {
+    public <T, V> IRenderer<T, V> forEntity( Object object ) {
         return this.<T, V>forEntity( object.getClass() );
     }
 
 	@Override
-    public <T, V> IRenderer<T, V> forEntity( Class<T> object ) throws RendererException {
+    public <T, V> IRenderer<T, V> forEntity( Class<T> object ) {
         return this.<T, V>getRenderer( this.<T, V>getForEntity(object) );
 	}
 
     @SuppressWarnings("unchecked")
-	protected <T, V> Class<? extends IRenderer<T, V>> getForEntity( Class<T> object ) 
-    		throws RendererException{
-        try {
-            Class<? extends IRenderer<T, V>> rendererClass = 
-            		(Class<? extends IRenderer<T, V>>) this.entities.get(object);
-            if ( rendererClass != null ) {
-                return rendererClass;
-            }
+	protected <T, V> Class<? extends IRenderer<T, V>> getForEntity( Class<T> object ) {
+        Class<? extends IRenderer<T, V>> rendererClass =
+                (Class<? extends IRenderer<T, V>>) this.entities.get(object);
+        if ( rendererClass != null ) {
+            return rendererClass;
+        }
 
-            for( Class<?> clazz : this.entities.keySet() ) {
-                if ( clazz.isAssignableFrom( object ) ) {
-                    rendererClass = (Class<? extends IRenderer<T, V>>) 
-                    		this.entities.get( clazz );
-                    break;
-                }
+        for( Class<?> clazz : this.entities.keySet() ) {
+            if ( clazz.isAssignableFrom( object ) ) {
+                rendererClass = (Class<? extends IRenderer<T, V>>)
+                        this.entities.get( clazz );
+                break;
             }
+        }
 
-            if ( rendererClass != null ) {
-               return rendererClass;
-            }
+        if ( rendererClass != null ) {
+           return rendererClass;
+        }
 
-            throw new RendererException(object.getClass().getCanonicalName());
-		} catch ( Throwable e ) {
-			throw new RendererException( e.getMessage(), e );
-		}
+        return null;
 	}
 
     @SuppressWarnings("unchecked")
@@ -175,7 +143,6 @@ public abstract class AbstractRenderersFactory implements IRenderersFactory {
     @SuppressWarnings("unchecked")
 	protected void initRenderers()  {
         try {
-            log.info("Renderers initialization...");
             Class<? extends IRenderer<?, ?>>[] classes = 
             		this.getRenderersClasses(this.getFactoryId() );
             if ( classes.length == 0 ) {

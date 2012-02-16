@@ -13,7 +13,7 @@
 
 	<bean scope="singleton" id="windowsManager" class="com.redshape.ui.windows.WindowsManager"/>
 
-    <bean scope="prototype" id="xmlObjectsLoader" class="com.redshape.utils.serializing.beans.BeansLoader">
+    <bean scope="prototype" id="xmlObjectsLoader" class="com.redshape.utils.serializing.BeansLoader">
         <property name="xmlHelper">
             <ref bean="xmlHelper"/>
         </property>
@@ -25,7 +25,7 @@
     <bean scope="prototype" id="binaryObjectsLoader" class="com.redshape.utils.serializing.binary.BinaryLoader"/>
     <bean scope="prototype" id="binaryObjectsFlusher" class="com.redshape.utils.serializing.binary.BinaryFlusher"/>
 
-    <bean scope="prototype" id="xmlObjectsFlusher" class="com.redshape.utils.serializing.beans.BeansFlusher">
+    <bean scope="prototype" id="xmlObjectsFlusher" class="com.redshape.utils.serializing.BeansFlusher">
         <property name="xmlHelper">
             <ref bean="xmlHelper"/>
         </property>

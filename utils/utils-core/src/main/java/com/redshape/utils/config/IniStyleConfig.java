@@ -2,8 +2,6 @@ package com.redshape.utils.config;
 
 import com.redshape.utils.config.sources.IConfigSource;
 
-import java.io.*;
-
 /**
  * @package com.redshape.utils.config
  * @user cyril
@@ -25,16 +23,12 @@ public class IniStyleConfig extends AbstractConfig {
     }
 
     protected void init() throws ConfigException {
-        try {
-            String data = this.readFile();
-            if ( data.isEmpty() ) {
-                return;
-            }
-
-            this.processData( data );
-        } catch ( IOException e ) {
-            throw new ConfigException( e.getMessage(), e );
+        String data = this.source.read();
+        if ( data.isEmpty() ) {
+            return;
         }
+
+        this.processData( data );
     }
 
 	@Override
@@ -69,25 +63,6 @@ public class IniStyleConfig extends AbstractConfig {
         }
     }
 
-    protected String readFile() throws IOException {
-        StringBuilder result = new StringBuilder();
-
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader( this.source.getReader() );
-            String tmp;
-            while ( null != ( tmp = reader.readLine() ) ) {
-                result.append( tmp ).append("\n");
-            }
-        } finally {
-            if ( reader != null ) {
-                reader.close();
-            }
-        }
-
-        return result.toString();
-    }
-
     @Override
     public IConfig createChild(String name) {
         if ( name == null ) {
@@ -97,20 +72,6 @@ public class IniStyleConfig extends AbstractConfig {
         IniStyleConfig config = new IniStyleConfig(this, name, "");
         this.append(config);
         return config;
-    }
-
-    public void save() throws ConfigException {
-        if ( this.source == null ) {
-            throw new IllegalStateException("Associated holder not exists");
-        }
-
-        try {
-            BufferedWriter writer = new BufferedWriter( this.source.getWriter() );
-            writer.write( this.serialize() );
-            writer.close();
-        } catch ( IOException e ) {
-            throw new ConfigException("File update failed", e );
-        }
     }
 
     @Override

@@ -27,13 +27,9 @@ public interface IResourcesLoader {
 
 	public File loadFile( String path, boolean searchPath ) throws IOException;
 
-	public String loadData( File file ) throws IOException;
-
 	public String loadData( String path ) throws IOException;
 
 	public String loadData( String path, boolean escapeNonpritable ) throws IOException;
-
-	public String loadData( File file, boolean escapeNonprintable ) throws IOException;
 
 	public InputStream loadResource( String path ) throws IOException;
 

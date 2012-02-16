@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<syntax>
+    <variable name="nodesDelimiter" value=" "/>
+    <variable name="contextDelimiter" value="."/>
+
+    <group name="statement">
+        <node-ref name="declaration"/>
+        <node-ref name="function"/>
+        <node-ref name="variable"/>
+        <node-ref name="string"/>
+        <node-ref name="literal"/>
+    </group>
+
+    <group name="literal">
+        <node-ref name="numerical"/>
+        <node-ref name="string"/>
+    </group>
+
+    <node name="string">
+        <any maxOccurences="1" required="true" as="quote">
+            <match value='"'/>
+            <match value="'"/>
+        </any>
+        <expression value='[^\"]'/>
+        <match-ref name="quote"/>
+    </node>
+
+    <node name="numerical">
+        <expression value="[0-9]+"/>
+    </node>
+
+    <node name="identifier">
+        <expression value="[a-zA-Z_]{1,1}[a-zA-Z0-9]*"/>
+    </node>
+
+    <node name="variable">
+        <match value="#"/>
+        <node-ref name="identifier"/>
+    </node>
+
+    <node name="function">
+        <match value="("/>
+        <node-ref name="identifier"/>
+        <sequence>
+            <node-ref name="statement"/>
+        </sequence>
+        <match value=")"/>
+    </node>
+
+    <node name="declaration">
+        <match value="(:"/>
+        <node-ref name="identifier"/>
+        <sequence>
+            <node-ref name="statement"/>
+        </sequence>
+        <match value=")"/>
+    </node>
+</syntax>

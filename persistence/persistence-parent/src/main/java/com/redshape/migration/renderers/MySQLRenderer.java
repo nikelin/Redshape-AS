@@ -1,6 +1,7 @@
 package com.redshape.migration.renderers;
 
 import com.redshape.renderer.IRenderer;
+import com.redshape.renderer.IRenderersFactory;
 import com.redshape.renderer.RendererException;
 
 import java.util.Collection;
@@ -18,11 +19,22 @@ public abstract class MySQLRenderer<T> implements IRenderer<T, String> {
     private static final char ESCAPE_CHAR = '`';
     private final static Pattern NON_ESCAPABLE = Pattern.compile("[`() ,]");
 
+    private IRenderersFactory renderersFactory;
+    
+    public MySQLRenderer( IRenderersFactory renderersFactory ) {
+        super();
+        
+        this.renderersFactory = renderersFactory;
+    }
+
+    protected IRenderersFactory getRenderersFactory() {
+        return this.renderersFactory;
+    }
+    
     protected String escapeField( String name ) {
         return isEscapingNeeds( name ) ? ESCAPE_CHAR + name + ESCAPE_CHAR : name;
     }
 
-    @Override
     public String render( Collection<T> renderables ) throws RendererException {
         StringBuilder builder = new StringBuilder();
 
@@ -46,6 +58,7 @@ public abstract class MySQLRenderer<T> implements IRenderer<T, String> {
         return !value.isEmpty()
                 || (
                     !( NON_ESCAPABLE.matcher( String.valueOf( value.charAt(0) ) ).find()
-                        && NON_ESCAPABLE.matcher( String.valueOf( value.charAt( value.length() - 1 ) ) ).find() ) );
+                        && NON_ESCAPABLE.matcher(
+                            String.valueOf( value.charAt( value.length() - 1 ) ) ).find() ) );
     }
 }

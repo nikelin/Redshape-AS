@@ -23,6 +23,11 @@ public class StreamWaiter extends AbstractStreamWaiter {
     }
 
     @Override
+    public void setPriority(Priority priority) {
+        this.priority = priority;
+    }
+
+    @Override
     public void await() throws IOException {
         if ( -1 != this.getStream().read() ) {
             this.invokeHandlers();

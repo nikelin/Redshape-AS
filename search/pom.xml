@@ -19,8 +19,8 @@
 
     <dependencies>
        <dependency>
-           <artifactId>utils</artifactId>
-           <groupId>com.redshape</groupId>
+           <artifactId>utils-core</artifactId>
+           <groupId>com.redshape.utils</groupId>
            <version>${project.version}</version>
        </dependency>
         <dependency>

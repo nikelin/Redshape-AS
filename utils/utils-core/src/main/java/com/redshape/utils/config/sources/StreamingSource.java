@@ -1,6 +1,9 @@
 package com.redshape.utils.config.sources;
 
+import com.redshape.utils.config.ConfigException;
+
 import java.io.*;
+import java.util.Arrays;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,21 +26,42 @@ public class StreamingSource implements IConfigSource {
     }
 
     @Override
-    public Reader getReader() throws IOException {
-        if ( !this.isReadable() ) {
-            throw new IllegalStateException("Write-only source");
-        }
+    public String read() throws ConfigException {
+        try {
+            if ( !this.isReadable() ) {
+                throw new IllegalStateException("Write-only source");
+            }
 
-        return new InputStreamReader(this.input);
+            InputStreamReader reader = new InputStreamReader(this.input);
+            StringBuilder builder = new StringBuilder();
+            int read = 0;
+            do {
+                char[] data = new char[512];
+                read = reader.read(data);
+
+                if ( read > 0 ) {
+                    builder.append( Arrays.copyOfRange(data, 0, read) );
+                }
+            } while ( read > 0 );
+
+            return builder.toString();
+        } catch ( IOException e ) {
+            throw new ConfigException( e.getMessage(), e );
+        }
     }
 
     @Override
-    public Writer getWriter() throws IOException {
-        if ( !this.isWritable() ) {
-            throw new IllegalStateException("Read-only source");
+    public void write( String data) throws ConfigException {
+        try {
+            if ( !this.isWritable() ) {
+                throw new IllegalStateException("Read-only source");
+            }
+    
+            OutputStreamWriter writer = new OutputStreamWriter(this.output);
+            writer.write(data);
+        } catch ( IOException e ) {
+            throw new ConfigException( e.getMessage(), e );
         }
-
-        return new OutputStreamWriter(this.output);
     }
 
     @Override

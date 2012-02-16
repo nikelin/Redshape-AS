@@ -31,7 +31,23 @@ public interface IRenderersFactory {
     public <T, V> void addRenderer( Class<? extends IRenderer<T, V>> rendererClazz, 
     						 IRenderer<T, V> renderer );
 
-    public <T, V> IRenderer<T, V> forEntity( Object object ) throws RendererException;
+    /**
+     *
+     * @param object
+     * @param <T>
+     * @param <V>
+     * @return
+     * @throws RendererException
+     */
+    public <T, V> IRenderer<T, V> forEntity( Object object );
 
-    public <T, V> IRenderer<T, V> forEntity( Class<T> object ) throws RendererException;
+    /**
+     *
+     * @param object
+     * @param <T>
+     * @param <V>
+     * @return
+     * @throws RendererException
+     */
+    public <T, V> IRenderer<T, V> forEntity( Class<T> object );
 }

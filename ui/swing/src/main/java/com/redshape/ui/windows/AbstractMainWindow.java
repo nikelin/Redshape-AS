@@ -60,7 +60,7 @@ public abstract class AbstractMainWindow extends JFrame {
 
         MenuBar menu;
         this.setMenuBar( menu = this.createMenu() );
-        UIRegistry.setMenu( menu );
+        UIRegistry.set( UIConstants.System.MENUBAR, menu );
         
         this.add( (Component) UIRegistry.set( UIConstants.Area.EAST, this.createEastPanel() ), BorderLayout.EAST );
         this.add( this.buildNorthPanel(), BorderLayout.NORTH  );

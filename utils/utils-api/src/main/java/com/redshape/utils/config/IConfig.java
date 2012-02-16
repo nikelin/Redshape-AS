@@ -124,4 +124,6 @@ public interface IConfig extends Serializable {
 
 	public IConfig remove(IConfig config) throws ConfigException;
 
+    public void save() throws ConfigException;
+
 }

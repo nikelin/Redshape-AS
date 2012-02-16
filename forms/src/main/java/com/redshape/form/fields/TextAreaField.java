@@ -1,12 +1,5 @@
 package com.redshape.form.fields;
 
-/**
- * Created by IntelliJ IDEA.
- * User: nikelin
- * Date: 13.06.11
- * Time: 1:15
- * To change this template use File | Settings | File Templates.
- */
 public class TextAreaField extends AbstractField<String> {
 
     public TextAreaField() {

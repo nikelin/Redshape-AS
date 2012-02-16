@@ -1,6 +1,7 @@
 package com.redshape.ui.windows;
 
 import com.redshape.ui.application.UnhandledUIException;
+import com.redshape.ui.utils.UIConstants;
 import com.redshape.ui.utils.UIRegistry;
 import com.redshape.utils.IFilter;
 
@@ -56,7 +57,7 @@ public class WindowsManager implements ISwingWindowsManager {
     @Override
     public JFrame getFocusedWindow() {
         if ( this.focusedWindow == null) {
-            return UIRegistry.getRootContext();
+            return UIRegistry.<JFrame>get(UIConstants.System.WINDOW);
         }
 
         return this.focusedWindow;

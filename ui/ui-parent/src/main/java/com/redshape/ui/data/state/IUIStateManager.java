@@ -1,8 +1,6 @@
 package com.redshape.ui.data.state;
 
 import com.redshape.ui.application.events.IEventDispatcher;
-import com.redshape.utils.serializing.ObjectsFlusher;
-import com.redshape.utils.serializing.ObjectsLoader;
 
 import java.util.Date;
 import java.util.Map;
@@ -84,18 +82,6 @@ public interface IUIStateManager extends IEventDispatcher {
          * @return
          */
     public int getPeriodicInterval();
-
-    /**
-         * Specifies unmarshalling manager to load state from specified location
-         * @param loader
-         */
-    public void setLoader( ObjectsLoader loader );
-
-    /**
-         * Specifies marshalling manager to save state within specified location
-         * @param flusher
-         */
-    public void setFlusher( ObjectsFlusher flusher );
 
     /**
          * Change flushing location

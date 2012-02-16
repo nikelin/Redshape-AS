@@ -1,6 +1,7 @@
 package com.redshape.utils;
 
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>

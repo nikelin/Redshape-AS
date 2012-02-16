@@ -3,7 +3,9 @@ package com.redshape.ui.views;
 import com.redshape.ui.application.UnhandledUIException;
 import com.redshape.ui.application.events.AppEvent;
 import com.redshape.ui.data.bindings.render.ISwingRenderer;
+import com.redshape.ui.data.bindings.render.IViewRendererBuilder;
 import com.redshape.ui.data.bindings.render.ViewRenderer;
+import com.redshape.ui.utils.UIConstants;
 import com.redshape.ui.utils.UIRegistry;
 
 import javax.swing.*;
@@ -30,7 +32,9 @@ public class BindableView implements IView<Container> {
 				return;
 			}
 			
-			this.viewRenderer = UIRegistry.<ISwingRenderer>getViewRendererFacade().createRenderer(ViewRenderer.class);
+			this.viewRenderer = UIRegistry.<IViewRendererBuilder<ISwingRenderer>>get(
+                                                        UIConstants.System.VIEW_RENDERER)
+                                          .createRenderer(ViewRenderer.class);
 			if ( this.viewRenderer == null ) {
 				throw new UnhandledUIException("There is no rendering manager registered within global context");
 			}

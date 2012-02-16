@@ -24,6 +24,9 @@ public final class UIConstants {
 	}
 	
 	public enum System implements Attribute {
+        WINDOW,
+        MENUBAR,
+        VIEW_RENDERER,
         APP_CONTEXT
 	}
 }

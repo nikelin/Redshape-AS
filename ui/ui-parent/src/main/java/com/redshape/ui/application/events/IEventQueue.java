@@ -1,7 +1,5 @@
 package com.redshape.ui.application.events;
 
-import java.lang.reflect.InvocationTargetException;
-
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
  * @package com.redshape.ui.application.events
@@ -9,8 +7,7 @@ import java.lang.reflect.InvocationTargetException;
  */
 public interface IEventQueue {
     
-    public void invokeAndWait( Runnable runnable ) throws InterruptedException,
-            InvocationTargetException;
+    public void invokeAndWait( Runnable runnable );
     
     public void invokeLater( Runnable runnable );
     

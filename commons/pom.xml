@@ -16,24 +16,11 @@
     <artifactId>commons</artifactId>
     <name>Redshape - Commons</name>
 
-    <properties>
-            <project.build.sourceEncoding>utf8</project.build.sourceEncoding>
-    </properties>
-
-    <build>
-        <finalName>commons</finalName>
-    </build>
-
     <dependencies>
         <dependency>
-            <artifactId>utils</artifactId>
-            <groupId>com.redshape</groupId>
+            <artifactId>utils-core</artifactId>
+            <groupId>com.redshape.utils</groupId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <artifactId>commons-collections</artifactId>
-            <groupId>commons-collections</groupId>
-            <version>3.2.1</version>
         </dependency>
     </dependencies>
 

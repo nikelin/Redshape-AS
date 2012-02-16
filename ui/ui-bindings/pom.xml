@@ -11,6 +11,19 @@
 
     <groupId>com.redshape.ui</groupId>
     <artifactId>ui-bindings</artifactId>
+    <name>Redshape - UI - Core - Bindings</name>
 
+    <dependencies>
+        <dependency>
+            <artifactId>utils-core</artifactId>
+            <groupId>com.redshape.utils</groupId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>ui-parent</artifactId>
+            <groupId>com.redshape.ui</groupId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>

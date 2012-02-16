@@ -13,11 +13,44 @@
     <groupId>com.redshape.ui</groupId>
     <artifactId>ui-parent</artifactId>
 
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.gwt.xml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.java</include>
+                    <include>**/*.gwt.xml</include>
+                </includes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.1.2</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
         <dependency>
-            <artifactId>commons</artifactId>
-            <groupId>com.redshape</groupId>
-            <version>${project.version}</version>
+            <artifactId>utils-api</artifactId>
+            <groupId>com.redshape.utils</groupId>
+            <version>${as.version}</version>
         </dependency>
     </dependencies>
 

@@ -15,7 +15,7 @@
 
     <dependencies>
         <dependency>
-            <artifactId>ui-parent</artifactId>
+            <artifactId>ui-bindings</artifactId>
             <groupId>com.redshape.ui</groupId>
             <version>${project.version}</version>
         </dependency>

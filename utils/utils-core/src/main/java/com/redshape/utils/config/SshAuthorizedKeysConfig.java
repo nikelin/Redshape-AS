@@ -3,11 +3,6 @@ package com.redshape.utils.config;
 import com.redshape.utils.StringUtils;
 import com.redshape.utils.config.sources.IConfigSource;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by IntelliJ IDEA.
  * User: cyril
@@ -35,24 +30,15 @@ public class SshAuthorizedKeysConfig extends AbstractConfig {
 
     @Override
     protected void init() throws ConfigException {
-        try {
-            BufferedReader reader = new BufferedReader( this.source.getReader() );
-            List<String> parts = new ArrayList<String>();
-            String buff;
-            while ( null != ( buff = reader.readLine() ) ) {
-                parts.add( buff );
-            }
-            
-            for ( String part : parts ) {
-                if ( part.trim().startsWith("#")
-                        || StringUtils.trim(part).isEmpty() ) {
-                    continue;
-                }
+        String[] parts = this.source.read().split("\\n");
 
-                this.append( this._processData(part) );
+        for ( String part : parts ) {
+            if ( part.trim().startsWith("#")
+                    || StringUtils.trim(part).isEmpty() ) {
+                continue;
             }
-        } catch ( IOException e ) {
-            throw new ConfigException( e.getMessage(), e );
+
+            this.append( this._processData(part) );
         }
     }
     

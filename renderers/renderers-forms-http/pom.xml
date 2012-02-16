@@ -13,6 +13,7 @@
 
     <groupId>com.redshape.renderers</groupId>
     <artifactId>renderers-forms-http</artifactId>
+    <name>Redshape - Renderers - Forms - HTTP</name>
 
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>

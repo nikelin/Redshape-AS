@@ -6,7 +6,6 @@ import com.redshape.plugins.loaders.resources.IPluginResource;
 import com.redshape.plugins.loaders.resources.PluginResource;
 import com.redshape.utils.Constants;
 
-import java.io.IOError;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;

@@ -21,18 +21,16 @@ public interface IStoresManager {
 	 * @param clazz
 	 * @param <T>
 	 * @return
-	 * @throws InstantiationException
 	 */
-	public <T extends IStore<?>> T getStore( Object context, Class<? extends T> clazz ) throws InstantiationException;
+	public <T extends IStore<?>> T getStore( Object context, Class<? extends T> clazz );
 
 	/**
 	 * Return store registered within global context
 	 * @param clazz
 	 * @param <T>
 	 * @return
-	 * @throws InstantiationException
 	 */
-	public <T extends IStore<?>> T getStore( Class<? extends T> clazz ) throws InstantiationException;
+	public <T extends IStore<?>> T getStore( Class<? extends T> clazz );
 
 	/**
 	 * Register store within given execution context

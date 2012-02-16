@@ -1,5 +1,7 @@
 package com.redshape.servlet.core;
 
+import com.redshape.form.IUserRequest;
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Map;
@@ -11,7 +13,7 @@ import java.util.Map;
  * Time: 11:55 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface IHttpRequest extends HttpServletRequest {
+public interface IHttpRequest extends HttpServletRequest, IUserRequest {
 
     public boolean isPost();
 
@@ -42,8 +44,6 @@ public interface IHttpRequest extends HttpServletRequest {
     public void setParameters( Map<String, Object> parameters );
 
     public boolean hasParameter( String name ) throws IOException;
-
-    public Map<String, Object> getParameters();
 
     public String getBody() throws IOException;
 

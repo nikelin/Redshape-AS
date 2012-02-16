@@ -164,18 +164,8 @@ public class UIStateManager extends EventDispatcher implements IUIStateManager {
         return loader;
     }
 
-    @Override
-    public void setLoader(ObjectsLoader loader) {
-        this.loader = loader;
-    }
-
     protected ObjectsFlusher getFlusher() {
         return flusher;
-    }
-
-    @Override
-    public void setFlusher(ObjectsFlusher flusher) {
-        this.flusher = flusher;
     }
 
 	protected synchronized int nextRevision() {

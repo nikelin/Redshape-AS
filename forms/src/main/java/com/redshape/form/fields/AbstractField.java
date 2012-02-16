@@ -1,15 +1,9 @@
 package com.redshape.form.fields;
 
-import com.redshape.renderer.forms.IFormFieldRenderer;
-import com.redshape.servlet.WebApplication;
 import com.redshape.form.AbstractFormItem;
 import com.redshape.form.IFormField;
-import com.redshape.form.RenderMode;
-import com.redshape.form.decorators.*;
 import com.redshape.utils.validators.IValidator;
 import com.redshape.utils.validators.result.IValidationResult;
-import net.sf.ezmorph.MorpherRegistry;
-import org.springframework.beans.BeansException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,16 +11,9 @@ import java.util.List;
 
 public abstract class AbstractField<T> extends AbstractFormItem implements IFormField<T> {
 	private static final long serialVersionUID = 5498825562953448526L;
-
-	public static IDecorator[] STANDARD_DECORATORS_SET = new IDecorator[] {
-															new FormFieldDecorator(),
-															new LabelDecorator(),
-															new ErrorsDecorator()
-														};
 	
 	private String label;
 	private List<IValidationResult> validationResults = new ArrayList<IValidationResult>();
-	private IFormFieldRenderer<?> renderer;
 	private T value;
 	private List<IValidator<T, IValidationResult>> validators
 									= new ArrayList<IValidator<T, IValidationResult>>();
@@ -42,19 +29,6 @@ public abstract class AbstractField<T> extends AbstractFormItem implements IForm
 	
 	protected AbstractField( String id, String name ) {
 		super(id, name);
-
-		this.setDecorator( new ComposedDecorator( STANDARD_DECORATORS_SET ) );
-	}
-
-	@Override
-	public <T> T convertValue(Class<?> target, T value) {
-		try {
-			MorpherRegistry registry = WebApplication.getContext().getBean("morpherRegistry", MorpherRegistry.class);
-
-			return (T) registry.morph(target, value);
-		} catch ( BeansException e ) {
-			return value;
-		}
 	}
 
 	@Override
@@ -80,12 +54,6 @@ public abstract class AbstractField<T> extends AbstractFormItem implements IForm
     @Override
 	public Collection<IValidationResult> getValidationResults() {
 		return validationResults;
-	}
-
-	@SuppressWarnings("rawtypes")
-	@Override
-	public void setRenderer( IFormFieldRenderer renderer) {
-		this.renderer = renderer;
 	}
 
     @Override
@@ -131,26 +99,6 @@ public abstract class AbstractField<T> extends AbstractFormItem implements IForm
 	public T getValue() {
 		return this.value;
 	}
-
-	@SuppressWarnings("rawtypes")
-	protected IFormFieldRenderer getRenderer() {
-		return this.renderer;
-	}
-	
-	@Override
-	public String render() {
-		return this.render( RenderMode.FULL );
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public String render( RenderMode mode ) {
-		if ( this.getRenderer() == null ) {
-			throw new IllegalArgumentException("<null>");
-		}
-		
-		return this.getRenderer().render(this, mode);
-	}
 	
 	@Override
 	public <V extends IValidator<T, IValidationResult>> void addValidator(V validator) {
@@ -188,9 +136,4 @@ public abstract class AbstractField<T> extends AbstractFormItem implements IForm
 		return result;
 	}
 
-    @Override
-    public String toString() {
-        return this.render();
-    }
-	
 }

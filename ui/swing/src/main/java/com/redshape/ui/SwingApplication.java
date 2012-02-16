@@ -5,6 +5,7 @@ import com.redshape.ui.application.ApplicationException;
 import com.redshape.ui.application.IBeansProvider;
 import com.redshape.ui.application.IController;
 import com.redshape.ui.application.events.AppEvent;
+import com.redshape.ui.application.events.EventType;
 import com.redshape.ui.application.events.IEventHandler;
 import com.redshape.ui.application.events.UIEvents;
 import com.redshape.ui.application.events.handlers.ErrorsHandler;
@@ -18,6 +19,8 @@ import com.redshape.ui.utils.UIRegistry;
 import com.redshape.ui.views.widgets.IWidget;
 import com.redshape.ui.windows.AbstractMainWindow;
 import com.redshape.utils.Commons;
+import com.redshape.utils.config.ConfigException;
+import com.redshape.utils.config.IConfig;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -58,11 +61,50 @@ public class SwingApplication extends AbstractApplication {
     protected void init() throws ApplicationException{
         super.init();
 
+        Thread.currentThread().setUncaughtExceptionHandler( this.createUncaughtHandler() );
+
         this.initAWTExceptionsHandler();
 
         Dispatcher.get().addListener( UIEvents.Core.Repaint, this.createRepaintHandler() );
         Dispatcher.get().addListener( UIEvents.Core.Exit, this.createExitHandler() );
         Dispatcher.get().addListener( UIEvents.Core.Error, this.createErrorsHandler() );
+    }
+
+    @Override
+    protected void initInterceptor( IConfig node ) throws ConfigException, ApplicationException {
+        String signal = node.get("signal").value();
+        String className = node.get("class").value();
+        if ( className == null ) {
+            return;
+        }
+
+        try {
+            Class<?> clazz = this.getContext().getBean(node.name());
+            if ( ! this.isAssignableFrom(IEventHandler.class, clazz) ) {
+                return;
+            }
+
+            Dispatcher.get().addListener(
+                EventType.valueOf(signal),
+                (IEventHandler) clazz.newInstance()
+            );
+        } catch ( Throwable e ) {
+            if ( e instanceof ApplicationException ) {
+                throw (ApplicationException) e;
+            }
+
+            log.error("Unable to initialized interceptor " + className, e);
+        }
+    }
+
+    @Override
+    protected boolean isAssignableFrom(Class<?> source, Class<?> target) {
+        return source.isAssignableFrom(target);
+    }
+
+    @Override
+    public void exit() {
+        System.exit(1);
     }
 
     @Override
@@ -81,7 +123,7 @@ public class SwingApplication extends AbstractApplication {
         if ( component.doRenderMenu() ) {
             menu = this.createMenu(component);
             if ( context == null ) {
-                UIRegistry.getMenu().add( menu );
+                UIRegistry.<Menu>get(UIConstants.System.MENUBAR).add( menu );
             } else {
                 context.add( menu );
             }
@@ -154,6 +196,15 @@ public class SwingApplication extends AbstractApplication {
 
     protected IEventHandler createRepaintHandler() {
         return new RepaintHandler(this);
+    }
+
+    protected Thread.UncaughtExceptionHandler createUncaughtHandler() {
+        return new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread t, Throwable e) {
+                Dispatcher.get().forwardEvent( UIEvents.Core.Error, e );
+            }
+        };
     }
 
 }

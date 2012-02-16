@@ -4,6 +4,7 @@ import com.redshape.ui.application.events.AppEvent;
 import com.redshape.ui.application.events.IEventHandler;
 import com.redshape.ui.application.events.UIEvents;
 import com.redshape.ui.components.InteractionAction;
+import com.redshape.ui.utils.UIConstants;
 import com.redshape.ui.utils.UIRegistry;
 
 import javax.swing.*;
@@ -76,7 +77,7 @@ public class FileField extends JComponent {
 	}
 	
 	protected void showChooserDialog() {
-		FileDialog dialog = new FileDialog( UIRegistry.getRootContext(), "Select file", FileDialog.LOAD );
+		FileDialog dialog = new FileDialog( UIRegistry.<JFrame>get(UIConstants.System.WINDOW), "Select file", FileDialog.LOAD );
 		dialog.setVisible(true);
 		
 		if ( this.pathElement.getText() != null && !this.pathElement.getText().isEmpty() ) {
