@@ -3,11 +3,12 @@
   <parent>
     <artifactId>as</artifactId>
     <groupId>com.redshape</groupId>
-    <version>3.0.0</version>
+    <version>3.1.0</version>
   </parent>
   
   <groupId>com.redshape</groupId>
   <artifactId>payments</artifactId>
+  <version>3.0.0</version>
   <name>Redshape - Payments API</name>
   
   <dependencies>
