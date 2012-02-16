@@ -41,7 +41,9 @@ public class SearchTermBuilderTest {
 		);
 
 		assertEquals( term.getOperation(), Operation.AND );
-		assertEquals(term.<IBinaryTerm>getLeft().<IUnaryTerm>getLeft().getTerm(), fieldTermA.getField());
+		assertEquals(
+            ( (FieldTerm) term.<IBinaryTerm>getLeft().<IUnaryTerm>getLeft().getTerm() ).getField(),
+            fieldTermA.getField() );
 		assertEquals( term.<IBinaryTerm>getLeft().<IGroupingTerm>getRight().getOperation(), Operation.OR  );
 
 		for ( ISearchTerm listItem : term.<IBinaryTerm>getLeft().<IGroupingTerm>getRight().getList() ) {
