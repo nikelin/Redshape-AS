@@ -13,7 +13,6 @@
     <name>Redshape - Commands Runner</name>
     <groupId>com.redshape</groupId>
     <artifactId>cmd</artifactId>
-    <version>${project.parent.version}</version>
     <packaging>jar</packaging>
 
     <build>

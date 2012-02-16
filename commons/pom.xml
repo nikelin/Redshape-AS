@@ -11,7 +11,6 @@
 
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
-    <version>${project.parent.version}</version>
     <groupId>com.redshape</groupId>
     <artifactId>commons</artifactId>
     <name>Redshape - Commons</name>

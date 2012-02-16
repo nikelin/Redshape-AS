@@ -5,7 +5,6 @@
     <groupId>com.redshape</groupId>
     <artifactId>io</artifactId>
     <name>Redshape - IO API</name>
-    <version>${project.parent.version}</version>
     <packaging>jar</packaging>
     
     <parent>

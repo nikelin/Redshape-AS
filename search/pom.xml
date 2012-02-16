@@ -13,7 +13,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.redshape</groupId>
-    <version>${project.parent.version}</version>
     <artifactId>search</artifactId>
     <packaging>jar</packaging>
 

@@ -50,7 +50,7 @@
         <dependency>
             <artifactId>utils-api</artifactId>
             <groupId>com.redshape.utils</groupId>
-            <version>${as.version}</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
