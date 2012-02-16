@@ -90,11 +90,11 @@ public class WorkflowTest extends AbstractContextAwareTest<String> {
         IStarterEngine engine = this.getStartersRegistry().selectEngine( info.getStarterInfo().getEngineType() );
         assertNotNull(engine);
         
-        IPlugin plugin = engine.resolve(info);
-        IPluginsRegistry registry = this.getPluginsRegistry();
-        registry.registerPlugin( info, plugin );
-        engine.start(plugin);
-        engine.stop(plugin);
+//        IPlugin plugin = engine.resolve(info);
+//        IPluginsRegistry registry = this.getPluginsRegistry();
+//        registry.registerPlugin( info, plugin );
+//        engine.start(plugin);
+//        engine.stop(plugin);
     }
 
 }
