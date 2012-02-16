@@ -159,7 +159,7 @@
     </dependencies>
 
     <scm>
-        <developerConnection>scm:git:ssh://git@github.com:nikelin/Redshape-AS</developerConnection>
+        <developerConnection>scm:git:https://git@github.com/nikelin/Redshape-AS</developerConnection>
         <url>http://github.com/nikelin/Redshape-AS</url>
     </scm>
 

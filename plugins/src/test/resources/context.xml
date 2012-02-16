@@ -7,7 +7,7 @@
     <context:component-scan base-package="com.redshape"/>
 
     <bean id="pluginPath" class="java.lang.String">
-        <constructor-arg><value>file:///projects/framework/plugins/src/test/resources/test-plugin</value></constructor-arg>
+        <constructor-arg><value>file:///archives/projects/framework/plugins/src/test/resources/test-plugin</value></constructor-arg>
     </bean>
     
     <bean class="com.redshape.utils.ResourcesLoader" id="resourcesLoader"
