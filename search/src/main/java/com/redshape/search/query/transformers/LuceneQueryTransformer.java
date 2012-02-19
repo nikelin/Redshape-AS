@@ -2,7 +2,7 @@ package com.redshape.search.query.transformers;
 
 import com.redshape.search.engines.lucene.LuceneEngine;
 import com.redshape.search.query.terms.*;
-import com.redshape.utils.StringUtils;
+import com.redshape.utils.SimpleStringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.QueryParser;
@@ -122,8 +122,8 @@ public class LuceneQueryTransformer implements IQueryTransformer {
 	protected String _transform( IScalarTerm term ) {
 		return "\""
 				.concat(
-						StringUtils.escape( String.valueOf( term.getValue() ),
-								LuceneEngine.ESCAPE_SEQUENCES)
+						SimpleStringUtils.escape(String.valueOf(term.getValue()),
+                                LuceneEngine.ESCAPE_SEQUENCES)
 				)
 				.concat( "\"" );
 	}

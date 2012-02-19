@@ -13,6 +13,7 @@
     </properties>
 
     <modules>
+        <module>ascript</module>
         <module>commons</module>
         <module>persistence</module>
         <module>ui</module>
@@ -25,7 +26,6 @@
         <module>utils</module>
         <module>shaper</module>
         <module>plugins</module>
-        <module>ascript</module>
         <module>forker</module>
         <module>jobs</module>
         <module>renderers</module>

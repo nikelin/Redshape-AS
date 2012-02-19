@@ -4,7 +4,8 @@ import com.redshape.ascript.EvaluationException;
 import com.redshape.ascript.context.items.*;
 import com.redshape.utils.Function;
 import com.redshape.utils.IFunction;
-import com.redshape.utils.StringUtils;
+import com.redshape.utils.ILambda;
+import com.redshape.utils.SimpleStringUtils;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Method;
@@ -110,7 +111,7 @@ public class EvaluationContext implements IEvaluationContext {
 	}
 
 	@Override
-	public void exportFunction( String name, IFunction<?,?> context ) throws EvaluationException {
+	public void exportFunction( String name, ILambda<?> context ) throws EvaluationException {
 		this.items.put(name, new FunctionItem( context ) );
 	}
 	
@@ -159,7 +160,11 @@ public class EvaluationContext implements IEvaluationContext {
 
 		if ( path.size() == 1) {
 			log.info("Resolving method " + path.peek() );
-			return this.wrapMethod( context.<V>getValue(), context.getMethod( path.poll(), argumentsCount, types) );
+            if ( context.getValue() instanceof IFunction ) {
+			    return this.wrapMethod( context.<V>getValue(), context.getMethod( path.poll(), argumentsCount, types) );
+            } else {
+                return context.getValue();
+            }
 		} else {
 			return this.resolveMethod(
 					this.createContextItem(context.<Object>getValue(path.poll()), false), argumentsCount, path, types);
@@ -168,8 +173,7 @@ public class EvaluationContext implements IEvaluationContext {
 
 	protected <V,T> IFunction<V, T> wrapMethod( V object, Method method ) 
 			throws EvaluationException {
-		IFunction<V, T> function = new Function<V,T>( method );
-		function.bind( object );
+		IFunction<V, T> function = new Function<V,T>( object, method );
 		return function;
 	}
 
@@ -249,10 +253,10 @@ public class EvaluationContext implements IEvaluationContext {
 		String actualPath = null;
 		List<String> tokens = Arrays.asList( path.split("\\.") );
 		for ( int i = 0; i < tokens.size(); i++ ) {
-			String subjoin = StringUtils.join( tokens.subList(0, tokens.size() - i ), "." );
+			String subjoin = SimpleStringUtils.join(tokens.subList(0, tokens.size() - i), ".");
 			if ( this.get( subjoin ) != null ) {
 				if ( i > 0 ) {
-					actualPath = StringUtils.join( tokens.subList( tokens.size() - i, tokens.size() ), "." );
+					actualPath = SimpleStringUtils.join(tokens.subList(tokens.size() - i, tokens.size()), ".");
 				}
 
 				result.add( subjoin );

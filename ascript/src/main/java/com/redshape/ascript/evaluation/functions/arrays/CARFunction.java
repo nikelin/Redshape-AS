@@ -1,9 +1,9 @@
 package com.redshape.ascript.evaluation.functions.arrays;
 
 import com.redshape.ascript.IEvaluator;
-import com.redshape.utils.Function;
+import com.redshape.utils.InvocationException;
+import com.redshape.utils.Lambda;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 /**
@@ -11,7 +11,7 @@ import java.util.List;
  * @date 20/04/11
  * @package com.redshape.ascript.evaluation.functions.arrays
  */
-public class CARFunction extends Function<Object, Object> {
+public class CARFunction extends Lambda<Object> {
 	private IEvaluator evaluator;
 
 	public CARFunction( IEvaluator evaluatorContext ) {
@@ -19,14 +19,14 @@ public class CARFunction extends Function<Object, Object> {
 	}
 
 	@Override
-	public Object invoke( Object... args ) throws InvocationTargetException {
+	public Object invoke( Object... args ) throws InvocationException {
 		try {
 			this.assertArgumentsCount( args, 1 );
 			this.assertArgumentType( args[0], List.class );
 
 			return ( (List) args[0] ).get(0);
 		} catch ( Throwable e ) {
-			throw new InvocationTargetException( e );
+			throw new InvocationException( e.getMessage(), e );
 		}
 	}
 

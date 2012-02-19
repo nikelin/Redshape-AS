@@ -107,7 +107,7 @@ public class NMapOutputAnalyzer {
             result.setNetworkPoint(
                     InetAddress.getByAddress(
                         StringUtils.stringToIP(
-                            (String) NMapOutputAnalyzer.ADDRESS_EXPRESSION.evaluate(node, XPathConstants.STRING)
+                                (String) NMapOutputAnalyzer.ADDRESS_EXPRESSION.evaluate(node, XPathConstants.STRING)
                         )
                     )
             );

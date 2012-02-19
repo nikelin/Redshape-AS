@@ -1,16 +1,15 @@
 package com.redshape.ascript.evaluation.functions.strings;
 
 import com.redshape.ascript.IEvaluator;
-import com.redshape.utils.Function;
-
-import java.lang.reflect.InvocationTargetException;
+import com.redshape.utils.InvocationException;
+import com.redshape.utils.Lambda;
 
 /**
  * @author nikelin
  * @date 25/04/11
  * @package com.redshape.ascript.evaluation.functions.strings
  */
-public class SubstringFunction extends Function<Object, String> {
+public class SubstringFunction extends Lambda<String> {
     private IEvaluator evaluator;
 
     public SubstringFunction( IEvaluator evaluator ) {
@@ -18,7 +17,7 @@ public class SubstringFunction extends Function<Object, String> {
     }
 
     @Override
-    public String invoke( Object... args ) throws InvocationTargetException  {
+    public String invoke( Object... args ) throws InvocationException {
         if ( args.length != 2 && args.length != 3 ) {
             throw new IllegalArgumentException("Wrong arguments count!");
         }

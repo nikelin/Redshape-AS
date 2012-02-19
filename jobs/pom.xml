@@ -9,7 +9,6 @@
 
     <groupId>com.redshape</groupId>
     <artifactId>jobs</artifactId>
-  <version>3.0.0</version>
     <name>Redshape - Jobs</name>
 
     <dependencies>

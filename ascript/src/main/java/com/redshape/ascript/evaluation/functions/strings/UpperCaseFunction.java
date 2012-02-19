@@ -1,16 +1,15 @@
 package com.redshape.ascript.evaluation.functions.strings;
 
 import com.redshape.ascript.IEvaluator;
-import com.redshape.utils.Function;
-
-import java.lang.reflect.InvocationTargetException;
+import com.redshape.utils.InvocationException;
+import com.redshape.utils.Lambda;
 
 /**
  * @author nikelin
  * @date 25/04/11
  * @package com.redshape.ascript.evaluation.functions.strings
  */
-public class UpperCaseFunction extends Function<Object, String> {
+public class UpperCaseFunction extends Lambda<String> {
     private IEvaluator evaluator;
 
     public UpperCaseFunction( IEvaluator evaluator ) {
@@ -18,7 +17,7 @@ public class UpperCaseFunction extends Function<Object, String> {
     }
 
     @Override
-    public String invoke( Object... args ) throws InvocationTargetException {
+    public String invoke( Object... args ) throws InvocationException {
         this.assertArgumentsCount( args, 1 );
         this.assertArgumentsType( args, String.class );
 

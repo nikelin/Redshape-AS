@@ -6,8 +6,9 @@ import com.redshape.ascript.context.IEvaluationContext;
 import com.redshape.ascript.language.DeclarationType;
 import com.redshape.ascript.language.ast.*;
 import com.redshape.ascript.visitors.ISyntaxTreeVisitor;
-import com.redshape.utils.Function;
 import com.redshape.utils.IFunction;
+import com.redshape.utils.ILambda;
+import com.redshape.utils.InvocationException;
 import com.redshape.utils.ReflectionUtils;
 import org.apache.log4j.Logger;
 
@@ -284,11 +285,11 @@ public class SyntaxTreeProcessor implements ISyntaxTreeVisitor {
 		return null;
 	}
 
-	protected IFunction<?, ?> visitLambdaDecl( DeclarationTreeNode node ) throws EvaluationException {
+	protected ILambda<?> visitLambdaDecl( DeclarationTreeNode node ) throws EvaluationException {
 		return this.visitLambdaDecl( null, node );
 	}
 
-	protected IFunction<?, ?> visitLambdaDecl( final String name, DeclarationTreeNode node ) throws EvaluationException {
+	protected ILambda<?> visitLambdaDecl( final String name, DeclarationTreeNode node ) throws EvaluationException {
 		if ( node.getArguments().size() != 2 ) {
 			throw new EvaluationException("Illegal (:lambda x y) declaration arguments count!");
 		}
@@ -302,7 +303,7 @@ public class SyntaxTreeProcessor implements ISyntaxTreeVisitor {
 
 		Collection<String> arguments = this.<Collection<String>>visit( argumentsList );
 
-		return new Lambda( name,
+		return new SyntaxTreeProcessor.Lambda( name,
 				this, body,
 				arguments.toArray( new String[ arguments.size() ] ) );
 	}
@@ -441,8 +442,10 @@ public class SyntaxTreeProcessor implements ISyntaxTreeVisitor {
 			}
 
 			return function.invoke( arguments );
-		} catch ( InvocationTargetException e ) {
-			throw new EvaluationException( "Error in function " + node.getName() + " ( " + node.toString() + ")", e.getTargetException() );
+		} catch ( InvocationException e ) {
+			throw new EvaluationException(
+                "Error in function " + node.getName() + " ( " + node.toString() + ")",
+                e );
 		} catch ( Throwable e ) {
 			throw new EvaluationException( "Error in function " + node.getName(), e );
 		}
@@ -462,16 +465,19 @@ public class SyntaxTreeProcessor implements ISyntaxTreeVisitor {
 		return node.getValue();
 	}
 
-	public static class Lambda extends Function<Object, Object> {
+	public static class Lambda extends com.redshape.utils.Lambda<Object> {
 		private SyntaxTreeProcessor context;
-		private String[] arguments;
 		private ISyntaxTreeNode body;
 		private String prefix;
 
-		public Lambda( String name, SyntaxTreeProcessor context, ISyntaxTreeNode body, String[] arguments ) {
+		public Lambda( String name,
+                       SyntaxTreeProcessor context,
+                       ISyntaxTreeNode body,
+                       String[] arguments ) {
+            super(arguments);
+
 			this.context = context;
 			this.body = body;
-			this.arguments = arguments;
 			this.prefix = "func. " + ( name == null ? UUID.randomUUID().toString() : name) + ".";
 
 			this.init();
@@ -514,15 +520,15 @@ public class SyntaxTreeProcessor implements ISyntaxTreeVisitor {
 		}
 
 		@Override
-		public Object invoke( Object... args ) throws InvocationTargetException {
+		public Object invoke( Object... args ) throws InvocationException {
 			try {
-				if ( args.length < this.arguments.length ) {
+				if ( args.length < this.getArguments().length ) {
 					throw new IllegalArgumentException("Wrong function arguments count!");
 				}
 
 				Collection<String> created = new HashSet<String>();
 				int i =  0;
-				for ( Object argument : this.arguments ) {
+				for ( Object argument : this.getArguments() ) {
 					String name = this.getPrefix() + String.valueOf(argument);
 					created.add(name);
 					this.getContext().getContext().exportValue( name, args[i++] );
@@ -530,7 +536,7 @@ public class SyntaxTreeProcessor implements ISyntaxTreeVisitor {
 
 				return this.getContext().visit( this.body );
 			} catch ( Throwable e ) {
-				throw new InvocationTargetException( e );
+				throw new InvocationException( e.getMessage(), e );
 			}
 		}
 	}

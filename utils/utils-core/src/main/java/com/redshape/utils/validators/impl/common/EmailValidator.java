@@ -1,6 +1,7 @@
 package com.redshape.utils.validators.impl.common;
 
 import com.redshape.utils.validators.AbstractValidator;
+import com.redshape.utils.validators.result.ValidationResult;
 
 import java.util.regex.Pattern;
 

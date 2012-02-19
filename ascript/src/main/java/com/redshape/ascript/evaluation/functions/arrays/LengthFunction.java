@@ -1,9 +1,9 @@
 package com.redshape.ascript.evaluation.functions.arrays;
 
 import com.redshape.ascript.IEvaluator;
-import com.redshape.utils.Function;
+import com.redshape.utils.InvocationException;
+import com.redshape.utils.Lambda;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 /**
@@ -11,7 +11,7 @@ import java.util.List;
  * @date 20/04/11
  * @package com.redshape.ascript.evaluation.functions.arrays
  */
-public class LengthFunction extends Function<Object, Integer> {
+public class LengthFunction extends Lambda<Integer> {
 
 	private IEvaluator evaluator;
 
@@ -20,7 +20,7 @@ public class LengthFunction extends Function<Object, Integer> {
 	}
 
 	@Override
-	public Integer invoke(Object... arguments) throws InvocationTargetException {
+	public Integer invoke(Object... arguments) throws InvocationException {
 		this.assertArgumentsCount( arguments, 1 );
 		this.assertArgumentType( arguments[0], List.class );
 

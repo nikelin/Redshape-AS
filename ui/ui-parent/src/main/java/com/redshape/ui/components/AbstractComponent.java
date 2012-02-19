@@ -1,5 +1,6 @@
 package com.redshape.ui.components;
 
+import com.redshape.ui.Dispatcher;
 import com.redshape.ui.application.IController;
 import com.redshape.ui.application.events.EventDispatcher;
 import com.redshape.ui.components.actions.ComponentAction;
@@ -99,6 +100,7 @@ public abstract class AbstractComponent<T> extends EventDispatcher implements IC
 
 	@Override
 	public void addController( IController controller ) {
+        Dispatcher.get().addController(controller);
 		this.controllers.add(controller);
 	}
 

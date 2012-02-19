@@ -1,7 +1,7 @@
 package com.redshape.ascript.evaluation.functions.arrays;
 
 import com.redshape.ascript.IEvaluator;
-import com.redshape.utils.Function;
+import com.redshape.utils.Lambda;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
  * @date 20/04/11
  * @package com.redshape.ascript.evaluation.functions.arrays
  */
-public class EmptyFunction extends Function<Object, Boolean> {
+public class EmptyFunction extends Lambda<Boolean> {
 
 	private IEvaluator evaluator;
 

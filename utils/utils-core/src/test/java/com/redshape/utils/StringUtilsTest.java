@@ -13,11 +13,11 @@ public class StringUtilsTest {
 	@Test
 	public void testEscape() {
 		assertEquals(
-			StringUtils.escape( "afla&&afla&&afla", new String[] { "&&" }, "\\" ),
+			SimpleStringUtils.escape("afla&&afla&&afla", new String[]{"&&"}, "\\"),
 			"afla\\&&afla\\&&afla"
 		);
 		assertEquals(
-			StringUtils.escape( "afla&&afla:afla", new String[] { "&&", ":" }, "\\" ),
+			SimpleStringUtils.escape("afla&&afla:afla", new String[]{"&&", ":"}, "\\"),
 			"afla\\&&afla\\:afla"
 		);
 	}

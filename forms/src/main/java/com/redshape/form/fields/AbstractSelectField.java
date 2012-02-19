@@ -2,14 +2,13 @@ package com.redshape.form.fields;
 
 import com.redshape.form.IDataFormField;
 import com.redshape.form.data.IFieldDataProvider;
-import org.apache.commons.collections.OrderedMap;
-import org.apache.commons.collections.map.LinkedMap;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class AbstractSelectField<T> extends AbstractField<T> implements IDataFormField<T> {
 	private static final long serialVersionUID = 7948336414439747793L;
-	private OrderedMap options = new LinkedMap();
+	private Map<String, T> options = new LinkedHashMap<String, T>();
 	private IFieldDataProvider dataProvider;
 
 	public AbstractSelectField() {

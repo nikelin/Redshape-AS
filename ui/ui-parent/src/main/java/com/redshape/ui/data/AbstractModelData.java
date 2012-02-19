@@ -1,14 +1,10 @@
 package com.redshape.ui.data;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import com.redshape.ui.application.events.AppEvent;
 import com.redshape.ui.application.events.EventDispatcher;
 import com.redshape.ui.application.events.IEventHandler;
+
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,8 +47,7 @@ public abstract class AbstractModelData extends EventDispatcher
     		this.processChildModel( name, (IModelData) value);
     	} else if ( value instanceof Collection ) {
     		this.processCollectionValue( name, (Collection<?>) value);
-    	} else if ( value.getClass().isArray() 
-    			&& IModelData.class.isAssignableFrom( value.getClass().getComponentType() ) ) {
+    	} else if ( value.getClass().isArray() ) {
     		this.processArrayValue( name, ( Object[] ) value );
     	}
     }
@@ -72,7 +67,7 @@ public abstract class AbstractModelData extends EventDispatcher
     		testObject = iterator.next();
     	} while ( testObject == null && iterator.hasNext() );
     	
-    	if ( !IModelData.class.isAssignableFrom( testObject.getClass() ) ) {
+    	if ( !(testObject instanceof IModelData) ) {
     		return;
     	}
     	

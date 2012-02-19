@@ -1,6 +1,6 @@
 package com.redshape.utils.config;
 
-import com.redshape.utils.StringUtils;
+import com.redshape.utils.SimpleStringUtils;
 import com.redshape.utils.config.sources.IConfigSource;
 
 /**
@@ -34,7 +34,7 @@ public class SshAuthorizedKeysConfig extends AbstractConfig {
 
         for ( String part : parts ) {
             if ( part.trim().startsWith("#")
-                    || StringUtils.trim(part).isEmpty() ) {
+                    || SimpleStringUtils.trim(part).isEmpty() ) {
                 continue;
             }
 
@@ -46,10 +46,10 @@ public class SshAuthorizedKeysConfig extends AbstractConfig {
         String[] parts = data.split(",");
 
         IConfig result = this.createChild("command");
-        result.set( StringUtils.trim( parts[0].split("=")[1], "\"") );
+        result.set( SimpleStringUtils.trim(parts[0].split("=")[1], "\"") );
 
         for ( int i = 1; i < parts.length; i++ ) {
-            String part = StringUtils.trim(parts[i]);
+            String part = SimpleStringUtils.trim(parts[i]);
 
             if ( part.contains("ssh") ) {
                 String[] sshKeyParts = part.split("\\s");

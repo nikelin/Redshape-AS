@@ -3,7 +3,6 @@
     
     <groupId>com.redshape</groupId>
     <artifactId>utils</artifactId>
-  <version>3.0.0</version>
     <name>Redshape - Utils</name>
     <modules>
         <module>utils-api</module>
@@ -35,21 +34,6 @@
                 </includes>
             </resource>
         </resources>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.1.2</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
     </build>
 
 </project>

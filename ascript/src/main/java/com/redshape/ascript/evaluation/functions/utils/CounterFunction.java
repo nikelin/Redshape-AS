@@ -1,7 +1,7 @@
 package com.redshape.ascript.evaluation.functions.utils;
 
 import com.redshape.ascript.IEvaluator;
-import com.redshape.utils.Function;
+import com.redshape.utils.Lambda;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +11,7 @@ import java.util.Map;
  * @date 25/04/11
  * @package com.redshape.ascript.evaluation.functions.utils
  */
-public class CounterFunction extends Function<Object, Integer> {
+public class CounterFunction extends Lambda<Integer> {
     private IEvaluator evaluator;
 
     private static Map<String, Integer> counters = new HashMap<String, Integer>();

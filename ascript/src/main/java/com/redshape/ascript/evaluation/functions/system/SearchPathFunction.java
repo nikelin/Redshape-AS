@@ -1,9 +1,9 @@
 package com.redshape.ascript.evaluation.functions.system;
 
 import com.redshape.ascript.IEvaluator;
-import com.redshape.utils.Function;
+import com.redshape.utils.InvocationException;
+import com.redshape.utils.Lambda;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
 /**
@@ -11,7 +11,7 @@ import java.util.Collection;
  * @date 21/04/11
  * @package com.redshape.ascript.evaluation.functions.system
  */
-public class SearchPathFunction extends Function<Object, Object> {
+public class SearchPathFunction extends Lambda<Object> {
 
 	private IEvaluator evaluator;
 
@@ -20,7 +20,7 @@ public class SearchPathFunction extends Function<Object, Object> {
 	}
 
 	@Override
-	public Object invoke(Object... arguments) throws InvocationTargetException {
+	public Object invoke(Object... arguments) throws InvocationException {
 		this.assertArgumentsCount(arguments, 1);
 
 		Object argument = arguments[0];

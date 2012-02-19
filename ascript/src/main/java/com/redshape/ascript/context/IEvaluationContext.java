@@ -3,6 +3,7 @@ package com.redshape.ascript.context;
 import com.redshape.ascript.EvaluationException;
 import com.redshape.ascript.context.items.FunctionItem;
 import com.redshape.utils.IFunction;
+import com.redshape.utils.ILambda;
 
 import java.util.Map;
 
@@ -59,7 +60,7 @@ public interface IEvaluationContext {
 	 */
 	public void exportBean(String name, Class<?> description, Object value) throws EvaluationException ;
 	
-	public void exportFunction(String name, IFunction<?, ?> fn) throws EvaluationException ;
+	public void exportFunction(String name, ILambda<?> fn) throws EvaluationException ;
 
 	public void exportFunctionAlias(String originalName, String alias) throws EvaluationException;
 

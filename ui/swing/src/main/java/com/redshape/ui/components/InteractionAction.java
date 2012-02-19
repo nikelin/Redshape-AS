@@ -5,12 +5,12 @@ import com.redshape.ui.application.UnhandledUIException;
 import com.redshape.ui.application.events.AppEvent;
 import com.redshape.ui.application.events.EventType;
 import com.redshape.ui.application.events.IEventHandler;
-import com.redshape.utils.IFunction;
+import com.redshape.utils.ILambda;
+import com.redshape.utils.InvocationException;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.lang.reflect.InvocationTargetException;
 
 public class InteractionAction extends AbstractAction {
     private static final Logger log = Logger.getLogger(InteractionAction.class);
@@ -49,7 +49,7 @@ public class InteractionAction extends AbstractAction {
 	}
 	
 	public static <T, V> InteractionAction createAction( String name, 
-					final T context, final IFunction<T, V> fn ) {
+					final T context, final ILambda<V> fn ) {
 		return new InteractionAction(name, 
 			new IEventHandler() {				
 				private static final long serialVersionUID = 3043897656511284411L;
@@ -58,7 +58,7 @@ public class InteractionAction extends AbstractAction {
 				public void handle(AppEvent event) {
 					try {
 						fn.invoke( context, event );
-					} catch ( InvocationTargetException e ) {
+					} catch ( InvocationException e ) {
 						throw new UnhandledUIException( e.getMessage(), e );
 					}
 				}

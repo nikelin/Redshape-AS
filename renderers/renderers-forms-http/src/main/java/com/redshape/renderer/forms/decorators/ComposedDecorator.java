@@ -8,19 +8,19 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ComposedDecorator extends AbstractDecorator {
-	private List<IDecorator> decorators;
+	private List<IDecorator<String>> decorators;
 
-	public ComposedDecorator( IDecorator[] decorators ) {
+	public ComposedDecorator( IDecorator<String>[] decorators ) {
 		this( Arrays.asList(decorators) );
 	}
 	
-	public ComposedDecorator( List<IDecorator> decorators ) {
+	public ComposedDecorator( List<IDecorator<String>> decorators ) {
 		this.decorators = decorators;
 	}
 	
 	@Override
 	public String decorate(IFormItem item, String data) {
-		for ( IDecorator decorator : decorators ) {
+		for ( IDecorator<String> decorator : decorators ) {
 			data = decorator.decorate( item, data );
 		}
 		

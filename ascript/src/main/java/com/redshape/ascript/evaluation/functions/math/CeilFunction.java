@@ -1,14 +1,14 @@
 package com.redshape.ascript.evaluation.functions.math;
 
 import com.redshape.ascript.IEvaluator;
-import com.redshape.utils.Function;
+import com.redshape.utils.Lambda;
 
 /**
  * @author nikelin
  * @date 25/04/11
  * @package com.redshape.ascript.evaluation.functions.math
  */
-public class CeilFunction extends Function<Object, Integer> {
+public class CeilFunction extends Lambda<Integer> {
     private IEvaluator evaluator;
 
     public CeilFunction( IEvaluator evaluator ) {

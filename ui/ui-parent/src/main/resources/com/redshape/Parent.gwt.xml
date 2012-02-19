@@ -3,6 +3,8 @@
 <module>
 
     <inherits name="com.redshape.Utils"/>
+    <inherits name="com.redshape.Forms"/>
+    <inherits name="com.redshape.RendererBase"/>
 
     <source path="ui"/>
 

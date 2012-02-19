@@ -1,16 +1,15 @@
 package com.redshape.ascript.evaluation.functions.system;
 
 import com.redshape.ascript.IEvaluator;
-import com.redshape.utils.Function;
-
-import java.lang.reflect.InvocationTargetException;
+import com.redshape.utils.InvocationException;
+import com.redshape.utils.Lambda;
 
 /**
  * @author nikelin
  * @date 21/04/11
  * @package com.redshape.ascript.evaluation.functions.system
  */
-public class RootPathFunction extends Function<Object, Object> {
+public class RootPathFunction extends Lambda<Object> {
 	private IEvaluator evaluator;
 
 	public RootPathFunction( IEvaluator evaluatorContext ) {
@@ -18,7 +17,7 @@ public class RootPathFunction extends Function<Object, Object> {
 	}
 
 	@Override
-	public Object invoke(Object... arguments) throws InvocationTargetException {
+	public Object invoke(Object... arguments) throws InvocationException {
 		this.assertArgumentsCount( arguments, 1 );
 		this.assertArgumentType( arguments[0], String.class );
 

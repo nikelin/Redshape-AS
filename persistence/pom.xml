@@ -20,7 +20,6 @@
 
     <groupId>com.redshape</groupId>
     <artifactId>persistence</artifactId>
-  <version>3.0.0</version>
     <packaging>pom</packaging>
 
     <name>Redshape - Persistence Core</name>

@@ -9,7 +9,6 @@
 
     <groupId>com.redshape.as</groupId>
     <artifactId>forker</artifactId>
-  <version>3.0.0</version>
     <name>Redshape - Forker</name>
 
     <dependencies>

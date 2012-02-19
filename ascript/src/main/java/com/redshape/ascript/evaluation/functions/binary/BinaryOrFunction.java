@@ -1,16 +1,15 @@
 package com.redshape.ascript.evaluation.functions.binary;
 
 import com.redshape.ascript.IEvaluator;
-import com.redshape.utils.Function;
-
-import java.lang.reflect.InvocationTargetException;
+import com.redshape.utils.InvocationException;
+import com.redshape.utils.Lambda;
 
 /**
  * @author nikelin
  * @date 20/04/11
  * @package com.redshape.ascript.evaluation.functions.binary
  */
-public class BinaryOrFunction extends Function<Object, Integer> {
+public class BinaryOrFunction extends Lambda<Integer> {
 
 	private IEvaluator evaluator;
 
@@ -19,7 +18,7 @@ public class BinaryOrFunction extends Function<Object, Integer> {
 	}
 
 	@Override
-	public Integer invoke(Object... arguments) throws InvocationTargetException {
+	public Integer invoke(Object... arguments) throws InvocationException {
 		this.assertArgumentsCount( arguments, 2 );
 		this.assertArgumentType( arguments[0], Integer.class );
 		this.assertArgumentType( arguments[1], Integer.class );

@@ -23,7 +23,10 @@ public abstract class AbstractModelType implements IModelType {
     
     @Override
 	public boolean isInstance(Class<? extends IModelData> type) {
-		return this.type.isAssignableFrom(type);
+        /**
+         * @FIXME
+         */
+		return true;
 	}
 
 	@Override

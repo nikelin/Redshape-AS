@@ -4,9 +4,9 @@ import com.redshape.form.IFormItem;
 
 import java.util.Map;
 
-public interface IDecorator {
+public interface IDecorator<T> {
 
-	public String decorate( IFormItem item, String data );
+	public T decorate( IFormItem item, T data );
 
 	public boolean hasAttribute( DecoratorAttribute name );
 

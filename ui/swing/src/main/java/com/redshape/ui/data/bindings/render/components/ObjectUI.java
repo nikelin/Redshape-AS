@@ -1,9 +1,5 @@
 package com.redshape.ui.data.bindings.render.components;
 
-import com.redshape.utils.beans.bindings.BeanConstructor;
-import com.redshape.utils.beans.bindings.BindingException;
-import com.redshape.utils.beans.bindings.IBeanInfo;
-import com.redshape.utils.beans.bindings.types.IBindable;
 import com.redshape.ui.application.UIException;
 import com.redshape.ui.application.UnhandledUIException;
 import com.redshape.ui.data.bindings.properties.IPropertyUI;
@@ -11,13 +7,18 @@ import com.redshape.ui.data.bindings.views.IComposedModel;
 import com.redshape.ui.data.bindings.views.IPropertyModel;
 import com.redshape.ui.utils.UIRegistry;
 import com.redshape.utils.IFunction;
-import com.redshape.utils.StringUtils;
+import com.redshape.utils.ILambda;
+import com.redshape.utils.InvocationException;
+import com.redshape.utils.SimpleStringUtils;
+import com.redshape.utils.beans.bindings.BeanConstructor;
+import com.redshape.utils.beans.bindings.BindingException;
+import com.redshape.utils.beans.bindings.IBeanInfo;
+import com.redshape.utils.beans.bindings.types.IBindable;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.List;
 
@@ -69,16 +70,16 @@ public class ObjectUI extends JPanel implements Cloneable {
         this.handlers.get( HandlerType.POSTINSTANTIATE ).add( function );
     }
 
-    protected Object processHandlers( IBeanInfo beanInfo, Object object ) throws InvocationTargetException {
-        for ( IFunction<?, ?> function : this.handlers.get(HandlerType.POSTINSTANTIATE) ) {
+    protected Object processHandlers( IBeanInfo beanInfo, Object object ) throws InvocationException {
+        for ( ILambda<?> function : this.handlers.get(HandlerType.POSTINSTANTIATE) ) {
             object = function.invoke( beanInfo, object );
         }
 
         return object;
     }
 
-    protected Object processHandlers( IPropertyModel model, Object value ) throws InvocationTargetException {
-        for ( IFunction<?,?> function : this.handlers.get( HandlerType.PREINSTANTIATE ) ) {
+    protected Object processHandlers( IPropertyModel model, Object value ) throws InvocationException {
+        for ( ILambda<?> function : this.handlers.get( HandlerType.PREINSTANTIATE ) ) {
             value = function.invoke( model, value );
         }
 
@@ -129,7 +130,7 @@ public class ObjectUI extends JPanel implements Cloneable {
 	}
 	
 	protected JLabel createFieldLabel( IPropertyModel model ) {
-		JLabel fieldLabel = new JLabel( StringUtils.ucfirst( model.getTitle().isEmpty() ? model.getId() : model.getTitle() )  );
+		JLabel fieldLabel = new JLabel( SimpleStringUtils.ucfirst(model.getTitle().isEmpty() ? model.getId() : model.getTitle())  );
 		fieldLabel.setAlignmentX( JLabel.LEFT );
 		return fieldLabel;
 	}
@@ -189,7 +190,7 @@ public class ObjectUI extends JPanel implements Cloneable {
 	}
 	
 	protected Border createTitle( String title ) {
-		return BorderFactory.createTitledBorder( title != null ? StringUtils.ucfirst( title ) : "" );
+		return BorderFactory.createTitledBorder( title != null ? SimpleStringUtils.ucfirst(title) : "" );
 	}
 	
 	protected void configUI() {
@@ -210,8 +211,8 @@ public class ObjectUI extends JPanel implements Cloneable {
                 Object value;
                 try {
                     value = this.processHandlers( model, this.fields.get(model).getValue() );
-                } catch ( InvocationTargetException e ) {
-                    throw new BindingException("Pre-instantiate handlers exception!", e.getTargetException() );
+                } catch ( InvocationException e ) {
+                    throw new BindingException("Pre-instantiate handlers exception!", e );
                 }
 
 				model.getDescriptor().write(
@@ -232,8 +233,8 @@ public class ObjectUI extends JPanel implements Cloneable {
 
             try {
                 object = (T) this.processHandlers( beanInfo, object );
-            } catch ( InvocationTargetException e ) {
-                throw new BindingException( "Post-instantiate handlers exception!", e.getTargetException() );
+            } catch ( InvocationException e ) {
+                throw new BindingException( "Post-instantiate handlers exception!", e );
             }
 			
 			return object;
@@ -253,8 +254,8 @@ public class ObjectUI extends JPanel implements Cloneable {
             Object value;
             try {
                 value = this.processHandlers( model, this.fields.get(model).getValue() );
-            } catch ( InvocationTargetException e ) {
-                throw new BindingException("Pre-instantiate handlers exception!", e.getTargetException() );
+            } catch ( InvocationException e ) {
+                throw new BindingException("Pre-instantiate handlers exception!", e );
             } catch ( UIException e ) {
                 throw new BindingException("Unable to retrieve field value");
             }
@@ -277,8 +278,8 @@ public class ObjectUI extends JPanel implements Cloneable {
 
         try {
             object = (T) this.processHandlers( beanInfo, object );
-        } catch ( InvocationTargetException e ) {
-            throw new BindingException("Post-instantiate handlers exception!", e.getTargetException() );
+        } catch ( InvocationException e ) {
+            throw new BindingException("Post-instantiate handlers exception!", e );
         }
 		
 		return object;

@@ -7,7 +7,7 @@ import com.redshape.io.interactors.ssh.SSHInteractor;
 import com.redshape.io.net.auth.ICredentials;
 import com.redshape.io.net.auth.IKeyedCredentials;
 import com.redshape.io.net.auth.IPasswordCredentials;
-import com.redshape.utils.StringUtils;
+import com.redshape.utils.SimpleStringUtils;
 import com.redshape.utils.config.ConfigException;
 import com.redshape.utils.config.IConfig;
 import net.schmizz.sshj.SSHClient;
@@ -122,7 +122,7 @@ public class SSHConnection extends AbstractNetworkConnection<SSHClient> {
 	}
 
 	public String getConnectionUri() {
-		return StringUtils.IPToString( this.getNode().getNetworkPoint().getAddress() );
+		return SimpleStringUtils.IPToString(this.getNode().getNetworkPoint().getAddress());
 	}
 
 	protected void loadVerifiedHosts() throws ConfigException, IOException, FileNotFoundException {
@@ -143,7 +143,7 @@ public class SSHConnection extends AbstractNetworkConnection<SSHClient> {
 	@Override
 	public String getConnectionUri( INetworkNode node ) {
 		return new StringBuilder().append("ssh://")
-				.append( StringUtils.IPToString(node.getNetworkPoint().getAddress()) )
+				.append( SimpleStringUtils.IPToString(node.getNetworkPoint().getAddress()) )
 				.append( ":22")
 				.toString();
 	}

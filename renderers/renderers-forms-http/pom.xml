@@ -3,7 +3,7 @@
     <parent>
         <artifactId>renderers</artifactId>
         <groupId>com.redshape</groupId>
-        <version>3.0.0</version>
+        <version>3.1.0</version>
     </parent>
 
     <packaging>jar</packaging>
@@ -18,6 +18,11 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <artifactId>commons</artifactId>
+            <groupId>com.redshape</groupId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <artifactId>forms</artifactId>
             <groupId>com.redshape</groupId>

@@ -13,7 +13,7 @@ import com.redshape.io.INetworkNode;
 import com.redshape.io.net.discovery.DiscoveryException;
 import com.redshape.io.net.discovery.INetworkDiscoveryService;
 import com.redshape.io.net.discovery.nmap.analyzers.NMapOutputAnalyzer;
-import com.redshape.utils.StringUtils;
+import com.redshape.utils.SimpleStringUtils;
 
 /**
  * Network discovery implementation based on abilities of NMap
@@ -92,7 +92,7 @@ public class NMapDiscoveryService implements INetworkDiscoveryService {
         return new StringBuilder().append( this.getExecutablePath() )
                            .append(" ")
                            .append(
-                                StringUtils.join( this.createConfiguration(), " " )
+                                SimpleStringUtils.join(this.createConfiguration(), " ")
                            ).toString();
     }
 

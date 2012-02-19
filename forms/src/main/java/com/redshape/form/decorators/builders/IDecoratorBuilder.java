@@ -7,20 +7,20 @@ import com.redshape.form.decorators.Placement;
 import java.util.List;
 import java.util.Map;
 
-public interface IDecoratorBuilder {
+public interface IDecoratorBuilder<T> {
 
-	public IDecoratorBuilder withAttribute( DecoratorAttribute name, Object value );
+	public IDecoratorBuilder<T> withAttribute( DecoratorAttribute name, Object value );
 	
-	public IDecoratorBuilder withAttributes( Map<DecoratorAttribute, Object> attributes );
+	public IDecoratorBuilder<T> withAttributes( Map<DecoratorAttribute, Object> attributes );
 	
-	public IDecorator withFormFieldDecorator();
+	public IDecorator<T> withFormFieldDecorator();
 	
-	public IDecorator withComposedDecorator( IDecorator... decorators );
+	public IDecorator<T> withComposedDecorator( IDecorator<T>... decorators );
 	
-	public IDecorator withComposedDecorator( List<IDecorator> decorators );
+	public IDecorator<T> withComposedDecorator( List<IDecorator<T>> decorators );
 	
-	public IDecorator withTagDecorator( String tagName, Placement placement );
+	public IDecorator<T> withTagDecorator( String tagName, Placement placement );
 	
-	public IDecorator withLegendDecorator();
+	public IDecorator<T> withLegendDecorator();
 	
 }

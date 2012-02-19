@@ -2,9 +2,7 @@ package com.redshape.utils;
 
 import org.apache.log4j.Logger;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
 /**
  * 
@@ -13,28 +11,20 @@ import java.util.Arrays;
  * @param <V>
  * @param <T>
  */
-public class Function<V, T> implements com.redshape.utils.IFunction<V, T> {
+public class Function<V, T> extends Lambda<T> implements IFunction<V, T> {
 	private static final Logger log = Logger.getLogger(Function.class);
 
 	private Method method;
 	private V bind;
-	private Object[] arguments;
-	
-	public Function() {
-		this(null);
-	}
-	
-	public Function ( String name, Class<?> context, 
-					  Class<?>... arguments ) throws NoSuchMethodException{
-		this( context.getMethod(name, arguments) );
-	}
-	
-	public Function( Method method ) {
-		this(method, new Object[] {} );
-	}
-	
-	public Function( Method method, Object... arguments ) {		
-		this.arguments = arguments;
+    
+    public Function( V bind, Method method ) {
+        this( bind, method, new Object[] {} );
+    }
+    
+    public Function( V bind, Method method, Object... arguments ) {
+		super(arguments);
+
+        this.bind = bind;
 		this.method = method;
 	}
 	
@@ -77,48 +67,40 @@ public class Function<V, T> implements com.redshape.utils.IFunction<V, T> {
 	}
 	
 	@Override
-	public T invoke() throws InvocationTargetException {
+	public T invoke() throws InvocationException {
 		return this.invoke( new Object[] {} );
 	}
 	
-	@Override
-	public T invoke( Object... arguments ) throws InvocationTargetException {
-		return this.invoke( this.getBind(), arguments );
-	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
-	public T invoke( V context, Object... arguments) throws InvocationTargetException {
+	public T invoke( Object... arguments) throws InvocationException {
 		T result = null;
 		
-		int argumentsCount = this.arguments.length + arguments.length;
+		int argumentsCount = this.getArguments().length + arguments.length;
 		if ( argumentsCount != this.getMethod().getParameterTypes().length ) {
 			throw new IllegalArgumentException("Invalid arguments count. Given: " + argumentsCount 
 						+ "; Actual: " + this.getMethod().getParameterTypes().length );
 		}
 		
 		Object[] args = arguments;
-		if ( this.arguments.length > 0 ) {
-			args = new Object[ this.arguments.length + arguments.length];
+		if ( this.getArguments().length > 0 ) {
+			args = new Object[ this.getArguments().length + arguments.length];
 			int i = 0;
 			
 			for ( Object arg : arguments ) {
 				args[i++] = arg;
 			}
 			
-			for ( Object arg : this.arguments ) {
+			for ( Object arg : this.getArguments() ) {
 				args[i++] = arg;
 			}
 		}
 		
 		try {
-			result = (T) this.getMethod().invoke( context instanceof Class ? null : context, args);
+			result = (T) this.getMethod().invoke( this.getBind(), args);
 		} catch ( Throwable e  ) {
-			log.info("Erroneous context: " + String.valueOf( context ) );
-			log.info("Erroneous method: " + this.getMethod().getName() );
-			log.info("Erroneous args: " + Arrays.asList(arguments) );
-			log.info( e.getMessage(), e );
-			throw new InvocationTargetException( e );
+            throw new InvocationException( e.getMessage(), e );
 		}
 		
 		return result;
@@ -126,7 +108,7 @@ public class Function<V, T> implements com.redshape.utils.IFunction<V, T> {
 
 	@Override
 	public com.redshape.utils.IFunction<V, T> pass(Object... arguments) {
-		return new Function<V, T>( this.getMethod(), arguments);
+		return new Function<V, T>( this.getBind(), this.getMethod(), arguments);
 	}
 
 

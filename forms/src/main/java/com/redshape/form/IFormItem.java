@@ -92,19 +92,19 @@ public interface IFormItem extends Serializable {
      *
      * @return
      */
-    public boolean hasDecorator( Class<? extends IDecorator> decorator );
+    public boolean hasDecorator( Class<? extends IDecorator<?>> decorator );
 
     /**
      * Adopt given objects to the related decorators collection
      * @param decorators
      */
-    public void setDecorators(List<IDecorator> decorators);
+    public void setDecorators(List<IDecorator<?>> decorators);
 
     /**
      * Return related decorators collection.
      * @return
      */
-    public Collection<IDecorator> getDecorators();
+    public <T> Collection<IDecorator<T>> getDecorators();
 
     /**
      * Unbind all decorators associated with current field.

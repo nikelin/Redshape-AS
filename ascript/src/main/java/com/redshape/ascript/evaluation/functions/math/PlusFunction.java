@@ -1,16 +1,15 @@
 package com.redshape.ascript.evaluation.functions.math;
 
 import com.redshape.ascript.IEvaluator;
-import com.redshape.utils.Function;
-
-import java.lang.reflect.InvocationTargetException;
+import com.redshape.utils.InvocationException;
+import com.redshape.utils.Lambda;
 
 /**
  * @author nikelin
  * @date 20/04/11
  * @package com.redshape.ascript.evaluation.functions
  */
-public class PlusFunction extends Function<Object, Double> {
+public class PlusFunction extends Lambda<Double> {
 
 	private IEvaluator evaluator;
 
@@ -19,7 +18,7 @@ public class PlusFunction extends Function<Object, Double> {
 	}
 
 	@Override
-	public Double invoke(Object... arguments) throws InvocationTargetException {
+	public Double invoke(Object... arguments) throws InvocationException {
 		this.assertArgumentsCount( arguments, 2 );
 		this.assertArgumentsType( arguments, Number.class );
 

@@ -1,11 +1,10 @@
 package com.redshape.form.validators;
 
-import com.redshape.i18n.impl.StandardI18NFacade;
 import com.redshape.form.IForm;
 import com.redshape.form.IFormField;
 import com.redshape.utils.validators.AbstractValidator;
-import com.redshape.utils.validators.impl.common.ValidationResult;
 import com.redshape.utils.validators.result.IValidationResult;
+import com.redshape.utils.validators.result.ValidationResult;
 
 /**
  * @package com.redshape.form.validators
@@ -52,9 +51,7 @@ public class RepeatFieldValidator extends AbstractValidator<String, IValidationR
     @Override
     public ValidationResult validate(String value) {
         return new ValidationResult( this.isValid(value),
-                String.format(
-                    StandardI18NFacade._("%s field must match value of field %s"),
-                    this.getSource().getLabel(),
-                    this.getTarget().getLabel() ) );
+                this.getSource().getLabel() + " field must match value of field "
+                + this.getTarget().getLabel() );
     }
 }

@@ -5,7 +5,7 @@ import com.redshape.commands.AbstractCommand;
 import com.redshape.commands.ICommand;
 import com.redshape.commands.ICommandsFactory;
 import com.redshape.commands.annotations.Command;
-import com.redshape.utils.StringUtils;
+import com.redshape.utils.SimpleStringUtils;
 import org.apache.log4j.Logger;
 
 import java.util.Collection;
@@ -35,11 +35,11 @@ public class HelpCommand extends AbstractCommand {
     @Override
     public void process() {
         StringBuffer buffer = new StringBuffer();
-        buffer.append( StringUtils.repeat("\n", 5 ) );
+        buffer.append( SimpleStringUtils.repeat("\n", 5) );
         buffer.append("Redshape Commands Runner")
               .append("\n");
         buffer.append("Available tasks:\n");
-        buffer.append( StringUtils.repeat("-", 10) )
+        buffer.append( SimpleStringUtils.repeat("-", 10) )
               .append("\n");
 
         Set<String> modules = new HashSet();

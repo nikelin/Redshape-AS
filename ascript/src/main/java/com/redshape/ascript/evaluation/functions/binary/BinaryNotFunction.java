@@ -1,14 +1,14 @@
 package com.redshape.ascript.evaluation.functions.binary;
 
 import com.redshape.ascript.IEvaluator;
-import com.redshape.utils.Function;
+import com.redshape.utils.Lambda;
 
 /**
  * @author nikelin
  * @date 20/04/11
  * @package com.redshape.ascript.evaluation.functions.binary
  */
-public class BinaryNotFunction extends Function<Object, Integer> {
+public class BinaryNotFunction extends Lambda<Integer> {
 
 	private IEvaluator evaluator;
 

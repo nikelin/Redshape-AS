@@ -11,6 +11,7 @@ import com.redshape.ui.application.events.AppEvent;
 import com.redshape.ui.components.IComponent;
 import com.redshape.ui.components.actions.ComponentAction;
 import com.redshape.ui.utils.UIConstants;
+import com.redshape.ui.utils.UIRegistry;
 import com.redshape.ui.views.widgets.IWidget;
 import com.redshape.utils.config.ConfigException;
 import com.redshape.utils.config.IConfig;
@@ -47,7 +48,7 @@ public class GWTApplication extends AbstractApplication {
         component.init();
 
         if ( component.doRenderMenu() ) {
-            this.renderComponentMenu(component);
+            this.renderComponentMenu(component, UIRegistry.<MenuBar>get(UIConstants.Area.MENU) );
         }
     }
     
@@ -71,9 +72,9 @@ public class GWTApplication extends AbstractApplication {
         }
         
         if ( menu != null ) {
-            menu.addItem( component.getName(), componentMenu );
+            menu.addItem( component.getTitle(), componentMenu );
         } else {
-            RootPanel.get().add( menu );
+            RootPanel.get().add( componentMenu );
         }
     }
 

@@ -3,10 +3,10 @@ package com.redshape.ascript.evaluation.functions.language;
 import com.redshape.ascript.EvaluationException;
 import com.redshape.ascript.IEvaluator;
 import com.redshape.ascript.context.items.FunctionItem;
-import com.redshape.utils.Function;
 import com.redshape.utils.IFunction;
+import com.redshape.utils.InvocationException;
+import com.redshape.utils.Lambda;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashSet;
@@ -17,7 +17,7 @@ import java.util.Map;
  * @date 25/04/11
  * @package com.redshape.ascript.evaluation.functions.language
  */
-public class ListDeclaredFunction extends Function<Object, Collection<String>> {
+public class ListDeclaredFunction extends Lambda<Collection<String>> {
     private IEvaluator evaluator;
 
     public ListDeclaredFunction( IEvaluator evaluator ) {
@@ -25,7 +25,7 @@ public class ListDeclaredFunction extends Function<Object, Collection<String>> {
     }
 
     @Override
-    public Collection<String> invoke( Object... args ) throws InvocationTargetException {
+    public Collection<String> invoke( Object... args ) throws InvocationException {
         Collection<String> result = new HashSet<String>();
 
         try {
@@ -51,7 +51,7 @@ public class ListDeclaredFunction extends Function<Object, Collection<String>> {
                 result.add( nameBuilder.toString() );
             }
         } catch ( EvaluationException e ) {
-            throw new InvocationTargetException( e );
+            throw new InvocationException( e.getMessage(), e );
         }
 
         return result;

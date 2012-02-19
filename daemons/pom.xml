@@ -9,7 +9,6 @@
 
   <groupId>com.redshape</groupId>
   <artifactId>daemons</artifactId>
-  <version>3.0.0</version>
   <name>Redshape - Daemons API</name>
 
   <dependencies>

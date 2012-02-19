@@ -14,32 +14,11 @@ public interface IRenderersFactory {
     public String getFactoryId();
 
     /**
-     * Get renderer for specified class entity
-     * @param clazz
-     * @param <T>
-     * @return
-     * @throws RendererException
-     */
-    public <T, V> IRenderer<T, V> getRenderer( Class<? extends IRenderer<T, V>> clazz ) 
-    		throws RendererException;
-
-    /**
      * Bind renderer entity to specified renderable entity
-     * @param rendererClazz
+     * @param entityClazz
      * @param renderer
      */
-    public <T, V> void addRenderer( Class<? extends IRenderer<T, V>> rendererClazz, 
-    						 IRenderer<T, V> renderer );
-
-    /**
-     *
-     * @param object
-     * @param <T>
-     * @param <V>
-     * @return
-     * @throws RendererException
-     */
-    public <T, V> IRenderer<T, V> forEntity( Object object );
+    public <T, V> void addRenderer( Class<T> entityClazz, Class<? extends IRenderer<T, V>> renderer );
 
     /**
      *
@@ -50,4 +29,6 @@ public interface IRenderersFactory {
      * @throws RendererException
      */
     public <T, V> IRenderer<T, V> forEntity( Class<T> object );
+
+    public <T, V> IRenderer<T, V> forEntity( T entity );
 }

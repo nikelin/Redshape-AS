@@ -1,6 +1,6 @@
 package com.redshape.search.serializers;
 
-import com.redshape.utils.StringUtils;
+import com.redshape.utils.SimpleStringUtils;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -27,7 +27,7 @@ public class ArraySerializer implements ISerializer {
     public String serializeString( Object subject ) {
 		this.checkAssertions(subject);
 
-        return StringUtils.join( (Object[]) subject, "," );
+        return SimpleStringUtils.join((Object[]) subject, ",");
     }
 
 	protected void checkAssertions( Object subject ) {

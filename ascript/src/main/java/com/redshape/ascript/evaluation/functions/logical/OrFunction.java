@@ -1,16 +1,15 @@
 package com.redshape.ascript.evaluation.functions.logical;
 
 import com.redshape.ascript.IEvaluator;
-import com.redshape.utils.Function;
-
-import java.lang.reflect.InvocationTargetException;
+import com.redshape.utils.InvocationException;
+import com.redshape.utils.Lambda;
 
 /**
  * @author nikelin
  * @date 20/04/11
  * @package com.redshape.ascript.evaluation.functions.conditional
  */
-public class OrFunction extends Function<Object, Boolean> {
+public class OrFunction extends Lambda<Boolean> {
 
 	private IEvaluator evaluator;
 
@@ -19,7 +18,7 @@ public class OrFunction extends Function<Object, Boolean> {
 	}
 
 	@Override
-	public Boolean invoke(Object... arguments) throws InvocationTargetException {
+	public Boolean invoke(Object... arguments) throws InvocationException {
 		this.assertArgumentsType( arguments, Boolean.class );
 
 		boolean result = true;

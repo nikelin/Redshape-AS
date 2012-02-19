@@ -1,6 +1,6 @@
 package com.redshape.utils.config;
 
-import com.redshape.utils.StringUtils;
+import com.redshape.utils.SimpleStringUtils;
 import com.redshape.utils.config.sources.IConfigSource;
 
 /**
@@ -48,7 +48,7 @@ public class PropertiesConfig extends AbstractConfig {
 	}
 
 	protected void processData( String data ) throws ConfigException {
-		String[] lines = data.split( StringUtils.join(this.getLineDelimiters(), "") );
+		String[] lines = data.split( SimpleStringUtils.join(this.getLineDelimiters(), "") );
 		for ( String line : lines ) {
 			String[] parts = line.split("=");
 			if ( parts.length != 2 ) {

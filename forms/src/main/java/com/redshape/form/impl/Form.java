@@ -3,13 +3,11 @@ package com.redshape.form.impl;
 import com.redshape.form.*;
 import com.redshape.form.decorators.IDecorator;
 import com.redshape.utils.Commons;
-import com.redshape.utils.StringUtils;
-import org.apache.log4j.Logger;
+import com.redshape.utils.SimpleStringUtils;
 
 import java.util.*;
 
 public class Form extends AbstractFormItem implements IForm {
-    private static final Logger log = Logger.getLogger( Form.class );
     private static final long serialVersionUID = 5015229816321663639L;
 
     public enum FormState {
@@ -47,9 +45,8 @@ public class Form extends AbstractFormItem implements IForm {
     @Override
     public void process( IUserRequest request ) throws InvalidDataException {
         if ( !request.getMethod().equals( this.getMethod()) ) {
-            throw new IllegalArgumentException(
-                    String.format("Processing only possible in %s context", this.getMethod()
-                    ) );
+            throw new IllegalArgumentException("Processing only possible in "
+                    + this.getMethod() + " context");
         }
 
         this.resetState();
@@ -154,7 +151,6 @@ public class Form extends AbstractFormItem implements IForm {
         }
 
         if (  !( item instanceof IForm ) ) {
-            log.error("Current context:" + this.getCanonicalName() + ", full search path: " + Arrays.asList( path )  );
             throw new IllegalArgumentException("Illegal path");
         }
 
@@ -163,11 +159,12 @@ public class Form extends AbstractFormItem implements IForm {
         }
 
         return ( (IForm) item ).<T>findContext(
-                StringUtils.join( Arrays.copyOfRange( path, 1, path.length ), "." ) );
+                SimpleStringUtils.join(Arrays.asList(path).subList(1, path.length), ".") );
     }
 
     protected <T, V extends IFormField<T>> V findField( IForm context, String[] name ) {
-        IForm targetContext = this.findContext( Arrays.copyOfRange( name, 0, name.length - 1  ) );
+        IForm targetContext = this.findContext( (String[]) Arrays.asList(name)
+                                                .subList(0, name.length - 1).toArray() );
         if ( targetContext == null ) {
             if ( name.length == 2
                     && name[0].equals( Commons.select( this.getName(), this.getId() ) ) ) {
@@ -277,7 +274,14 @@ public class Form extends AbstractFormItem implements IForm {
 
     @Override
     public List<IFormField<?>> getFields() {
-        return null;
+        List<IFormField<?>> fields = new ArrayList<IFormField<?>>();
+        for ( IFormItem item : this.items ) {
+            if ( item instanceof IFormField ) {
+                fields.add( (IFormField) item );
+            }
+        }
+
+        return fields;
     }
 
     @Override

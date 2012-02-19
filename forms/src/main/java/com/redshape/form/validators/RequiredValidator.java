@@ -2,7 +2,7 @@ package com.redshape.form.validators;
 
 import com.redshape.form.IFormField;
 import com.redshape.utils.validators.AbstractValidator;
-import com.redshape.utils.validators.impl.common.ValidationResult;
+import com.redshape.utils.validators.result.ValidationResult;
 
 /**
  * @package com.redshape.form.validators

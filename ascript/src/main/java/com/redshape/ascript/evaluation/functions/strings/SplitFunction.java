@@ -1,7 +1,7 @@
 package com.redshape.ascript.evaluation.functions.strings;
 
 import com.redshape.ascript.IEvaluator;
-import com.redshape.utils.Function;
+import com.redshape.utils.Lambda;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
  * @package com.redshape.ascript.evaluation.functions.strings
  * @date 8/13/11 11:37 PM
  */
-public class SplitFunction extends Function<Object, List<String>> {
+public class SplitFunction extends Lambda<List<String>> {
     private IEvaluator evaluator;
 
     public SplitFunction( IEvaluator evaluator ) {

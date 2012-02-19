@@ -1,7 +1,7 @@
 package com.redshape.io.interactors.ssh;
 
 import com.redshape.io.IFilesystemNode;
-import com.redshape.utils.StringUtils;
+import com.redshape.utils.SimpleStringUtils;
 import net.schmizz.sshj.sftp.*;
 
 import java.io.IOException;
@@ -37,12 +37,12 @@ public class SSHFile implements IFilesystemNode {
     protected void setFile( RemoteFile file ) {
         this.file = file;
         this.nameParts = this.getFile().getPath().split("/");
-        this.parentPath = StringUtils.join(
-            Arrays.asList( this.nameParts )
-                  .subList(
-                        0, this.nameParts.length == 1 ? 1 : this.nameParts.length - 1
-                  ),
-            "/" );
+        this.parentPath = SimpleStringUtils.join(
+                Arrays.asList(this.nameParts)
+                        .subList(
+                                0, this.nameParts.length == 1 ? 1 : this.nameParts.length - 1
+                        ),
+                "/");
     }
 
     protected RemoteFile getFile() {

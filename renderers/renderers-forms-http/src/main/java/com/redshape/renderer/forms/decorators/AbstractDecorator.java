@@ -6,7 +6,7 @@ import com.redshape.form.decorators.IDecorator;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class AbstractDecorator implements IDecorator {
+public abstract class AbstractDecorator implements IDecorator<String> {
 	private Map<DecoratorAttribute, Object> attributes;
 	
 	public AbstractDecorator() {

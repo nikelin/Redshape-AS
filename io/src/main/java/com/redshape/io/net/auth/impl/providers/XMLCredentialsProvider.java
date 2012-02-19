@@ -1,14 +1,13 @@
 package com.redshape.io.net.auth.impl.providers;
 
-import org.apache.log4j.Logger;
-
-import com.redshape.utils.config.ConfigException;
-import com.redshape.utils.config.IConfig;
-import com.redshape.utils.config.XMLConfig;
 import com.redshape.io.net.auth.AbstractCredentialsProvider;
 import com.redshape.io.net.auth.ICredentials;
 import com.redshape.utils.ReflectionUtils;
 import com.redshape.utils.StringUtils;
+import com.redshape.utils.config.ConfigException;
+import com.redshape.utils.config.IConfig;
+import com.redshape.utils.config.XMLConfig;
+import org.apache.log4j.Logger;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -38,7 +37,7 @@ public class XMLCredentialsProvider extends AbstractCredentialsProvider {
         for ( IConfig dataNode : config.get("nodes").childs() ) {
             try {
                 this.addCredentials(
-                    InetAddress.getByAddress( StringUtils.stringToIP( dataNode.get("connection").get("address").value() ) ),
+                    InetAddress.getByAddress( StringUtils.stringToIP(dataNode.get("connection").get("address").value()) ),
                     this._processNodeConfig( dataNode )
                 );
             } catch ( UnknownHostException e ) {

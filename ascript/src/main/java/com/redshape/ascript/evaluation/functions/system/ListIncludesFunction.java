@@ -1,9 +1,9 @@
 package com.redshape.ascript.evaluation.functions.system;
 
 import com.redshape.ascript.IEvaluator;
-import com.redshape.utils.Function;
+import com.redshape.utils.InvocationException;
+import com.redshape.utils.Lambda;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
 /**
@@ -13,7 +13,7 @@ import java.util.Collection;
  * Time: 6:02 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ListIncludesFunction extends Function<Object, Collection<String>> {
+public class ListIncludesFunction extends Lambda<Collection<String>> {
     private IEvaluator evaluator;
 
     public ListIncludesFunction( IEvaluator evaluator ) {
@@ -21,7 +21,7 @@ public class ListIncludesFunction extends Function<Object, Collection<String>> {
     }
 
     @Override
-    public Collection<String> invoke( Object... args ) throws InvocationTargetException {
+    public Collection<String> invoke( Object... args ) throws InvocationException {
         return this.evaluator.getIncludes();
     }
 

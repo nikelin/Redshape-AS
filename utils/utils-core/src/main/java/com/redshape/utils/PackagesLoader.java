@@ -45,7 +45,7 @@ public class PackagesLoader implements IPackagesLoader {
 			)
 		);
 
-		System.setProperty("java.class.path", StringUtils.join(this.classpath, ":"));
+		System.setProperty("java.class.path", SimpleStringUtils.join(this.classpath, ":"));
 	}
 
 	public List<String> getClasspath() {

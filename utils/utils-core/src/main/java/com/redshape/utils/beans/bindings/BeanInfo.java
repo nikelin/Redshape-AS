@@ -25,7 +25,7 @@ import com.redshape.utils.beans.bindings.types.BindableType;
 import com.redshape.utils.beans.bindings.types.IBindable;
 
 import com.redshape.utils.IEnum;
-import com.redshape.utils.StringUtils;
+import com.redshape.utils.SimpleStringUtils;
 
 /**
  * Bindables processor
@@ -210,7 +210,7 @@ public class BeanInfo implements IBeanInfo {
 			throw new BindingException("Invalid binding annotations place");
 		}
 
-		return StringUtils.lcfirst(result);
+		return SimpleStringUtils.lcfirst(result);
 	}
 
 	protected String getBindableId(Bindable annotation, Member member)
@@ -299,8 +299,8 @@ public class BeanInfo implements IBeanInfo {
 
 			try {
 				reader = Accessors.getReaders().createReader(
-						this.beanClazz.getMethod(StringUtils.toCamelCase(
-								READER_PART + "_" + fieldName, false)));
+						this.beanClazz.getMethod(SimpleStringUtils.toCamelCase(
+                                READER_PART + "_" + fieldName, false)));
 			} catch (Throwable e) {
 				log.info("Reader not found...");
 			}
@@ -344,8 +344,8 @@ public class BeanInfo implements IBeanInfo {
 			try {
 				writer = Accessors.getWriters().createWriter(
 						this.beanClazz.getMethod(
-								StringUtils.toCamelCase(WRITER_PART + "_"
-										+ fieldName, false), type));
+								SimpleStringUtils.toCamelCase(WRITER_PART + "_"
+                                        + fieldName, false), type));
 			} catch (Throwable e) {
 				log.info("Writer not found...");
 			}

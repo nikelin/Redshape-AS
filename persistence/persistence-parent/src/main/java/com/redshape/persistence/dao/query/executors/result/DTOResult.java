@@ -22,7 +22,7 @@ public class DTOResult<T extends IEntity> extends ExecutorResult<T> {
     protected static Object prepareInput( Object object ) {
         List result = new ArrayList();
         if (object == null) {
-            result = Commons.list(null);
+            result = Commons.emptyList();
         } else if (object instanceof Collection) {
             for ( Object obj : (Collection) object) {
                 if ( !( obj instanceof IDtoCapable) ) {

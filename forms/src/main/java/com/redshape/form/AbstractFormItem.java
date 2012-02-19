@@ -2,7 +2,7 @@ package com.redshape.form;
 
 import com.redshape.form.decorators.IDecorator;
 import com.redshape.utils.Commons;
-import com.redshape.utils.StringUtils;
+import com.redshape.utils.SimpleStringUtils;
 
 import java.util.*;
 
@@ -11,7 +11,7 @@ public abstract class AbstractFormItem implements IFormItem {
 	
 	private static final long serialVersionUID = 4768154716952314774L;
 	
-	private List<IDecorator> decorators;
+	private List<IDecorator<?>> decorators = new ArrayList<IDecorator<?>>();
 	private Map<String, Object> attributes = new HashMap<String, Object>();
 	private String id;
 	private String name;
@@ -23,11 +23,10 @@ public abstract class AbstractFormItem implements IFormItem {
 	}
 	
 	public AbstractFormItem( String id, String name ) {
+        super();
+
 		this.id = id;
 		this.name = name;
-		
-		this.decorators = new ArrayList<IDecorator>();
-		this.attributes = new HashMap<String, Object>();
 	}
 
 	public void clearMessages() {
@@ -66,7 +65,7 @@ public abstract class AbstractFormItem implements IFormItem {
 			context = context.getContext();
 		}
 		
-		String result = StringUtils.reverseSentence( builder.toString(), PATH_SEPARATOR );
+		String result = SimpleStringUtils.reverseSentence(builder.toString(), PATH_SEPARATOR);
 		builder.delete(0, builder.length() );
 		
 		if ( !result.isEmpty() ) {
@@ -132,8 +131,8 @@ public abstract class AbstractFormItem implements IFormItem {
 	}
 	
 	@Override
-	public boolean hasDecorator( Class<? extends IDecorator> decorator ) {
-		for ( IDecorator registeredDecorator : this.decorators ) {
+	public boolean hasDecorator( Class<? extends IDecorator<?>> decorator ) {
+		for ( IDecorator<?> registeredDecorator : this.decorators ) {
 			if ( decorator.equals( registeredDecorator.getClass() ) ) {
 				return true;
 			}
@@ -148,13 +147,13 @@ public abstract class AbstractFormItem implements IFormItem {
 	}
 	
 	@Override
-	public void setDecorators(List<IDecorator> decorators) {
+	public void setDecorators(List<IDecorator<?>> decorators) {
 		this.decorators = decorators;
 	}
 
 	@Override
-	public Collection<IDecorator> getDecorators() {
-		return this.decorators;
+	public <T> Collection<IDecorator<T>> getDecorators() {
+		return (Collection) this.decorators;
 	}
 	
 }

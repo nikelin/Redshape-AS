@@ -44,7 +44,7 @@ public abstract class AbstractFormFieldRenderer<T extends IFormField> extends Ab
 			return data;
 		}
 
-		for ( IDecorator decorator : field.getDecorators() ) {
+		for ( IDecorator<String> decorator : field.<String>getDecorators() ) {
 			data = decorator.decorate(field, data);
 		}
 

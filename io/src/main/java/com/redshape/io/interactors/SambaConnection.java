@@ -9,7 +9,7 @@ import com.redshape.io.interactors.samba.SambaInteractor;
 import com.redshape.io.net.auth.AuthenticatorException;
 import com.redshape.io.net.auth.ICredentials;
 import com.redshape.io.net.auth.impl.samba.NtlmCredentials;
-import com.redshape.utils.StringUtils;
+import com.redshape.utils.SimpleStringUtils;
 import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbFile;
 import org.apache.log4j.Logger;
@@ -167,7 +167,7 @@ public class SambaConnection extends AbstractNetworkConnection<SmbFile> {
 	@Override
 	public String getConnectionUri( INetworkNode node ) {
 		return new StringBuilder().append("smb://")
-			.append( StringUtils.IPToString(node.getNetworkPoint().getAddress()) )
+			.append( SimpleStringUtils.IPToString(node.getNetworkPoint().getAddress()) )
 			.append( ":445")
 		.toString();
 	}

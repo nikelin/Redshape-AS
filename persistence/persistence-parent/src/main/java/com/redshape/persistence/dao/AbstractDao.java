@@ -6,11 +6,11 @@ import com.redshape.persistence.dao.query.executors.IExecutionRequest;
 import com.redshape.persistence.dao.query.executors.services.IQueryExecutorService;
 import com.redshape.persistence.entities.IEntity;
 import com.redshape.utils.Commons;
-import com.redshape.utils.Function;
+import com.redshape.utils.InvocationException;
+import com.redshape.utils.Lambda;
 import com.redshape.utils.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.List;
 
@@ -165,10 +165,10 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
                                         this.getBuilder().reference("id"),
                                         this.getBuilder().array(
                                                 this.getBuilder().scalar(
-                                                        StringUtils.join(object, ",", new Function<Object, String>() {
+                                                        StringUtils.join(object, ",", new Lambda<String>() {
                                                             @Override
                                                             public String invoke(Object... arguments)
-                                                                    throws InvocationTargetException {
+                                                                    throws InvocationException {
                                                                 return ((T) arguments[0]).getId() == null ?
                                                                         "-1" : ((T) arguments[0]).getId().toString();
                                                             }

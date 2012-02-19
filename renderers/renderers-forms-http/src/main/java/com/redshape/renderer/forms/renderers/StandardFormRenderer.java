@@ -48,8 +48,10 @@ public class StandardFormRenderer extends AbstractFormItemRenderer<IForm>
 		
 		for ( IFormItem item : form.getItems() ) {
 			if ( this.isAllowed( item, mode ) ) {
-				builder.append( this.getRenderersFactory().forEntity(item).render(item) )
-                       .append(System.lineSeparator());
+				builder.append( this.getRenderersFactory()
+                        .<IFormItem, String>forEntity(item)
+                        .render(item) )
+                   .append(System.lineSeparator());
 			}
 		}
 
@@ -60,7 +62,7 @@ public class StandardFormRenderer extends AbstractFormItemRenderer<IForm>
 		}
 		
 		String data = builder.toString();
-		for ( IDecorator decorator : form.getDecorators() ) {
+		for ( IDecorator<String> decorator : form.<String>getDecorators() ) {
 			data = decorator.decorate(form, data);
 		}
 		
