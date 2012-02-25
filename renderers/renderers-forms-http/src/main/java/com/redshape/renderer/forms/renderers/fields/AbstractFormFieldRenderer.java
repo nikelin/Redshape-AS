@@ -1,8 +1,6 @@
 package com.redshape.renderer.forms.renderers.fields;
 
 import com.redshape.form.IFormField;
-import com.redshape.form.RenderMode;
-import com.redshape.form.decorators.IDecorator;
 import com.redshape.renderer.IRenderersFactory;
 import com.redshape.utils.validators.result.IValidationResult;
 
@@ -37,18 +35,5 @@ public abstract class AbstractFormFieldRenderer<T extends IFormField> extends Ab
 			}
 		}
 	}
-
-    protected String applyDecorators( StringBuilder builder, IFormField field, RenderMode mode) {
-        String data = builder.toString();
-		if ( mode.equals(RenderMode.WITHOUT_DECORATORS) ) {
-			return data;
-		}
-
-		for ( IDecorator<String> decorator : field.<String>getDecorators() ) {
-			data = decorator.decorate(field, data);
-		}
-
-        return data;
-    }
 
 }

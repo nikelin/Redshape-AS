@@ -41,7 +41,7 @@ public class LabelFieldRenderer extends AbstractFormFieldRenderer<LabelField> {
 
         builder.append("</label>");
 
-        return this.applyDecorators(builder, field, mode);
+        return this.applyDecorators(field, builder, mode);
     }
 
 

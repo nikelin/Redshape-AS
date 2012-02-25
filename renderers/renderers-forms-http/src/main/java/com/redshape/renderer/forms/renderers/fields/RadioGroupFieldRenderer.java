@@ -48,7 +48,7 @@ public class RadioGroupFieldRenderer extends AbstractFormFieldRenderer<RadioGrou
             this.renderItem( builder, item, option, options.get(option) );
         }
 
-        return this.applyDecorators(builder, item, mode);
+        return this.applyDecorators(item, builder, mode);
     }
 
 }

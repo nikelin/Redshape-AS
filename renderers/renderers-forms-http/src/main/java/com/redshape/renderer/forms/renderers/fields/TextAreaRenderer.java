@@ -36,7 +36,7 @@ public class TextAreaRenderer extends AbstractFormFieldRenderer<TextAreaField> {
 
         builder.append("</textarea>");
 
-        return this.applyDecorators( builder, item, mode );
+        return this.applyDecorators( item, builder, mode );
     }
 
 }

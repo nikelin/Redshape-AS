@@ -32,7 +32,7 @@ public class CheckboxFieldRenderer extends AbstractFormFieldRenderer<CheckboxFie
 
         builder.append("/>");
 
-        return this.applyDecorators(builder, field, mode);
+        return this.applyDecorators(field, builder, mode);
     }
 
 }

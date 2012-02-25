@@ -164,7 +164,8 @@ public class Form extends AbstractFormItem implements IForm {
 
     protected <T, V extends IFormField<T>> V findField( IForm context, String[] name ) {
         IForm targetContext = this.findContext( (String[]) Arrays.asList(name)
-                                                .subList(0, name.length - 1).toArray() );
+                                                .subList(0, name.length - 1)
+                                                .toArray( new String[name.length-1] ) );
         if ( targetContext == null ) {
             if ( name.length == 2
                     && name[0].equals( Commons.select( this.getName(), this.getId() ) ) ) {

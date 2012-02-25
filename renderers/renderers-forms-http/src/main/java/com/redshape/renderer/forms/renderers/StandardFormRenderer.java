@@ -4,7 +4,6 @@ import com.redshape.form.IForm;
 import com.redshape.form.IFormField;
 import com.redshape.form.IFormItem;
 import com.redshape.form.RenderMode;
-import com.redshape.form.decorators.IDecorator;
 import com.redshape.renderer.IRenderer;
 import com.redshape.renderer.IRenderersFactory;
 import com.redshape.renderer.forms.renderers.fields.AbstractFormItemRenderer;
@@ -60,13 +59,8 @@ public class StandardFormRenderer extends AbstractFormItemRenderer<IForm>
 				builder.append("</form>").append(System.lineSeparator());
 			}
 		}
-		
-		String data = builder.toString();
-		for ( IDecorator<String> decorator : form.<String>getDecorators() ) {
-			data = decorator.decorate(form, data);
-		}
-		
-		return data;
+
+        return this.applyDecorators(form, builder, mode );
 	}
 	
 	protected boolean isAllowed( IFormItem item, RenderMode mode ) {
