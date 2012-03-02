@@ -31,37 +31,47 @@ public class Form extends AbstractFormItem implements IForm {
     private String legend;
     private List<IFormItem> items = new ArrayList<IFormItem>();
     private Map<String, Integer> itemsDict = new HashMap<String, Integer>();
-    private IFormProcessHandler handler;
+    private List<IFormProcessHandler<?>> handlers = new ArrayList<IFormProcessHandler<?>>();
 
     @Override
-    public void setProcessHandler( IFormProcessHandler handler ) {
-        this.handler = handler;
+    public void addProcessHandler( IFormProcessHandler<?> handler ) {
+        this.handlers.add( handler );
     }
 
-    protected IFormProcessHandler getProcessHandler() {
-        return this.handler;
+    @Override
+    public List<IFormProcessHandler<?>> getProcessHandlers() {
+        return this.handlers;
+    }
+    
+    @Override
+    public void removeProcessHandler( IFormProcessHandler<?> processHandler ) {
+        this.handlers.remove(processHandler);
     }
 
     @Override
     public void process( IUserRequest request ) throws InvalidDataException {
-        if ( !request.getMethod().equals( this.getMethod()) ) {
-            throw new IllegalArgumentException("Processing only possible in "
-                    + this.getMethod() + " context");
-        }
-
         this.resetState();
 
-        Map<String, Object> parameters = request.getParameters();
-        for ( String attribute : parameters.keySet() ) {
-            this.setValue(attribute, parameters.get(attribute) );
+        if ( request != null ) {
+            if ( !request.getMethod().equals( this.getMethod()) ) {
+                throw new IllegalArgumentException("Processing only possible in "
+                        + this.getMethod() + " context");
+            }
+
+            Map<String, Object> parameters = request.getParameters();
+            for ( String attribute : parameters.keySet() ) {
+                this.setValue(attribute, parameters.get(attribute) );
+            }
         }
 
         if ( !this.isValid() ) {
             throw new InvalidDataException();
         }
 
-        if ( this.getProcessHandler() != null ) {
-            this.getProcessHandler().process( this );
+        for ( IFormProcessHandler handler : this.getProcessHandlers() ) {
+            if ( !handler.process(this) ) {
+                throw new InvalidDataException();
+            }
         }
     }
 
@@ -126,16 +136,16 @@ public class Form extends AbstractFormItem implements IForm {
             return this.<T, V>findField( this, parts );
         }
 
-        return this.<T, V>findField( this, path );
+        return this.<T, V>findField(this, path);
     }
 
     @Override
     public <T extends IForm> T findContext( String path ) {
-        return this.<T>findContext( path.split("\\.") );
+        return this.<T>findContext(path.split("\\."));
     }
 
     protected <T extends IForm> T findContext( String[] path ) {
-        Integer index = this.itemsDict.get( path[0] );
+        Integer index = this.itemsDict.get(path[0]);
 
         IFormItem item = null;
         if ( index != null ) {
@@ -159,7 +169,7 @@ public class Form extends AbstractFormItem implements IForm {
         }
 
         return ( (IForm) item ).<T>findContext(
-                SimpleStringUtils.join(Arrays.asList(path).subList(1, path.length), ".") );
+                SimpleStringUtils.join(Arrays.asList(path).subList(1, path.length), "."));
     }
 
     protected <T, V extends IFormField<T>> V findField( IForm context, String[] name ) {
@@ -231,6 +241,7 @@ public class Form extends AbstractFormItem implements IForm {
     @Override
     public void setLegend(String legend) {
         this.legend = legend;
+        this.makeDirty();
     }
 
     @Override
@@ -251,6 +262,7 @@ public class Form extends AbstractFormItem implements IForm {
     @Override
     public void setMethod(String method) {
         this.method = method;
+        this.makeDirty();
     }
 
     @Override
@@ -261,15 +273,18 @@ public class Form extends AbstractFormItem implements IForm {
     @Override
     public void addField(IFormField<?> field) {
         field.setContext(this);
-        this.items.add( field );
-        this.itemsDict.put( this.getItemId(field), this.items.size() - 1 );
+        this.items.add(field);
+        this.itemsDict.put(this.getItemId(field), this.items.size() - 1);
+        field.makeDirty();
     }
 
     @Override
     public void removeField(IFormField<?> field) {
-        this.itemsDict.remove( this.getItemId(field) );
-        this.items.remove( field );
+        this.itemsDict.remove(this.getItemId(field));
+        field.setContext(null);
+        this.items.remove(field);
         this.updateItemsDict();
+        field.makeDirty();
     }
 
     @Override
@@ -289,8 +304,9 @@ public class Form extends AbstractFormItem implements IForm {
         form.setContext(this);
         form.setName( name );
 
-        this.items.add( form );
-        this.itemsDict.put( name, this.items.size() - 1 );
+        form.makeDirty();
+        this.items.add(form);
+        this.itemsDict.put(name, this.items.size() - 1);
         this.updateItemsDict();
     }
 
@@ -314,6 +330,8 @@ public class Form extends AbstractFormItem implements IForm {
 
         this.itemsDict.remove( this.getItemId(result) );
         this.items.remove( result );
+        result.makeDirty();
+        this.makeDirty();
         this.updateItemsDict();
     }
 
@@ -366,7 +384,43 @@ public class Form extends AbstractFormItem implements IForm {
             throw new IllegalArgumentException("Unable to remove root form context");
         }
 
-        this.getContext().removeSubForm( this.getName() );
+        this.getContext().removeSubForm(this.getName());
+    }
+
+    @Override
+    public boolean isDirty() {
+        if ( super.isDirty() ) {
+            return true;
+        }
+
+        for ( IFormItem item : this.getItems() ) {
+            if ( item.isDirty() ) {
+                this.makeDirty();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public void makeClean() {
+        super.makeClean();
+
+        for ( IFormItem item : this.getItems() ) {
+            item.makeClean();
+        }
+    }
+
+    @Override
+    public void makeDirty() {
+        super.makeDirty();
+        
+        for ( IFormItem item : this.getItems() ) {
+            if ( !item.isDirty() ) {
+                item.makeDirty();
+            }
+        }
     }
 
     @Override
@@ -383,9 +437,11 @@ public class Form extends AbstractFormItem implements IForm {
         }
 
         for ( IDecorator decorator : this.getDecorators() ) {
-            this.setDecorator( decorator );
+            this.setDecorator(decorator);
         }
     }
+
+
 
     // Hmm, maybe it's must be changed in a some way...
     protected void updateItemsDict() {
@@ -394,5 +450,4 @@ public class Form extends AbstractFormItem implements IForm {
             this.itemsDict.put( this.getItemId(item), i++ );
         }
     }
-
 }

@@ -7,6 +7,8 @@ package com.redshape.renderer;
  */
 public interface IRenderer<T, V> {
 
+    public void repaint( T renderable );
+    
     public V render( T renderable );
 
 }

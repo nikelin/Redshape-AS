@@ -35,6 +35,11 @@ public abstract class MySQLRenderer<T> implements IRenderer<T, String> {
         return isEscapingNeeds( name ) ? ESCAPE_CHAR + name + ESCAPE_CHAR : name;
     }
 
+    @Override
+    public void repaint(T renderable) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     public String render( Collection<T> renderables ) throws RendererException {
         StringBuilder builder = new StringBuilder();
 

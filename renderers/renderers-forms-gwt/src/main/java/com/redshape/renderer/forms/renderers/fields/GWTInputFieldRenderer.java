@@ -18,6 +18,7 @@ public class GWTInputFieldRenderer extends AbstractGWTRenderer<InputField> {
         switch ( renderable.getType() ) {
             case PASSWORD:
                 object = new PasswordTextBox();
+                ( (TextBox) object).setName( renderable.getName() );
             break;
             case HIDDEN:
                 Hidden field;

@@ -15,6 +15,18 @@ import java.util.Map;
  * @author nikelin
  */
 public interface IFormItem extends Serializable {
+    
+    /**
+     * Bind within given raw item (only for CLIENT SIDE code)
+     */
+    public void setRawElement( Object element );
+
+    /**
+     * Return raw item representation (only for CLIENT SIDE code)
+     * @param <V>
+     * @return
+     */
+    public <V> V getRawElement();
 
     /**
      * Set name to field
@@ -160,6 +172,16 @@ public interface IFormItem extends Serializable {
      */
     public void addMessage( String message );
 
+    /**
+     * Messages
+     * @return
+     */
     public List<String> getMessages();
+
+    public boolean isDirty();
+
+    public void makeDirty();
+
+    public void makeClean();
 
 }

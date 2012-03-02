@@ -49,7 +49,12 @@ public class JSPContext implements IResponseContext {
         return SupportType.MAY;
     }
 
-	@Override
+    @Override
+    public boolean doExceptionsHandling() {
+        return false;
+    }
+
+    @Override
 	public SupportType isSupported( IView view ) {
 		if ( !view.getExtension().equals( EXTENSION ) ) {
 			return SupportType.NO;

@@ -36,128 +36,133 @@ import java.io.StringWriter;
  * @date 11/4/11 2:53 PM
  */
 public class XSLContext implements IResponseContext {
-	private static final Logger log = Logger.getLogger( XSLContext.class );
+    private static final Logger log = Logger.getLogger( XSLContext.class );
 
-	@Autowired( required = true )
-	private XMLHelper helper;
+    @Autowired( required = true )
+    private XMLHelper helper;
 
-	@Autowired( required = true )
-	private ResourcesLoader loader;
+    @Autowired( required = true )
+    private ResourcesLoader loader;
 
-	public ResourcesLoader getLoader() {
-		return loader;
-	}
+    public ResourcesLoader getLoader() {
+        return loader;
+    }
 
-	public void setLoader(ResourcesLoader loader) {
-		this.loader = loader;
-	}
+    public void setLoader(ResourcesLoader loader) {
+        this.loader = loader;
+    }
 
-	public XMLHelper getHelper() {
-		return helper;
-	}
+    public XMLHelper getHelper() {
+        return helper;
+    }
 
-	public void setHelper(XMLHelper helper) {
-		this.helper = helper;
-	}
+    public void setHelper(XMLHelper helper) {
+        this.helper = helper;
+    }
 
-	@Override
-	public void proceedResponse(IView view, IHttpRequest request, IHttpResponse response) throws ProcessingException {
-		try {
-			StreamResult result = new StreamResult( new StringWriter() );
-			this.proceedTransformation( view.getLayout(), view, result, true );
+    @Override
+    public boolean doExceptionsHandling() {
+        return false;
+    }
 
-			response.setCharacterEncoding("UTF-8");
-			response.getWriter().write( result.getWriter().toString() );
-		} catch ( TransformerException e ) {
-			throw new ProcessingException( "Transformer exception", e );
-		} catch ( ParserConfigurationException e ) {
-			throw new ProcessingException( "XML document parsing exception", e );
-		} catch ( IOException e ) {
-			throw new ProcessingException( "I/O related exception", e);
-		} catch ( Throwable e ) {
-			throw new ProcessingException( "Unknown internal exception", e );
-		}
-	}
+    @Override
+    public void proceedResponse(IView view, IHttpRequest request, IHttpResponse response) throws ProcessingException {
+        try {
+            StreamResult result = new StreamResult( new StringWriter() );
+            this.proceedTransformation( view.getLayout(), view, result, true );
 
-	protected void proceedTransformation( ILayout layout, IView view, Result result,
-										  boolean proceedNested ) throws IOException, TransformerException,
-			ParserConfigurationException, SAXException {
-		File viewFile = this.loadView(Commons.select(layout, view));
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write( result.getWriter().toString() );
+        } catch ( TransformerException e ) {
+            throw new ProcessingException( "Transformer exception", e );
+        } catch ( ParserConfigurationException e ) {
+            throw new ProcessingException( "XML document parsing exception", e );
+        } catch ( IOException e ) {
+            throw new ProcessingException( "I/O related exception", e);
+        } catch ( Throwable e ) {
+            throw new ProcessingException( "Unknown internal exception", e );
+        }
+    }
 
-		javax.xml.transform.Source xmlSource =
-					new DOMSource(this.convertView(layout, view, proceedNested));
-		StreamSource xsltSource = new StreamSource(
-			new FileInputStream(viewFile),
-			viewFile.toURI().toURL().toExternalForm()
-		);
+    protected void proceedTransformation( ILayout layout, IView view, Result result,
+                                          boolean proceedNested ) throws IOException, TransformerException,
+            ParserConfigurationException, SAXException {
+        File viewFile = this.loadView(Commons.select(layout, view));
 
-		javax.xml.transform.TransformerFactory transFact =
-				javax.xml.transform.TransformerFactory.newInstance(  );
+        javax.xml.transform.Source xmlSource =
+                new DOMSource(this.convertView(layout, view, proceedNested));
+        StreamSource xsltSource = new StreamSource(
+                new FileInputStream(viewFile),
+                viewFile.toURI().toURL().toExternalForm()
+        );
 
-		javax.xml.transform.Transformer trans =
-				transFact.newTransformer(xsltSource);
-		trans.setErrorListener( new ErrorListener() {
-			@Override
-			public void warning(TransformerException exception) throws TransformerException {
-				log.error( exception.getMessage(), exception );
-			}
+        javax.xml.transform.TransformerFactory transFact =
+                javax.xml.transform.TransformerFactory.newInstance(  );
 
-			@Override
-			public void error(TransformerException exception) throws TransformerException {
-				log.error( exception.getMessage(), exception );
-			}
+        javax.xml.transform.Transformer trans =
+                transFact.newTransformer(xsltSource);
+        trans.setErrorListener( new ErrorListener() {
+            @Override
+            public void warning(TransformerException exception) throws TransformerException {
+                log.error( exception.getMessage(), exception );
+            }
 
-			@Override
-			public void fatalError(TransformerException exception) throws TransformerException {
-				log.error( exception.getMessage(), exception );
-			}
-		});
+            @Override
+            public void error(TransformerException exception) throws TransformerException {
+                log.error( exception.getMessage(), exception );
+            }
 
-		if ( trans != null && xmlSource != null ) {
-			trans.transform(xmlSource, result);
-		} else {
-			log.error("Unable to build transformation handler!");
-		}
-	}
+            @Override
+            public void fatalError(TransformerException exception) throws TransformerException {
+                log.error( exception.getMessage(), exception );
+            }
+        });
 
-	protected Node convertView( ILayout layout, IView view, boolean proceedNested ) throws ParserConfigurationException, SAXException,
-													IOException, TransformerException {
-		Document doc = this.getHelper().buildEmptyDocument();
+        if ( trans != null && xmlSource != null ) {
+            trans.transform(xmlSource, result);
+        } else {
+            log.error("Unable to build transformation handler!");
+        }
+    }
 
-		Element documentElement = doc.createElement("view");
+    protected Node convertView( ILayout layout, IView view, boolean proceedNested ) throws ParserConfigurationException, SAXException,
+            IOException, TransformerException {
+        Document doc = this.getHelper().buildEmptyDocument();
 
-		Element contentNode = doc.createElement("content");
+        Element documentElement = doc.createElement("view");
 
-		if ( proceedNested ) {
-			DOMResult result = new DOMResult();
-			this.proceedTransformation( null, view, result, false );
+        Element contentNode = doc.createElement("content");
 
-			Document resultDoc = (Document) result.getNode();
-			if ( resultDoc != null && resultDoc.getDocumentElement() != null ) {
-				Node importedDocElement = doc.importNode(resultDoc.getDocumentElement(),
-														true);
-				contentNode.appendChild(importedDocElement);
-			}
-		}
+        if ( proceedNested ) {
+            DOMResult result = new DOMResult();
+            this.proceedTransformation( null, view, result, false );
 
-		documentElement.appendChild(contentNode);
+            Document resultDoc = (Document) result.getNode();
+            if ( resultDoc != null && resultDoc.getDocumentElement() != null ) {
+                Node importedDocElement = doc.importNode(resultDoc.getDocumentElement(),
+                        true);
+                contentNode.appendChild(importedDocElement);
+            }
+        }
 
-		doc.appendChild(documentElement);
+        documentElement.appendChild(contentNode);
 
-		return documentElement;
-	}
+        doc.appendChild(documentElement);
 
-	protected File loadView( IView view ) throws IOException {
-		return this.getLoader().loadFile( view.getScriptPath() );
-	}
+        return documentElement;
+    }
 
-	@Override
-	public SupportType isSupported(IView view) {
-		return view.getExtension().equals("xsl") ? SupportType.SHOULD : SupportType.NO;
-	}
+    protected File loadView( IView view ) throws IOException {
+        return this.getLoader().loadFile( view.getScriptPath() );
+    }
 
-	@Override
-	public SupportType isSupported(IHttpRequest request) {
-		return SupportType.MAY;
-	}
+    @Override
+    public SupportType isSupported(IView view) {
+        return view.getExtension().equals("xsl") ? SupportType.SHOULD : SupportType.NO;
+    }
+
+    @Override
+    public SupportType isSupported(IHttpRequest request) {
+        return SupportType.MAY;
+    }
 }

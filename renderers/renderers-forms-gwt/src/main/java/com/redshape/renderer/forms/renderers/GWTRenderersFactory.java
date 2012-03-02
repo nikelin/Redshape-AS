@@ -6,6 +6,7 @@ import com.redshape.form.fields.*;
 import com.redshape.renderer.AbstractRenderersFactory;
 import com.redshape.renderer.IRenderer;
 import com.redshape.renderer.forms.renderers.fields.*;
+import com.redshape.utils.Constants;
 
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
@@ -13,13 +14,22 @@ import com.redshape.renderer.forms.renderers.fields.*;
  * @date 2/17/12 {2:01 PM}
  */
 public class GWTRenderersFactory extends AbstractRenderersFactory {
-
+    public static int RESYNC_TIME = Constants.TIME_MILLISECOND * 100;
+    
+    private InvalidationThread invalidationThread;
+    
     public GWTRenderersFactory() {
         super();
-        
+
         this.init();
+        this.scheduleInvalidator();
     }
 
+    protected void scheduleInvalidator() {
+        this.invalidationThread = new InvalidationThread(this);
+        this.invalidationThread.schedule(RESYNC_TIME);
+    }
+    
     @Override
     public String getFactoryId() {
         return "Renderers.Forms.GWT";

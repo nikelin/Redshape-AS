@@ -1,12 +1,12 @@
 package com.redshape.servlet.core.context.support;
 
+import com.redshape.renderer.IRenderersFactory;
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.core.IHttpResponse;
 import com.redshape.servlet.core.context.IResponseContext;
 import com.redshape.servlet.core.context.SupportType;
 import com.redshape.servlet.core.controllers.ProcessingException;
 import com.redshape.servlet.views.IView;
-import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletResponse;
@@ -23,9 +23,18 @@ import java.util.Map;
 public class AjaxContext implements IResponseContext {
     private static final Logger log = Logger.getLogger( AjaxContext.class );
     private static final String MARKER_HEADER = "XMLHttpRequest";
-	private static final String DISABLE_PARAM = "Disable";
+    private static final String DISABLE_PARAM = "Disable";
 
     private Collection<String> blackList = new HashSet<String>();
+    private IRenderersFactory renderersFactory;
+
+    public AjaxContext( IRenderersFactory renderersFactory ) {
+        this.renderersFactory = renderersFactory;
+    }
+
+    public IRenderersFactory getRenderersFactory() {
+        return renderersFactory;
+    }
 
     public Collection<String> getBlackList() {
         return blackList;
@@ -35,20 +44,25 @@ public class AjaxContext implements IResponseContext {
         this.blackList = blackList;
     }
 
-	@Override
-	public SupportType isSupported(IView request) {
-		return SupportType.NO;
-	}
+    @Override
+    public boolean doExceptionsHandling() {
+        return true;
+    }
 
-	@Override
+    @Override
+    public SupportType isSupported(IView request) {
+        return SupportType.NO;
+    }
+
+    @Override
     public SupportType isSupported(IHttpRequest request) {
         String headerValue = request.getHeader("X-Requested-With");
-         if (  headerValue != null && headerValue.equals(AjaxContext.MARKER_HEADER) ) {
-			if ( !request.getParameter("_servletContextParam").equals(AjaxContext.DISABLE_PARAM) ) {
-            	return SupportType.SHOULD;
-			} else {
-				return SupportType.NO;
-			}
+        if (  headerValue != null && headerValue.equals(AjaxContext.MARKER_HEADER) ) {
+            if ( !request.getParameter("_servletContextParam").equals(AjaxContext.DISABLE_PARAM) ) {
+                return SupportType.SHOULD;
+            } else {
+                return SupportType.NO;
+            }
         } else {
             return SupportType.NO;
         }
@@ -70,7 +84,9 @@ public class AjaxContext implements IResponseContext {
     @Override
     public void proceedResponse(IView view, IHttpRequest request, IHttpResponse response) throws ProcessingException {
         try {
-            this.writeJsonResponse( this.prepareResult( view.getAttributes() ), response );
+            this.writeResponse(this.getRenderersFactory().
+                    <IView, String>forEntity(view)
+                    .render(view), response);
         } catch ( IOException e ) {
             throw new ProcessingException( e.getMessage(), e );
         }
@@ -82,15 +98,4 @@ public class AjaxContext implements IResponseContext {
         response.getWriter().write(responseData);
     }
 
-    protected void writeJsonResponse( Object value, HttpServletResponse response ) throws IOException {
-        this.writeResponse( JSONObject.fromObject( value ).toString(), response );
-    }
-
-    protected void writeJsonResponse(String rootName, Object value, HttpServletResponse response) throws IOException {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put(rootName, value);
-        jsonObject.put("success", true);
-
-        this.writeResponse(jsonObject.toString(), response);
-    }
 }

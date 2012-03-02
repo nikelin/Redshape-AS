@@ -17,6 +17,7 @@
         <module>renderers-base</module>
         <module>renderers-forms-http</module>
         <module>renderers-forms-gwt</module>
+        <module>renderers-forms-json</module>
     </modules>
 
 </project>

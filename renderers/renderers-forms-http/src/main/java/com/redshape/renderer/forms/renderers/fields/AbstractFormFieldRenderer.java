@@ -21,7 +21,12 @@ public abstract class AbstractFormFieldRenderer<T extends IFormField> extends Ab
         super(renderersFactory);
     }
 
-	protected void applyErrorStateIfNeeds( IFormField<?> field ) {
+    @Override
+    public void repaint(T renderable) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    protected void applyErrorStateIfNeeds( IFormField<?> field ) {
 		Map<String, Object> params = field.getAttributes();
 		if ( !field.getValidationResults().isEmpty() ) {
 			for ( IValidationResult result : field.getValidationResults() ) {

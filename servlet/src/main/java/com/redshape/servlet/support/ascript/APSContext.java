@@ -23,53 +23,58 @@ import java.io.IOException;
  * @date 8/13/11 12:36 AM
  */
 public class APSContext implements IResponseContext {
-	public static final String EXTENSION = "aps";
+    public static final String EXTENSION = "aps";
 
-	@Autowired( required = true )
-	private IEvaluator evaluator;
+    @Autowired( required = true )
+    private IEvaluator evaluator;
 
-	public IEvaluator getEvaluator() {
-		return evaluator;
-	}
+    public IEvaluator getEvaluator() {
+        return evaluator;
+    }
 
-	public void setEvaluator(IEvaluator evaluator) throws EvaluationException {
-		this.evaluator = evaluator;
-	}
+    public void setEvaluator(IEvaluator evaluator) throws EvaluationException {
+        this.evaluator = evaluator;
+    }
 
-	@Override
-	public SupportType isSupported(IHttpRequest request) {
-		return SupportType.MAY;
-	}
+    @Override
+    public SupportType isSupported(IHttpRequest request) {
+        return SupportType.MAY;
+    }
 
-	@Override
-	public SupportType isSupported(IView view) {
-		if ( !view.getExtension().equals(EXTENSION) ) {
-			return SupportType.NO;
-		}
+    @Override
+    public boolean doExceptionsHandling() {
+        return false;
+    }
 
-		return SupportType.MAY;
-	}
+    @Override
+    public SupportType isSupported(IView view) {
+        if ( !view.getExtension().equals(EXTENSION) ) {
+            return SupportType.NO;
+        }
 
-	@Override
-	public void proceedResponse(IView view, IHttpRequest request,
-								IHttpResponse response) throws ProcessingException {
-		try {
-			IEvaluationContext context = this.getEvaluator().createContext("web");
-			context.exportBean("context", ApplicationContext.class, WebApplication.getContext() );
-			context.exportBean("config", IConfig.class, WebApplication.getContext().getBean(IConfig.class) );
+        return SupportType.MAY;
+    }
 
-			context.exportBean("view", IView.class, view );
-			context.exportBean("request", IHttpRequest.class, request );
-			context.exportBean("response", IHttpResponse.class, response );
+    @Override
+    public void proceedResponse(IView view, IHttpRequest request,
+                                IHttpResponse response) throws ProcessingException {
+        try {
+            IEvaluationContext context = this.getEvaluator().createContext("web");
+            context.exportBean("context", ApplicationContext.class, WebApplication.getContext() );
+            context.exportBean("config", IConfig.class, WebApplication.getContext().getBean(IConfig.class) );
 
-			response.getWriter().write(
-					String.valueOf(
-							this.getEvaluator()
-									.evaluateFile(view.getLayout().getScriptPath(), EvaluationMode.EMBED)));
-		} catch ( IOException e ) {
-			throw new ProcessingException("IO related exception", e );
-		} catch ( EvaluationException e ) {
-			throw new ProcessingException("Script evaluation exception", e );
-		}
-	}
+            context.exportBean("view", IView.class, view );
+            context.exportBean("request", IHttpRequest.class, request );
+            context.exportBean("response", IHttpResponse.class, response );
+
+            response.getWriter().write(
+                    String.valueOf(
+                            this.getEvaluator()
+                                    .evaluateFile(view.getLayout().getScriptPath(), EvaluationMode.EMBED)));
+        } catch ( IOException e ) {
+            throw new ProcessingException("IO related exception", e );
+        } catch ( EvaluationException e ) {
+            throw new ProcessingException("Script evaluation exception", e );
+        }
+    }
 }

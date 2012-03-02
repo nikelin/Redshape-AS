@@ -21,7 +21,7 @@ public interface IFormField<T> extends IFormItem {
      * @return
      */
     public boolean hasMultiValues();
-
+    
     /**
      * Return all selected values related to a field
      * @return

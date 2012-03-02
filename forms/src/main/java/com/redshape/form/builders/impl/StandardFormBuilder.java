@@ -66,7 +66,7 @@ public class StandardFormBuilder extends AbstractFormItemBuilder implements IFor
 	@Override
 	public IForm build() {
 		IForm form = new Form(this.id);
-		form.setProcessHandler(this.processHandler);
+		form.addProcessHandler(this.processHandler);
 		form.setName( this.name );
 		form.setAction( this.action );
 		form.setLegend( this.legend );

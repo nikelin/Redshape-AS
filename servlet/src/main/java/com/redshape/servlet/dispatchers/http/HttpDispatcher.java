@@ -254,7 +254,8 @@ public class HttpDispatcher implements IHttpDispatcher {
 
             action.process();
 
-            if ( view.getException() != null ) {
+            if ( view.getException() != null
+                    && !this.getContextSwitcher().chooseContext( request, view ).doExceptionsHandling() ) {
                 this.processError(view.getException(), request, response);
                 return;
             }

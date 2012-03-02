@@ -22,7 +22,12 @@ public class StandardFormRenderer extends AbstractFormItemRenderer<IForm>
         return this.render(renderable, RenderMode.FULL);
     }
 
-	public String render(IForm form, RenderMode mode) {
+    @Override
+    public void repaint(IForm renderable) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public String render(IForm form, RenderMode mode) {
 		StringBuilder builder = new StringBuilder();
 
 		if ( mode.equals( RenderMode.FULL ) ) {

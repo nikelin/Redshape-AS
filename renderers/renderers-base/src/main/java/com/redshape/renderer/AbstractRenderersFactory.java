@@ -1,5 +1,7 @@
 package com.redshape.renderer;
 
+import com.redshape.utils.Commons;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,6 +13,8 @@ public abstract class AbstractRenderersFactory implements IRenderersFactory {
     
     @Override
     public <T, V> IRenderer<T, V> forEntity(T entity) {
+        Commons.checkNotNull(entity);
+
         return this.<T, V>forEntity( (Class<T>) entity.getClass() );
     }
 
