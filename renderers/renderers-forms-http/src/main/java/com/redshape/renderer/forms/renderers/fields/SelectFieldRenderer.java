@@ -45,7 +45,7 @@ public class SelectFieldRenderer extends AbstractFormFieldRenderer<SelectField> 
 
         builder.append("</select>");
 
-        return this.applyDecorators( builder, field, mode );
+        return this.applyDecorators( field, builder, mode );
     }
 
 }

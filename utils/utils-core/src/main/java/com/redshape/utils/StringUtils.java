@@ -26,8 +26,12 @@ public class StringUtils extends SimpleStringUtils {
         return preparePathByClass( clazz.getCanonicalName() );
     }
 
+    protected final static String preparePathByPackage( String packageName ) {
+        return packageName.replaceAll(Pattern.quote("."), "\\" + File.separator );
+    }
+
     public final static String preparePathByClass( String className ) {
-        return className.replaceAll(Pattern.quote("."), "\\" + File.separator ) + ".class";
+        return preparePathByPackage(className) + ".class";
     }
 
     public final static byte[] stringToIP( String addrString ) {

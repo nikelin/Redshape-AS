@@ -56,7 +56,7 @@ public class CheckboxGroupFieldRenderer extends AbstractFormFieldRenderer<Checkb
 
         builder.append("</fieldset>");
 
-        return this.applyDecorators(builder, item, mode);
+        return this.applyDecorators(item, builder, mode);
     }
 
 }

@@ -40,7 +40,7 @@ public class InputFieldRenderer extends AbstractFormFieldRenderer<InputField> {
 
         builder.append("/>");
 
-        return this.applyDecorators(builder, field, mode);
+        return this.applyDecorators(field, builder, mode);
     }
 
 

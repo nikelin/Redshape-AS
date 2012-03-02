@@ -12,6 +12,7 @@ import java.net.URLClassLoader;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.regex.Pattern;
 
 /**
  * @author nikelin
@@ -41,11 +42,11 @@ public class PackagesLoader implements IPackagesLoader {
 
 		this.classpath.addAll(
 			Arrays.asList(
-				systemClasspath.split(":")
+				systemClasspath.split(Pattern.quote(File.pathSeparator) )
 			)
 		);
 
-		System.setProperty("java.class.path", SimpleStringUtils.join(this.classpath, ":"));
+		System.setProperty("java.class.path", SimpleStringUtils.join(this.classpath, File.separator ));
 	}
 
 	public List<String> getClasspath() {
@@ -151,7 +152,8 @@ public class PackagesLoader implements IPackagesLoader {
 	protected String prepareClassName( String value ) {
 		return 	value.substring(0, value.lastIndexOf("."))
 					.replaceAll(".class", "")
-					.replaceAll("/", ".");
+					.replaceAll("\\\\", ".")
+                    .replaceAll("\\/", ".");
 	}
 
 	private List<URL> filterJarEntries( JarFile file, String contextName, String itemName )
@@ -186,7 +188,7 @@ public class PackagesLoader implements IPackagesLoader {
 
 			File folder;
 			try {
-				folder = resourcesLoader.loadFile( path + "/" + folderName );
+				folder = resourcesLoader.loadFile( path + File.separator + folderName );
 				log.info("Trying to search in " + path + "/" + folderName );
 				if ( folder == null || !folder.exists() || !folder.canRead() || ( !folder.isDirectory() && !folder.getPath().endsWith(".jar") ) ) {
 					return null;
@@ -262,7 +264,7 @@ public class PackagesLoader implements IPackagesLoader {
 	}
 
 	private String convertToFolderName( String packageName ) {
-		return packageName.replace(".", File.separator );
+		return StringUtils.preparePathByPackage(packageName);
 	}
 
 }
