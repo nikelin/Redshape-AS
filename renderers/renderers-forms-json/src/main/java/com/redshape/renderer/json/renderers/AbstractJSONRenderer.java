@@ -17,16 +17,25 @@ public abstract class AbstractJSONRenderer<T> implements IRenderer<T, String> {
 
         int i = 0;
         for ( String field : fields ) {
-            builder.append(field);
-            
-            if ( i++ != fields.length - 1 ) {
-                builder.append(",");
+            i += 1;
+
+            if ( field != null ) {
+                builder.append(field);
+
+                if ( i != fields.length ) {
+                    builder.append(",");
+                }
             }
         }
 
         builder.append("}");
 
-        return builder.toString();
+        String result = builder.toString();
+        if ( result.endsWith(",}") ) {
+            return result.substring(0, result.length() - 2).concat("}");
+        }
+
+        return result;
     }
     
     protected String createObject( Map<String, Object> fields ) {
@@ -53,16 +62,25 @@ public abstract class AbstractJSONRenderer<T> implements IRenderer<T, String> {
         
         int i = 0;
         for ( Object value : list ) {
-            builder.append( String.valueOf(value));
-            
-            if ( i++ != list.length - 1 ) {
-                builder.append(",");
+            i++;
+
+            if ( value != null ) {
+                builder.append( String.valueOf(value));
+
+                if ( i != list.length  ) {
+                   builder.append(",");
+                }
             }
         }
 
         builder.append("]");
 
-        return builder.toString();
+        String result = builder.toString();
+        if ( result.endsWith(",]") ) {
+            return result.substring(0, result.length() - 2 ).concat("]");
+        }
+
+        return result;
     }
 
     protected String createField( String name, Object value ) {

@@ -12,8 +12,7 @@ import com.redshape.renderer.json.renderers.StandardViewRenderer;
 import com.redshape.servlet.views.IView;
 
 import java.lang.reflect.Constructor;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
@@ -23,9 +22,14 @@ import java.util.Map;
 public class JSONRenderersFactory extends AbstractRenderersFactory {
 
     public JSONRenderersFactory() {
+        this( new HashMap<Class<?>, IRenderer<?, ?>>() );
+    }
+
+    public JSONRenderersFactory( Map customRenderers) {
         super();
-        
+
         this.init();
+        this.addRenderers((Map) customRenderers);
     }
 
     @Override
@@ -44,7 +48,8 @@ public class JSONRenderersFactory extends AbstractRenderersFactory {
         }
 
         if ( rendererClazz == null ) {
-            return null;
+            rendererClazz = (Class<? extends IRenderer<T, V>>)
+                    StandardJSONRenderer.class.asSubclass(IRenderer.class);
         }
 
         IRenderer<T, V> renderer = (IRenderer<T, V>) this.renderers.get(rendererClazz);

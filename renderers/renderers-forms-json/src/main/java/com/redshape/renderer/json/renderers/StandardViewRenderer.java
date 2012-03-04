@@ -2,6 +2,7 @@ package com.redshape.renderer.json.renderers;
 
 import com.redshape.renderer.IRenderersFactory;
 import com.redshape.servlet.views.IView;
+import com.redshape.utils.Commons;
 
 import java.util.Map;
 
@@ -31,9 +32,10 @@ public class StandardViewRenderer extends AbstractJSONRenderer<IView> {
             result[i++] =
                 this.createField(attribute.getKey(),
                     attribute.getValue() != null ?
-                        this.getRenderderesFactory()
-                            .<Object, String>forEntity( attribute.getValue() )
-                                .render( attribute.getValue() )
+                       Commons.select(this.getRenderderesFactory()
+                               .<Object, String>forEntity(attribute.getValue())
+                               .render(attribute.getValue()),
+                       "")
                         : "null"
                 );
         }

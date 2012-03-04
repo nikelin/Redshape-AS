@@ -19,6 +19,13 @@ public abstract class AbstractRenderersFactory implements IRenderersFactory {
     }
 
     @Override
+    public <T, V> void addRenderers(Map<Class<T>, Class<? extends IRenderer<T, V>>> renderers) {
+        for ( Map.Entry<Class<T>, Class<? extends IRenderer<T, V>>> entry : renderers.entrySet() ) {
+            this.addRenderer( entry.getKey(), entry.getValue() );
+        }
+    }
+
+    @Override
     public <T, V> void addRenderer( Class<T> entity, Class<? extends IRenderer<T, V>> rendererClazz ) {
         if ( this.entities.containsKey(entity) ) {
             throw new IllegalArgumentException("Entity already exists in registry");

@@ -1,5 +1,7 @@
 package com.redshape.renderer;
 
+import java.util.Map;
+
 /**
  * @author nikelin
  * @package com.redshape.renderer
@@ -20,6 +22,8 @@ public interface IRenderersFactory {
      */
     public <T, V> void addRenderer( Class<T> entityClazz, Class<? extends IRenderer<T, V>> renderer );
 
+    public <T, V> void addRenderers( Map<Class<T>, Class<? extends IRenderer<T, V>>> renderers );
+    
     /**
      *
      * @param object

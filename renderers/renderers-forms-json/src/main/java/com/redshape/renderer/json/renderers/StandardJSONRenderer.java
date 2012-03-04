@@ -1,5 +1,6 @@
 package com.redshape.renderer.json.renderers;
 
+import com.redshape.renderer.IRenderer;
 import com.redshape.renderer.IRenderersFactory;
 import com.redshape.utils.Commons;
 import org.apache.commons.collections.map.HashedMap;
@@ -49,7 +50,13 @@ public class StandardJSONRenderer extends AbstractJSONRenderer<Object> {
         }
 
         if ( method == null ) {
-            return "<FILTERED>";
+            IRenderer<Object, String> renderer =  this.getRenderersFactory()
+                        .<Object, String>forEntity(renderable);
+            if ( renderer != null && renderer != this ) {
+                return renderer.render(renderable);
+            }
+
+            return this.render("<FILTERED>");
         }
         
         try {
@@ -62,8 +69,12 @@ public class StandardJSONRenderer extends AbstractJSONRenderer<Object> {
     public String renderArray( Object[] renderable ) {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
+        int i = 0;
         for ( Object object : renderable ) {
             builder.append( this.render(object) );
+            if ( i++ != renderable.length - 1 ) {
+                builder.append(",");
+            }
         }
         builder.append("]");
 
