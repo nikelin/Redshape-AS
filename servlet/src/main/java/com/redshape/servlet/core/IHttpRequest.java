@@ -43,7 +43,7 @@ public interface IHttpRequest extends HttpServletRequest, IUserRequest {
 
     public void setParameters( Map<String, Object> parameters );
 
-    public boolean hasParameter( String name ) throws IOException;
+    public boolean hasParameter( String name );
 
     public String getBody() throws IOException;
 

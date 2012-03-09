@@ -66,6 +66,11 @@ public class XSLContext implements IResponseContext {
     }
 
     @Override
+    public boolean doRedirectionHandling() {
+        return true;
+    }
+
+    @Override
     public void proceedResponse(IView view, IHttpRequest request, IHttpResponse response) throws ProcessingException {
         try {
             StreamResult result = new StreamResult( new StringWriter() );

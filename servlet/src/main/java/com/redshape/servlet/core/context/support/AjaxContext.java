@@ -50,6 +50,11 @@ public class AjaxContext implements IResponseContext {
     }
 
     @Override
+    public boolean doRedirectionHandling() {
+        return false;
+    }
+
+    @Override
     public SupportType isSupported(IView request) {
         return SupportType.NO;
     }

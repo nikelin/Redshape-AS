@@ -1,6 +1,7 @@
 package com.redshape.persistence.dao.query.executors;
 
 import com.redshape.persistence.dao.DAOException;
+import com.redshape.persistence.dao.query.IQuery;
 import com.redshape.persistence.entities.IEntity;
 
 import java.util.List;
@@ -13,6 +14,14 @@ import java.util.List;
  * @author Cyril A. Karpenko <self@nikelin.ru>
  */
 public interface IExecutionRequest<T extends IEntity> {
+
+    /**
+     * Provides end-user with ability to access underlying query
+     * object to modify some predefined values (sorting way, grouping, etc.).
+     * @return
+     * @throws DAOException
+     */
+    public IQuery query() throws DAOException;
 
     /**
      * Allow user to use result values in a non type-safe

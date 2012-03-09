@@ -42,6 +42,11 @@ public class APSContext implements IResponseContext {
     }
 
     @Override
+    public boolean doRedirectionHandling() {
+        return true;
+    }
+
+    @Override
     public boolean doExceptionsHandling() {
         return false;
     }

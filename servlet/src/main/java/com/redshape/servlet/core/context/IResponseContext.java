@@ -11,6 +11,8 @@ import com.redshape.servlet.views.IView;
  */
 public interface IResponseContext {
 
+    public boolean doRedirectionHandling();
+
     public boolean doExceptionsHandling();
 
     public SupportType isSupported( IHttpRequest request );

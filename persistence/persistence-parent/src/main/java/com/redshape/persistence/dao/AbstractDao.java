@@ -32,6 +32,11 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
             this.query = query;
         }
 
+        @Override
+        public IQuery query() throws DAOException {
+            return this.query;
+        }
+
         public List<Z> list() throws DAOException {
             query.setOffset( Commons.select(query.getOffset(), this.offset()) );
             query.setLimit( Commons.select(query.getLimit(), this.limit()) );

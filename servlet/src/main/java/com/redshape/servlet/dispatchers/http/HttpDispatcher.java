@@ -255,12 +255,13 @@ public class HttpDispatcher implements IHttpDispatcher {
             action.process();
 
             if ( view.getException() != null
-                    && !this.getContextSwitcher().chooseContext( request, view ).doExceptionsHandling() ) {
+                    && this.getContextSwitcher().chooseContext( request, view ).doExceptionsHandling() ) {
                 this.processError(view.getException(), request, response);
                 return;
             }
 
-            if ( view.getRedirection() != null ) {
+            if ( view.getRedirection() != null
+                    && this.getContextSwitcher().chooseContext( request, view ).doRedirectionHandling() ) {
                 response.sendRedirect( ViewHelper.url(view.getRedirection()) );
             }
             

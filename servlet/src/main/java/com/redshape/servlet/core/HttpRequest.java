@@ -85,8 +85,12 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
 	}
 
 	@Override
-    public boolean hasParameter(String name) throws IOException {
-        this.initParameters();
+    public boolean hasParameter(String name) {
+        try {
+            this.initParameters();
+        } catch ( IOException e ) {
+            log.error( e.getMessage(), e );
+        }
 
         return this.parameters.containsKey(name);
     }
@@ -169,17 +173,25 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
 
 	@Override
 	public Long getLongParameter(String name) {
-		return Long.valueOf( this.getParameter(name) );
+        try {
+		    return Long.valueOf( this.getParameter(name) );
+        } catch ( NumberFormatException e ) {
+            return null;
+        }
 	}
 
 	@Override
 	public Integer getIntegerParameter(String name) {
-	    return Integer.valueOf( this.getParameter(name) );
+        try {
+	        return Integer.valueOf( this.getParameter(name) );
+        } catch ( NumberFormatException e ) {
+            return null;
+        }
 	}
 
 	@Override
 	public Boolean getBooleanParameter(String name) {
-		return Boolean.valueOf( this.getRequest().getParameter(name) );
+        return Boolean.valueOf( this.getRequest().getParameter(name) );
 	}
 
 	@Override
