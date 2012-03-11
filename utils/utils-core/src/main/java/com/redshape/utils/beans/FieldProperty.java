@@ -16,6 +16,7 @@
 
 package com.redshape.utils.beans;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 public class FieldProperty extends GenericProperty {
@@ -30,6 +31,16 @@ public class FieldProperty extends GenericProperty {
     @Override
     public void set(Object object, Object value) throws Exception {
         field.set(object, value);
+    }
+
+    @Override
+    public <T extends Annotation> T getAnnotation( Class<T> annotation ) {
+        return this.field.<T>getAnnotation(annotation);
+    }
+
+    @Override
+    public boolean hasAnnotation(Class<? extends Annotation> annotation) {
+        return this.field.getAnnotation(annotation) != null;
     }
 
     @Override

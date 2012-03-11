@@ -3,8 +3,6 @@ package com.redshape.migration.components;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.redshape.renderer.Renderable;
-
 /**
  * WebCam Project
  *
@@ -13,7 +11,6 @@ import com.redshape.renderer.Renderable;
  * @package com.vio.migration.components
  * @date Apr 6, 2010
  */
-@Renderable
 public class ForeignKey {
     private String name;
     private Set<String> localKeys = new HashSet<String>();

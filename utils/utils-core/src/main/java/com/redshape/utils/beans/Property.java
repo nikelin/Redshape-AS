@@ -16,6 +16,8 @@
 
 package com.redshape.utils.beans;
 
+import java.lang.annotation.Annotation;
+
 public abstract class Property implements Comparable<Property> {
 
     private final String name;
@@ -52,6 +54,10 @@ public abstract class Property implements Comparable<Property> {
     public boolean isReadable() {
         return true;
     }
+
+    abstract public <T extends Annotation> T getAnnotation( Class<T> annotation );
+    
+    abstract public boolean hasAnnotation(Class<? extends Annotation> annotation);
 
     abstract public void set(Object object, Object value) throws Exception;
 

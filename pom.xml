@@ -30,6 +30,7 @@
         <module>jobs</module>
         <module>renderers</module>
         <module>forms</module>
+        <module>net</module>
     </modules>
 
     <repositories>

@@ -17,6 +17,7 @@
 package com.redshape.utils.beans;
 
 import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
 
 public class MethodProperty extends GenericProperty {
         
@@ -30,7 +31,26 @@ public class MethodProperty extends GenericProperty {
         this.readable = property.getReadMethod() != null;
         this.writable = property.getWriteMethod() != null;
     }
-   
+
+    @Override
+    public <T extends Annotation> T getAnnotation(Class<T> annotation) {
+        if ( this.property.getReadMethod().getAnnotation(annotation) != null ) {
+            return this.property.getReadMethod().getAnnotation(annotation);
+        }
+
+        if ( this.property.getWriteMethod().getAnnotation(annotation) != null ) {
+            return this.property.getWriteMethod().getAnnotation(annotation);
+        }
+
+        return null;
+    }
+
+    @Override
+    public boolean hasAnnotation(Class<? extends Annotation> annotation) {
+        return this.property.getWriteMethod().getAnnotation(annotation) != null
+                || this.property.getReadMethod().getAnnotation(annotation) != null;
+    }
+
     @Override
     public void set(Object object, Object value) throws Exception {
         property.getWriteMethod().invoke(object, value);

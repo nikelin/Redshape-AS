@@ -1,8 +1,8 @@
 package com.redshape.migration.components;
 
-import com.redshape.renderer.Renderable;
-
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * WebCam Project
@@ -12,7 +12,6 @@ import java.util.*;
  * @package com.vio.migration.components
  * @date Apr 6, 2010
  */
-@Renderable
 public class Field {
     private String name;
     private FieldType type;

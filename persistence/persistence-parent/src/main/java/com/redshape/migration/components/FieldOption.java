@@ -1,7 +1,5 @@
 package com.redshape.migration.components;
 
-import com.redshape.renderer.Renderable;
-
 /**
  * WebCam Project
  *
@@ -10,7 +8,6 @@ import com.redshape.renderer.Renderable;
  * @package com.vio.migration.components
  * @date Apr 6, 2010
  */
-@Renderable
 public class FieldOption {
     private FieldOptions option;
     private String value;

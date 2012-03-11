@@ -1,7 +1,5 @@
 package com.redshape.migration.components;
 
-import com.redshape.renderer.Renderable;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,7 +11,6 @@ import java.util.Set;
  * @package com.vio.migration.components
  * @date Apr 6, 2010
  */
-@Renderable
 public class Index  {
     private String name;
     private IndexType type;

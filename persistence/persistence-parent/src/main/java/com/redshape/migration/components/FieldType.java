@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.redshape.renderer.Renderable;
-
 /**
  * WebCam Project
  *
@@ -14,7 +12,6 @@ import com.redshape.renderer.Renderable;
  * @package com.vio.migration.components
  * @date Apr 6, 2010
  */
-@Renderable
 public class FieldType {
     private FieldTypes type;
     private Integer length;
