@@ -4,7 +4,6 @@ import com.redshape.search.annotations.Searchable;
 import com.redshape.search.index.IIndex;
 import com.redshape.search.index.Index;
 import com.redshape.search.index.visitor.VisitorException;
-import com.redshape.search.index.visitor.field.StandardFieldVisitor;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Field;
@@ -22,12 +21,8 @@ public class IndexBuilder extends AbstractIndexBuilder {
     private static final Logger log = Logger.getLogger( IndexBuilder.class );
 
     private Map< Class<?>, IIndex> indexes = new HashMap();
-    
-    public IndexBuilder() {
-        this.setFieldVisitor( new StandardFieldVisitor() );
-    }
 
-	private boolean isSupported( Class<?> subject ) {
+    private boolean isSupported( Class<?> subject ) {
 		return subject.getAnnotation(Searchable.class) != null;
 	}
 

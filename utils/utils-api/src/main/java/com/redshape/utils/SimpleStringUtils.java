@@ -326,14 +326,18 @@ public class SimpleStringUtils {
 
 	public final static String wordWrap( String sentence, int interval, String separator ) {
 		int count = ( sentence.length() / interval );
-		int i = 1;
 		StringBuilder builder = new StringBuilder();
-		while ( (i + 1) != count - 1  && (i - 1) < sentence.length() ) {
-			builder.append( sentence.substring( (i - 1) * interval, (i + 1) * interval ) )
-				   .append( separator );
+        int total = 0;
+        for ( int i = 0; i < count; i++ ) {
+            builder.append( sentence.substring(total, total + interval ) )
+                   .append( separator );
 
-            i++;
-		}
+            total += interval;
+        }
+
+        if ( total != sentence.length() ) {
+            builder.append( sentence.substring(total, total + sentence.length() - total ) );
+        }
 
 		return builder.toString();
 	}
