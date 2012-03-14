@@ -43,12 +43,10 @@ public class GWTRenderersFactory extends AbstractRenderersFactory {
         }
         
         IRenderer<T, V> renderer = (IRenderer<T, V>) this.renderers.get( rendererClazz );
-        if ( renderer != null ) {
+        if ( renderer == null ) {
             return renderer;
         }
         
-        this.renderers.put( rendererClazz, renderer = GWT.create( rendererClazz ) );
-
         if ( renderer instanceof StandardGWTFormRenderer ) {
             ((StandardGWTFormRenderer) renderer).setRenderersFactory(this);
         }

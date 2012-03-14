@@ -1,6 +1,7 @@
 package com.redshape.renderer.managers;
 
 import java.util.Queue;
+import java.util.Stack;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -15,7 +16,7 @@ public final class RenderersManager {
         return instance;
     }
     
-    private Queue<Object> invalid = new LinkedBlockingQueue<Object>();
+    private Stack<Object> invalid = new Stack<Object>();
     
     public boolean isValid( Object object ) {
         return this.invalid.contains(object);
@@ -25,7 +26,7 @@ public final class RenderersManager {
         this.invalid.add(object);
     }
 
-    public Queue<?> getInvalid() {
+    public Stack<?> getInvalid() {
         return this.invalid;
     }
     

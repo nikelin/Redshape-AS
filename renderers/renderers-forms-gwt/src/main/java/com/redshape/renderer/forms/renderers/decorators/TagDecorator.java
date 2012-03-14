@@ -68,6 +68,6 @@ public class TagDecorator extends AbstractDecorator {
 
 	@Override
 	public boolean isSupported(DecoratorAttribute attribute) {
-		return Attributes.class.isAssignableFrom(attribute.getClass());
+		return true;
 	}
 }
