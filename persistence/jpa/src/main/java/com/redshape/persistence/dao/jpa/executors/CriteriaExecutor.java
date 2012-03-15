@@ -248,6 +248,7 @@ public class CriteriaExecutor extends AbstractQueryExecutor<Query, Predicate, Ex
                     if ( ((PluralAttributePath) pathContext).getAttribute()
                             .getName().equals( join.getAttribute().getName() ) ) {
                         pathContext = join;
+                        break;
                     }
                 }
             }
