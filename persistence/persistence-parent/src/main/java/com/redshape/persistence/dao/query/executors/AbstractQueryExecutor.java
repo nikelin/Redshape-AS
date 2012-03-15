@@ -5,11 +5,10 @@ import com.redshape.persistence.dao.query.QueryExecutorException;
 import com.redshape.persistence.dao.query.expressions.*;
 import com.redshape.persistence.dao.query.expressions.operations.BinaryOperation;
 import com.redshape.persistence.dao.query.expressions.operations.UnaryOperation;
-import com.redshape.persistence.dao.query.statements.IStatement;
-import com.redshape.persistence.dao.query.statements.ReferenceStatement;
-import com.redshape.persistence.dao.query.statements.ScalarStatement;
+import com.redshape.persistence.dao.query.statements.*;
 import org.apache.log4j.Logger;
 
+import javax.persistence.criteria.Expression;
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -34,6 +33,12 @@ public abstract class AbstractQueryExecutor<T, P, E> implements IQueryExecutor<T
     @Override
     public T execute() throws QueryExecutorException {
         P predicate = null;
+        if ( !this.getQuery().joins().isEmpty() ) {
+            for (IJoinStatement statement : this.getQuery().joins() ) {
+                this.processStatement( statement );
+            }
+        }
+
         if ( this.getQuery().getExpression() != null ) {
             predicate = this.processExpression(this.getQuery().getExpression() );
         }
@@ -64,6 +69,8 @@ public abstract class AbstractQueryExecutor<T, P, E> implements IQueryExecutor<T
     abstract public P processExpression(OrExpression or) throws QueryExecutorException;
 
     abstract public P processExpression(NotOperation not) throws QueryExecutorException;
+
+    abstract public E processStatement(JoinStatement statement ) throws QueryExecutorException;
 
     abstract public E processStatement(ScalarStatement<?> scalar) throws QueryExecutorException;;
 

@@ -10,6 +10,7 @@ import com.redshape.persistence.dao.query.expressions.operations.UnaryOperation;
 import com.redshape.persistence.dao.query.statements.ArrayStatement;
 import com.redshape.persistence.dao.query.statements.IStatement;
 import com.redshape.persistence.dao.query.statements.ReferenceStatement;
+import com.redshape.persistence.dao.query.statements.JoinStatement;
 import com.redshape.persistence.dao.query.statements.ScalarStatement;
 import org.apache.hadoop.hbase.filter.*;
 
@@ -169,6 +170,11 @@ public class HBaseQueryExecutor extends AbstractQueryExecutor<Filter, Filter, Ob
 
     @Override
     public Object processExpression(BinaryOperation operation) throws QueryExecutorException {
+        throw new UnsupportedOperationException("Operation not supported currently");
+    }
+
+    @Override
+    public Object processStatement( JoinStatement statement ) throws QueryExecutorException {
         throw new UnsupportedOperationException("Operation not supported currently");
     }
 

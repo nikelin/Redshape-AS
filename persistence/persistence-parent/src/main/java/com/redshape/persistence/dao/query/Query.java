@@ -1,7 +1,9 @@
 package com.redshape.persistence.dao.query;
 
 import com.redshape.persistence.dao.query.expressions.IExpression;
+import com.redshape.persistence.dao.query.statements.IJoinStatement;
 import com.redshape.persistence.dao.query.statements.IStatement;
+import com.redshape.persistence.dao.query.statements.JoinStatement;
 import com.redshape.persistence.entities.IEntity;
 
 import java.util.*;
@@ -28,6 +30,7 @@ class Query implements IQuery {
     private String name;
     private List<IStatement> fields = new ArrayList<IStatement>();
     private List<IStatement> groupByFields = new ArrayList<IStatement>();
+    private List<IJoinStatement> joinStatements = new ArrayList<IJoinStatement>();
     private Map<String, Object> attributes = new HashMap<String, Object>();
     private int offset = -1;
     private Type type;
@@ -60,6 +63,17 @@ class Query implements IQuery {
         this.limit = query.limit;
         this.name = query.name;
         this.groupByFields = query.groupByFields;
+    }
+
+    @Override
+    public List<IJoinStatement> joins() {
+        return this.joinStatements;
+    }
+
+    @Override
+    public IQuery join(IJoinStatement.JoinEntityType entityType, IJoinStatement.JoinType joinType, String name) {
+        this.joinStatements.add( new JoinStatement(entityType, joinType, name) );
+        return this;
     }
 
     public IQuery where( IExpression expression ) {

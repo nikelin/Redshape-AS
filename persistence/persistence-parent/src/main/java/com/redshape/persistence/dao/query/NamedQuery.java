@@ -1,6 +1,7 @@
 package com.redshape.persistence.dao.query;
 
 import com.redshape.persistence.dao.query.expressions.IExpression;
+import com.redshape.persistence.dao.query.statements.IJoinStatement;
 import com.redshape.persistence.dao.query.statements.IStatement;
 import com.redshape.persistence.entities.IEntity;
 
@@ -18,6 +19,16 @@ public class NamedQuery implements IQuery {
     public NamedQuery( IQuery query, String name ) {
         this.query = query;
         this.name = name;
+    }
+
+    @Override
+    public List<IJoinStatement> joins() {
+        return query.joins();
+    }
+
+    @Override
+    public IQuery join(IJoinStatement.JoinEntityType entityType, IJoinStatement.JoinType joinType, String name) {
+        return query.join(entityType, joinType, name);
     }
 
     @Override

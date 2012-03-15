@@ -13,16 +13,18 @@ import com.redshape.persistence.dao.query.executors.IDynamicQueryExecutor;
 import com.redshape.persistence.dao.query.expressions.*;
 import com.redshape.persistence.dao.query.expressions.operations.BinaryOperation;
 import com.redshape.persistence.dao.query.expressions.operations.UnaryOperation;
-import com.redshape.persistence.dao.query.statements.ArrayStatement;
-import com.redshape.persistence.dao.query.statements.IStatement;
-import com.redshape.persistence.dao.query.statements.ReferenceStatement;
-import com.redshape.persistence.dao.query.statements.ScalarStatement;
+import com.redshape.persistence.dao.query.statements.*;
 import com.redshape.persistence.entities.IEntity;
 import com.redshape.utils.Commons;
+import com.redshape.utils.StringUtils;
+import org.hibernate.ejb.criteria.path.PluralAttributePath;
+import org.hibernate.shards.util.StringUtil;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.criteria.*;
+import javax.persistence.metamodel.PluralAttribute;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -195,6 +197,22 @@ public class CriteriaExecutor extends AbstractQueryExecutor<Query, Predicate, Ex
     }
 
     @Override
+    public Expression<?> processStatement(JoinStatement statement ) throws QueryExecutorException {
+        String[] path = statement.getName().split("\\.");
+        Join<?, ?> joinContext = null;
+        int i = 0;
+        for ( String pathPart : path ) {
+            if ( joinContext == null ) {
+                joinContext = this.root.join( pathPart );
+            } else {
+                joinContext = joinContext.join( pathPart );
+            }
+        }
+
+        return joinContext;
+    }
+
+    @Override
     public Expression<?> processStatement(ScalarStatement<?> scalar) throws QueryExecutorException {
         Object value = scalar.getValue();
         if ( value instanceof IEntity ) {
@@ -221,8 +239,20 @@ public class CriteriaExecutor extends AbstractQueryExecutor<Query, Predicate, Ex
         String[] parts = path.toString().split("\\.");
         int offset = 0;
         Path<?> pathContext = this.root;
+        Path<?> prevPathContext = this.root;
         while ( offset < parts.length ) {
             pathContext = pathContext.get(parts[offset++]);
+            if ( pathContext instanceof PluralAttributePath ) {
+                From<?, ?> joinContext = prevPathContext instanceof From ? (From<?, ?>) prevPathContext : this.root;
+                for ( Join<?, ?> join : joinContext.getJoins() ) {
+                    if ( ((PluralAttributePath) pathContext).getAttribute()
+                            .getName().equals( join.getAttribute().getName() ) ) {
+                        pathContext = join;
+                    }
+                }
+            }
+
+            prevPathContext = pathContext;
         }
 
         return pathContext;

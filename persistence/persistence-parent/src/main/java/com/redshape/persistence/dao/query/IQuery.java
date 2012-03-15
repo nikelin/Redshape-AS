@@ -1,6 +1,7 @@
 package com.redshape.persistence.dao.query;
 
 import com.redshape.persistence.dao.query.expressions.IExpression;
+import com.redshape.persistence.dao.query.statements.IJoinStatement;
 import com.redshape.persistence.dao.query.statements.IStatement;
 import com.redshape.persistence.entities.IEntity;
 
@@ -55,6 +56,22 @@ public interface IQuery extends Serializable {
      * @return
      */
     public int getLimit();
+
+    /**
+     * Return all joined associations
+     * @return
+     */
+    public List<IJoinStatement> joins();
+
+    /**
+     *
+     * @param entityType
+     * @param joinType
+     * @param name
+     * @return
+     */
+    public IQuery join( IJoinStatement.JoinEntityType entityType, IJoinStatement.JoinType joinType,  String name );
+
 
     /**
      * Return list of fields which requested to be include

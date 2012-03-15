@@ -6,6 +6,7 @@ import com.redshape.persistence.dao.query.expressions.*;
 import com.redshape.persistence.dao.query.expressions.operations.BinaryOperation;
 import com.redshape.persistence.dao.query.expressions.operations.UnaryOperation;
 import com.redshape.persistence.dao.query.statements.IArrayStatement;
+import com.redshape.persistence.dao.query.statements.JoinStatement;
 import com.redshape.persistence.dao.query.statements.ReferenceStatement;
 import com.redshape.persistence.dao.query.statements.ScalarStatement;
 
@@ -29,6 +30,11 @@ public class StaticQueryExecutor extends AbstractQueryExecutor<Boolean, Boolean,
     @Override
     protected Boolean processResult( Boolean predicate ) throws QueryExecutorException {
         return predicate;
+    }
+
+    @Override
+    public Comparable processStatement(JoinStatement statement) throws QueryExecutorException {
+        throw new QueryExecutorException("Static executor not support join statements currently");
     }
 
     @Override

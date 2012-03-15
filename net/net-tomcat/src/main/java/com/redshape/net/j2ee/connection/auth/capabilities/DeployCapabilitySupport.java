@@ -16,9 +16,6 @@ public class DeployCapabilitySupport implements IServerCapabilitySupport {
         this.connection = connection;
     }
 
-    public void deploy( File file ) {
-    }
-
     @Override
     public boolean isAvailable() {
         return true;
