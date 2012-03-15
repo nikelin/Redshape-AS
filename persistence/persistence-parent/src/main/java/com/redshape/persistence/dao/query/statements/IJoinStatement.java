@@ -28,4 +28,6 @@ public interface IJoinStatement extends IStatement {
 
     public String getName();
 
+    public String getAlias();
+
 }

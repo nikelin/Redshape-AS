@@ -5,10 +5,7 @@ import com.redshape.persistence.dao.query.QueryExecutorException;
 import com.redshape.persistence.dao.query.expressions.*;
 import com.redshape.persistence.dao.query.expressions.operations.BinaryOperation;
 import com.redshape.persistence.dao.query.expressions.operations.UnaryOperation;
-import com.redshape.persistence.dao.query.statements.IArrayStatement;
-import com.redshape.persistence.dao.query.statements.JoinStatement;
-import com.redshape.persistence.dao.query.statements.ReferenceStatement;
-import com.redshape.persistence.dao.query.statements.ScalarStatement;
+import com.redshape.persistence.dao.query.statements.*;
 
 @SuppressWarnings("rawtypes")
 public class StaticQueryExecutor extends AbstractQueryExecutor<Boolean, Boolean, Comparable> 
@@ -16,6 +13,11 @@ public class StaticQueryExecutor extends AbstractQueryExecutor<Boolean, Boolean,
 
     public StaticQueryExecutor(IQuery query) {
         super(query);
+    }
+
+    @Override
+    public Comparable processStatement(IAliasStatement statement) throws QueryExecutorException {
+        throw new IllegalArgumentException("Aliases not supported");
     }
 
     @Override

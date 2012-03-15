@@ -7,11 +7,7 @@ import com.redshape.persistence.dao.query.executors.IDynamicQueryExecutor;
 import com.redshape.persistence.dao.query.expressions.*;
 import com.redshape.persistence.dao.query.expressions.operations.BinaryOperation;
 import com.redshape.persistence.dao.query.expressions.operations.UnaryOperation;
-import com.redshape.persistence.dao.query.statements.ArrayStatement;
-import com.redshape.persistence.dao.query.statements.IStatement;
-import com.redshape.persistence.dao.query.statements.ReferenceStatement;
-import com.redshape.persistence.dao.query.statements.JoinStatement;
-import com.redshape.persistence.dao.query.statements.ScalarStatement;
+import com.redshape.persistence.dao.query.statements.*;
 import org.apache.hadoop.hbase.filter.*;
 
 
@@ -55,6 +51,11 @@ public class HBaseQueryExecutor extends AbstractQueryExecutor<Filter, Filter, Ob
     @Override
     protected Filter processResult( Filter filter ) {
         return filter;
+    }
+
+    @Override
+    public Object processStatement(IAliasStatement statement) throws QueryExecutorException {
+        throw new UnsupportedOperationException("Aliases not supported");
     }
 
     @Override

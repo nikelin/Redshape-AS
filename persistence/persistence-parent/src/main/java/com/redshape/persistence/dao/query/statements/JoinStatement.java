@@ -12,11 +12,18 @@ public class JoinStatement implements IJoinStatement {
     private JoinType joinType;
     private JoinEntityType entityType;
     private IStatement reference;
+    private String alias;
 
-    public JoinStatement( JoinEntityType entityType, JoinType joinType, String name ) {
+    public JoinStatement( JoinEntityType entityType, JoinType joinType, String name, String alias ) {
+        this.alias = alias;
         this.name = name;
         this.joinType = joinType;
         this.entityType = entityType;
+    }
+
+    @Override
+    public String getAlias() {
+        return alias;
     }
 
     @Override

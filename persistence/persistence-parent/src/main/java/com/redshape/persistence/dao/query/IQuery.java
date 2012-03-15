@@ -1,6 +1,7 @@
 package com.redshape.persistence.dao.query;
 
 import com.redshape.persistence.dao.query.expressions.IExpression;
+import com.redshape.persistence.dao.query.statements.IAliasStatement;
 import com.redshape.persistence.dao.query.statements.IJoinStatement;
 import com.redshape.persistence.dao.query.statements.IStatement;
 import com.redshape.persistence.entities.IEntity;
@@ -27,6 +28,10 @@ public interface IQuery extends Serializable {
     public <T> T getAttribute(String name) throws QueryExecutorException;
     
     public IQuery setAttributes( Map<String, Object> attributes );
+
+    public void alias( IStatement source, String target );
+
+    public List<IAliasStatement> aliases();
 
     /**
      * Return attributes which applyed on this query object.
@@ -71,6 +76,9 @@ public interface IQuery extends Serializable {
      * @return
      */
     public IQuery join( IJoinStatement.JoinEntityType entityType, IJoinStatement.JoinType joinType,  String name );
+
+    public IQuery join( IJoinStatement.JoinEntityType entityType, IJoinStatement.JoinType joinType,  String name,
+                        String alias );
 
 
     /**

@@ -1,9 +1,7 @@
 package com.redshape.persistence.dao.query;
 
 import com.redshape.persistence.dao.query.expressions.IExpression;
-import com.redshape.persistence.dao.query.statements.IJoinStatement;
-import com.redshape.persistence.dao.query.statements.IStatement;
-import com.redshape.persistence.dao.query.statements.JoinStatement;
+import com.redshape.persistence.dao.query.statements.*;
 import com.redshape.persistence.entities.IEntity;
 
 import java.util.*;
@@ -28,6 +26,7 @@ class Query implements IQuery {
     private IEntity entity;
     private IExpression expression;
     private String name;
+    private List<IAliasStatement> aliasStatements = new ArrayList<IAliasStatement>();
     private List<IStatement> fields = new ArrayList<IStatement>();
     private List<IStatement> groupByFields = new ArrayList<IStatement>();
     private List<IJoinStatement> joinStatements = new ArrayList<IJoinStatement>();
@@ -66,13 +65,33 @@ class Query implements IQuery {
     }
 
     @Override
+    public void alias( IStatement source, String target ) {
+        this.aliasStatements.add( new AliasStatement( source, target ) );
+    }
+
+    @Override
+    public List<IAliasStatement> aliases() {
+        return this.aliasStatements;
+    }
+
+    @Override
     public List<IJoinStatement> joins() {
         return this.joinStatements;
     }
 
     @Override
     public IQuery join(IJoinStatement.JoinEntityType entityType, IJoinStatement.JoinType joinType, String name) {
-        this.joinStatements.add( new JoinStatement(entityType, joinType, name) );
+        return this.join(entityType, joinType, name, null);
+    }
+
+    @Override
+    public IQuery join(IJoinStatement.JoinEntityType entityType, IJoinStatement.JoinType joinType, String name,
+                       String alias) {
+        if ( alias != null ) {
+            this.aliasStatements.add( new AliasStatement(new ScalarStatement(name), alias, false) );
+        }
+
+        this.joinStatements.add( new JoinStatement(entityType, joinType, name, alias) );
         return this;
     }
 

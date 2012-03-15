@@ -1,6 +1,7 @@
 package com.redshape.persistence.dao.query;
 
 import com.redshape.persistence.dao.query.expressions.IExpression;
+import com.redshape.persistence.dao.query.statements.IAliasStatement;
 import com.redshape.persistence.dao.query.statements.IJoinStatement;
 import com.redshape.persistence.dao.query.statements.IStatement;
 import com.redshape.persistence.entities.IEntity;
@@ -22,6 +23,16 @@ public class NamedQuery implements IQuery {
     }
 
     @Override
+    public List<IAliasStatement> aliases() {
+        return query.aliases();
+    }
+
+    @Override
+    public void alias(IStatement source, String target) {
+        query.alias(source, target);
+    }
+
+    @Override
     public List<IJoinStatement> joins() {
         return query.joins();
     }
@@ -29,6 +40,12 @@ public class NamedQuery implements IQuery {
     @Override
     public IQuery join(IJoinStatement.JoinEntityType entityType, IJoinStatement.JoinType joinType, String name) {
         return query.join(entityType, joinType, name);
+    }
+
+    @Override
+    public IQuery join(IJoinStatement.JoinEntityType entityType, IJoinStatement.JoinType joinType, String name,
+                       String alias ) {
+        return query.join(entityType, joinType, name, alias );
     }
 
     @Override

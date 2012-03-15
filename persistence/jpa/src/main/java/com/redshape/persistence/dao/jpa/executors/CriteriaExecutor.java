@@ -197,15 +197,33 @@ public class CriteriaExecutor extends AbstractQueryExecutor<Query, Predicate, Ex
     }
 
     @Override
+    public Expression<?> processStatement(IAliasStatement statement) throws QueryExecutorException {
+        Expression expression = this.processStatement(statement.getSource());
+        if ( !( expression instanceof Path ) ) {
+            throw new QueryExecutorException("Unable to resolve source path node");
+        }
+
+        expression.alias( statement.getTarget() );
+
+        return expression;
+    }
+
+    @Override
     public Expression<?> processStatement(JoinStatement statement ) throws QueryExecutorException {
         String[] path = statement.getName().split("\\.");
         Join<?, ?> joinContext = null;
         int i = 0;
         for ( String pathPart : path ) {
             if ( joinContext == null ) {
-                joinContext = this.root.join( pathPart );
+                joinContext = this.root.join( pathPart, JoinType.valueOf( statement.getJoinType().name() ) );
             } else {
-                joinContext = joinContext.join( pathPart );
+                joinContext = joinContext.join( pathPart, JoinType.valueOf( statement.getJoinType().name() ) );
+            }
+        }
+
+        if ( joinContext != null ) {
+            if ( statement.getAlias() != null ) {
+                joinContext.alias( statement.getAlias() );
             }
         }
 
@@ -241,7 +259,17 @@ public class CriteriaExecutor extends AbstractQueryExecutor<Query, Predicate, Ex
         Path<?> pathContext = this.root;
         Path<?> prevPathContext = this.root;
         while ( offset < parts.length ) {
-            pathContext = pathContext.get(parts[offset++]);
+            String pathPart = parts[offset++];
+            if ( offset == 1 && this.isAlias(pathPart) ) {
+                pathContext = this.findByAlias(pathPart, (From<?, ?>) pathContext);
+                if ( pathContext == null ) {
+                    throw new QueryExecutorException("Unable to resolve alias to a referenced value");
+                }
+
+                continue;
+            }
+
+            pathContext = pathContext.get(pathPart);
             if ( pathContext instanceof PluralAttributePath ) {
                 From<?, ?> joinContext = prevPathContext instanceof From ? (From<?, ?>) prevPathContext : this.root;
                 for ( Join<?, ?> join : joinContext.getJoins() ) {
@@ -257,6 +285,32 @@ public class CriteriaExecutor extends AbstractQueryExecutor<Query, Predicate, Ex
         }
 
         return pathContext;
+    }
+
+    protected Path<?> findByAlias( String alias, From<?, ?> context ) {
+        for ( Join<?, ?> join : context.getJoins() ) {
+            if ( join.getAlias() != null && join.getAlias().equals(alias) ) {
+                return join;
+            }
+
+            for ( Join<?, ?> subJoin : join.getJoins() ) {
+                if ( subJoin.getAlias() != null && subJoin.getAlias().equals(alias) ) {
+                    return subJoin;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    protected boolean isAlias( String name ) {
+        for ( IAliasStatement alias : this.getQuery().aliases() ) {
+            if ( alias.getTarget().equals(name) ) {
+                return true;
+            }
+        }
+
+        return false;
     }
     
     @Override

@@ -39,6 +39,16 @@ public abstract class AbstractQueryExecutor<T, P, E> implements IQueryExecutor<T
             }
         }
 
+        if ( !this.getQuery().aliases().isEmpty() ) {
+            for ( IAliasStatement statement : this.getQuery().aliases() ) {
+                if ( !statement.doEvaluateSource() ) {
+                    continue;
+                }
+
+                this.processStatement(statement);
+            }
+        }
+
         if ( this.getQuery().getExpression() != null ) {
             predicate = this.processExpression(this.getQuery().getExpression() );
         }
@@ -75,6 +85,8 @@ public abstract class AbstractQueryExecutor<T, P, E> implements IQueryExecutor<T
     abstract public E processStatement(ScalarStatement<?> scalar) throws QueryExecutorException;;
 
     abstract public E processStatement(ReferenceStatement reference) throws QueryExecutorException;;
+
+    abstract public E processStatement(IAliasStatement statement) throws QueryExecutorException;
 
     @SuppressWarnings("unchecked")
 	public <V extends E> V processStatement( IStatement statement ) throws QueryExecutorException {
