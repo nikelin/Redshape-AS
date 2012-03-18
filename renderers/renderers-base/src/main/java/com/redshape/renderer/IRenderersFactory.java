@@ -35,4 +35,6 @@ public interface IRenderersFactory {
     public <T, V> IRenderer<T, V> forEntity( Class<T> object );
 
     public <T, V> IRenderer<T, V> forEntity( T entity );
+
+    public <T, V> V render( T entity );
 }

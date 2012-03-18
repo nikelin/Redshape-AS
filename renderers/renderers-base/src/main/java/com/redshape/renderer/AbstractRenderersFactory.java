@@ -10,7 +10,12 @@ public abstract class AbstractRenderersFactory implements IRenderersFactory {
             new HashMap<Class<?>, Class<? extends IRenderer<?,?>>>();
     protected Map<Class<? extends IRenderer<?, ?>>, IRenderer<?, ?>> renderers =
             new HashMap<Class<? extends IRenderer<?, ?>>, IRenderer<?, ?>>();
-    
+
+    @Override
+    public <T, V> V render(T entity) {
+        return this.<T, V>forEntity(entity).render(entity);
+    }
+
     @Override
     public <T, V> IRenderer<T, V> forEntity(T entity) {
         Commons.checkNotNull(entity);
