@@ -2,7 +2,6 @@ package com.redshape.net.jmx;
 
 import com.redshape.utils.Commons;
 import org.apache.log4j.Logger;
-import sun.net.idn.StringPrep;
 
 import javax.management.*;
 
