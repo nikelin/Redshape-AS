@@ -2,6 +2,7 @@ package com.redshape.net.jmx;
 
 import com.redshape.utils.Commons;
 import org.apache.log4j.Logger;
+import sun.net.idn.StringPrep;
 
 import javax.management.*;
 
@@ -22,6 +23,10 @@ public final class JMXUtil {
 
     public JMXFactory getJmxFactory() {
         return jmxFactory;
+    }
+
+    public String[] listMBeans() {
+        return this.getJmxFactory().getMBeanServer().getDomains();
     }
 
     public String generateMBeanReport(ObjectName objectName, String className)

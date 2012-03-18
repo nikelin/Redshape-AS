@@ -24,6 +24,10 @@ public class JMXFactory {
     private IResourcesLoader resourcesLoader;
     private MBeanServer mbs;
 
+    public void setResourcesLoader(IResourcesLoader resourcesLoader) {
+        this.resourcesLoader = resourcesLoader;
+    }
+
     protected IResourcesLoader getResourcesLoader() {
         return resourcesLoader;
     }
