@@ -11,6 +11,7 @@ import com.redshape.persistence.dao.query.executors.result.IExecutorResult;
 import com.redshape.persistence.dao.query.executors.result.IExecutorResultFactory;
 import com.redshape.persistence.dao.query.executors.result.StandardExecutorResultFactory;
 import com.redshape.persistence.dao.query.executors.services.IQueryExecutorService;
+import com.redshape.persistence.entities.DtoUtils;
 import com.redshape.persistence.entities.IEntity;
 import com.redshape.utils.Commons;
 import org.apache.log4j.Logger;
@@ -143,7 +144,7 @@ public class JPAExecutorService extends JpaDaoSupport implements IQueryExecutorS
 
     @Transactional
     protected <T extends IEntity> T executeSave( IQuery query ) throws DAOException {
-        T result = (T) this.em.merge( query.entity() );
+        T result = (T) this.em.merge( query.entity().isDto() ? DtoUtils.fromDTO(query.entity()) : query.entity() );
         this.em.flush();
         return result;
     }

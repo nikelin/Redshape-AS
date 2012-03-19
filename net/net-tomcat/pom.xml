@@ -23,6 +23,7 @@
             <artifactId>javaee-api</artifactId>
             <groupId>javax</groupId>
             <version>6.0</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <artifactId>jmx-utils</artifactId>

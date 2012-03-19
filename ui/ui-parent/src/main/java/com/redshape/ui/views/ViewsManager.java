@@ -31,13 +31,13 @@ public class ViewsManager implements IViewsManager {
 			throw new ViewException("View " + id + " not registered " +
 					"in current manager instance");
 		}
-		
+
+        this.deactivate();
+
 		IView view = this.getView(id);
 		if ( this.activeView == view ) {
 			return;
 		}
-		
-		this.deactivate();
 		
 		if ( !this.initializedViews.contains(id) ) {
 			view.init();

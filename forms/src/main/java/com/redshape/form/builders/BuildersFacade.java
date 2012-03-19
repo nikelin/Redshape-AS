@@ -3,6 +3,7 @@ package com.redshape.form.builders;
 import com.redshape.form.builders.impl.StandardFormBuilder;
 import com.redshape.form.builders.impl.StandardFormFieldBuilder;
 import com.redshape.form.decorators.builders.IDecoratorBuilder;
+import com.redshape.utils.Commons;
 
 public class BuildersFacade implements IBuildersFacade {
     private static IBuildersFacade instance = new BuildersFacade();
@@ -16,8 +17,11 @@ public class BuildersFacade implements IBuildersFacade {
         return instance;
     }
 
-    public static void setDecoratorsBuilder( IDecoratorBuilder<?> builder ) {
+    public static IDecoratorBuilder<?> setDecoratorsBuilder( IDecoratorBuilder<?> builder ) {
+        Commons.checkNotNull(builder);
+
         decoratorsBuilder = builder;
+        return builder;
     }
     
     public static <T> IDecoratorBuilder<T> newDecoratorBuilder() {

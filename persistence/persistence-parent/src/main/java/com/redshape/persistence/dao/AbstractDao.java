@@ -126,6 +126,7 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
     }
 
     @Override
+    @Transactional
     public T save(T object) throws DAOException {
         return this.service.<T>execute(
                 this.getBuilder()
@@ -136,6 +137,7 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
     }
 
     @Override
+    @Transactional
     public void save(Collection<T> object) throws DAOException {
         for ( T record : object ) {
             this.save(record);
