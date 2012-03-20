@@ -127,7 +127,7 @@ public class JPAExecutorService extends JpaDaoSupport implements IQueryExecutorS
     }
 
     @Transactional
-    protected <T extends IEntity> T executeUpdate(IQuery query) throws DAOException {
+    public <T extends IEntity> T executeUpdate(IQuery query) throws DAOException {
         T result = null;
         if ( query.isRemove() ) {
             if ( query.entity() != null ) {
@@ -143,21 +143,21 @@ public class JPAExecutorService extends JpaDaoSupport implements IQueryExecutorS
     }
 
     @Transactional
-    protected <T extends IEntity> T executeSave( IQuery query ) throws DAOException {
+    public <T extends IEntity> T executeSave( IQuery query ) throws DAOException {
         T result = (T) this.em.merge( query.entity().isDto() ? DtoUtils.fromDTO(query.entity()) : query.entity() );
         this.em.flush();
         return result;
     }
     
     @Transactional
-    protected <T extends IEntity> T executeRemoveAll( IQuery query ) throws DAOException {
+    public <T extends IEntity> T executeRemoveAll( IQuery query ) throws DAOException {
         this.em.createQuery("delete from " + this.getEntityName( query ) )
                 .executeUpdate();
         return null;
     }
 
     @Transactional
-    protected <T extends IEntity> T executeRemove( IQuery query ) throws DAOException {
+    public <T extends IEntity> T executeRemove( IQuery query ) throws DAOException {
         IEntity object = query.entity();
         if ( !this.em.contains( object ) ) {
             IEntity objInDb = (IEntity) this.em.find( object.getClass(), object.getId() );
