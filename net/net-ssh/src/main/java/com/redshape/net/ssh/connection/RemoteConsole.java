@@ -19,17 +19,18 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class RemoteConsole extends Console {
-    @Autowired( required = true )
     private IServerConnectionFactory serverConnectionFactory;
-    
-    @Autowired( required = true )
     private IServerCapabilitySupportFactory serverCapabilitySupportFactory;
 
     private IServer node;
 	private IServerConnection connection;
 
-	public RemoteConsole( IServer node ) {
+	public RemoteConsole( IServer node,
+                          IServerConnectionFactory connectionFactory,
+                          IServerCapabilitySupportFactory capabilitySupportFactory ) {
 		this.node = node;
+        this.serverConnectionFactory = connectionFactory;
+        this.serverCapabilitySupportFactory = capabilitySupportFactory;
 	}
 
     public void setServerConnectionFactory(IServerConnectionFactory serverConnectionFactory) {

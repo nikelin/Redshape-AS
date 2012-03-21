@@ -205,7 +205,11 @@ public class PackagesLoader implements IPackagesLoader {
 				}
 			} else {
 				File pathFile = this.getResourcesLoader().loadFile(path);
-				for ( File file : pathFile.listFiles() ) {
+                File[] files = pathFile.listFiles();
+                if ( files == null ) {
+                    throw new IOException("Unexpected <null> while attempt to retrieve directory " + path + " listing");
+                }
+				for ( File file : files ) {
 					try {
 						if ( file.getPath().endsWith(".jar") ) {
 							log.info("Trying to load JAR: " + file.getPath() );
@@ -229,11 +233,15 @@ public class PackagesLoader implements IPackagesLoader {
 
 	@SuppressWarnings("unchecked")
 	protected <T> Collection<Class<T>> getClassesFromIdleFolder( String basePath, String folder, String pkgName, IFilter<Class<T>> filter )
-			throws ClassNotFoundException, MalformedURLException {
+			throws ClassNotFoundException, MalformedURLException, IOException {
 		Collection<Class<T>> classes = new HashSet<Class<T>>();
 		File folderFile = new File( folder );
 
 		File[] clsEntries = folderFile.listFiles();
+        if ( clsEntries == null ) {
+            throw new IOException("Unexpected <null> while attempt to retrieve directory " + basePath + File.separator
+                    + folder + " listing");
+        }
 		for ( File clsFile : clsEntries ) {
 			if ( clsFile.isDirectory() ) {
 				classes.addAll(

@@ -2,7 +2,12 @@ package com.redshape.net.connection;
 
 import com.redshape.net.IServer;
 import com.redshape.net.ServerType;
+import com.redshape.net.connection.auth.IConnectionAuthenticator;
+import com.redshape.net.connection.auth.IConnectionAuthenticatorsProvider;
+import com.redshape.utils.Commons;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,8 +22,19 @@ public class StandardServerConnectionsFactory implements IServerConnectionFactor
     private Map<ServerType, Class<? extends IServerConnection>> registry
             = new HashMap<ServerType, Class<? extends IServerConnection>>();
 
-    public StandardServerConnectionsFactory(Map<ServerType, Class<? extends IServerConnection>> registry) {
+    private IConnectionAuthenticatorsProvider authenticatorsProvider;
+
+    public StandardServerConnectionsFactory(Map<ServerType, Class<? extends IServerConnection>> registry,
+                                            IConnectionAuthenticatorsProvider provider ) {
+        Commons.checkNotNull(registry);
+        Commons.checkNotNull(provider);
+
         this.registry = registry;
+        this.authenticatorsProvider = provider;
+    }
+
+    protected IConnectionAuthenticatorsProvider getAuthenticatorsProvider() {
+        return this.authenticatorsProvider;
     }
 
     @Override
@@ -28,14 +44,16 @@ public class StandardServerConnectionsFactory implements IServerConnectionFactor
 
     @Override
     public IServerConnection createConnection(IServer server) {
-        Class<? extends IServerConnection> connection = this.registry.get(server);
+        Class<? extends IServerConnection> connection = this.registry.get(server.getType());
         if ( connection == null ) {
             throw new IllegalArgumentException("Server type not supported");
         }
 
         IServerConnection conn;
         try {
-            conn = connection.newInstance();
+            Constructor<? extends IServerConnection> constructor = connection.getConstructor( IServer.class,
+                    IConnectionAuthenticator.class );
+            conn = constructor.newInstance(server, this.getAuthenticatorsProvider().provide(server) );
         } catch ( Throwable e ) {
             throw new IllegalArgumentException( e.getMessage(), e );
         }

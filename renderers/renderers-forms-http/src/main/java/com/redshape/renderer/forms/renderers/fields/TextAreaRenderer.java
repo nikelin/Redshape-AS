@@ -22,7 +22,7 @@ public class TextAreaRenderer extends AbstractFormFieldRenderer<TextAreaField> {
     public String render(TextAreaField item, RenderMode mode) {
         StringBuilder builder = new StringBuilder();
         builder.append("<textarea ")
-               .append("name=\"").append(Commons.select( item.getName(), item.getId() ) ).append("\" ")
+               .append("name=\"").append(Commons.select( item.getCanonicalName(), item.getId() ) ).append("\" ")
                .append("id=\"").append(Commons.select( item.getId(), item.getName() ) ).append("\" ");
 
 		this.applyErrorStateIfNeeds(item);
