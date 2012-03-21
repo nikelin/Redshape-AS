@@ -5,7 +5,6 @@ import com.redshape.net.ServerType;
 import com.redshape.net.connection.auth.IConnectionAuthenticator;
 import com.redshape.net.connection.auth.IConnectionAuthenticatorsProvider;
 import com.redshape.utils.Commons;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
