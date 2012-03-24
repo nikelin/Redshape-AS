@@ -5,6 +5,9 @@ import com.redshape.net.ServerType;
 import com.redshape.net.connection.auth.IConnectionAuthenticator;
 import com.redshape.net.connection.auth.IConnectionAuthenticatorsProvider;
 import com.redshape.utils.Commons;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
@@ -17,10 +20,11 @@ import java.util.Map;
  * Time: 4:16 PM
  * To change this template use File | Settings | File Templates.
  */
-public class StandardServerConnectionsFactory implements IServerConnectionFactory {
+public class StandardServerConnectionsFactory implements IServerConnectionFactory, ApplicationContextAware {
     private Map<ServerType, Class<? extends IServerConnection>> registry
             = new HashMap<ServerType, Class<? extends IServerConnection>>();
 
+    private ApplicationContext applicationContext;
     private IConnectionAuthenticatorsProvider authenticatorsProvider;
 
     public StandardServerConnectionsFactory(Map<ServerType, Class<? extends IServerConnection>> registry,
@@ -30,6 +34,11 @@ public class StandardServerConnectionsFactory implements IServerConnectionFactor
 
         this.registry = registry;
         this.authenticatorsProvider = provider;
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 
     protected IConnectionAuthenticatorsProvider getAuthenticatorsProvider() {
@@ -53,6 +62,7 @@ public class StandardServerConnectionsFactory implements IServerConnectionFactor
             Constructor<? extends IServerConnection> constructor = connection.getConstructor( IServer.class,
                     IConnectionAuthenticator.class );
             conn = constructor.newInstance(server, this.getAuthenticatorsProvider().provide(server) );
+            this.applicationContext.getAutowireCapableBeanFactory().autowireBean(conn);
         } catch ( Throwable e ) {
             throw new IllegalArgumentException( e.getMessage(), e );
         }

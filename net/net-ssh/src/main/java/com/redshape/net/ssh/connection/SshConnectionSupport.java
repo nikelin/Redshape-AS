@@ -7,9 +7,13 @@ import com.redshape.net.connection.IServerConnection;
 import com.redshape.net.connection.auth.IConnectionAuthenticator;
 import com.redshape.net.ssh.connection.auth.ISshAuthenticator;
 import com.redshape.utils.Commons;
+import com.redshape.utils.config.ConfigException;
+import com.redshape.utils.config.IConfig;
 import net.schmizz.sshj.SSHClient;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,17 +23,28 @@ import java.util.Map;
  */
 public class SshConnectionSupport implements IServerConnection {
 
+    @Autowired( required = true )
+    private IConfig config;
+
     private IServer server;
     private SSHClient connection;
     private IConnectionAuthenticator authenticator;
     private Map<ConnectionAttribute, Object> attributes = new HashMap<ConnectionAttribute, Object>();
 
-    public SshConnectionSupport( IServer server, ISshAuthenticator authenticator ) {
+    public SshConnectionSupport( IServer server, IConnectionAuthenticator authenticator ) {
         Commons.checkNotNull(server);
         Commons.checkNotNull(authenticator);
 
         this.server = server;
         this.authenticator = authenticator;
+    }
+
+    public IConfig getConfig() {
+        return config;
+    }
+
+    public void setConfig(IConfig config) {
+        this.config = config;
     }
 
     protected IServer getServer() {
@@ -52,15 +67,23 @@ public class SshConnectionSupport implements IServerConnection {
             }
 
             this.connection = new SSHClient();
+            this.loadKeys();
             this.connection.setConnectTimeout(
                 Commons.select(this.<Integer>getAttribute(ConnectionAttribute.TIMEOUT), 30000)
             );
-            
-            this.connection.connect( server.toURI().toString(), 22 );
+
+            URI uri = server.toURI();
+            this.connection.connect(uri.getHost(), uri.getPort());
 
             this.getAuthenticator().authenticate( this.getServer(), this.getConnection() );
         } catch ( Throwable e ) {
             throw new ConnectionException( e.getMessage(), e );
+        }
+    }
+
+    protected void loadKeys() throws ConfigException {
+        for ( IConfig value : this.getConfig().get("ssh.verified").childs() ) {
+            this.connection.addHostKeyVerifier(value.value());
         }
     }
 

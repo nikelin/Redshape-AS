@@ -56,6 +56,6 @@ public class StandardConnectionAuthenticatorsProvider implements IConnectionAuth
             return authenticator;
         }
 
-        return this.explicitAuthenticatorsRegistry.get(server.getType());
+        return this.authenticatorsRegistry.get(server.getType());
     }
 }

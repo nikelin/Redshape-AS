@@ -3,10 +3,10 @@ package com.redshape.renderer.json.renderers;
 import com.redshape.renderer.IRenderer;
 import com.redshape.renderer.IRenderersFactory;
 import com.redshape.utils.Commons;
-import org.apache.commons.collections.map.HashedMap;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -17,7 +17,7 @@ import java.util.Map;
 public class StandardJSONRenderer extends AbstractJSONRenderer<Object> {
 
     private IRenderersFactory renderersFactory;
-    private Map<Class<?>, Method> handlers = new HashedMap();
+    private Map<Class<?>, Method> handlers = new HashMap();
 
     public StandardJSONRenderer( IRenderersFactory renderersFactory ) {
         this.renderersFactory = renderersFactory;

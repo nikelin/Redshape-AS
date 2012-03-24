@@ -29,7 +29,7 @@ public class FilesystemCapabilitySupport implements IFilesystemCapabilitySupport
         public Node( SFTPClient client, RemoteFile file ) {
             this.client = client;
             this.file = file;
-            this.nameParts = this.getFile().getPath().split("/");
+            this.nameParts = this.getFile().getPath().split("\\\\/");
             this.parentPath = SimpleStringUtils.join(
                     Arrays.asList(this.nameParts)
                             .subList(
@@ -201,7 +201,7 @@ public class FilesystemCapabilitySupport implements IFilesystemCapabilitySupport
     public Node createFile(String path) throws ConnectionException {
         try {
             return new Node( this.getSftpClient(), this.getSftpClient().open(path,
-                            Commons.set(OpenMode.CREAT) ) );
+                            Commons.set(OpenMode.CREAT, OpenMode.WRITE) ) );
         } catch ( SFTPException e ) {
             throw new ConnectionException( e.getMessage(), e );
         } catch ( IOException e ) {
@@ -212,7 +212,7 @@ public class FilesystemCapabilitySupport implements IFilesystemCapabilitySupport
     @Override
     public Node findFile(String name) throws ConnectionException {
         try {
-            return new Node( this.getSftpClient(), this.getSftpClient().open("/") );
+            return new Node( this.getSftpClient(), this.getSftpClient().open(name) );
         } catch ( IOException e ) {
             throw new ConnectionException( e.getMessage(), e );
         }

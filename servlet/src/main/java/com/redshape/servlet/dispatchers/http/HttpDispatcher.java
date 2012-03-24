@@ -172,6 +172,8 @@ public class HttpDispatcher implements IHttpDispatcher {
                         "appropriate response context");
             }
 
+            response.setCharacterEncoding("UTF-8");
+
 			try {
                 context.proceedResponse( view, request, response );
             } catch ( ProcessingException e ) {

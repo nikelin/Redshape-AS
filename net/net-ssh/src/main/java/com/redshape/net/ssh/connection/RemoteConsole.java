@@ -68,11 +68,15 @@ public class RemoteConsole extends Console {
 	public IFilesystemCapabilitySupport.Node getFile( String path, boolean createIfNotExists ) 
             throws IOException {
         try {
-            IFilesystemCapabilitySupport.Node node = this.getFilesystem().findFile(path);
-            if ( ( node == null || !node.isExists() ) && createIfNotExists ) {
-                node = this.getFilesystem().createFile(path);
+            IFilesystemCapabilitySupport.Node node = null;
+            try {
+                node = this.getFilesystem().findFile(path);
+            } catch ( ConnectionException e ) {
+                if ( createIfNotExists ) {
+                    node = this.getFilesystem().createFile(path);
+                }
             }
-    
+
             return node;
         } catch ( ConnectionException e ) {
             throw new IOException( e.getMessage(), e );

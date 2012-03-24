@@ -46,7 +46,7 @@ public class StandardFormRenderer extends AbstractFormItemRenderer<IForm>
 
 				this.buildAttributes( builder, form );
 
-				builder.append(">").append(System.lineSeparator());
+				builder.append(">").append("\n\r");
 			}
 		}
 		
@@ -55,13 +55,13 @@ public class StandardFormRenderer extends AbstractFormItemRenderer<IForm>
 				builder.append( this.getRenderersFactory()
                         .<IFormItem, String>forEntity(item)
                         .render(item) )
-                   .append(System.lineSeparator());
+                   .append("\n\r");
 			}
 		}
 
 		if ( mode.equals( RenderMode.FULL ) ) {
 			if ( form.getContext() == null ) {
-				builder.append("</form>").append(System.lineSeparator());
+				builder.append("</form>").append("\n\r");
 			}
 		}
 
