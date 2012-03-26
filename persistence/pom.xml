@@ -5,7 +5,6 @@
         <module>hbase</module>
         <module>persistence-parent</module>
         <module>jms</module>
-        <module>gae</module>
     </modules>
 
     <properties>
