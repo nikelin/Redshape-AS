@@ -9,9 +9,7 @@ import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.connection.channel.direct.Signal;
 import net.schmizz.sshj.transport.TransportException;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 /**
  * @author nikelin
@@ -28,12 +26,19 @@ public class ConsoleCapabilitySupport implements IConsoleCapabilitySupport {
 
         @Override
         public String readStdError() throws IOException {
-            return command.getErrorAsString();
+            return command.getExitErrorMessage();
         }
 
         @Override
         public String readStdInput() throws IOException {
-            return command.getOutputAsString();
+            BufferedReader reader = new BufferedReader( new InputStreamReader(command.getInputStream() ) );
+            String tmp;
+            StringBuilder builder = new StringBuilder();
+            while ( null != ( tmp = reader.readLine() ) ) {
+                builder.append(tmp);
+            }
+
+            return builder.toString();
         }
 
         @Override

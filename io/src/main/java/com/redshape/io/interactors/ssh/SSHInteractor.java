@@ -15,9 +15,7 @@ import net.schmizz.sshj.sftp.SFTPException;
 import net.schmizz.sshj.transport.TransportException;
 import org.apache.log4j.Logger;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
@@ -54,12 +52,19 @@ public class SSHInteractor implements INetworkInteractor {
 		executor.execute( new ISystemProcess() {
 			@Override
 			public String readStdError() throws IOException {
-				return command.getErrorAsString();
+				return command.getExitErrorMessage();
 			}
 
 			@Override
 			public String readStdInput() throws IOException {
-				return command.getOutputAsString();
+				BufferedReader reader = new BufferedReader( new InputStreamReader(command.getInputStream() ) );
+                String tmp;
+                StringBuilder builder = new StringBuilder();
+                while ( null != ( tmp = reader.readLine() ) ) {
+                    builder.append(tmp);
+                }
+
+                return builder.toString();
 			}
 
 			@Override

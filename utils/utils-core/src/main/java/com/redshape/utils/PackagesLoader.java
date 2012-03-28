@@ -25,6 +25,8 @@ public class PackagesLoader implements IPackagesLoader {
 	@Autowired( required = true )
 	private ResourcesLoader resourcesLoader;
 
+    private Map<String, TypeHandler> typeHandlers = new HashMap<String, TypeHandler>();
+
 	private List<String> classpath;
 
 	public PackagesLoader() {
@@ -37,7 +39,12 @@ public class PackagesLoader implements IPackagesLoader {
 		this.init();
 	}
 
-	protected void init() {
+    @Override
+    public void registerTypeHandler(String pattern, TypeHandler handler) {
+        this.typeHandlers.put(pattern, handler);
+    }
+
+    protected void init() {
 		String systemClasspath = System.getProperty("java.class.path");
 
 		this.classpath.addAll(

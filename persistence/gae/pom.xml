@@ -3,26 +3,25 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>net</artifactId>
+        <artifactId>persistence</artifactId>
         <groupId>com.redshape</groupId>
         <version>3.1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.redshape.net</groupId>
-    <artifactId>net-ssh</artifactId>
-    <name>Redshape - Net - SSH Connection Support</name>
+    <groupId>com.redshape.persistence</groupId>
+    <artifactId>gae</artifactId>
 
     <dependencies>
         <dependency>
-            <artifactId>net-parent</artifactId>
-            <groupId>com.redshape.net</groupId>
+            <artifactId>persistence-parent</artifactId>
+            <groupId>com.redshape.persistence</groupId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.schmizz</groupId>
-            <artifactId>sshj</artifactId>
-            <version>0.7.0</version>
+            <artifactId>appengine-api-1.0-sdk</artifactId>
+            <groupId>com.google.appengine</groupId>
+            <version>1.6.3.1</version>
         </dependency>
     </dependencies>
 

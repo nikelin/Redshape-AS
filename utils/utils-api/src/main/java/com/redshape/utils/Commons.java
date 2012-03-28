@@ -50,7 +50,7 @@ public final class Commons {
     }
 
     public static void checkArgument( boolean argument ) {
-        if ( argument ) {
+        if ( !argument ) {
             throw new IllegalArgumentException("<false>");
         }
     }
