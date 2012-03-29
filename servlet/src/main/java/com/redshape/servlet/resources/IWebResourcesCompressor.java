@@ -1,6 +1,9 @@
 package com.redshape.servlet.resources;
 
+import com.redshape.servlet.resources.types.Resource;
+
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,6 +14,10 @@ import java.io.IOException;
  */
 public interface IWebResourcesCompressor {
 
-    public String compress( String data ) throws IOException;
+    public boolean isSupported( Resource resource );
+
+    public String compress( List<String> paths ) throws IOException;
+
+    public String compress( String path ) throws IOException;
 
 }

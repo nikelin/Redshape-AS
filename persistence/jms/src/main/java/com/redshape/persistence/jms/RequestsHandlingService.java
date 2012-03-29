@@ -9,10 +9,12 @@ import com.redshape.persistence.dao.query.executors.services.IQueryExecutorServi
 import com.redshape.persistence.entities.DtoUtils;
 import com.redshape.persistence.jms.protocol.IQueryMarshaller;
 import com.redshape.persistence.jms.protocol.ProtocolException;
+import com.redshape.utils.Constants;
 import org.apache.log4j.Logger;
 
 import javax.jms.*;
 import java.lang.IllegalStateException;
+import java.util.Date;
 
 /**
  * Default DAO requests handling service
@@ -24,7 +26,8 @@ import java.lang.IllegalStateException;
 public class RequestsHandlingService implements IRequestHandlingService {
     
     private static final Logger log = Logger.getLogger(RequestsHandlingService.class);
-    
+    public static int MSG_MAX_PROCESSING_TIME = Constants.TIME_SECOND * 5;
+
     private String queueName;
     private QueueSession session;
     private QueueConnection connection;
@@ -127,9 +130,17 @@ public class RequestsHandlingService implements IRequestHandlingService {
         this.state = false;
     }
 
+    protected boolean isExpired( Message message ) throws JMSException {
+        return new Date().getTime() >  message.getJMSTimestamp() + MSG_MAX_PROCESSING_TIME;
+    }
+
     protected Message processRequest( Message message ) throws DAOException {
         try {
             Message result = this.session.createObjectMessage();
+            if ( this.isExpired(message) ) {
+                return null;
+            }
+
             result.setJMSDestination( message.getJMSReplyTo() );
 
             IQuery query = this.getProtocol().unmarshalQuery(this.getBuilder(), message);
@@ -187,6 +198,14 @@ public class RequestsHandlingService implements IRequestHandlingService {
                 log.error( e.getMessage(), e );
             } catch ( DAOException e ) {
                 log.error( e.getMessage(), e );
+            } catch ( IllegalStateException e ) {
+                if ( e.getMessage().contains("is closed") ) {
+                    try {
+                        this.consumer = this.session.createConsumer( this.session.createQueue( this.getQueueName() ) );
+                    } catch ( JMSException ex ) {
+                        throw e;
+                    }
+                }
             }
         }
     }

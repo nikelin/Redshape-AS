@@ -15,12 +15,6 @@ import java.util.List;
  */
 public interface IWebResourceWriter {
 
-    public boolean isEnabledCompression();
-
-    public void setJavaScriptCompressor( IWebResourcesCompressor compressor );
-
-    public void setCSSCompressor( IWebResourcesCompressor compressor );
-
     public String writeScripts( List<Script> scripts );
 
     public String writeStyles( List<Style> styles );

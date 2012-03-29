@@ -9,23 +9,19 @@ import com.redshape.utils.Commons;
  * Time: 14:04
  * To change this template use File | Settings | File Templates.
  */
-public class Link {
+public class Link extends Resource {
     private String rel;
-    private String href;
     private String type;
 
     public Link(String rel, String href, String type) {
+        super(href);
+
         this.rel = rel;
-        this.href = href;
         this.type = type;
     }
 
     public String getRel() {
         return rel;
-    }
-
-    public String getHref() {
-        return href;
     }
 
     public String getType() {

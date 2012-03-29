@@ -6,6 +6,7 @@ import com.redshape.servlet.resources.types.Link;
 import com.redshape.servlet.resources.types.Script;
 import com.redshape.servlet.resources.types.Style;
 import com.redshape.servlet.views.ViewHelper;
+import com.redshape.utils.Commons;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +25,17 @@ public class WebResourcesHandler implements IWebResourcesHandler {
     private List<Style> styles = new ArrayList<Style>();
     private List<Link> links = new ArrayList<Link>();
 
-    public void setWriter(IWebResourceWriter writer) {
+    public WebResourcesHandler(IWebResourceWriter writer) {
+        Commons.checkNotNull(writer);
+
         this.writer = writer;
     }
 
-	@Override
+    protected IWebResourceWriter getWriter() {
+        return this.writer;
+    }
+
+    @Override
 	public void clear() {
 		this.scripts.clear();
 		this.styles.clear();
@@ -71,26 +78,12 @@ public class WebResourcesHandler implements IWebResourcesHandler {
 
     @Override
     public String printScripts() {
-        StringBuilder builder = new StringBuilder();
-        for ( Script script : this.scripts ) {
-            builder.append(
-                String.format("<script type=\"%s\" src=\"%s\"></script>\n",
-						script.getType(), ViewHelper.url( script.getHref() ) ) );
-        }
-
-        return builder.toString();
+        return this.getWriter().writeScripts( this.scripts );
     }
 
     @Override
     public String printStyles() {
-        StringBuilder builder = new StringBuilder();
-        for ( Style style : this.styles) {
-            builder.append(
-                String.format("<link rel=\"stylesheet\" type=\"%s\" href=\"%s\"/>",
-                        style.getType(), ViewHelper.url( style.getHref() ) ) );
-        }
-
-        return builder.toString();
+        return this.getWriter().writeStyles( this.styles );
     }
 
 }

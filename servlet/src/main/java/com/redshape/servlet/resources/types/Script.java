@@ -9,12 +9,12 @@ import com.redshape.utils.Commons;
  * Time: 14:04
  * To change this template use File | Settings | File Templates.
  */
-public class Script {
+public class Script extends Resource {
     private String type;
-    private String href;
 
     public Script( String type, String href ) {
-        this.href = href;
+        super(href);
+
         this.type = type;
     }
 
@@ -22,13 +22,9 @@ public class Script {
         return type;
     }
 
-    public String getHref() {
-        return href;
-    }
-
     @Override
     public int hashCode() {
-        return (Commons.select(this.type, "") + this.href).hashCode();
+        return (Commons.select(this.type, "") + this.getHref()).hashCode();
     }
 
     @Override

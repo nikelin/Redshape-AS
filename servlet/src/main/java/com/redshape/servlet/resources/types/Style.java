@@ -9,25 +9,21 @@ import com.redshape.utils.Commons;
  * Time: 14:04
  * To change this template use File | Settings | File Templates.
  */
-public class Style {
+public class Style extends Resource {
     public static String DEFAULT_MEDIA = "all";
 
     private String type;
-    private String href;
     private String media;
 
     public Style( String type, String href, String media ) {
+        super(href);
+
         this.type = type;
-        this.href = href;
         this.media = media;
     }
 
     public String getType() {
         return type;
-    }
-
-    public String getHref() {
-        return href;
     }
 
     public String getMedia() {
