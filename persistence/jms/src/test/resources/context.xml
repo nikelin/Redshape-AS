@@ -22,7 +22,7 @@
         </constructor-arg>
     </bean>
     
-    <bean id="protocol" class="com.redshape.persistence.protocol.DefaultMarshaller"/>
+    <bean id="protocol" class="com.redshape.persistence.jms.protocol.DefaultMarshaller"/>
     
     <bean id="servingQueue" class="java.lang.String">
         <constructor-arg>

@@ -8,7 +8,6 @@ import com.redshape.persistence.dao.query.expressions.operations.UnaryOperation;
 import com.redshape.persistence.dao.query.statements.*;
 import org.apache.log4j.Logger;
 
-import javax.persistence.criteria.Expression;
 import java.lang.reflect.InvocationTargetException;
 
 /**

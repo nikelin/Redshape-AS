@@ -9,7 +9,6 @@ import com.redshape.utils.Commons;
 import com.redshape.utils.InvocationException;
 import com.redshape.utils.Lambda;
 import com.redshape.utils.StringUtils;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
@@ -120,13 +119,11 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
         return builder;
     }
 
-    @Transactional
     protected IExecutionRequest<T> execute( final IQuery query ) throws DAOException {
         return new ExecutorRequest<T>(this.service, query);
     }
 
     @Override
-    @Transactional
     public T save(T object) throws DAOException {
         return this.service.<T>execute(
                 this.getBuilder()
@@ -137,7 +134,6 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
     }
 
     @Override
-    @Transactional
     public void save(Collection<T> object) throws DAOException {
         for ( T record : object ) {
             this.save(record);
@@ -145,7 +141,6 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
     }
 
     @Override
-    @Transactional
     public void removeAll() throws DAOException {
         this.service.execute(this.getBuilder().removeQuery(this.getEntityClass()));
     }

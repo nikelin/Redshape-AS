@@ -5,8 +5,8 @@ import com.redshape.persistence.dao.query.IQuery;
 import com.redshape.persistence.dao.query.executors.result.IExecutorResult;
 import com.redshape.persistence.dao.query.executors.result.IExecutorResultFactory;
 import com.redshape.persistence.entities.IEntity;
-import com.redshape.persistence.protocol.IQueryMarshaller;
-import com.redshape.persistence.protocol.ProtocolException;
+import com.redshape.persistence.jms.protocol.IQueryMarshaller;
+import com.redshape.persistence.jms.protocol.ProtocolException;
 import com.redshape.utils.Constants;
 
 import javax.jms.*;

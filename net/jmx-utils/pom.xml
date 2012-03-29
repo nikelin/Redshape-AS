@@ -25,6 +25,12 @@
             <artifactId>deployment-client</artifactId>
             <groupId>org.glassfish.deployment</groupId>
             <version>3.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.glassfish</groupId>
+                    <artifactId>bean-validator</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <artifactId>deployment-api</artifactId>

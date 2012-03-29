@@ -39,16 +39,14 @@ public class StringUtils extends SimpleStringUtils {
     }
 
     public final static byte[] stringToIP( String addrString ) {
-        if ( addrString.isEmpty() ) {
-            throw new IllegalArgumentException("Empty address given");
-        }
+        Commons.checkArgument( addrString.isEmpty(), "Empty address given");
 
         return IPAddressUtil.textToNumericFormatV4(addrString);
     }
 
     public final static Integer hex( String data ) {
         return Integer.valueOf(
-                String.format("%x", new BigInteger(1, data.getBytes( Charset.forName("UTF-8") ) ) )
+            String.format("%x", new BigInteger(1, data.getBytes( Charset.forName("UTF-8") ) ) )
         );
     }
 

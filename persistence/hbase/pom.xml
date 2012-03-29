@@ -7,6 +7,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <properties>
+        <hbase.version>0.89.20100924-28</hbase.version>
+    </properties>
+
     <name>Redshape - Persistence - HBase</name>
     <groupId>com.redshape.persistence</groupId>
     <artifactId>hbase</artifactId>

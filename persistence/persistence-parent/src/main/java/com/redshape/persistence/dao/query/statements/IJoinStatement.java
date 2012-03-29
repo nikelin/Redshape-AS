@@ -1,6 +1,5 @@
 package com.redshape.persistence.dao.query.statements;
 
-import javax.persistence.criteria.JoinType;
 
 /**
  * Created with IntelliJ IDEA.

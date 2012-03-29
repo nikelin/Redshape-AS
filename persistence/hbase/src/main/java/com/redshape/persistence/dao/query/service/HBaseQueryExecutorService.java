@@ -20,7 +20,6 @@ import org.apache.hadoop.hbase.filter.CompareFilter;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
 import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.beans.IntrospectionException;
 import java.io.IOException;
@@ -145,7 +144,6 @@ public class HBaseQueryExecutorService implements IQueryExecutorService {
     }
 
     @Override
-    @Transactional
     public <T extends IEntity> IExecutorResult<T> execute(IQuery query) throws DAOException {
         try {
             int offset = query.getOffset() > 0 ? query.getOffset() : -1;
@@ -224,7 +222,6 @@ public class HBaseQueryExecutorService implements IQueryExecutorService {
         }
     }
 
-    @Transactional
     protected <T extends IEntity> T executeUpdate(IQuery query) throws DAOException {
         T result = null;
         if ( query.isRemove() ) {
@@ -240,7 +237,6 @@ public class HBaseQueryExecutorService implements IQueryExecutorService {
         return result;
     }
 
-    @Transactional
     protected <T extends IEntity> T executeRemoveAll( IQuery query ) throws DAOException {
         HTable table = this.getTablesManager().forEntity(query.getEntityClass());
         this.getTablesManager().disable( table );
@@ -252,7 +248,6 @@ public class HBaseQueryExecutorService implements IQueryExecutorService {
         return null;
     }
 
-    @Transactional
     protected <T extends IEntity> T executeRemove( IQuery query ) throws DAOException {
         T entity = (T) query.entity();
         if ( entity == null ) {

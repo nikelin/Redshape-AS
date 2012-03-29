@@ -9,14 +9,13 @@
 
     <groupId>com.redshape</groupId>
     <artifactId>jobs</artifactId>
+    <packaging>pom</packaging>
     <name>Redshape - Jobs</name>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.redshape.persistence</groupId>
-            <artifactId>persistence-parent</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
+    <modules>
+        <module>jobs-jpa</module>
+        <module>jobs-parent</module>
+        <module>jobs-jms</module>
+    </modules>
 
 </project>

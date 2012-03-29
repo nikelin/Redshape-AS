@@ -50,8 +50,12 @@ public final class Commons {
     }
 
     public static void checkArgument( boolean argument ) {
+        checkArgument(argument, "<false>");
+    }
+
+    public static void checkArgument( boolean argument, String message ) {
         if ( !argument ) {
-            throw new IllegalArgumentException("<false>");
+            throw new IllegalArgumentException(message);
         }
     }
 
