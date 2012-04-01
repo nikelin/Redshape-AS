@@ -18,7 +18,7 @@ public class DaoContextHolder implements ApplicationContextAware {
     public DaoContextHolder() {
         synchronized (lock) {
             if ( instance != null ) {
-                throw new IllegalStateException("<Only single instance allowed");
+                return;
             }
 
             instance = this;

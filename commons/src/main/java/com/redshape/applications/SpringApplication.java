@@ -35,6 +35,9 @@ public class SpringApplication extends AbstractApplication {
 	}
 	
 	protected ApplicationContext loadContext( String contextPath ) {
+        /**
+         * @TODO: Add system path normalizing
+         */
         File file = new File(contextPath);
         if (file.exists()) {
             return new FileSystemXmlApplicationContext(contextPath);

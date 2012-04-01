@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import javax.servlet.ServletException;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -129,7 +130,7 @@ public class HttpDispatcher implements IHttpDispatcher {
 
     protected void tryRedirectToView( IHttpRequest request,
                                       IHttpResponse response ) throws ProcessingException {
-        String path = String.format("%s/%s", request.getController(), request.getAction() );
+        String path = String.format("%s" + File.separator + "%s", request.getController(), request.getAction() );
 
         IView view = this.getView(request);
         view.setViewPath( path );
@@ -139,13 +140,13 @@ public class HttpDispatcher implements IHttpDispatcher {
         this.getResourcesLoader().setRootDirectory( this.getFront().getLayout().getBasePath() );
 
         try {
-            String filePath = "views/" + view.getViewPath() + "." + view.getExtension();
+            String filePath = "views" + File.separator + view.getViewPath() + "." + view.getExtension();
             try {
                 this.getResourcesLoader().loadFile( filePath, true );
             } catch ( FileNotFoundException e ) {
                 try {
-                    view.setViewPath( String.format("%s/index", request.getController() ) );
-                    this.getResourcesLoader().loadFile( "views/" + view.getViewPath() + "." + view.getExtension(),
+                    view.setViewPath( String.format("%s" + File.separator + "index", request.getController() ) );
+                    this.getResourcesLoader().loadFile( "views" + File.separator + view.getViewPath() + "." + view.getExtension(),
                                                     true );
                     request.setAction("index");
                 } catch ( FileNotFoundException ex ) {
@@ -243,10 +244,10 @@ public class HttpDispatcher implements IHttpDispatcher {
                 return;
             }
 
-            String viewPath = this.getRegistry().getViewPath(action);
+            String viewPath = Commons.select(this.getRegistry().getViewPath(action), view.getViewPath());
 
-            view.setViewPath( Commons.select( viewPath, controllerName + "/" + actionName ) );
-            action.setView( view );
+            view.setViewPath( viewPath != null ? viewPath.replaceAll("(\\/|\\\\)", "\\" + File.separator ) : controllerName + File.separator + actionName );
+            action.setView(view);
             action.setRequest( request );
             action.setResponse( response );
 
