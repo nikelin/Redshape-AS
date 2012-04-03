@@ -22,6 +22,10 @@ public class StringUtils extends SimpleStringUtils {
     private static final String RANDOM_STRING_SOURCE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final String ESCAPE_SYMBOL = "\\";
 
+    public static final String escapePath( String path ) {
+        return path.replaceAll("(\\/|\\\\)", "\\" + File.separator );
+    }
+
     public final static String prepareClassByPath( String path ) {
         return path.substring(path.lastIndexOf('.')).replaceFirst("[\\.]", "");
     }
