@@ -244,7 +244,7 @@ public class HttpDispatcher implements IHttpDispatcher {
                 return;
             }
 
-            String viewPath = Commons.select(this.getRegistry().getViewPath(action), view.getViewPath());
+            String viewPath = this.getRegistry().getViewPath(action);
 
             view.setViewPath( viewPath != null ? viewPath.replaceAll("(\\/|\\\\)", "\\" + File.separator ) : controllerName + File.separator + actionName );
             log.info( view.getViewPath() );
