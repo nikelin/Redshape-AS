@@ -13,13 +13,45 @@
     <artifactId>net</artifactId>
     <packaging>pom</packaging>
     <name>Redshape - Net</name>
-    <modules>
-        <module>net-parent</module>
-        <module>net-ssh</module>
-        <module>net-tomcat</module>
-        <module>fetchers</module>
-        <module>jmx-utils</module>
-    </modules>
+
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>net-parent</module>
+                <module>jmx-utils</module>
+                <module>fetchers</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>ssh</id>
+            <activation>
+                <property>
+                    <name>netSSH</name>
+                    <value>enabled</value>
+                </property>
+            </activation>
+            <modules>
+                <module>net-ssh</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>tomcat</id>
+            <activation>
+                <property>
+                    <name>netTomcat</name>
+                    <value>enabled</value>
+                </property>
+            </activation>
+            <modules>
+                <module>net-tomcat</module>
+            </modules>
+        </profile>
+
+    </profiles>
 
 
 </project>

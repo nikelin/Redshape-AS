@@ -13,11 +13,55 @@
     <packaging>pom</packaging>
     <name>Redshape - Renderers</name>
 
-    <modules>
-        <module>renderers-base</module>
-        <module>renderers-forms-http</module>
-        <module>renderers-forms-gwt</module>
-        <module>renderers-forms-json</module>
-    </modules>
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>renderers-base</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>http</id>
+            <activation>
+                <property>
+                    <name>renderersFormsHTTP</name>
+                    <value>enabled</value>
+                </property>
+            </activation>
+            <modules>
+                <module>renderers-forms-http</module>
+                <module>renderers-forms-json</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>gwt</id>
+            <activation>
+                <property>
+                    <name>renderersFormsGWT</name>
+                    <value>enabled</value>
+                </property>
+            </activation>
+            <modules>
+                <module>renderers-forms-gwt</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>all</id>
+            <activation>
+                <property>
+                    <name>renderersAll</name>
+                    <value>enabled</value>
+                </property>
+            </activation>
+            <modules>
+                <module>renderers-forms-http</module>
+                <module>renderers-forms-json</module>
+                <module>renderers-forms-gwt</module>
+            </modules>
+        </profile>
+    </profiles>
 
 </project>

@@ -3,6 +3,9 @@ package com.redshape.jobs.sources;
 import com.redshape.jobs.IJob;
 import com.redshape.jobs.JobException;
 import com.redshape.jobs.result.IJobResult;
+import com.redshape.persistence.entities.DtoUtils;
+import com.redshape.persistence.entities.IDTO;
+import com.redshape.persistence.entities.IEntity;
 import com.redshape.utils.Commons;
 import com.redshape.utils.IFilter;
 import com.redshape.utils.events.IEvent;
@@ -21,9 +24,9 @@ import java.util.List;
 public class SourceFilter<T extends IJob> implements  IJobSource<T> {
 
     private IJobSource<T> targetSource;
-    private IFilter<T> filter;
+    private IFilter<Class<? extends T>> filter;
 
-    public SourceFilter( IJobSource<T> targetSource, IFilter<T> filter ) {
+    public SourceFilter( IJobSource<T> targetSource, IFilter<Class<? extends T>> filter ) {
         Commons.checkNotNull(targetSource);
         Commons.checkNotNull(filter);
 
@@ -50,9 +53,15 @@ public class SourceFilter<T extends IJob> implements  IJobSource<T> {
     public List<T> fetch() throws JobException {
         List<T> result = new ArrayList<T>();
         for ( T item : this.targetSource.fetch() ) {
-            if ( this.filter.filter(item) ) {
-                result.add(item);
+            if ( this.filter == null || !this.filter.filter( (Class<T>) item.getClass()) ) {
+                continue;
             }
+
+            if ( item instanceof IDTO) {
+                item = (T) DtoUtils.fromDTO( (IEntity) item);
+            }
+
+            result.add(item);
         }
 
         return result;

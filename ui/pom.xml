@@ -12,12 +12,55 @@
         </repository>
     </repositories>
 
-    <modules>
-        <module>swing</module>
-        <module>gwt</module>
-        <module>ui-parent</module>
-        <module>ui-bindings</module>
-    </modules>
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>ui-parent</module>
+                <module>ui-bindings</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>gwt</id>
+            <activation>
+                <property>
+                    <name>uiGWT</name>
+                    <value>enabled</value>
+                </property>
+            </activation>
+            <modules>
+                <module>gwt</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>swing</id>
+            <activation>
+                <property>
+                    <name>uiSwing</name>
+                    <value>enabled</value>
+                </property>
+            </activation>
+            <modules>
+                <module>swing</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>all</id>
+            <activation>
+                <property>
+                    <name>uiAll</name>
+                    <value>enabled</value>
+                </property>
+            </activation>
+            <modules>
+                <module>swing</module>
+                <module>gwt</module>
+            </modules>
+        </profile>
+    </profiles>
 
     <parent>
         <artifactId>as</artifactId>

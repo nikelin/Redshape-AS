@@ -44,7 +44,7 @@ public final class DtoUtils {
             if ( result != null ) {
                 return (T) result;
             }
-        
+//
             Class<? extends IEntity> entityClazz = dto.getEntityClass();
             if ( entityClazz == null ) {
                 throw new IllegalStateException("<null>");
@@ -158,16 +158,16 @@ public final class DtoUtils {
     
     public static <T extends IDTO, V extends IDtoCapable<T> & IEntity> T toDTO( V entity ) {
         try {
-            if ( cache.get(entity) != null ) {
-                return (T) cache.get(entity);
-            }
+//            if ( cache.get(entity) != null ) {
+//                return (T) cache.get(entity);
+//            }
 
             openSession();
 
             entity = getSessionManager().refresh(entity);
 
             T dto = entity.createDTO();
-            cache.put(entity, dto);
+//            cache.put(entity, dto);
             Commons.checkNotNull(dto);
 
             for ( Property property : PropertyUtils.getInstance().getProperties(entity.getClass()) ) {

@@ -1,11 +1,79 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <modules>
-        <module>jpa</module>
-        <module>hbase</module>
-        <module>persistence-parent</module>
-        <module>jms</module>
-    </modules>
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>persistence-parent</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>persistence-all</id>
+            <activation>
+                <property>
+                    <name>persistenceAll</name>
+                    <value>enabled</value>
+                </property>
+            </activation>
+            <modules>
+                <module>jpa</module>
+                <module>hbase</module>
+                <module>jms</module>
+                <module>gae</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>jpa</id>
+            <activation>
+                <property>
+                    <name>persistenceJPA</name>
+                    <value>enabled</value>
+                </property>
+            </activation>
+            <modules>
+                <module>jpa</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>hbase</id>
+            <activation>
+                <property>
+                    <name>persistenceHbase</name>
+                    <value>enabled</value>
+                </property>
+            </activation>
+            <modules>
+                <module>hbase</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>google-app-engine</id>
+            <activation>
+                <property>
+                    <name>persistenceGAE</name>
+                    <value>enabled</value>
+                </property>
+            </activation>
+            <modules>
+                <module>gae</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>jms</id>
+            <activation>
+                <property>
+                    <name>persistenceJMSBrokering</name>
+                    <value>enabled</value>
+                </property>
+            </activation>
+            <modules>
+                <module>jms</module>
+            </modules>
+        </profile>
+    </profiles>
 
     <parent>
         <groupId>com.redshape</groupId>
@@ -17,6 +85,6 @@
     <artifactId>persistence</artifactId>
     <packaging>pom</packaging>
 
-    <name>Redshape - Persistence Core</name>
+    <name>Redshape - Persistence</name>
 
 </project>

@@ -11,7 +11,7 @@
 
     <groupId>com.redshape.renderers</groupId>
     <artifactId>renderers-forms-json</artifactId>
-    <name>Redshape - Renderers - Forms - GWT</name>
+    <name>Redshape - Renderers - Forms - JSON</name>
 
     <dependencies>
 

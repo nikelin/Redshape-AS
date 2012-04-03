@@ -137,10 +137,7 @@ public class RequestsHandlingService implements IRequestHandlingService {
     protected Message processRequest( Message message ) throws DAOException {
         try {
             Message result = this.session.createObjectMessage();
-            if ( this.isExpired(message) ) {
-                return null;
-            }
-
+            result.setJMSExpiration( MSG_MAX_PROCESSING_TIME );
             result.setJMSDestination( message.getJMSReplyTo() );
 
             IQuery query = this.getProtocol().unmarshalQuery(this.getBuilder(), message);
@@ -182,18 +179,18 @@ public class RequestsHandlingService implements IRequestHandlingService {
         while ( this.isRunning() ) {
             try {
                 Message message = this.consumer.receiveNoWait();
-                if ( message == null ) {
-                    continue;
-                }
-                
-                Destination replyDestination = message.getJMSReplyTo();
-                if ( replyDestination == null ) {
-                    continue;
-                }
-                
-                this.sendRespond( (Queue) replyDestination, this.processRequest( message) );
+                if ( message != null ) {
+                    if ( !this.isExpired(message) ) {
+                        Destination replyDestination = message.getJMSReplyTo();
+                        if ( replyDestination == null ) {
+                            continue;
+                        }
 
-                message.acknowledge();
+                        this.sendRespond( (Queue) replyDestination, this.processRequest( message) );
+                    }
+
+                    message.acknowledge();
+                }
             } catch ( JMSException e ) {
                 log.error( e.getMessage(), e );
             } catch ( DAOException e ) {

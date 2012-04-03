@@ -79,7 +79,16 @@
         	<url>http://oss.sonatype.org/content/repositories/sourceforge-releases/</url>
         	<name>Sonatype SF Releases</name>
         </repository>
-        
+
+        <repository>
+            <id>redshape-central</id>
+            <url>dav:https://repository-redshape-ltd.forge.cloudbees.com/snapshot/</url>
+            <name>Redshape-Central</name>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+
         <repository>
         	<id>ibiblio</id>
         	<url>http://mirrors.ibiblio.org/pub/mirrors/maven2/</url>
@@ -171,9 +180,9 @@
 
     <distributionManagement>
     	<repository>
-    		<id>redshape.central</id>
+    		<id>redshape-central</id>
             <name>Cloudbees Maven Repository</name>
-    		<url>file:///opt/redshape/framework</url>
+    		<url>dav:https://repository-redshape-ltd.forge.cloudbees.com/snapshot/</url>
     	</repository>
     </distributionManagement>
 

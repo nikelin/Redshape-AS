@@ -155,7 +155,7 @@ public class JMSSource extends AbstractEventDispatcher implements IJobSource<IJo
         while ( result.size() <= this.getWorkChunkSize()
                 && failuresCount < this.getMaxFailuresCount() ) {
             try {
-                Message message = this.getConsumer().receive( this.getReceiveTimeout() );
+                Message message = this.getConsumer().receiveNoWait();
                 if ( message == null ) {
                     continue;
                 }
@@ -168,6 +168,10 @@ public class JMSSource extends AbstractEventDispatcher implements IJobSource<IJo
                 }
 
                 message.acknowledge();
+
+                if ( result.size() >= this.getWorkChunkSize() ) {
+                    break;
+                }
             } catch ( JMSException e ) {
                 log.error( e.getMessage(), e );
                 failuresCount++;

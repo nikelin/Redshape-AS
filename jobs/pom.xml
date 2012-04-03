@@ -12,10 +12,50 @@
     <packaging>pom</packaging>
     <name>Redshape - Jobs</name>
 
-    <modules>
-        <module>jobs-jpa</module>
-        <module>jobs-parent</module>
-        <module>jobs-jms</module>
-    </modules>
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>jobs-parent</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>all</id>
+            <activation>
+                <property>
+                    <name>jobsAll</name>
+                    <value>enabled</value>
+                </property>
+            </activation>
+            <modules>
+                <module>jobs-jpa</module>
+                <module>jobs-jms</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>jpa</id>
+            <activation>
+                <property>
+                    <name>jobsJPA</name>
+                    <value>enabled</value>
+                </property>
+            </activation>
+        </profile>
+        <profile>
+            <id>jms</id>
+            <activation>
+                <property>
+                    <name>jobsJMS</name>
+                    <value>enabled</value>
+                </property>
+            </activation>
+            <modules>
+                <module>jms</module>
+            </modules>
+        </profile>
+    </profiles>
 
 </project>
