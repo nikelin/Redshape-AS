@@ -1,5 +1,6 @@
 package com.redshape.servlet.core;
 
+import com.redshape.utils.Commons;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
@@ -299,6 +300,11 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
 
     public String getAction() {
         return this.action;
+    }
+
+    @Override
+    public Object getAttribute( String attribute ) {
+        return Commons.select( super.getAttribute(attribute), this.getSession().getAttribute(attribute) );
     }
 
     @Override

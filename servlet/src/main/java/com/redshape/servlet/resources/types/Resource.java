@@ -1,6 +1,6 @@
 package com.redshape.servlet.resources.types;
 
-import com.redshape.utils.Commons;
+import java.io.Serializable;
 
 /**
  * Created with IntelliJ IDEA.
@@ -9,7 +9,7 @@ import com.redshape.utils.Commons;
  * Time: 5:06 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class Resource {
+public abstract class Resource implements Serializable {
 
     private String href;
 

@@ -30,7 +30,7 @@ public class CompressionWebResourcesWriter implements IWebResourceWriter {
     private String outputPath;
     private String externalPath;
     private IHasher hasher;
-    private IResourcesLoader loader;
+    private transient  IResourcesLoader loader;
     private IWebResourcesCompressor javaScriptCompressor;
     private IWebResourcesCompressor cssCompressor;
 

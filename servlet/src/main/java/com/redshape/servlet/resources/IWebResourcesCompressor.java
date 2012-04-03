@@ -3,6 +3,7 @@ package com.redshape.servlet.resources;
 import com.redshape.servlet.resources.types.Resource;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -12,7 +13,7 @@ import java.util.List;
  * Time: 14:22
  * To change this template use File | Settings | File Templates.
  */
-public interface IWebResourcesCompressor {
+public interface IWebResourcesCompressor extends Serializable {
 
     public boolean isSupported( Resource resource );
 
