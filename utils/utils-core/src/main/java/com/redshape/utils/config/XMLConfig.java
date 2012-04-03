@@ -122,7 +122,7 @@ public class XMLConfig extends AbstractConfig {
             return this.getXmlHelper().parseToXml(this.toDomDocument());
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
-            throw new ConfigException(e.getMessage());
+            throw new ConfigException(e.getMessage(), e );
         }
     }
 

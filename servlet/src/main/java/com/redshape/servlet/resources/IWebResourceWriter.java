@@ -4,6 +4,7 @@ import com.redshape.servlet.resources.types.Link;
 import com.redshape.servlet.resources.types.Script;
 import com.redshape.servlet.resources.types.Style;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ import java.util.List;
  * Time: 14:11
  * To change this template use File | Settings | File Templates.
  */
-public interface IWebResourceWriter {
+public interface IWebResourceWriter extends Serializable {
 
     public String writeScripts( List<Script> scripts );
 

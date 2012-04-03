@@ -4,6 +4,7 @@ import com.redshape.servlet.core.controllers.ProcessingException;
 import com.redshape.servlet.views.render.IViewRenderer;
 import com.redshape.servlet.views.render.RenderException;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -13,7 +14,7 @@ import java.util.Map;
  * Time: 12:32 AM
  * To change this template use File | Settings | File Templates.
  */
-public interface IView {
+public interface IView extends Serializable {
 
     public void setException( ProcessingException e );
 

@@ -134,8 +134,8 @@ public class HttpDispatcher implements IHttpDispatcher {
 
         IView view = this.getView(request);
         view.setViewPath( path );
-        request.setAttribute("view", view );
-        request.setAttribute("layout", this.getFront().getLayout() );
+        request.getSession().setAttribute("view", view );
+        request.getSession().setAttribute("layout", this.getFront().getLayout() );
 
         this.getResourcesLoader().setRootDirectory( this.getFront().getLayout().getBasePath() );
 
@@ -247,6 +247,7 @@ public class HttpDispatcher implements IHttpDispatcher {
             String viewPath = Commons.select(this.getRegistry().getViewPath(action), view.getViewPath());
 
             view.setViewPath( viewPath != null ? viewPath.replaceAll("(\\/|\\\\)", "\\" + File.separator ) : controllerName + File.separator + actionName );
+            log.info( view.getViewPath() );
             action.setView(view);
             action.setRequest( request );
             action.setResponse( response );
@@ -272,8 +273,8 @@ public class HttpDispatcher implements IHttpDispatcher {
             	return;
             }
 
-            request.setAttribute("layout", this.getFront().getLayout() );
-            request.setAttribute("view", view );
+            request.getSession().setAttribute("layout", this.getFront().getLayout() );
+            request.getSession().setAttribute("view", view );
 
             this.redirectToView( view, request, response);
         } catch ( ProcessingException e ) {

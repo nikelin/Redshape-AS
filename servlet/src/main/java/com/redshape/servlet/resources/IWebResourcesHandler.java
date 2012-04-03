@@ -1,5 +1,7 @@
 package com.redshape.servlet.resources;
 
+import java.io.Serializable;
+
 /**
  * Created by IntelliJ IDEA.
  * User: nikelin
@@ -7,7 +9,7 @@ package com.redshape.servlet.resources;
  * Time: 14:02
  * To change this template use File | Settings | File Templates.
  */
-public interface IWebResourcesHandler {
+public interface IWebResourcesHandler extends Serializable {
 
 	public void clear();
 
