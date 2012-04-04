@@ -11,12 +11,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
-* Created by IntelliJ IDEA.
-* User: nikelin
-* Date: Jan 22, 2010
-* Time: 10:23:11 AM
-* To change this template use File | Settings | File Templates.
-*/
+ * Created by IntelliJ IDEA.
+ * User: nikelin
+ * Date: Jan 22, 2010
+ * Time: 10:23:11 AM
+ * To change this template use File | Settings | File Templates.
+ */
 public class ResourcesLoader implements IResourcesLoader {
     private final static Logger log = Logger.getLogger( ResourcesLoader.class );
     private String rootDirectory;
@@ -33,14 +33,20 @@ public class ResourcesLoader implements IResourcesLoader {
     }
 
     public ResourcesLoader( String rootDirectory, Collection<String> searchPath ) {
-        this.rootDirectory = rootDirectory;
+        this.rootDirectory = StringUtils.escapePath(rootDirectory);
 
-        this.searchPath.addAll( Arrays.asList( System.getProperty("java.class.path").split(":") ) );
-        this.searchPath.addAll( searchPath );
+        this.setSearchPath( System.getProperty("java.class.path").split(File.pathSeparator) );
+        this.setSearchPath( searchPath );
+    }
+
+    public void setSearchPath( String[] paths ) {
+        for ( String path : paths ) {
+            this.addSearchPath(path);
+        }
     }
 
     public void setSearchPath( Collection<String> paths ) {
-        this.searchPath = paths;
+        this.setSearchPath( paths.toArray(new String[paths.size()]) );
     }
 
     public Collection<String> getSearchPath() {
@@ -65,12 +71,12 @@ public class ResourcesLoader implements IResourcesLoader {
     }
 
     public File loadFile( String path, boolean searchPath ) throws IOException {
-        File file = new File(path);
+        File file = new File( StringUtils.escapePath(path) );
         if ( file.exists() ) {
             return file;
         }
 
-        file = new File( rootDirectory + "/" + path);
+        file = new File( rootDirectory + File.separator + StringUtils.escapePath(path) );
         if ( searchPath && !file.exists() ) {
             file = this.find(path);
         }
@@ -113,32 +119,34 @@ public class ResourcesLoader implements IResourcesLoader {
 
     public InputStream loadResource( String path ) throws IOException {
         try {
-			InputStream stream = this.getClass().getResourceAsStream(path);
-			if ( stream == null ) {
-            	stream = new FileInputStream(this.loadFile(path));
-			}
+            InputStream stream = this.getClass().getResourceAsStream( StringUtils.escapePath(path) );
+            if ( stream == null ) {
+                stream = new FileInputStream(this.loadFile(path));
+            }
 
-			return stream;
+            return stream;
         } catch ( IOException e ) {
-            return this.getClass().getClassLoader().getResourceAsStream(path);
+            return this.getClass().getClassLoader().getResourceAsStream( StringUtils.escapePath(path) );
         }
     }
 
     /**
-* @TODO загрузка из JAR-classpath элемента
-* @param path
-* @return
-* @throws FileNotFoundException
-*/
+     * @TODO загрузка из JAR-classpath элемента
+     * @param path
+     * @return
+     * @throws FileNotFoundException
+     */
     protected File find( String path ) throws FileNotFoundException {
         File candidateFile = null;
+
+        path = StringUtils.escapePath(path);
 
         for( String pathPart : this.getSearchPath() ) {
             candidateFile = new File( pathPart + File.separator + path );
             if ( !candidateFile.exists() || !candidateFile.canRead() ) {
                 candidateFile = null;
             } else {
-            	log.info("Found: " + path + "; on " + pathPart );
+                log.info("Found: " + path + "; on " + pathPart );
                 break;
             }
         }
@@ -161,8 +169,8 @@ public class ResourcesLoader implements IResourcesLoader {
         return targetEntries.toArray( new String[targetEntries.size()] );
     }
 
-	@Override
-	public void addSearchPath(String searchPath) {
-		this.searchPath.add(searchPath);
-	}
+    @Override
+    public void addSearchPath(String searchPath) {
+        this.searchPath.add( StringUtils.escapePath(searchPath) );
+    }
 }

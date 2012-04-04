@@ -15,6 +15,7 @@ import com.redshape.servlet.dispatchers.interceptors.IDispatcherInterceptor;
 import com.redshape.servlet.views.*;
 import com.redshape.utils.Commons;
 import com.redshape.utils.ResourcesLoader;
+import com.redshape.utils.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -246,7 +247,7 @@ public class HttpDispatcher implements IHttpDispatcher {
 
             String viewPath = this.getRegistry().getViewPath(action);
 
-            view.setViewPath( viewPath != null ? viewPath.replaceAll("(\\/|\\\\)", "\\" + File.separator ) : controllerName + File.separator + actionName );
+            view.setViewPath( viewPath != null ? StringUtils.escapePath(viewPath) : controllerName + File.separator + actionName );
             log.info( view.getViewPath() );
             action.setView(view);
             action.setRequest( request );
