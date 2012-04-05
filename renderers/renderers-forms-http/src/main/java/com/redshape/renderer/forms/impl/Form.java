@@ -8,8 +8,6 @@ import com.redshape.renderer.forms.decorators.ErrorsDecorator;
  * @date 2/15/12 {6:55 PM}
  */
 public class Form extends com.redshape.form.impl.Form {
-    public static final String POST = "POST";
-    public static final String GET = "GET";
     
     public Form() {
         this(null);

@@ -58,17 +58,17 @@ public interface IQueryBuilder {
 
     public IStatement reference(String value);
 
-    public IQuery query(Class<? extends IEntity> clazz);
+    public <T extends IEntity>  com.redshape.persistence.dao.query.IQuery<T> query(Class<T> clazz);
 
-    public IQuery nativeQuery( String name );
+    public <T extends IEntity>  com.redshape.persistence.dao.query.IQuery<T> nativeQuery( String name );
 
-    public IQuery staticQuery( Class<? extends IEntity> clazz );
+    public <T extends IEntity>  com.redshape.persistence.dao.query.IQuery<T> staticQuery( Class<T> clazz );
     
-    public IQuery updateQuery( Class<? extends IEntity> clazz );
+    public <T extends IEntity>  com.redshape.persistence.dao.query.IQuery<T> updateQuery( Class<T> clazz );
     
-    public IQuery removeQuery( Class<? extends IEntity> clazz );
+    public <T extends IEntity>  com.redshape.persistence.dao.query.IQuery<T> removeQuery( Class<T> clazz );
     
-    public IQuery countQuery( Class<? extends IEntity> clazz );
+    public <T extends IEntity> com.redshape.persistence.dao.query.IQuery<T> countQuery( Class<T> clazz );
 
 }
 

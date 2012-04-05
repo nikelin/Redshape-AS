@@ -99,32 +99,32 @@ public class StandardQueryBuilder implements IQueryBuilder {
     }
 
     @Override
-    public IQuery query( Class<? extends IEntity> clazz ) {
+    public <T extends IEntity> IQuery<T> query( Class<T> clazz ) {
         return Query.createSelect(clazz);
     }
 
     @Override
-    public IQuery countQuery(Class<? extends IEntity> clazz) {
+    public <T extends IEntity> IQuery<T> countQuery(Class<T> clazz) {
         return Query.createCountQuery(clazz);
     }
 
     @Override
-    public IQuery removeQuery(Class<? extends IEntity> clazz) {
+    public <T extends IEntity> IQuery<T> removeQuery(Class<T> clazz) {
         return Query.createRemove(clazz);
     }
 
     @Override
-    public IQuery staticQuery(Class<? extends IEntity> clazz) {
+    public <T extends IEntity> IQuery<T> staticQuery(Class<T> clazz) {
         return Query.createStatic(clazz);
     }
 
     @Override
-    public IQuery nativeQuery(String name) {
+    public <T extends IEntity> IQuery<T> nativeQuery(String name) {
         return Query.createNative(name);
     }
 
     @Override
-    public IQuery updateQuery(Class<? extends IEntity> clazz) {
+    public <T extends IEntity> IQuery<T> updateQuery(Class<T> clazz) {
         return Query.createUpdate(clazz);
     }
 

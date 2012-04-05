@@ -2,6 +2,7 @@ package com.redshape.utils;
 
 import java.util.HashMap;
 import java.util.Map;
+import com.redshape.utils.Commons;
 
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
@@ -10,13 +11,12 @@ import java.util.Map;
  */
 public final class EnumCommons {
 
-
-    public static Map<String, Integer> map( Class<? extends Enum> enumClazz ) {
+    public static Map<String, String> map( Class<? extends IEnum> enumClazz ) {
         try {
-            Map<String, Integer> result = new HashMap<String, Integer>();
-            Enum[] enumValues = (Enum[]) enumClazz.getMethod("values").invoke(null);
-            for ( Enum enumValue : enumValues ) {
-                result.put( enumValue.name(), enumValue.ordinal() );
+            Map<String, String> result = new HashMap<String, String>();
+            IEnum[] enumValues = (IEnum[]) enumClazz.getMethod("values").invoke(null);
+            for ( IEnum enumValue : enumValues ) {
+                result.put( enumValue.name(), enumValue.toString() );
             }
 
             return result;

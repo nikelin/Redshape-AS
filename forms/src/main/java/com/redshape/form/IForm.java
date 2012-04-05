@@ -18,7 +18,7 @@ public interface IForm extends IFormItem {
 
     public void addProcessHandler( IFormProcessHandler<?> handler );
 
-    public void process( IUserRequest request ) throws InvalidDataException;
+    public void process( IUserRequest request );
 
     public void setLegend( String legend );
 

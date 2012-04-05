@@ -101,7 +101,7 @@ public class JMSExecutorsService implements IQueryExecutorService {
     }
     
     @Override
-    public <T extends IEntity> IExecutorResult<T> execute(IQuery query) throws DAOException {
+    public <T extends IEntity> IExecutorResult<T> execute(IQuery<T> query) throws DAOException {
         try {
             synchronized (this.sendingLock) {
                 this.session.run();

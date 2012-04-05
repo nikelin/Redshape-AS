@@ -30,8 +30,8 @@ import java.util.*;
  * @package com.redshape.persistence.dao.query
  * @date 1/24/12 {5:30 PM}
  */
-public class HBaseQueryExecutorService implements IQueryExecutorService { 
-    
+public class HBaseQueryExecutorService implements IQueryExecutorService {
+
     public static final String COLUMNS_FAMILY_ID = "columns_family_id";
     public static final String SERIALIZED_OBJECT_FIELD_ID = "serialized_object_data";
 
@@ -54,7 +54,7 @@ public class HBaseQueryExecutorService implements IQueryExecutorService {
                                       ISerializer entitiesSerializer,
                                       ISerializer fieldsSerializer,
                                       IIndexBuilder indexBuilder )
-        throws SerializationException {
+            throws SerializationException {
         this(null, tablesManager, countingManager, entitiesSerializer, fieldsSerializer, indexBuilder );
     }
 
@@ -144,7 +144,7 @@ public class HBaseQueryExecutorService implements IQueryExecutorService {
     }
 
     @Override
-    public <T extends IEntity> IExecutorResult<T> execute(IQuery query) throws DAOException {
+    public <T extends IEntity> IExecutorResult<T> execute(IQuery<T> query) throws DAOException {
         try {
             int offset = query.getOffset() > 0 ? query.getOffset() : -1;
             int limit = query.getLimit() > 0 ? query.getLimit() : -1;
@@ -173,7 +173,7 @@ public class HBaseQueryExecutorService implements IQueryExecutorService {
         }
     }
 
-    protected <T extends IEntity> T executeSave(IQuery query) throws DAOException {
+    protected <T extends IEntity> T executeSave(IQuery<T> query) throws DAOException {
         this.executeSave( query, Arrays.asList( ( T[] ) new IEntity[] { query.entity() } ) );
         return (T) query.entity();
     }
@@ -184,7 +184,7 @@ public class HBaseQueryExecutorService implements IQueryExecutorService {
         }
     }
 
-    private void executeSave( IQuery query, IEntity entity, boolean createMode ) throws DAOException {
+    private <T extends IEntity> void executeSave( IQuery<T> query, T entity, boolean createMode ) throws DAOException {
         try {
             if ( createMode ) {
                 if (this.findById(entity.getClass(), entity.getId()) == null) {
@@ -193,7 +193,7 @@ public class HBaseQueryExecutorService implements IQueryExecutorService {
             }
 
             this.getTable(entity.getClass())
-                .put(this.getPut(entity));
+                    .put(this.getPut(entity));
         } catch ( Throwable e) {
             throw new DAOException(e.getMessage(), e);
         }
@@ -210,8 +210,8 @@ public class HBaseQueryExecutorService implements IQueryExecutorService {
 
 
             byte[] value = result.getValue(
-                this.getColumnsFamily(),
-                this.getSerializedObjectFieldId()
+                    this.getColumnsFamily(),
+                    this.getSerializedObjectFieldId()
             );
 
             return this.getEntitySerializer().deserealize(value, entityClass);
@@ -222,7 +222,7 @@ public class HBaseQueryExecutorService implements IQueryExecutorService {
         }
     }
 
-    protected <T extends IEntity> T executeUpdate(IQuery query) throws DAOException {
+    protected <T extends IEntity> T executeUpdate(IQuery<T> query) throws DAOException {
         T result = null;
         if ( query.isRemove() ) {
             if ( query.entity() != null ) {
@@ -237,7 +237,7 @@ public class HBaseQueryExecutorService implements IQueryExecutorService {
         return result;
     }
 
-    protected <T extends IEntity> T executeRemoveAll( IQuery query ) throws DAOException {
+    protected <T extends IEntity> T executeRemoveAll( IQuery<T> query ) throws DAOException {
         HTable table = this.getTablesManager().forEntity(query.getEntityClass());
         this.getTablesManager().disable( table );
         this.getTablesManager().delete( table );
@@ -248,7 +248,7 @@ public class HBaseQueryExecutorService implements IQueryExecutorService {
         return null;
     }
 
-    protected <T extends IEntity> T executeRemove( IQuery query ) throws DAOException {
+    protected <T extends IEntity> T executeRemove( IQuery<T> query ) throws DAOException {
         T entity = (T) query.entity();
         if ( entity == null ) {
             throw new IllegalArgumentException("<null>");
@@ -271,17 +271,17 @@ public class HBaseQueryExecutorService implements IQueryExecutorService {
         return entity;
     }
 
-    protected boolean isUpdateQuery( IQuery query ) {
+    protected <T extends IEntity> boolean isUpdateQuery( IQuery<T> query ) {
         return query.isCreate() || query.isUpdate()
                 || query.isRemove();
     }
 
     protected <T extends IEntity> IExecutorResult<T> executeNamedQuery(
-                                                            Class<? extends IEntity> entityClazz,
-                                                             String queryName,
-                                                             Map<String, Object> params,
-                                                             int offset,
-                                                             int limit )
+            Class<? extends T> entityClazz,
+            String queryName,
+            Map<String, Object> params,
+            int offset,
+            int limit )
             throws DAOException {
         IQueryHolder queryHolder = this.getQueryHolder(entityClazz);
         if ( queryHolder == null ) {
@@ -305,7 +305,7 @@ public class HBaseQueryExecutorService implements IQueryExecutorService {
         }
     }
 
-    protected Long processPrimaryKey(IEntity entity) throws DAOException, SerializationException {
+    protected <T extends IEntity> Long processPrimaryKey(T entity) throws DAOException, SerializationException {
         try {
             PrimaryKey annotation = entity.getClass().getAnnotation(PrimaryKey.class);
             if (annotation != null) {
@@ -461,7 +461,7 @@ public class HBaseQueryExecutorService implements IQueryExecutorService {
         return this.executeFilter( query.getEntityClass(), filter, offset, limit);
     }
 
-    protected IQueryHolder getQueryHolder( Class<? extends IEntity> entityClazz ) throws DAOException {
+    protected <T> IQueryHolder getQueryHolder( Class<? extends T> entityClazz ) throws DAOException {
         QueryHolder holderMeta = entityClazz.getAnnotation(QueryHolder.class);
         if ( holderMeta == null ) {
             return null;

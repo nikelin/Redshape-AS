@@ -7,6 +7,7 @@ import com.redshape.persistence.dao.query.executors.result.IExecutorResult;
 import com.redshape.persistence.dao.query.executors.result.IExecutorResultFactory;
 import com.redshape.persistence.dao.query.executors.services.IQueryExecutorService;
 import com.redshape.persistence.entities.DtoUtils;
+import com.redshape.persistence.entities.IEntity;
 import com.redshape.persistence.jms.protocol.IQueryMarshaller;
 import com.redshape.persistence.jms.protocol.ProtocolException;
 import com.redshape.utils.Constants;
@@ -98,6 +99,7 @@ public class RequestsHandlingService implements IRequestHandlingService {
     protected void init() throws DAOException {
         try {
             this.connection.start();
+
             this.session = this.getConnection().createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
             if ( this.session == null ) {
                 throw new DAOException("Session initialization failed");
@@ -134,15 +136,15 @@ public class RequestsHandlingService implements IRequestHandlingService {
         return new Date().getTime() >  message.getJMSTimestamp() + MSG_MAX_PROCESSING_TIME;
     }
 
-    protected Message processRequest( Message message ) throws DAOException {
+    protected <T extends IEntity> Message processRequest( Message message ) throws DAOException {
         try {
             Message result = this.session.createObjectMessage();
             result.setJMSExpiration( MSG_MAX_PROCESSING_TIME );
             result.setJMSDestination( message.getJMSReplyTo() );
 
-            IQuery query = this.getProtocol().unmarshalQuery(this.getBuilder(), message);
+            IQuery<T> query = this.getProtocol().unmarshalQuery(this.getBuilder(), message);
             if ( query.entity() != null ) {
-                query.entity( DtoUtils.fromDTO(query.entity()) );
+                query.entity( DtoUtils.<T>fromDTO(query.entity()) );
             }
 
             IExecutorResult execResult = this.getExecutionService().execute(query);

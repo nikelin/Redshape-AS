@@ -10,7 +10,7 @@ import java.util.*;
  * @author Cyril A. Karpenko <self@nikelin.ru>
  * @author Surovtsev [cwiz] Sergey <cyber.wizard@gmail.com>
  */
-class Query implements IQuery {
+class Query<Z> implements IQuery<Z> {
     public enum Type {
         SELECT,
         UPDATE,
@@ -22,8 +22,8 @@ class Query implements IQuery {
 
     private IStatement orderField;
     private OrderDirection orderDirection;
-    
-    private IEntity entity;
+
+    private Z entity;
     private IExpression expression;
     private String name;
     private List<IAliasStatement> aliasStatements = new ArrayList<IAliasStatement>();
@@ -34,21 +34,21 @@ class Query implements IQuery {
     private int offset = -1;
     private Type type;
     private int limit = -1;
-    private Class<? extends IEntity> entityClass;
+    private Class<Z> entityClass;
 
     protected Query( Type type, String name ) {
         super();
         this.type = type;
         this.name = name;
     }
-    
-    protected Query( Type type, Class<? extends IEntity> entityClass ) {
+
+    protected Query( Type type, Class<? extends Z> entityClass ) {
         super();
         this.type = type;
-        this.entityClass = entityClass;
+        this.entityClass = (Class<Z>) entityClass;
     }
-    
-    protected Query(Query query) {
+
+    protected Query(Query<Z> query) {
         super();
 
         this.type = query.type;
@@ -80,13 +80,13 @@ class Query implements IQuery {
     }
 
     @Override
-    public IQuery join(IJoinStatement.JoinEntityType entityType, IJoinStatement.JoinType joinType, String name) {
+    public IQuery<Z> join(IJoinStatement.JoinEntityType entityType, IJoinStatement.JoinType joinType, String name) {
         return this.join(entityType, joinType, name, null);
     }
 
     @Override
-    public IQuery join(IJoinStatement.JoinEntityType entityType, IJoinStatement.JoinType joinType, String name,
-                       String alias) {
+    public IQuery<Z> join(IJoinStatement.JoinEntityType entityType, IJoinStatement.JoinType joinType, String name,
+                          String alias) {
         if ( alias != null ) {
             this.aliasStatements.add( new AliasStatement(new ScalarStatement(name), alias, false) );
         }
@@ -95,13 +95,13 @@ class Query implements IQuery {
         return this;
     }
 
-    public IQuery where( IExpression expression ) {
+    public IQuery<Z> where( IExpression expression ) {
         this.expression = expression;
         return this;
     }
 
     @Override
-    public IQuery setOffset( int offset ) {
+    public IQuery<Z> setOffset( int offset ) {
         this.offset = offset;
         return this;
     }
@@ -117,7 +117,7 @@ class Query implements IQuery {
     }
 
     @Override
-    public IQuery setLimit( int limit ) {
+    public IQuery<Z> setLimit( int limit ) {
         this.limit = limit;
         return this;
     }
@@ -128,7 +128,7 @@ class Query implements IQuery {
     }
 
     @SuppressWarnings("unchecked")
-	@Override
+    @Override
     public <T extends IExpression> T getExpression() {
         return (T) this.expression;
     }
@@ -144,19 +144,19 @@ class Query implements IQuery {
     }
 
     @Override
-    public IQuery setAttribute(String key, Object value) {
+    public IQuery<Z> setAttribute(String key, Object value) {
         this.attributes.put(key, value);
         return this;
     }
 
     @SuppressWarnings("unchecked")
-	@Override
+    @Override
     public <T> Map<String, T> getAttributes() {
-    	return (Map<String, T>) this.attributes;
+        return (Map<String, T>) this.attributes;
     }
 
     @SuppressWarnings("unchecked")
-	@Override
+    @Override
     public <T> T getAttribute(String name) throws QueryExecutorException {
         if ( !this.attributes.containsKey(name)) {
             throw new QueryExecutorException("No such attribute: " + name);
@@ -166,30 +166,30 @@ class Query implements IQuery {
     }
 
     @SuppressWarnings("unchecked")
-	@Override
-    public <T extends IEntity> Class<T> getEntityClass() {
-        return (Class<T>) this.entityClass;
+    @Override
+    public Class<Z> getEntityClass() {
+        return (Class<Z>) this.entityClass;
     }
 
     @Override
     public List<IStatement> select() {
         return this.fields;
     }
-    
+
     @Override
-    public IQuery select(IStatement... statements) {
+    public IQuery<Z> select(IStatement... statements) {
         this.fields.clear();
         this.fields.addAll( Arrays.asList(statements) );
         return this;
     }
 
     @Override
-    public IQuery orderBy(IStatement field, OrderDirection direction ) {
+    public IQuery<Z> orderBy(IStatement field, OrderDirection direction ) {
         this.orderField = field;
         this.orderDirection = direction;
         return this;
     }
-    
+
     @Override
     public OrderDirection orderDirection() {
         return this.orderDirection;
@@ -206,7 +206,7 @@ class Query implements IQuery {
     }
 
     @Override
-    public IQuery groupBy(IStatement... statements) {
+    public IQuery<Z> groupBy(IStatement... statements) {
         this.groupByFields.clear();
         this.groupByFields.addAll(Arrays.asList(statements));
         return this;
@@ -226,7 +226,7 @@ class Query implements IQuery {
     public boolean isCreate() {
         return this.type.equals( Type.CREATE );
     }
-    
+
     @Override
     public boolean isNative() {
         return this.type.equals( Type.SELECT ) && this.type.name() != null
@@ -239,48 +239,48 @@ class Query implements IQuery {
     }
 
     @Override
-    public IQuery setAttributes(Map<String, Object> attributes) {
+    public IQuery<Z>  setAttributes(Map<String, Object> attributes) {
         this.attributes = new HashMap<String, Object>( attributes );
         return this;
     }
 
     @Override
-    public IEntity entity() {
+    public Z entity() {
         return this.entity;
     }
 
     @Override
-    public IQuery entity(IEntity entity) {
+    public IQuery<Z> entity(Z entity) {
         this.entity = entity;
         return this;
     }
 
     @Override
-    public IQuery duplicate() {
+    public IQuery<Z> duplicate() {
         return new Query(this);
     }
 
-    public static IQuery createStatic( Class<? extends IEntity> type ) {
+    public static <Z> IQuery<Z> createStatic( Class<? extends Z> type ) {
         return new Query(Type.STATIC, type);
     }
-    
-    public static IQuery createUpdate( Class<? extends IEntity> type ) {
+
+    public static <Z> IQuery<Z> createUpdate( Class<? extends Z> type ) {
         return new Query(Type.UPDATE, type);
     }
-    
-    public static IQuery createRemove( Class<? extends IEntity> type ) {
+
+    public static <Z> IQuery<Z>  createRemove( Class<? extends Z> type ) {
         return new Query(Type.REMOVE, type);
     }
-    
-    public static IQuery createSelect( Class<? extends IEntity> type ) {
+
+    public static <Z> IQuery<Z>  createSelect( Class<? extends Z> type ) {
         return new Query(Type.SELECT, type);
     }
-    
-    public static IQuery createNative( String name ) {
+
+    public static <Z> IQuery<Z>  createNative( String name ) {
         return new Query(Type.SELECT, name);
     }
-    
-    public static IQuery createCountQuery( Class<? extends IEntity> type ) {
+
+    public static <Z> IQuery<Z> createCountQuery( Class<? extends Z> type ) {
         return new Query(Type.COUNT, type );
     }
 }

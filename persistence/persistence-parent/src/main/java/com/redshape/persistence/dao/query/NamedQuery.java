@@ -12,12 +12,12 @@ import java.util.Map;
 /**
  * @author nikelin
  */
-public class NamedQuery implements IQuery {
+public class NamedQuery<T> implements IQuery<T> {
 
-    private IQuery query;
+    private IQuery<T> query;
     private String name;
 
-    public NamedQuery( IQuery query, String name ) {
+    public NamedQuery( IQuery<T> query, String name ) {
         this.query = query;
         this.name = name;
     }
@@ -38,24 +38,24 @@ public class NamedQuery implements IQuery {
     }
 
     @Override
-    public IQuery join(IJoinStatement.JoinEntityType entityType, IJoinStatement.JoinType joinType, String name) {
+    public IQuery<T> join(IJoinStatement.JoinEntityType entityType, IJoinStatement.JoinType joinType, String name) {
         return query.join(entityType, joinType, name);
     }
 
     @Override
-    public IQuery join(IJoinStatement.JoinEntityType entityType, IJoinStatement.JoinType joinType, String name,
+    public IQuery<T> join(IJoinStatement.JoinEntityType entityType, IJoinStatement.JoinType joinType, String name,
                        String alias ) {
         return query.join(entityType, joinType, name, alias );
     }
 
     @Override
-    public IQuery where( IExpression expression ) {
+    public IQuery<T> where( IExpression expression ) {
         return this.query.where(expression);
     }
 
     @SuppressWarnings("unchecked")
 	@Override
-    public <T extends IEntity> Class<T> getEntityClass() {
+    public Class<T> getEntityClass() {
         return (Class<T>) this.query.getEntityClass();
     }
 
@@ -100,7 +100,7 @@ public class NamedQuery implements IQuery {
     }
 
     @Override
-    public IQuery setOffset( int offset ) {
+    public IQuery<T> setOffset( int offset ) {
         this.query.setOffset(offset);
         return this;
     }
@@ -111,13 +111,13 @@ public class NamedQuery implements IQuery {
     }
 
     @Override
-    public IQuery setLimit( int limit ) {
+    public IQuery<T> setLimit( int limit ) {
         this.query.setLimit(limit);
         return this;
     }
 
     @Override
-    public IQuery setAttributes(Map<String, Object> attributes) {
+    public IQuery<T> setAttributes(Map<String, Object> attributes) {
         this.query.setAttributes(attributes);
         return this;
     }
@@ -128,7 +128,7 @@ public class NamedQuery implements IQuery {
     }
 
     @Override
-    public IQuery select(IStatement... statements) {
+    public IQuery<T> select(IStatement... statements) {
         this.query.select(statements);
         return this;
     }
@@ -144,7 +144,7 @@ public class NamedQuery implements IQuery {
     }
 
     @Override
-    public IQuery orderBy(IStatement field, OrderDirection direction) {
+    public IQuery<T> orderBy(IStatement field, OrderDirection direction) {
         this.query.orderBy(field, direction);
         return this;
     }
@@ -155,17 +155,17 @@ public class NamedQuery implements IQuery {
     }
 
     @Override
-    public IQuery groupBy(IStatement... statements) {
+    public IQuery<T> groupBy(IStatement... statements) {
         return this.query.groupBy(statements);
     }
 
     @Override
-    public IEntity entity() {
+    public T entity() {
         return this.query.entity();
     }
 
     @Override
-    public IQuery entity(IEntity entity) {
+    public IQuery<T> entity(T entity) {
         this.query.entity(entity);
         return this;
     }
@@ -176,7 +176,7 @@ public class NamedQuery implements IQuery {
     }
 
     @Override
-    public IQuery duplicate() {
+    public IQuery<T> duplicate() {
         return this.query.duplicate();
     }
 

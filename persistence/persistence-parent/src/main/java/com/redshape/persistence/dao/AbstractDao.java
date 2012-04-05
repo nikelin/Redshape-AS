@@ -22,17 +22,17 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
     protected class ExecutorRequest<Z extends IEntity> implements IExecutionRequest<Z> {
         private int offset;
         private int limit;
-        
+
         private IQueryExecutorService service;
         private IQuery query;
-        
-        public ExecutorRequest( IQueryExecutorService service, IQuery query ) {
+
+        public ExecutorRequest( IQueryExecutorService service, IQuery<Z> query ) {
             this.service = service;
             this.query = query;
         }
 
         @Override
-        public IQuery query() throws DAOException {
+        public IQuery<Z> query() throws DAOException {
             return this.query;
         }
 
@@ -40,7 +40,7 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
             query.setOffset( query.getOffset() > 0 ? query().getOffset() : this.offset() );
             query.setLimit( query.getLimit() > 0 ? query().getLimit() : this.limit() );
 
-            return (List<Z>) AbstractDao.this.service.execute(query).getResultsList();
+            return AbstractDao.this.service.<Z>execute(query).getResultsList();
         }
 
         protected int offset() {
@@ -83,10 +83,10 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
 
     private IQueryExecutorService service;
 
-    protected Class<? extends T> entityClass;
+    protected Class<T> entityClass;
 
     protected AbstractDao(Class<? extends T> entityClass, IQueryExecutorService executor, IQueryBuilder builder) {
-        this.entityClass = entityClass;
+        this.entityClass = (Class<T>) entityClass;
         this.service = executor;
         this.builder = builder;
         this.checkFields();
@@ -107,7 +107,7 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
     }
 
     @Override
-    public Class<? extends T> getEntityClass() {
+    public Class<T> getEntityClass() {
         return this.entityClass;
     }
 
@@ -119,7 +119,7 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
         return builder;
     }
 
-    protected IExecutionRequest<T> execute( final IQuery query ) throws DAOException {
+    protected IExecutionRequest<T> execute( final IQuery<T> query ) throws DAOException {
         return new ExecutorRequest<T>(this.service, query);
     }
 
@@ -127,10 +127,9 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
     public T save(T object) throws DAOException {
         return this.service.<T>execute(
                 this.getBuilder()
-                        .updateQuery(this.getEntityClass())
+                        .<T>updateQuery(this.getEntityClass())
                         .entity(object)
-        )
-                .getSingleResult();
+        ).getSingleResult();
     }
 
     @Override
@@ -147,8 +146,8 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
 
     @Override
     public void remove(T object) throws DAOException {
-        this.service.execute(
-                this.getBuilder().removeQuery(this.getEntityClass())
+        this.service.<T>execute(
+                this.getBuilder().<T>removeQuery(this.getEntityClass())
                         .where(
                                 this.getBuilder().equals(
                                         this.getBuilder().reference("id"),
@@ -160,8 +159,8 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
 
     @Override
     public void remove(Collection<T> object) throws DAOException {
-        this.service.execute(
-                this.getBuilder().removeQuery(this.getEntityClass())
+        this.service.<T>execute(
+                this.getBuilder().<T>removeQuery(this.getEntityClass())
                         .where(
                                 this.getBuilder().in(
                                         this.getBuilder().reference("id"),
@@ -184,19 +183,19 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
 
     @Override
     public Long count() throws DAOException {
-        return Long.valueOf(
-            this.service.execute(
+        IExecutionRequest request = (IExecutionRequest) this.service.execute(
                 this.getBuilder()
                         .countQuery( this.getEntityClass() )
-            ).<Integer>getSingleValue()
         );
+
+        return (Long) request.resultValue();
     }
 
 
 
     @Override
     public T findById(Long id) throws DAOException {
-        IQuery query = this.getBuilder().query(AbstractDao.this.getEntityClass());
+        IQuery<T> query = this.getBuilder().<T>query(AbstractDao.this.getEntityClass());
         query.where(
                 this.getBuilder().equals(
                         this.getBuilder().reference("id"),
@@ -211,8 +210,8 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
     @Override
     public IExecutionRequest<T> findAll() throws DAOException {
         return new ExecutorRequest<T>(
-            this.getService(),
-            this.getBuilder().query(this.getEntityClass())
+                this.getService(),
+                this.getBuilder().query(this.getEntityClass())
         );
     }
 }

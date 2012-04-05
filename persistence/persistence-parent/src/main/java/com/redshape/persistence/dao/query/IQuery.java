@@ -15,7 +15,7 @@ import java.util.Map;
  *
  * @author Cyril A. Karpenko <self@nikelin.ru>
  */
-public interface IQuery extends Serializable {
+public interface IQuery<Z> extends Serializable {
 
     public boolean hasAttribute( String name );
 
@@ -23,7 +23,7 @@ public interface IQuery extends Serializable {
 
     public String getName();
 
-    public IQuery setAttribute(String name, Object value);
+    public IQuery<Z> setAttribute(String name, Object value);
 
     public <T> T getAttribute(String name) throws QueryExecutorException;
     
@@ -52,7 +52,7 @@ public interface IQuery extends Serializable {
      * @param offset
      * @return
      */
-    public IQuery setOffset( int offset );
+    public IQuery<Z> setOffset( int offset );
 
     /**
      * Returns value of maximum results size
@@ -75,9 +75,9 @@ public interface IQuery extends Serializable {
      * @param name
      * @return
      */
-    public IQuery join( IJoinStatement.JoinEntityType entityType, IJoinStatement.JoinType joinType,  String name );
+    public IQuery<Z> join( IJoinStatement.JoinEntityType entityType, IJoinStatement.JoinType joinType,  String name );
 
-    public IQuery join( IJoinStatement.JoinEntityType entityType, IJoinStatement.JoinType joinType,  String name,
+    public IQuery<Z> join( IJoinStatement.JoinEntityType entityType, IJoinStatement.JoinType joinType,  String name,
                         String alias );
 
 
@@ -96,7 +96,7 @@ public interface IQuery extends Serializable {
      * @param statements
      * @return
      */
-    public IQuery select( IStatement... statements );
+    public IQuery<Z> select( IStatement... statements );
 
     /**
      * Return direction of results ordering
@@ -116,7 +116,7 @@ public interface IQuery extends Serializable {
      * @param direction
      * @return
      */
-    public IQuery orderBy(IStatement field, OrderDirection direction );
+    public IQuery<Z> orderBy(IStatement field, OrderDirection direction );
 
     /**
      * Return list of fields which is used to arrange querying results
@@ -132,7 +132,7 @@ public interface IQuery extends Serializable {
      * @param statements
      * @return
      */
-    public IQuery groupBy( IStatement... statements );
+    public IQuery<Z> groupBy( IStatement... statements );
 
     /**
      * Bind conditional expression to this query object
@@ -143,7 +143,7 @@ public interface IQuery extends Serializable {
      * @param expression
      * @return
      */
-    public IQuery where( IExpression expression );
+    public IQuery<Z> where( IExpression expression );
 
     /**
      * Apply maximum size constraint on querying results
@@ -151,16 +151,16 @@ public interface IQuery extends Serializable {
      * @param limit
      * @return
      */
-    public IQuery setLimit( int limit );
+    public IQuery<Z> setLimit( int limit );
 
     /**
      * Returns entities class which relates to this query
      * @param <T>
      * @return
      */
-    public <T extends IEntity> Class<T> getEntityClass();
+    public Class<Z> getEntityClass();
 
-    public IEntity entity();
+    public Z entity();
 
     /**
      * Binds some entity to this query.
@@ -171,7 +171,7 @@ public interface IQuery extends Serializable {
      * @param entity
      * @return
      */
-    public IQuery entity( IEntity entity );
+    public IQuery<Z> entity( Z entity );
 
     /**
      * Returns true if this query should be treated as a holder
@@ -235,7 +235,7 @@ public interface IQuery extends Serializable {
      *
      * @return
      */
-    public IQuery duplicate();
+    public IQuery<Z> duplicate();
 
 }
 

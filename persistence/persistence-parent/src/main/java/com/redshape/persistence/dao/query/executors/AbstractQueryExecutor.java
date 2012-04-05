@@ -6,6 +6,7 @@ import com.redshape.persistence.dao.query.expressions.*;
 import com.redshape.persistence.dao.query.expressions.operations.BinaryOperation;
 import com.redshape.persistence.dao.query.expressions.operations.UnaryOperation;
 import com.redshape.persistence.dao.query.statements.*;
+import com.redshape.persistence.entities.IEntity;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
@@ -21,11 +22,11 @@ public abstract class AbstractQueryExecutor<T, P, E> implements IQueryExecutor<T
     private static final Logger log = Logger.getLogger( AbstractQueryExecutor.class );
     private IQuery query;
 
-    public AbstractQueryExecutor(IQuery query) {
+    public AbstractQueryExecutor(IQuery<? extends IEntity> query) {
         this.query = query;
     }
 
-    protected IQuery getQuery() {
+    protected IQuery<? extends IEntity> getQuery() {
         return this.query;
     }
 

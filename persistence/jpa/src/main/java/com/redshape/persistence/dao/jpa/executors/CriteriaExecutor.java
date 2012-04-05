@@ -35,16 +35,16 @@ public class CriteriaExecutor extends AbstractQueryExecutor<Query, Predicate, Ex
                               implements IDynamicQueryExecutor<Query, CompoundSelection<?>> {
     private EntityManager manager;
     private CriteriaBuilder builder;
-    private CriteriaQuery<IEntity> criteria;
+    private CriteriaQuery<? extends IEntity> criteria;
     private Root<?> root;
 
-    public CriteriaExecutor( EntityManager manager, IQuery query) {
+    public CriteriaExecutor( EntityManager manager, IQuery<? extends IEntity> query) {
         super(query);
 
         this.manager = manager;
         this.builder = manager.getCriteriaBuilder();
         this.criteria = this.getBuilder().createQuery( this.getQuery().getEntityClass() );
-        this.root = this.criteria.from( query.<IEntity>getEntityClass() );
+        this.root = this.criteria.from( this.getQuery().getEntityClass() );
         this.builder = manager.getCriteriaBuilder();
     }
 
@@ -56,7 +56,7 @@ public class CriteriaExecutor extends AbstractQueryExecutor<Query, Predicate, Ex
         return this.builder;
     }
 
-    protected CriteriaQuery<IEntity> getCriteria() {
+    protected CriteriaQuery<? extends IEntity> getCriteria() {
         return this.criteria;
     }
 
@@ -69,7 +69,7 @@ public class CriteriaExecutor extends AbstractQueryExecutor<Query, Predicate, Ex
         List<IStatement> paths = this.getQuery().select();
         if ( !paths.isEmpty() ) {
             for ( int i = 0; i < paths.size(); i++ ) {
-                this.getCriteria().select( (Selection<? extends IEntity>) this.processStatement( paths.get(i) ) );
+                this.getCriteria().select( (Selection) this.processStatement( paths.get(i) ) );
             }
         }
 

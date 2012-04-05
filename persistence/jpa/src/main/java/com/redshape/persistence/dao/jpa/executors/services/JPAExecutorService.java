@@ -79,7 +79,7 @@ public class JPAExecutorService extends JpaDaoSupport implements IQueryExecutorS
 
     @Override
     @Transactional
-    public <T extends IEntity> IExecutorResult<T> execute(IQuery query) throws DAOException {
+    public <T extends IEntity> IExecutorResult<T> execute(IQuery<T> query) throws DAOException {
         Object value;
         if ( this.isUpdateQuery(query) ) {
             value = this.executeUpdate(query);
@@ -127,7 +127,7 @@ public class JPAExecutorService extends JpaDaoSupport implements IQueryExecutorS
     }
 
     @Transactional
-    public <T extends IEntity> T executeUpdate(IQuery query) throws DAOException {
+    public <T extends IEntity> T executeUpdate(IQuery<T> query) throws DAOException {
         T result = null;
         if ( query.isRemove() ) {
             if ( query.entity() != null ) {
@@ -143,7 +143,7 @@ public class JPAExecutorService extends JpaDaoSupport implements IQueryExecutorS
     }
 
     @Transactional
-    public <T extends IEntity> T executeSave( IQuery query ) throws DAOException {
+    public <T extends IEntity> T executeSave( IQuery<T> query ) throws DAOException {
         T result = (T) this.em.merge( query.entity().isDto() ? DtoUtils.fromDTO(query.entity()) : query.entity() );
         this.em.flush();
         return result;
@@ -157,7 +157,7 @@ public class JPAExecutorService extends JpaDaoSupport implements IQueryExecutorS
     }
 
     @Transactional
-    public <T extends IEntity> T executeRemove( IQuery query ) throws DAOException {
+    public <T extends IEntity> T executeRemove( IQuery<T> query ) throws DAOException {
         IEntity object = query.entity();
         if ( !this.em.contains( object ) ) {
             IEntity objInDb = (IEntity) this.em.find( object.getClass(), object.getId() );

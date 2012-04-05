@@ -12,7 +12,7 @@ import java.util.List;
  * Time: 3:51 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface IExecutorResult<T extends IEntity> extends Serializable {
+public interface IExecutorResult<T> extends Serializable {
     
     public <Z> List<Z> getValuesList();
     

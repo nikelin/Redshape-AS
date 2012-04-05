@@ -8,6 +8,9 @@ import com.redshape.utils.SimpleStringUtils;
 import java.util.*;
 
 public class Form extends AbstractFormItem implements IForm {
+    public static final String POST = "POST";
+    public static final String GET = "GET";
+
     private static final long serialVersionUID = 5015229816321663639L;
 
     public enum FormState {
@@ -23,6 +26,8 @@ public class Form extends AbstractFormItem implements IForm {
 
     public Form( String id, String name ) {
         super(id, name );
+
+        this.build();
     }
 
     private FormState state;
@@ -32,6 +37,10 @@ public class Form extends AbstractFormItem implements IForm {
     private List<IFormItem> items = new ArrayList<IFormItem>();
     private Map<String, Integer> itemsDict = new HashMap<String, Integer>();
     private List<IFormProcessHandler<?>> handlers = new ArrayList<IFormProcessHandler<?>>();
+
+    protected void build() {
+
+    }
 
     @Override
     public void addProcessHandler( IFormProcessHandler<?> handler ) {
@@ -49,7 +58,7 @@ public class Form extends AbstractFormItem implements IForm {
     }
 
     @Override
-    public void process( IUserRequest request ) throws InvalidDataException {
+    public void process( IUserRequest request ) {
         this.resetState();
 
         if ( request != null ) {
@@ -65,12 +74,12 @@ public class Form extends AbstractFormItem implements IForm {
         }
 
         if ( !this.isValid() ) {
-            throw new InvalidDataException();
+            return;
         }
 
         for ( IFormProcessHandler handler : this.getProcessHandlers() ) {
             if ( !handler.process(this) ) {
-                throw new InvalidDataException();
+                return;
             }
         }
     }

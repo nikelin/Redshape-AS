@@ -17,6 +17,6 @@ public interface IQueryExecutorService {
 
     public void setResultObjectsFactory( IExecutorResultFactory factory );
 
-    public <T extends IEntity> IExecutorResult<T> execute( IQuery query ) throws DAOException;
+    public <T extends IEntity> IExecutorResult<T> execute( IQuery<T> query ) throws DAOException;
 
 }
