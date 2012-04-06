@@ -19,6 +19,7 @@
                 </property>
             </activation>
             <modules>
+                <module>persistence-parent</module>
                 <module>jpa</module>
                 <module>hbase</module>
                 <module>jms</module>
