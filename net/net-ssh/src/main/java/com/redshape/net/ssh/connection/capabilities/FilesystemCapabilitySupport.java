@@ -20,6 +20,9 @@ import java.util.Set;
  * @date 15:49
  */
 public class FilesystemCapabilitySupport implements IFilesystemCapabilitySupport {
+    private static final String SEPARATOR = "/";
+    private static final char SEPARATOR_CHAR = '/';
+    
     public class Node implements IFilesystemCapabilitySupport.Node {
         private SFTPClient client;
         private RemoteFile file;
@@ -174,6 +177,16 @@ public class FilesystemCapabilitySupport implements IFilesystemCapabilitySupport
         Commons.checkNotNull(connection);
 
         this.connection = connection;
+    }
+
+    @Override
+    public String getSeparator() {
+        return SEPARATOR;
+    }
+
+    @Override
+    public char getSeparatorChar() {
+        return SEPARATOR_CHAR;
     }
 
     protected SshConnectionSupport getConnection() {

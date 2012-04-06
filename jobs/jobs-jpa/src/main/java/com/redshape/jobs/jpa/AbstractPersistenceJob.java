@@ -121,7 +121,7 @@ public abstract class AbstractPersistenceJob<T extends IDTO> implements IPersist
     @Temporal( TemporalType.DATE )
     private Date processedDate;
 
-    protected AbstractPersistenceJob() {
+    public AbstractPersistenceJob() {
         this.jobId = UUID.randomUUID();
         this.failuresCount = 0;
         this.state = JobStatus.WAITING;
