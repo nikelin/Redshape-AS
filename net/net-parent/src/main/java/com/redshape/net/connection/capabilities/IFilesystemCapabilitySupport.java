@@ -39,6 +39,10 @@ public interface IFilesystemCapabilitySupport extends IServerCapabilitySupport {
         
     }
     
+    public String getSeparator();
+    
+    public char getSeparatorChar();
+    
     public Node getRoot() throws ConnectionException;
     
     public Node createFile( String path ) throws ConnectionException;

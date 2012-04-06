@@ -16,6 +16,22 @@
 
     <profiles>
         <profile>
+            <id>netAll</id>
+            <activation>
+                <property>
+                    <name>netAll</name>
+                    <value>enabled</value>
+                </property>
+            </activation>
+            <modules>
+                <module>net-parent</module>
+                <module>jmx-utils</module>
+                <module>fetchers</module>
+                <module>net-ssh</module>
+                <module>net-tomcat</module>
+            </modules>
+        </profile>
+        <profile>
             <id>default</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
