@@ -23,7 +23,7 @@
             </modules>
         </profile>
         <profile>
-            <id>all</id>
+            <id>jobsAll</id>
             <activation>
                 <property>
                     <name>jobsAll</name>
