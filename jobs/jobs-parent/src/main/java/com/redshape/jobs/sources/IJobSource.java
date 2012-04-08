@@ -16,6 +16,8 @@ import java.util.List;
  */
 public interface IJobSource<T extends IJob> extends IEventDispatcher {
    
+    public String getName();
+    
     public int getUpdateInterval();
     
     public void complete( T job, IJobResult result) throws JobException;

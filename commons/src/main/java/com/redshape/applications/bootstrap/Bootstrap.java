@@ -117,7 +117,7 @@ public class Bootstrap implements IBootstrap {
 
         for ( IBootstrapAction action : actions ) {
             if ( !action.hasMarker( ActionMarker.PROCESSED ) ) {
-                log.info("Processing action: " + action.getId() );
+                log.info("Processing action: " + Commons.select( action.getId(), action.getClass().getCanonicalName() ) );
 				try {
                 	this.runAction( action );
 				} catch ( Throwable e ) {

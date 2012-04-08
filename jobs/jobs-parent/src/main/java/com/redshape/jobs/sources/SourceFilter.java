@@ -10,8 +10,10 @@ import com.redshape.utils.Commons;
 import com.redshape.utils.IFilter;
 import com.redshape.utils.events.IEvent;
 import com.redshape.utils.events.IEventListener;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -22,16 +24,25 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class SourceFilter<T extends IJob> implements  IJobSource<T> {
+    private static final Logger log = Logger.getLogger(SourceFilter.class);
 
+    private String name;
     private IJobSource<T> targetSource;
     private IFilter<Class<? extends T>> filter;
 
-    public SourceFilter( IJobSource<T> targetSource, IFilter<Class<? extends T>> filter ) {
+    public SourceFilter( String name, IJobSource<T> targetSource, IFilter<Class<? extends T>> filter ) {
         Commons.checkNotNull(targetSource);
         Commons.checkNotNull(filter);
 
+        
+        this.name = name;
         this.targetSource =targetSource;
         this.filter = filter;
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
     }
 
     @Override
@@ -52,18 +63,23 @@ public class SourceFilter<T extends IJob> implements  IJobSource<T> {
     @Override
     public List<T> fetch() throws JobException {
         List<T> result = new ArrayList<T>();
-        for ( T item : this.targetSource.fetch() ) {
+        Collection<T> filteringSet = this.targetSource.fetch();
+        log.info("Going to filter working set of " + filteringSet.size() + " elements...");
+        for ( T item : filteringSet ) {
             if ( this.filter == null || !this.filter.filter( (Class<T>) item.getClass()) ) {
                 continue;
             }
 
             if ( item instanceof IDTO) {
+                log.info("Hydrating DTO object with a type of " + item.getClass().getCanonicalName() + "...");
                 item = (T) DtoUtils.fromDTO( (IEntity) item);
             }
 
             result.add(item);
         }
 
+        log.info("Working set size after filtering: " + result.size() + "...");
+        
         return result;
     }
 

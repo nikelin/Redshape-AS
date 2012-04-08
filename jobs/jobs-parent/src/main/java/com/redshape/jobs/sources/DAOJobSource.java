@@ -23,22 +23,29 @@ public class DAOJobSource extends AbstractEventDispatcher
         implements IJobSource<IPersistenceJob>, ApplicationContextAware {
     private static final Logger log = Logger.getLogger(IJobSource.class);
 
+    private String name;
 	private ApplicationContext context;
     private ISessionManager sessionManager;
     private IJobsDAO<?> source;
     private int chunkSize;
     private int updateInterval;
 
-    public DAOJobSource( ISessionManager sessionManager,
+    public DAOJobSource( String name,
+                         ISessionManager sessionManager,
                          IJobsDAO<?> source,
                          int workChunkSize,
                          int updateInterval ) {
         super();
 
+        this.name = name;
         this.updateInterval = updateInterval;
         this.chunkSize = workChunkSize;
         this.sessionManager = sessionManager;
         this.source = source;
+    }
+
+    public String getName() {
+        return name;
     }
 
     protected ISessionManager getSessionManager() {

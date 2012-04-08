@@ -144,11 +144,12 @@ public class RequestsHandlingService implements IRequestHandlingService {
 
             IQuery<T> query = this.getProtocol().unmarshalQuery(this.getBuilder(), message);
             if ( query.entity() != null ) {
+                log.info("Hydrating DTO object from JMS query request...");
                 query.entity( DtoUtils.<T>fromDTO(query.entity()) );
             }
 
             IExecutorResult execResult = this.getExecutionService().execute(query);
-
+            log.debug("Query processed successfully...");
             this.getProtocol().marshal(
                 result,
                 this.getResultsFactory().createResult( execResult.getResultsList() )
@@ -182,15 +183,20 @@ public class RequestsHandlingService implements IRequestHandlingService {
             try {
                 Message message = this.consumer.receiveNoWait();
                 if ( message != null ) {
+                    log.info( "Received new JMS processing request...");
                     if ( !this.isExpired(message) ) {
                         Destination replyDestination = message.getJMSReplyTo();
                         if ( replyDestination == null ) {
+                            log.warn("Reply destination not specified...");
                             continue;
                         }
 
                         this.sendRespond( (Queue) replyDestination, this.processRequest( message) );
+                    } else {
+                        log.debug("JMS DAO request has been expired...");
                     }
 
+                    log.debug("Sending acknowledge on received message...");
                     message.acknowledge();
                 }
             } catch ( JMSException e ) {
