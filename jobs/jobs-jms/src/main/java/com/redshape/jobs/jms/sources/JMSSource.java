@@ -25,6 +25,7 @@ public class JMSSource extends AbstractEventDispatcher implements IJobSource<IJo
     private int maxFailuresCount;
     private int receiveTimeout;
     private int updateInterval;
+    private int maxReceivingTime;
     
     private QueueConnection connection;
     private QueueSession session;
@@ -34,10 +35,12 @@ public class JMSSource extends AbstractEventDispatcher implements IJobSource<IJo
     private Queue producingQueueAddr;
     private Queue consumingQueueAddr;
     
+    private String name;
     private String consumingQueue;
     private String producingQueue;
 
-    public JMSSource( QueueConnection connection, 
+    public JMSSource( String name,
+                      QueueConnection connection,
                       String consumingQueue,
                       String producingQueue,
                       int updateInterval,
@@ -50,6 +53,7 @@ public class JMSSource extends AbstractEventDispatcher implements IJobSource<IJo
         Commons.checkArgument( workChunkSize > 0 );
         Commons.checkNotNull(connection);
         
+        this.name = name;
         this.updateInterval = updateInterval;
         this.receiveTimeout = receiveTimeout;
         this.workChunkSize = workChunkSize;
@@ -60,6 +64,19 @@ public class JMSSource extends AbstractEventDispatcher implements IJobSource<IJo
         this.connection = connection;
 
         this.init();
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    public int getMaxReceivingTime() {
+        return maxReceivingTime;
+    }
+
+    public void setMaxReceivingTime(int maxReceivingTime) {
+        this.maxReceivingTime = maxReceivingTime;
     }
 
     protected MessageConsumer getConsumer() {
@@ -152,6 +169,7 @@ public class JMSSource extends AbstractEventDispatcher implements IJobSource<IJo
         int failuresCount = 0;
         
         List<IJob> result = new ArrayList<IJob>();
+        long startReceivingTime = System.currentTimeMillis();
         while ( result.size() <= this.getWorkChunkSize()
                 && failuresCount < this.getMaxFailuresCount() ) {
             try {
@@ -159,17 +177,26 @@ public class JMSSource extends AbstractEventDispatcher implements IJobSource<IJo
                 if ( message == null ) {
                     continue;
                 }
-                
+
+                log.info("New job received....");
+
                 if ( message instanceof ObjectMessage ) {
                     Object object = ((ObjectMessage) message).getObject();
                     if ( IJob.class.isAssignableFrom( object.getClass() ) ) {
-                        result.add( (IJob) object );
+                        log.info("Adding " + object.getClass().getCanonicalName() + " job object to processing chunk...");
+                        result.add((IJob) object);
                     }
+                } else {
+                    log.info("Unsupported job type...");
                 }
 
+                log.info("Sending acknowledge");
+                
                 message.acknowledge();
 
-                if ( result.size() >= this.getWorkChunkSize() ) {
+                if ( result.size() >= this.getWorkChunkSize() || ( this.getMaxReceivingTime() != 0 &&
+                                                                    ( startReceivingTime - System.nanoTime() ) >= this.getMaxReceivingTime() ) ) {
+                    log.debug("Breaking a receiving cycle with a chunk of " + result.size() + "...");
                     break;
                 }
             } catch ( JMSException e ) {

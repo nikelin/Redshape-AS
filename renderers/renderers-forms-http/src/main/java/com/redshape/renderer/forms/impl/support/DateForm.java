@@ -87,7 +87,7 @@ public class DateForm extends Form {
 		Map<String, Object> result = new LinkedHashMap<String, Object>();
 
 		Calendar calendar = Calendar.getInstance();
-		for ( int i = 1; i <= 12; i++ ) {
+		for ( int i = 0; i <= 11; i++ ) {
 			calendar.set(Calendar.MONTH, i);
 			result.put( calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()), i );
 		}
