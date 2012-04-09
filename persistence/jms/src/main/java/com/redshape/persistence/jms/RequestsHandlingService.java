@@ -71,6 +71,10 @@ public class RequestsHandlingService implements IRequestHandlingService {
         return this.resultsFactory;
     }
 
+    protected QueueSession getSession() {
+        return this.session;
+    }
+
     @Override
     public boolean isRunning() {
         return this.state;
@@ -96,18 +100,36 @@ public class RequestsHandlingService implements IRequestHandlingService {
         return this.protocol;
     }
 
+    protected void createSession() throws JMSException {
+        this.session = this.getConnection().createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+        if ( this.session == null ) {
+            throw new JMSException("Session initialization failed");
+        }
+
+        this.session.run();
+    }
+
+
+    protected void checkSession() throws JMSException {
+        try {
+            this.session.run();
+        } catch ( Throwable e ) {
+            if ( !( e instanceof javax.jms.IllegalStateException ) ) {
+                throw new IllegalStateException(e);
+            }
+
+            this.createSession();
+        }
+    }
+
     protected void init() throws DAOException {
         try {
             this.connection.start();
 
-            this.session = this.getConnection().createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
-            if ( this.session == null ) {
-                throw new DAOException("Session initialization failed");
-            }
+            this.createSession();
 
-            Queue queue = session.createQueue( this.getQueueName() );
-            this.consumer = session.createConsumer(queue);
-            this.session.run();
+            Queue queue = this.getSession().createQueue( this.getQueueName() );
+            this.consumer = this.getSession().createConsumer(queue);
         } catch ( JMSException e ) {
             throw new DAOException("Queue consumer creating failed", e );
         }
@@ -138,7 +160,8 @@ public class RequestsHandlingService implements IRequestHandlingService {
 
     protected <T extends IEntity> Message processRequest( Message message ) throws DAOException {
         try {
-            Message result = this.session.createObjectMessage();
+            this.checkSession();
+            Message result = this.getSession().createObjectMessage();
             result.setJMSExpiration( MSG_MAX_PROCESSING_TIME );
             result.setJMSDestination( message.getJMSReplyTo() );
 
@@ -203,14 +226,6 @@ public class RequestsHandlingService implements IRequestHandlingService {
                 log.error( e.getMessage(), e );
             } catch ( DAOException e ) {
                 log.error( e.getMessage(), e );
-            } catch ( IllegalStateException e ) {
-                if ( e.getMessage().contains("is closed") ) {
-                    try {
-                        this.consumer = this.session.createConsumer( this.session.createQueue( this.getQueueName() ) );
-                    } catch ( JMSException ex ) {
-                        throw e;
-                    }
-                }
             }
         }
     }

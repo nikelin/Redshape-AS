@@ -51,6 +51,10 @@ public class JMSExecutorsService implements IQueryExecutorService {
         throw new UnsupportedOperationException();
     }
 
+    protected QueueSession getSession() {
+        return this.session;
+    }
+
     protected int getTimeout() {
         return this.timeout;
     }
@@ -77,24 +81,40 @@ public class JMSExecutorsService implements IQueryExecutorService {
         return destinationQueue;
     }
 
-    protected void init() throws DAOException {
+    protected void createSession() throws DAOException {
         try {
             this.session = this.connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
             this.session.run();
         } catch ( JMSException e ) {
             throw new DAOException("Unable to establish JMS session through provided connection");
         }
+    }
+
+    protected void checkSession() throws DAOException {
+        try {
+            this.session.commit();
+        } catch ( Throwable e ) {
+            if ( !( e instanceof javax.jms.IllegalStateException ) ) {
+                throw new IllegalStateException(e);
+            }
+
+            this.createSession();
+        }
+    }
+    
+    protected void init() throws DAOException {
+        this.createSession();
 
         try {
-            this.destinationQueueAddr = this.session.createQueue( this.getDestinationQueue() );
-            this.producer = this.session.createSender( destinationQueueAddr );
+            this.destinationQueueAddr = this.getSession().createQueue( this.getDestinationQueue() );
+            this.producer = this.getSession().createSender( destinationQueueAddr );
         } catch ( JMSException e ) {
             throw new DAOException( "Unable to start messages producing thread", e );
         }
 
         try {
-            this.destination = this.session.createTemporaryQueue();
-            this.consumer = this.session.createConsumer( this.destination );
+            this.destination = this.getSession().createTemporaryQueue();
+            this.consumer = this.getSession().createConsumer( this.destination );
         } catch ( JMSException e ) {
             throw new DAOException( "Unable to start messages consuming thread", e );
         }
@@ -104,8 +124,8 @@ public class JMSExecutorsService implements IQueryExecutorService {
     public <T extends IEntity> IExecutorResult<T> execute(IQuery<T> query) throws DAOException {
         try {
             synchronized (this.sendingLock) {
-                this.session.run();
-                Message message = this.session.createObjectMessage();
+                this.checkSession();
+                Message message = this.getSession().createObjectMessage();
                 message.setJMSReplyTo( this.destination );
                 this.getProtocol().marshal(message, query);
 
