@@ -112,15 +112,6 @@ public final class DtoUtils {
     private static final ThreadLocal<Collection<Object>> processing = new ThreadLocal<Collection<Object>>();
     private static final ThreadLocal<Map<IDtoCapable, IDTO>> cache = new ThreadLocal<Map<IDtoCapable, IDTO>>();
     private static final ThreadLocal<Map<IEntity, IEntity>> reverseCache = new ThreadLocal<Map<IEntity, IEntity>>();
-    private static final ThreadLocal<Object> deferringLock = new ThreadLocal<Object>();
-
-    private static final Object deferringLock() {
-        if ( deferringLock.get() == null ) {
-            deferringLock.set( new Object() );
-        }
-
-        return deferringLock;
-    }
 
     private static final Counter toCounter() {
         if ( toCounter.get() == null ) {
@@ -242,7 +233,7 @@ public final class DtoUtils {
         return true;
     }
 
-    public static synchronized <T extends IEntity> T fromDTO( IEntity entity ) {
+    public static <T extends IEntity> T fromDTO( IEntity entity ) {
         try {
             /**
              * Can be represented as aspect
@@ -414,7 +405,7 @@ public final class DtoUtils {
         return Collection.class.isAssignableFrom(value.getClass());
     }
     
-    public static  synchronized <T extends IDTO, V extends IDtoCapable<T>> T toDTO( V entity ) {
+    public static <T extends IDTO, V extends IDtoCapable<T>> T toDTO( V entity ) {
         try {
             if ( toCounter().isBalanced() ) {
                 Commons.checkNotNull(DaoContextHolder.instance().getContext(), "Global context not wired");
