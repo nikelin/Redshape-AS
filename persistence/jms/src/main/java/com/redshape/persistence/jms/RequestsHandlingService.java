@@ -10,6 +10,7 @@ import com.redshape.persistence.entities.DtoUtils;
 import com.redshape.persistence.entities.IEntity;
 import com.redshape.persistence.jms.protocol.IQueryMarshaller;
 import com.redshape.persistence.jms.protocol.ProtocolException;
+import com.redshape.utils.Commons;
 import com.redshape.utils.Constants;
 import org.apache.log4j.Logger;
 
@@ -29,6 +30,7 @@ public class RequestsHandlingService implements IRequestHandlingService {
     private static final Logger log = Logger.getLogger(RequestsHandlingService.class);
     public static int MSG_MAX_PROCESSING_TIME = Constants.TIME_SECOND * 5;
 
+    private Integer receiveTimeout;
     private String queueName;
     private QueueSession session;
     private QueueConnection connection;
@@ -65,6 +67,14 @@ public class RequestsHandlingService implements IRequestHandlingService {
         this.queueName = queueId;
         this.checkFields();
         this.init();
+    }
+
+    public Integer getReceiveTimeout() {
+        return Commons.select(receiveTimeout, 100);
+    }
+
+    public void setReceiveTimeout(Integer receiveTimeout) {
+        this.receiveTimeout = receiveTimeout;
     }
 
     protected IExecutorResultFactory getResultsFactory() {
@@ -204,7 +214,7 @@ public class RequestsHandlingService implements IRequestHandlingService {
     public void run() {
         while ( this.isRunning() ) {
             try {
-                Message message = this.consumer.receiveNoWait();
+                Message message = this.consumer.receive(this.getReceiveTimeout());
                 if ( message != null ) {
                     log.info( "Received new JMS processing request...");
                     if ( !this.isExpired(message) ) {
