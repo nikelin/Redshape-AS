@@ -17,6 +17,8 @@ import org.apache.log4j.Logger;
 import javax.jms.*;
 import java.lang.IllegalStateException;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Default DAO requests handling service
@@ -38,6 +40,7 @@ public class RequestsHandlingService implements IRequestHandlingService {
     private MessageConsumer consumer;
     private IQueryBuilder builder;
     private IExecutorResultFactory resultsFactory;
+    private ExecutorService service;
 
     private boolean state = true;
 
@@ -65,6 +68,7 @@ public class RequestsHandlingService implements IRequestHandlingService {
         this.protocol = marshaller;
         this.executionService = service;
         this.queueName = queueId;
+        this.service = Executors.newFixedThreadPool(200);
         this.checkFields();
         this.init();
     }
@@ -139,7 +143,7 @@ public class RequestsHandlingService implements IRequestHandlingService {
             this.createSession();
 
             Queue queue = this.getSession().createQueue( this.getQueueName() );
-            this.consumer = this.getSession().createConsumer(queue);
+            this.consumer = this.getSession().createConsumer(queue, "", false);
         } catch ( JMSException e ) {
             throw new DAOException("Queue consumer creating failed", e );
         }
@@ -172,7 +176,9 @@ public class RequestsHandlingService implements IRequestHandlingService {
         try {
             this.checkSession();
             Message result = this.getSession().createObjectMessage();
+            log.info("Setting message expiration time to " + MSG_MAX_PROCESSING_TIME + "ms..." );
             result.setJMSExpiration( MSG_MAX_PROCESSING_TIME );
+            log.info("Setting message target destination...");
             result.setJMSDestination( message.getJMSReplyTo() );
 
             IQuery<T> query = this.getProtocol().unmarshalQuery(this.getBuilder(), message);
@@ -181,8 +187,9 @@ public class RequestsHandlingService implements IRequestHandlingService {
                 query.entity( DtoUtils.<T>fromDTO(query.entity()) );
             }
 
+            log.info("Executing income query...");
             IExecutorResult execResult = this.getExecutionService().execute(query);
-            log.debug("Query processed successfully...");
+            log.info("Query processed successfully...");
             this.getProtocol().marshal(
                 result,
                 this.getResultsFactory().createResult( execResult.getResultsList() )
@@ -209,34 +216,45 @@ public class RequestsHandlingService implements IRequestHandlingService {
         sender.send(message);
         sender.close();
     }
-    
+
+    protected void execute( Message message ) throws JMSException, DAOException {
+        log.info( "Received new JMS processing request...");
+        if ( !this.isExpired(message) ) {
+            Destination replyDestination = message.getJMSReplyTo();
+            if ( replyDestination == null ) {
+                log.info("Reply destination not specified...");
+                return;
+            }
+
+            this.sendRespond( (Queue) replyDestination, this.processRequest( message) );
+        } else {
+            log.info("JMS DAO request has been expired...");
+        }
+
+        log.info("Sending acknowledge on received message...");
+        message.acknowledge();
+    }
+
     @Override
     public void run() {
-        while ( this.isRunning() ) {
-            try {
-                Message message = this.consumer.receive(this.getReceiveTimeout());
+        try {
+            while ( this.isRunning() ) {
+                final Message message = this.consumer.receiveNoWait();
                 if ( message != null ) {
-                    log.info( "Received new JMS processing request...");
-                    if ( !this.isExpired(message) ) {
-                        Destination replyDestination = message.getJMSReplyTo();
-                        if ( replyDestination == null ) {
-                            log.warn("Reply destination not specified...");
-                            continue;
+                    this.service.execute( new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                RequestsHandlingService.this.execute(message);
+                            } catch ( Throwable e ){
+                                log.error( e.getMessage(), e );
+                            }
                         }
-
-                        this.sendRespond( (Queue) replyDestination, this.processRequest( message) );
-                    } else {
-                        log.debug("JMS DAO request has been expired...");
-                    }
-
-                    log.debug("Sending acknowledge on received message...");
-                    message.acknowledge();
+                    });
                 }
-            } catch ( JMSException e ) {
-                log.error( e.getMessage(), e );
-            } catch ( DAOException e ) {
-                log.error( e.getMessage(), e );
             }
+        } catch ( JMSException e ) {
+            log.error( e.getMessage(), e );
         }
     }
 }

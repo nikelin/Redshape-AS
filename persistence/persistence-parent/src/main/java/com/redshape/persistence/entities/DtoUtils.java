@@ -242,7 +242,7 @@ public final class DtoUtils {
         return true;
     }
 
-    public static <T extends IEntity> T fromDTO( IEntity entity ) {
+    public static synchronized <T extends IEntity> T fromDTO( IEntity entity ) {
         try {
             /**
              * Can be represented as aspect
@@ -414,7 +414,7 @@ public final class DtoUtils {
         return Collection.class.isAssignableFrom(value.getClass());
     }
     
-    public static <T extends IDTO, V extends IDtoCapable<T>> T toDTO( V entity ) {
+    public static  synchronized <T extends IDTO, V extends IDtoCapable<T>> T toDTO( V entity ) {
         try {
             if ( toCounter().isBalanced() ) {
                 Commons.checkNotNull(DaoContextHolder.instance().getContext(), "Global context not wired");
