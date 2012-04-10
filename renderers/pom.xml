@@ -49,7 +49,7 @@
             </modules>
         </profile>
         <profile>
-            <id>renderersAll</id>
+            <id>renderers-all</id>
             <activation>
                 <property>
                     <name>renderersAll</name>
