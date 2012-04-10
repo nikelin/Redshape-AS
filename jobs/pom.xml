@@ -54,7 +54,7 @@
                 </property>
             </activation>
             <modules>
-                <module>jms</module>
+                <module>jobs-jms</module>
             </modules>
         </profile>
     </profiles>
