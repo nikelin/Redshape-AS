@@ -32,4 +32,24 @@ public abstract class AbstractDTO implements IDTO {
     public Class<? extends IEntity> getEntityClass() {
         return this.entityClass;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AbstractDTO)) return false;
+
+        AbstractDTO that = (AbstractDTO) o;
+
+        if (entityClass != null ? !entityClass.equals(that.entityClass) : that.entityClass != null) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (entityClass != null ? entityClass.hashCode() : 0);
+        return result;
+    }
 }

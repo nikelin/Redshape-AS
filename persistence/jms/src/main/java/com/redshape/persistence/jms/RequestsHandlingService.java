@@ -7,6 +7,7 @@ import com.redshape.persistence.dao.query.executors.result.IExecutorResult;
 import com.redshape.persistence.dao.query.executors.result.IExecutorResultFactory;
 import com.redshape.persistence.dao.query.executors.services.IQueryExecutorService;
 import com.redshape.persistence.entities.DtoUtils;
+import com.redshape.persistence.entities.IDTO;
 import com.redshape.persistence.entities.IEntity;
 import com.redshape.persistence.jms.protocol.IQueryMarshaller;
 import com.redshape.persistence.jms.protocol.ProtocolException;
@@ -143,7 +144,7 @@ public class RequestsHandlingService implements IRequestHandlingService {
             this.createSession();
 
             Queue queue = this.getSession().createQueue( this.getQueueName() );
-            this.consumer = this.getSession().createConsumer(queue, "", false);
+            this.consumer = this.getSession().createConsumer(queue);
         } catch ( JMSException e ) {
             throw new DAOException("Queue consumer creating failed", e );
         }
@@ -241,16 +242,11 @@ public class RequestsHandlingService implements IRequestHandlingService {
             while ( this.isRunning() ) {
                 final Message message = this.consumer.receiveNoWait();
                 if ( message != null ) {
-                    this.service.execute( new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                RequestsHandlingService.this.execute(message);
-                            } catch ( Throwable e ){
-                                log.error( e.getMessage(), e );
-                            }
-                        }
-                    });
+                    try {
+                        RequestsHandlingService.this.execute(message);
+                    } catch ( Throwable e ){
+                        log.error( e.getMessage(), e );
+                    }
                 }
             }
         } catch ( JMSException e ) {

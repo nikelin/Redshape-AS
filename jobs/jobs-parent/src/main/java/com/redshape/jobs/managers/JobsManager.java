@@ -84,7 +84,8 @@ public class JobsManager implements IJobsManager {
 	public void setHandlers( Map<Class<? extends IJob>, IJobHandler<?,?>> handlers ) {
 		this.handlers = handlers;
 	}
-	
+
+    @Override
 	public Map<Class<? extends IJob>, IJobHandler<?, ?>> getHandlers() {
 		return this.handlers;
 	}
@@ -93,11 +94,21 @@ public class JobsManager implements IJobsManager {
 	public void cancel( UUID id ) throws HandlingException {
 		this.jobs.get(id).cancel();
 	}
+
+    protected <T extends IJob, R extends IJobResult> IJobHandler<T, R> getHandler( Class<T> jobClass ) {
+        for ( Map.Entry<Class<? extends IJob>, ? extends IJobHandler> entry : handlers.entrySet() ) {
+            if ( entry.getKey().isAssignableFrom(jobClass) ) {
+                return entry.getValue();
+            }
+        }
+
+        return null;
+    }
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends IJob, R extends IJobResult> Future<R> execute( T job ) throws HandlingException {
-		IJobHandler<T,R> handler = (IJobHandler<T,R>) this.handlers.get( job.getClass() );
+		IJobHandler<T,R> handler = (IJobHandler<T,R>) this.getHandler( job.getClass() );
 		if ( handler instanceof AbstractAwareJobHandler) {
 			( (AbstractAwareJobHandler<T, R>) handler ).setContext( this.getContext() );
 		}

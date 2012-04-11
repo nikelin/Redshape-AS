@@ -1,10 +1,13 @@
 package com.redshape.jobs.jms.sources;
 
 import com.redshape.jobs.IJob;
+import com.redshape.jobs.IPersistenceJob;
 import com.redshape.jobs.JobException;
 import com.redshape.jobs.JobStatus;
 import com.redshape.jobs.result.IJobResult;
 import com.redshape.jobs.sources.IJobSource;
+import com.redshape.persistence.entities.DtoUtils;
+import com.redshape.persistence.entities.IDTO;
 import com.redshape.utils.Commons;
 import com.redshape.utils.events.AbstractEventDispatcher;
 import org.apache.log4j.Logger;
@@ -173,7 +176,7 @@ public class JMSSource extends AbstractEventDispatcher implements IJobSource<IJo
         while ( result.size() <= this.getWorkChunkSize()
                 && failuresCount < this.getMaxFailuresCount() ) {
             try {
-                Message message = this.getConsumer().receive( this.getReceiveTimeout() );
+                Message message = this.getConsumer().receive(this.getReceiveTimeout());
                 if ( message == null ) {
                     continue;
                 }
@@ -184,7 +187,7 @@ public class JMSSource extends AbstractEventDispatcher implements IJobSource<IJo
                     Object object = ((ObjectMessage) message).getObject();
                     if ( IJob.class.isAssignableFrom( object.getClass() ) ) {
                         log.info("Adding " + object.getClass().getCanonicalName() + " job object to processing chunk...");
-                        result.add((IJob) object);
+                        result.add( (IJob) ( object instanceof IDTO ? DtoUtils.fromDTO( (IDTO) object) : object ) );
                     }
                 } else {
                     log.info("Unsupported job type...");

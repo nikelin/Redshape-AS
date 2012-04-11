@@ -305,12 +305,24 @@ public final class DtoUtils {
                 }
             }
         }
-    }          
+    }
+
+    private static boolean isProcessing( Object object ) {
+        for ( Object processing : processing() ) {
+            if ( processing.equals( object ) ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
     
     protected static IEntity fromDTO( IEntity entity, IEntity dto ) throws DAOException {
         try {
-            for ( Property property : PropertyUtils.getInstance().getProperties(entity.getClass()) ) {
-                for ( Property dtoProperty : PropertyUtils.getInstance().getProperties(dto.getClass()) ) {
+            Collection<Property> entityProperties = PropertyUtils.getInstance().getProperties(entity.getClass());
+            Collection<Property> dtoProperties = PropertyUtils.getInstance().getProperties(dto.getClass());
+            for ( Property property : entityProperties ) {
+                for ( Property dtoProperty : dtoProperties ) {
                     try {
                         if ( !dtoProperty.getName().equals( property.getName() ) ) {
                             continue;
@@ -323,8 +335,8 @@ public final class DtoUtils {
 
                         if ( value != null ) {
                             if ( value instanceof IDTO ) {
-                                if ( !processing().contains(entity) ) {
-                                    processing().add(entity);
+                                if ( !isProcessing(value) ) {
+                                    processing().add(value);
                                 } else {
                                     saveDeferred( new Deferred(entity, property, value, false ) );
                                     continue;
@@ -391,9 +403,11 @@ public final class DtoUtils {
                 }
 
                 result.add( item );
+
                 entitiesCollection = true;
             } else {
                 result.add( part );
+
                 entitiesCollection = false;
             }
         }

@@ -8,10 +8,6 @@ public abstract class AbstractAwareJobHandler<T extends IJob, V extends IJobResu
 							extends AbstractJobHandler<T, V> {
 	private ApplicationContext context;
 	
-	public AbstractAwareJobHandler( ApplicationContext context ) {
-		this.context = context;
-	}
-	
 	public void setContext( ApplicationContext context ) {
 		this.context = context;
 	}
