@@ -16,7 +16,7 @@ public final class EnumCommons {
             Map<String, String> result = new HashMap<String, String>();
             IEnum[] enumValues = (IEnum[]) enumClazz.getMethod("values").invoke(null);
             for ( IEnum enumValue : enumValues ) {
-                result.put( enumValue.name(), enumValue.toString() );
+                result.put( enumValue.toString(), enumValue.name() );
             }
 
             return result;
