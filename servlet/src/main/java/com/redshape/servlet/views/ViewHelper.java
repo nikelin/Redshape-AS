@@ -1,9 +1,11 @@
 package com.redshape.servlet.views;
 
 import com.redshape.servlet.WebApplication;
+import com.redshape.servlet.actions.exceptions.PageNotFoundException;
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.core.controllers.Action;
 import com.redshape.servlet.core.controllers.IAction;
+import com.redshape.servlet.core.controllers.ProcessingException;
 import com.redshape.servlet.core.controllers.registry.IControllersRegistry;
 import com.redshape.servlet.dispatchers.http.IHttpDispatcher;
 import com.redshape.utils.config.ConfigException;
@@ -82,23 +84,27 @@ public final class ViewHelper {
 
 	public static <T extends Serializable> String action( String controller,
 														  String action )
-		throws InstantiationException {
+            throws ProcessingException {
 		return action(controller, action, new HashMap<String, Serializable>() );
 	}
 
 	public static <T extends Serializable> String action( String controller,
 														  String action,
 														  Map<String, T> params )
-		throws InstantiationException {
-		IAction actionInstance = WebApplication.getContext().getBean(IControllersRegistry.class)
-																		  .getInstance(controller, action);
-		if ( actionInstance == null ) {
-			return url( WebApplication.getContext().getBean(IHttpDispatcher.class)
-												.getExceptionHandler()
-												.getPage404() );
-		}
+        throws ProcessingException {
+        try {
+            IAction actionInstance = WebApplication.getContext().getBean(IControllersRegistry.class)
+                                                                              .getInstance(controller, action);
+            if ( actionInstance == null ) {
+                return url( WebApplication.getContext().getBean(IHttpDispatcher.class)
+                                                    .getExceptionHandler()
+                                                    .getPage404() );
+            }
 
-		return action( actionInstance.getClass(), params );
+            return action( actionInstance.getClass(), params );
+        } catch ( Throwable e ) {
+            throw new PageNotFoundException();
+        }
 	}
 
 	public static String action( Class<? extends IAction> action ) {
