@@ -143,8 +143,7 @@ public class RequestsHandlingService implements IRequestHandlingService {
 
             this.createSession();
 
-            Queue queue = this.getSession().createQueue( this.getQueueName() );
-            this.consumer = this.getSession().createConsumer(queue);
+            this.consumer = this.getSession().createConsumer(this.getSession().createQueue( this.getQueueName() ));
         } catch ( JMSException e ) {
             throw new DAOException("Queue consumer creating failed", e );
         }
@@ -177,7 +176,7 @@ public class RequestsHandlingService implements IRequestHandlingService {
         try {
             this.checkSession();
             Message result = this.getSession().createObjectMessage();
-            result.setStringProperty("UID", message.getStringProperty("UID") );
+            result.setJMSCorrelationID(message.getJMSCorrelationID());
 
             log.info("Income message correlation ID: " + message.getJMSCorrelationID() );
 
@@ -217,14 +216,14 @@ public class RequestsHandlingService implements IRequestHandlingService {
     }
 
     protected void sendRespond( Queue destination, Message message ) throws JMSException{
-        QueueSender sender = this.getSession().createSender(destination);
+        MessageProducer sender = this.getSession().createProducer(destination);
         sender.send(message);
         sender.close();
     }
 
     protected void execute( Message message ) throws JMSException, DAOException {
-        log.info("Sending acknowledge on received message...");
-        message.acknowledge();
+//        log.info("Sending acknowledge on received message...");
+//        message.acknowledge();
 
         log.info( "Received new JMS processing request...");
         if ( !this.isExpired(message) ) {

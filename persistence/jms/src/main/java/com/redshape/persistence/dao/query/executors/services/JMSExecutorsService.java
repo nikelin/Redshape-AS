@@ -123,37 +123,54 @@ public class JMSExecutorsService implements IQueryExecutorService {
     
     @Override
     public <T extends IEntity> IExecutorResult<T> execute(IQuery<T> query) throws DAOException {
+        MessageConsumer consumer = null;
+        MessageProducer producer = null;
+
         try {
-            synchronized (this.sendingLock) {
-                this.checkSession();
+            this.checkSession();
 
-                String uid = "ID:" + UUID.randomUUID().toString();
+            String uid = UUID.randomUUID().toString();
 
-                long start = System.currentTimeMillis();
-                Message message = this.getSession().createObjectMessage();
-                message.setJMSCorrelationID(uid);
-                message.setStringProperty("UID", uid);
-                message.setJMSReplyTo(this.destination);
-                this.getProtocol().marshal(message, query);
+            long start = System.currentTimeMillis();
+            Message message = this.getSession().createObjectMessage();
+            message.setJMSCorrelationID(uid);
+            message.setJMSReplyTo(this.destination);
+            this.getProtocol().marshal(message, query);
 
-                this.producer.send( this.destinationQueueAddr, message );
+            producer = this.getSession().createProducer(this.destinationQueueAddr);
+            producer.send( this.destinationQueueAddr, message );
 
-                Message respond = this.getSession().createConsumer(this.destination)
-                        .receive(this.getTimeout());
-                if ( respond == null ) {
-                    throw new DAOException("Request processing failed!");
-                }
-
-                respond.acknowledge();
-
-                IExecutorResult<T> result = this.getProtocol().unmarshalResult( respond );
-                log.debug("Processed in " + (System.currentTimeMillis() - start) + "ms");
-                return result;
+            consumer = this.getSession().createConsumer(this.destination, "JMSCorrelationID='" + uid + "'");
+            Message respond = consumer.receive();
+            if ( respond == null ) {
+                throw new DAOException("Request processing failed!");
             }
+
+            respond.acknowledge();
+
+            IExecutorResult<T> result = this.getProtocol().unmarshalResult( respond );
+            log.debug("Processed in " + (System.currentTimeMillis() - start) + "ms");
+            return result;
         } catch ( ProtocolException e ) {
             throw new DAOException( "Query serializing failed", e );
         } catch ( JMSException e ) {
             throw new DAOException( "Failed to proceed message send", e );
+        } finally {
+            try {
+                if ( consumer != null ) {
+                    consumer.close();
+                }
+            } catch ( JMSException e ) {
+                log.error("Consumer close failed!", e );
+            }
+
+            try {
+                if ( producer != null ) {
+                    producer.close();
+                }
+            } catch ( JMSException e ) {
+                log.error("Producer close failed!", e);
+            }
         }
     }
 }
