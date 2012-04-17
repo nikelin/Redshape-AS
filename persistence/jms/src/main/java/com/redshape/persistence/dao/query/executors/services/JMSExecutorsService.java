@@ -8,9 +8,11 @@ import com.redshape.persistence.entities.IEntity;
 import com.redshape.persistence.jms.protocol.IQueryMarshaller;
 import com.redshape.persistence.jms.protocol.ProtocolException;
 import com.redshape.utils.Constants;
+import org.apache.log4j.Logger;
 
 import javax.jms.*;
 import java.lang.IllegalStateException;
+import java.util.UUID;
 
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
@@ -18,17 +20,17 @@ import java.lang.IllegalStateException;
  * @date 1/25/12 {1:49 PM}
  */
 public class JMSExecutorsService implements IQueryExecutorService {
-    
+    private static final Logger log = Logger.getLogger( JMSExecutorsService.class );
+
     private QueueConnection connection;
     private QueueSession session;
 
     private IQueryMarshaller protocol;
 
-    private MessageConsumer consumer;
     private MessageProducer producer;
 
     private Queue destinationQueueAddr;
-    private Destination destination;
+    private Queue destination;
     private String destinationQueue;
     
     private Object sendingLock = new Object();
@@ -113,8 +115,7 @@ public class JMSExecutorsService implements IQueryExecutorService {
         }
 
         try {
-            this.destination = this.getSession().createTemporaryQueue();
-            this.consumer = this.getSession().createConsumer( this.destination );
+            this.destination = this.getSession().createQueue("results-" + System.nanoTime() + "-receiver");
         } catch ( JMSException e ) {
             throw new DAOException( "Unable to start messages consuming thread", e );
         }
@@ -125,20 +126,29 @@ public class JMSExecutorsService implements IQueryExecutorService {
         try {
             synchronized (this.sendingLock) {
                 this.checkSession();
+
+                String uid = "ID:" + UUID.randomUUID().toString();
+
+                long start = System.currentTimeMillis();
                 Message message = this.getSession().createObjectMessage();
-                message.setJMSReplyTo( this.destination );
+                message.setJMSCorrelationID(uid);
+                message.setStringProperty("UID", uid);
+                message.setJMSReplyTo(this.destination);
                 this.getProtocol().marshal(message, query);
 
                 this.producer.send( this.destinationQueueAddr, message );
-                
-                Message respond = this.consumer.receive( this.getTimeout() );
+
+                Message respond = this.getSession().createConsumer(this.destination)
+                        .receive(this.getTimeout());
                 if ( respond == null ) {
                     throw new DAOException("Request processing failed!");
                 }
 
                 respond.acknowledge();
 
-                return this.getProtocol().unmarshalResult( respond );
+                IExecutorResult<T> result = this.getProtocol().unmarshalResult( respond );
+                log.debug("Processed in " + (System.currentTimeMillis() - start) + "ms");
+                return result;
             }
         } catch ( ProtocolException e ) {
             throw new DAOException( "Query serializing failed", e );

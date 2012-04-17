@@ -29,7 +29,7 @@ import java.util.concurrent.Executors;
  * @date 1/25/12 {3:37 PM}
  */
 public class RequestsHandlingService implements IRequestHandlingService {
-    
+
     private static final Logger log = Logger.getLogger(RequestsHandlingService.class);
     public static int MSG_MAX_PROCESSING_TIME = Constants.TIME_SECOND * 5;
 
@@ -149,7 +149,7 @@ public class RequestsHandlingService implements IRequestHandlingService {
             throw new DAOException("Queue consumer creating failed", e );
         }
     }
-    
+
     protected void checkFields() {
         if ( this.getConnection() == null ) {
             throw new IllegalStateException("<null>: connection object not provided");
@@ -177,6 +177,10 @@ public class RequestsHandlingService implements IRequestHandlingService {
         try {
             this.checkSession();
             Message result = this.getSession().createObjectMessage();
+            result.setStringProperty("UID", message.getStringProperty("UID") );
+
+            log.info("Income message correlation ID: " + message.getJMSCorrelationID() );
+
             log.info("Setting message expiration time to " + MSG_MAX_PROCESSING_TIME + "ms..." );
             result.setJMSExpiration( MSG_MAX_PROCESSING_TIME );
             log.info("Setting message target destination...");
@@ -196,6 +200,8 @@ public class RequestsHandlingService implements IRequestHandlingService {
                 this.getResultsFactory().createResult( execResult.getResultsList() )
             );
 
+            log.info("Result message correlation ID: " + result.getJMSCorrelationID() );
+
             return result;
         } catch ( ProtocolException e ) {
             throw new DAOException("Failed to marshal/unmarshal message!", e );
@@ -209,16 +215,17 @@ public class RequestsHandlingService implements IRequestHandlingService {
             }
         }
     }
-    
+
     protected void sendRespond( Queue destination, Message message ) throws JMSException{
-        QueueSender sender = this.getConnection()
-                .createQueueSession(false, Session.CLIENT_ACKNOWLEDGE)
-                .createSender(destination);
+        QueueSender sender = this.getSession().createSender(destination);
         sender.send(message);
         sender.close();
     }
 
     protected void execute( Message message ) throws JMSException, DAOException {
+        log.info("Sending acknowledge on received message...");
+        message.acknowledge();
+
         log.info( "Received new JMS processing request...");
         if ( !this.isExpired(message) ) {
             Destination replyDestination = message.getJMSReplyTo();
@@ -231,19 +238,18 @@ public class RequestsHandlingService implements IRequestHandlingService {
         } else {
             log.info("JMS DAO request has been expired...");
         }
-
-        log.info("Sending acknowledge on received message...");
-        message.acknowledge();
     }
 
     @Override
     public void run() {
         try {
             while ( this.isRunning() ) {
-                final Message message = this.consumer.receiveNoWait();
+                final Message message = this.consumer.receive(this.getReceiveTimeout());
                 if ( message != null ) {
                     try {
+                        long start = System.currentTimeMillis();
                         RequestsHandlingService.this.execute(message);
+                        log.info("Processed in: " + ( System.currentTimeMillis() - start ) + "ms" );
                     } catch ( Throwable e ){
                         log.error( e.getMessage(), e );
                     }
