@@ -222,8 +222,8 @@ public class RequestsHandlingService implements IRequestHandlingService {
     }
 
     protected void execute( Message message ) throws JMSException, DAOException {
-//        log.info("Sending acknowledge on received message...");
-//        message.acknowledge();
+        log.info("Sending acknowledge on received message...");
+        message.acknowledge();
 
         log.info( "Received new JMS processing request...");
         if ( !this.isExpired(message) ) {
@@ -245,13 +245,20 @@ public class RequestsHandlingService implements IRequestHandlingService {
             while ( this.isRunning() ) {
                 final Message message = this.consumer.receive(this.getReceiveTimeout());
                 if ( message != null ) {
-                    try {
-                        long start = System.currentTimeMillis();
-                        RequestsHandlingService.this.execute(message);
-                        log.info("Processed in: " + ( System.currentTimeMillis() - start ) + "ms" );
-                    } catch ( Throwable e ){
-                        log.error( e.getMessage(), e );
-                    }
+                    this.service.execute(
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    long start = System.currentTimeMillis();
+                                    RequestsHandlingService.this.execute(message);
+                                    log.info("Processed in: " + ( System.currentTimeMillis() - start ) + "ms" );
+                                } catch ( Throwable e ){
+                                    log.error( e.getMessage(), e );
+                                }
+                            }
+                        }
+                    );
                 }
             }
         } catch ( JMSException e ) {
