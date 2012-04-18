@@ -29,15 +29,17 @@ public class Utils {
 	        ds = new DatagramSocket(port);
 	        ds.setReuseAddress(true);
 	        return true;
+	    } catch ( Throwable e ) {
+            return false;
 	    } finally {
-	        if (ds != null) {
-	            ds.close();
-	        }
+            if (ds != null) {
+                ds.close();
+            }
 
-	        if (ss != null) {
-               ss.close();
-	        }
-	    }
+            if (ss != null) {
+                ss.close();
+            }
+        }
 	}
 
 }
