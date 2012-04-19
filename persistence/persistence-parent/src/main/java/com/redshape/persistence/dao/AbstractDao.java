@@ -148,12 +148,7 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
     public void remove(T object) throws DAOException {
         this.service.<T>execute(
                 this.getBuilder().<T>removeQuery(this.getEntityClass())
-                        .where(
-                                this.getBuilder().equals(
-                                        this.getBuilder().reference("id"),
-                                        this.getBuilder().scalar(object.getId())
-                                )
-                        )
+                        .entity(object)
         );
     }
 

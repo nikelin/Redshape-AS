@@ -50,7 +50,7 @@ public abstract class AbstractJSPFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
 
-        String srcPath = (String) request.getAttribute("javax.servlet.include.servlet_path");;
+        String srcPath = (String) request.getRequestURI();
         if (srcPath == null) {
             srcPath = request.getServletPath();
         }
@@ -78,18 +78,9 @@ public abstract class AbstractJSPFilter implements Filter {
             return;
         }
 
-        OutputStream out = null;
-        InputStream in = null;
-        try {
-            out = new FileOutputStream(src);
-            in = new FileInputStream(src);
+        this.process(request, response, new FileInputStream(src), new FileOutputStream(src));
 
-            this.process(request, response, in, out);
-        } finally {
-            if ( out != null ) {
-                out.close();
-            }
-        }
+        chain.doFilter(req, res);
 
     }
 
@@ -106,7 +97,6 @@ public abstract class AbstractJSPFilter implements Filter {
         while ( null != ( tmp = reader.readLine() ) ) {
             builder.append(tmp);
         }
-        reader.close();
 
         return builder.toString();
     }

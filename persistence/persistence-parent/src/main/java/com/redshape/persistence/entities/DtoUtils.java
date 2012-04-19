@@ -261,11 +261,8 @@ public final class DtoUtils {
             }
 
             final IDTO dto = (IDTO) entity;
-            
-            IEntity result = reverseCache().get(dto);
-            if ( result != null ) {
-                return (T) result;
-            }
+
+            IEntity result = null;
 
             Class<? extends IEntity> entityClazz = dto.getEntityClass();
             if ( entityClazz == null ) {
@@ -443,10 +440,6 @@ public final class DtoUtils {
                         return (T) entity;
                     }
                 }
-            }
-
-            if ( cache().get(entity) != null ) {
-                return (T) cache().get(entity);
             }
 
             entity = (V) getSessionManager().refresh( (IEntity) entity);

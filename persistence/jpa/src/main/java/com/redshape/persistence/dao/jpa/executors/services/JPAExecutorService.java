@@ -161,11 +161,16 @@ public class JPAExecutorService extends JpaDaoSupport implements IQueryExecutorS
         IEntity object = query.entity();
         if ( !this.em.contains( object ) ) {
             IEntity objInDb = (IEntity) this.em.find( object.getClass(), object.getId() );
+            if ( objInDb == null ) {
+                return null;
+            }
+
             BeanUtils.copyProperties(object, objInDb);
             object = objInDb;
+            this.em.refresh(object);
         }
 
-        this.em.remove(object);
+        this.em.remove( object);
 
         return (T) object;
     }
