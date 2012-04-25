@@ -24,20 +24,45 @@ public class ForkManagerImpl implements IForkManager {
 
     private static final String MEMORY_LIMIT_PARAM = "-Xmx%sM";
     private static final String MEMORY_INITIAL_PARAM = "-Xms%sM";
+    private static final String CLASSPATH_PARAM = "-cp %s";
 
     private IResourcesLoader loader;
     private ISystemFacade facade;
 
     private List<IFork> registry = new ArrayList<IFork>();
+    private List<String> classPath = new ArrayList<String>();
 
     private String rootPath;
-    private String jvmPath = "/usr/bin/jvm";
+    private String jvmPath = "/usr/bin/java";
     private int memoryLimit;
     private int cpuLimit;
 
     public ForkManagerImpl(ISystemFacade facade, IResourcesLoader loader) {
         this.facade = facade;
         this.loader = loader;
+    }
+
+    @Override
+    public void addClassPath(String[] path) {
+        for ( String pathPart : path ) {
+            if ( pathPart != null ) {
+                this.addClassPath(pathPart);
+            }
+        }
+    }
+
+    public void addClassPath( String path ) {
+        if ( !this.classPath.contains(path) ) {
+            this.classPath.add(path);
+        }
+    }
+
+    public List<String> getClassPath() {
+        return classPath;
+    }
+
+    public void setClassPath(List<String> classPath) {
+        this.classPath = classPath;
     }
 
     public String getRootPath() {
@@ -88,11 +113,15 @@ public class ForkManagerImpl implements IForkManager {
         return this.getFacade().getConsole().createExecutor( this.getJvmPath() );
     }
 
-    protected IScriptExecutor createForkExecutor( String path ) {
-        return this.createJVMExecutor()
-                .addUnnamedParameter( String.format( MEMORY_INITIAL_PARAM, this.getMemoryLimit() ))
+    protected IScriptExecutor createForkExecutor( String path, String codeSource, String[] args ) {
+        IScriptExecutor executor = this.createJVMExecutor()
+                .addUnnamedParameter( String.format( CLASSPATH_PARAM, codeSource ) )
+                .addUnnamedParameter( String.format( MEMORY_INITIAL_PARAM, this.getMemoryLimit() ) )
                 .addUnnamedParameter( String.format( MEMORY_LIMIT_PARAM, this.getMemoryLimit() ) )
-                .addUnnamedParameter( path );
+                .addUnnamedParameter( path )
+                .addUnnamedParameter( StringUtils.join( args, " ") );
+
+        return executor;
     }
 
     protected String copyClazz( String path, Class<?> clazz ) throws IOException {
@@ -110,27 +139,35 @@ public class ForkManagerImpl implements IForkManager {
 
         return clazzFile.getAbsolutePath();
     }
-    
+
     @Override
     public IFork acquireClient(Class<?> clazz) throws ProcessException {
-        try {
-            String clazzPath = this.copyClazz( this.getRootPath(), clazz );;
-            IScriptExecutor executor = this.createForkExecutor(clazzPath);
-            if ( executor == null ) {
-                throw new ProcessException("Failed to configure fork executor");
-            }
-    
-            ISystemProcess process;
-            try {
-                process = executor.spawn();
-            } catch ( IOException e ) {
-                throw new ProcessException("Unable to spawn fork process");
-            }
-    
-            return new ForkImpl( this.getLoader(), process );
-        } catch ( IOException e ) {
-            throw new ProcessException( e.getMessage(), e );
+        return this.acquireClient(clazz, new String[] {} );
+    }
+
+    @Override
+    public IFork acquireClient(Class<?> clazz, String[] args ) throws ProcessException {
+        String clazzPath = clazz.getCanonicalName();
+        String codeSource = clazz.getProtectionDomain().getCodeSource().getLocation().toExternalForm();
+
+        List<String> classPath = new ArrayList<String>(this.classPath);
+        if ( !classPath.contains(codeSource) ) {
+            classPath.add( codeSource );
         }
+
+        IScriptExecutor executor = this.createForkExecutor(clazzPath, StringUtils.join(classPath, File.pathSeparator), args );
+        if ( executor == null ) {
+            throw new ProcessException("Failed to configure fork executor");
+        }
+
+        ISystemProcess process;
+        try {
+            process = executor.spawn();
+        } catch ( IOException e ) {
+            throw new ProcessException("Unable to spawn fork process");
+        }
+
+        return new ForkImpl( this.getLoader(), process );
     }
 
     @Override

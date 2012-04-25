@@ -9,7 +9,13 @@ import java.util.List;
  * @date 1/31/12 {1:43 PM}
  */
 public interface IForkManager {
-    
+
+    public void addClassPath( String path );
+
+    public void addClassPath( String[] path );
+
+    public IFork acquireClient( Class<?> client, String[] args ) throws ProcessException;
+
     public IFork acquireClient( Class<?> client ) throws ProcessException;
 
     public List<IFork> getClientsList();

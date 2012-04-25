@@ -22,11 +22,19 @@ import java.util.List;
  */
 public class ForkClassLoader extends ClassLoader {
 
+    public interface Handler {
+
+        public IForkCommandResponse handle( IForkCommand command ) throws ProcessException;
+
+    }
+
     private int resourcesCount = 0;
     
     private DataInputStream input;
     private DataOutputStream output;
     private IForkProtocol protocol;
+
+    private List<Handler> handlers = new ArrayList<Handler>();
 
     private Object protocolLock = new Object();
     
@@ -118,6 +126,19 @@ public class ForkClassLoader extends ClassLoader {
                 return this.defineClass(name, response.getClazzData(), 0, response.getClazzData().length);
             } catch ( IOException e ) {
                 throw new ClassNotFoundException( e.getMessage(), e );
+            }
+        }
+    }
+
+    public void addCommandHandler( Handler handler ) {
+        this.handlers.add(handler);
+    }
+
+    public void run() throws IOException, ProcessException {
+        synchronized (this.protocol) {
+            IForkCommand command = this.getProtocol().readCommand(this.getInput());
+            for ( Handler handler : this.handlers ) {
+                handler.handle(command);
             }
         }
     }
