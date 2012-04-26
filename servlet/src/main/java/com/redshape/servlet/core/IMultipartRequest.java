@@ -9,6 +9,18 @@ import java.util.Iterator;
  */
 public interface IMultipartRequest {
 
+    interface IFileInfo {
+
+        public byte [] getContent();
+
+        public String getSourceFilename();
+
+        public String getContentType();
+
+        public void setSourceFileName(String fileName);
+
+    }
+
     public Iterator getParameterNames();
 
     public String getParameter(String name);
@@ -17,7 +29,7 @@ public interface IMultipartRequest {
 
     public Iterator getFileInfoNames();
 
-    public HttpRequest.MultipartRequest.FileInfo getFileInfo(String name);
+    public MultipartRequest.IFileInfo getFileInfo(String name);
 
-    public HttpRequest.MultipartRequest.FileInfo[] getFileInfoValues(String name);
+    public MultipartRequest.IFileInfo[] getFileInfoValues(String name);
 }
