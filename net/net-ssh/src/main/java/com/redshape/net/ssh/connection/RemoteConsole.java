@@ -12,7 +12,6 @@ import com.redshape.utils.system.scripts.IScriptExecutor;
 import com.redshape.utils.system.scripts.IScriptListExecutor;
 import com.redshape.utils.system.scripts.bash.BashScriptExecutor;
 import com.redshape.utils.system.scripts.bash.BashScriptListExecutor;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.io.InputStream;

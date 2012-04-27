@@ -16,15 +16,11 @@ import com.redshape.persistence.dao.query.expressions.operations.UnaryOperation;
 import com.redshape.persistence.dao.query.statements.*;
 import com.redshape.persistence.entities.IEntity;
 import com.redshape.utils.Commons;
-import com.redshape.utils.StringUtils;
 import org.hibernate.ejb.criteria.path.PluralAttributePath;
-import org.hibernate.shards.util.StringUtil;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.criteria.*;
-import javax.persistence.metamodel.PluralAttribute;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -187,7 +183,7 @@ public class CriteriaExecutor extends AbstractQueryExecutor<Query, Predicate, Ex
     }
 
     @Override
-    public CompoundSelection<?> processStatement(ArrayStatement statement) throws QueryExecutorException {
+    public CompoundSelection<?> processStatement(IArrayStatement statement) throws QueryExecutorException {
         Expression<?>[] statements = new Expression<?>[statement.getSize()];
         for ( int i = 0; i < statements.length; i++ ) {
             statements[i++] = this.processStatement( statement.getStatement(i) );

@@ -296,11 +296,11 @@ public class JMXAgent {
         try {
             JMXServiceURL url;
             if (!rmiAdapterPort.trim().isEmpty()) {
-                url = new JMXServiceURL("service:jmx:rmi://" + rmiAdapterHost + ":"
+                url = new JMXServiceURL("services:jmx:rmi://" + rmiAdapterHost + ":"
                         + rmiAdapterRemotePort +
                         "/jndi/rmi://" + rmiAdapterHost + ":" + rmiAdapterPort + "/" + rmiAdapterPath );
             } else {
-                url = new JMXServiceURL("service:jmx:rmi://" + rmiAdapterHost + ":"
+                url = new JMXServiceURL("services:jmx:rmi://" + rmiAdapterHost + ":"
                         + rmiAdapterPort + "/jndi/rmi://" + rmiAdapterHost + ":"
                         + rmiAdapterPort + rmiAdapterPath );
             }

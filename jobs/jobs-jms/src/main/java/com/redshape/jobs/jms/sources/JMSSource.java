@@ -1,7 +1,6 @@
 package com.redshape.jobs.jms.sources;
 
 import com.redshape.jobs.IJob;
-import com.redshape.jobs.IPersistenceJob;
 import com.redshape.jobs.JobException;
 import com.redshape.jobs.JobStatus;
 import com.redshape.jobs.result.IJobResult;

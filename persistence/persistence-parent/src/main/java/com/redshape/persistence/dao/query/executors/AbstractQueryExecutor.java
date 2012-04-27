@@ -112,9 +112,6 @@ public abstract class AbstractQueryExecutor<T, P, E> implements IQueryExecutor<T
 	            .getMethod("processExpression", statement.getClass())
 	            .invoke(this, statement);
         	if ( expression instanceof IExpression ) {
-                /**
-                 * @FIXME: is this logic erroneous?
-                 */
         		return this.processExpression( (IExpression) statement );
         	}
 	            

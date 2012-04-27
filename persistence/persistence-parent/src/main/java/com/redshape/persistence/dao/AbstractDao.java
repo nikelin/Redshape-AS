@@ -98,7 +98,7 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
         }
 
         if ( this.service == null ) {
-            throw new IllegalStateException("<null>: queries execution service must be provided");
+            throw new IllegalStateException("<null>: queries execution services must be provided");
         }
 
         if ( this.builder == null ) {

@@ -68,6 +68,9 @@
         </profile>
 
     </profiles>
+    <modules>
+        <module>net-api</module>
+    </modules>
 
 
 </project>

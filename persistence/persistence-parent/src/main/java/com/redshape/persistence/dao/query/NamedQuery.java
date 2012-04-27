@@ -4,7 +4,6 @@ import com.redshape.persistence.dao.query.expressions.IExpression;
 import com.redshape.persistence.dao.query.statements.IAliasStatement;
 import com.redshape.persistence.dao.query.statements.IJoinStatement;
 import com.redshape.persistence.dao.query.statements.IStatement;
-import com.redshape.persistence.entities.IEntity;
 
 import java.util.List;
 import java.util.Map;

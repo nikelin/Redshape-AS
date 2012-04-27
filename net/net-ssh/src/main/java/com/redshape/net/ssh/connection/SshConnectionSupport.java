@@ -5,7 +5,6 @@ import com.redshape.net.connection.ConnectionAttribute;
 import com.redshape.net.connection.ConnectionException;
 import com.redshape.net.connection.IServerConnection;
 import com.redshape.net.connection.auth.IConnectionAuthenticator;
-import com.redshape.net.ssh.connection.auth.ISshAuthenticator;
 import com.redshape.utils.Commons;
 import com.redshape.utils.config.ConfigException;
 import com.redshape.utils.config.IConfig;

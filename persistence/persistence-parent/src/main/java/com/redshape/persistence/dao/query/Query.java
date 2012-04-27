@@ -2,7 +2,6 @@ package com.redshape.persistence.dao.query;
 
 import com.redshape.persistence.dao.query.expressions.IExpression;
 import com.redshape.persistence.dao.query.statements.*;
-import com.redshape.persistence.entities.IEntity;
 
 import java.util.*;
 

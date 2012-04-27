@@ -185,7 +185,7 @@ public class HBaseQueryExecutor extends AbstractQueryExecutor<Filter, Filter, Ob
     }
 
     @Override
-    public byte[] processStatement(ArrayStatement statement) throws QueryExecutorException {
+    public byte[] processStatement(IArrayStatement statement) throws QueryExecutorException {
         Object[] objects = new Object[ statement.getSize() ];
         int i = 0;
         for ( IStatement item : statement.getStatements() ) {

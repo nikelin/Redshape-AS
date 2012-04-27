@@ -2,6 +2,7 @@ package com.redshape.persistence.dao;
 
 import com.redshape.persistence.entities.IEntity;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +14,7 @@ import java.util.Map;
  * Time: 18:20
  * To change this template use File | Settings | File Templates.
  */
-public class DAOFacade implements IDAOFacade {
+public class DAOFacade implements IDAOFacade, ApplicationContextAware {
 	private ApplicationContext context;
 
     private Map<Class<? extends IEntity>, IDAO<?>> cached

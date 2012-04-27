@@ -21,6 +21,7 @@
             <modules>
                 <module>persistence-parent</module>
                 <module>jpa</module>
+                <module>api</module>
                 <module>hbase</module>
                 <module>jms</module>
                 <module>gae</module>
@@ -75,6 +76,10 @@
             </modules>
         </profile>
     </profiles>
+    <modules>
+        <module>migration-toolkit</module>
+        <module>api</module>
+    </modules>
 
     <parent>
         <groupId>com.redshape</groupId>

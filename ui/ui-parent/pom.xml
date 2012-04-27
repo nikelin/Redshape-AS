@@ -11,6 +11,8 @@
     <groupId>com.redshape.ui</groupId>
     <artifactId>ui-parent</artifactId>
 
+
+
     <build>
         <resources>
             <resource>

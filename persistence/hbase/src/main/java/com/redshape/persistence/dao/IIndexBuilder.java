@@ -7,15 +7,17 @@ import com.redshape.persistence.entities.IEntity;
 import java.util.Map;
 
 public interface IIndexBuilder {
-    Map<String, byte[]> buildIndex(IEntity entity) throws IndexBuilderException;
 
-    void setSerializer(ISerializer serializer);
+    public Map<String, byte[]> buildIndex(IEntity entity) throws IndexBuilderException;
 
-    ISerializer getSerializer();
+    public void setSerializer(ISerializer serializer);
 
-    IStaticQueryExecutor getStaticQueryExecutor(IQuery query);
+    public ISerializer getSerializer();
 
-    void setEntityClass(Class<? extends IEntity> clazz);
+    public IStaticQueryExecutor getStaticQueryExecutor(IQuery query);
 
-    Class<? extends IEntity> getEntityClass();
+    public void setEntityClass(Class<? extends IEntity> clazz);
+
+    public Class<? extends IEntity> getEntityClass();
+
 }

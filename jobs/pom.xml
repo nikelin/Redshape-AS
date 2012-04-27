@@ -31,6 +31,7 @@
                 </property>
             </activation>
             <modules>
+                <module>jobs-api</module>
                 <module>jobs-parent</module>
                 <module>jobs-jpa</module>
                 <module>jobs-jms</module>

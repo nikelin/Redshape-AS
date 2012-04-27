@@ -249,7 +249,7 @@ public abstract class AbstractRMIDaemon<T extends IDaemonAttributes>
 			this.serverFactory
 		);
 		
-		log.info("Starting service: " + service.getServiceName() + " on port " + port );
+		log.info("Starting services: " + service.getServiceName() + " on port " + port );
 		
 		this.getRegistry().bind( service.getServiceName(), stub);
 		

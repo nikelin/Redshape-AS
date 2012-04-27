@@ -2,7 +2,6 @@ package com.redshape.jobs.handlers;
 
 import com.redshape.jobs.IJob;
 import com.redshape.jobs.result.IJobResult;
-import com.redshape.utils.Commons;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 

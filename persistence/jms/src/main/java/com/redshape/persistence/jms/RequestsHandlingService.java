@@ -7,7 +7,6 @@ import com.redshape.persistence.dao.query.executors.result.IExecutorResult;
 import com.redshape.persistence.dao.query.executors.result.IExecutorResultFactory;
 import com.redshape.persistence.dao.query.executors.services.IQueryExecutorService;
 import com.redshape.persistence.entities.DtoUtils;
-import com.redshape.persistence.entities.IDTO;
 import com.redshape.persistence.entities.IEntity;
 import com.redshape.persistence.jms.protocol.IQueryMarshaller;
 import com.redshape.persistence.jms.protocol.ProtocolException;
@@ -22,7 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Default DAO requests handling service
+ * Default DAO requests handling services
  *
  * @author Cyril A. Karpenko <self@nikelin.ru>
  * @package com.redshape.persistence.jms
@@ -159,7 +158,7 @@ public class RequestsHandlingService implements IRequestHandlingService {
         }
 
         if ( this.getExecutionService() == null ) {
-            throw new IllegalStateException("<null>: queries execution service not provided");
+            throw new IllegalStateException("<null>: queries execution services not provided");
         }
     }
 
