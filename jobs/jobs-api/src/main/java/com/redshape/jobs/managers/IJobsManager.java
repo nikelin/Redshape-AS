@@ -4,13 +4,12 @@ import com.redshape.jobs.IJob;
 import com.redshape.jobs.handlers.HandlingException;
 import com.redshape.jobs.handlers.IJobHandler;
 import com.redshape.jobs.result.IJobResult;
-import org.springframework.context.ApplicationContextAware;
 
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Future;
 
-public interface IJobsManager extends ApplicationContextAware {
+public interface IJobsManager {
 
     public Map<Class<? extends IJob>, IJobHandler<?, ?>> getHandlers();
 

@@ -2,6 +2,7 @@ package com.redshape.servlet.support.handlers;
 
 import com.redshape.utils.Commons;
 import com.redshape.utils.IPackagesLoader;
+import com.redshape.utils.PackageLoaderException;
 import groovy.lang.GroovyClassLoader;
 import org.codehaus.groovy.control.CompilerConfiguration;
 
@@ -55,12 +56,16 @@ public class GroovyResourcesHandler implements IPackagesLoader.ResourcesHandler 
     }
 
     @Override
-    public Class<?> handle(String className) throws ClassNotFoundException {
+    public Class<?> handle(String className) throws PackageLoaderException {
         return this.handle(className, new URI[] {} );
     }
 
     @Override
-    public Class<?> handle(String className, URI[] uris) throws ClassNotFoundException {
-        return this.createClassLoader(uris).loadClass(className);
+    public Class<?> handle(String className, URI[] uris) throws PackageLoaderException {
+        try {
+            return this.createClassLoader(uris).loadClass(className);
+        } catch ( ClassNotFoundException e ) {
+            throw new PackageLoaderException( e.getMessage(), e );
+        }
     }
 }

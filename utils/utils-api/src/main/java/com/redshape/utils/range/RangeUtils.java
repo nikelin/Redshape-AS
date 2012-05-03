@@ -200,13 +200,13 @@ public final class RangeUtils {
         Map<Class<?>, Lambda<Boolean>> mappings;
         if ( null == ( mappings = checkIntersectionsMapping.get(source.getClass() ) ) ) {
             throw new IllegalArgumentException("Unsupported range type "
-                    + target.getClass().getCanonicalName() );
+                    + target.getClass().getName() );
         }
 
         ILambda<Boolean> method;
         if ( null == ( method = mappings.get( target.getClass() ) ) ) {
             throw new IllegalArgumentException("Unsupported range type "
-                    + target.getClass().getCanonicalName() );
+                    + target.getClass().getName() );
         }
 
         try {

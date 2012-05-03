@@ -11,9 +11,9 @@ public interface IPackagesLoader {
 
     public interface ResourcesHandler {
 
-        public Class<?> handle( String className ) throws ClassNotFoundException;
+        public Class<?> handle( String className ) throws PackageLoaderException;
 
-        public Class<?> handle( String className, URI[] uris ) throws ClassNotFoundException;
+        public Class<?> handle( String className, URI[] uris ) throws PackageLoaderException;
 
     }
 

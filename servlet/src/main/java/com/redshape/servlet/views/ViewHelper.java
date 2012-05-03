@@ -133,8 +133,7 @@ public final class ViewHelper {
 			throw new IllegalStateException("Config related exception", e );
 		}
 
-		url.append("/")
-			.append( actionMeta.controller() )
+		url.append( actionMeta.controller() )
 			.append( "/" )
 			.append( actionMeta.name() );
 
@@ -151,7 +150,7 @@ public final class ViewHelper {
 			}
 		}
 
-		return url.toString();
+		return normalizeUrl( url.toString() );
 	}
 
 	private static IConfig getConfig() {

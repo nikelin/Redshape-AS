@@ -29,9 +29,31 @@
                 </executions>
             </plugin>
         </plugins>
+
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.gwt.xml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.java</include>
+                    <include>**/*.gwt.xml</include>
+                </includes>
+            </resource>
+        </resources>
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>com.google.code.gwtx</groupId>
+            <artifactId>gwtx</artifactId>
+            <version>1.5.3</version>
+        </dependency>
         <dependency>
             <artifactId>api</artifactId>
             <groupId>com.redshape.persistence</groupId>

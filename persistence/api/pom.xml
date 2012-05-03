@@ -11,9 +11,25 @@
 
     <groupId>com.redshape.persistence</groupId>
     <artifactId>api</artifactId>
-    <name>Redshape - Framework - API</name>
+    <name>Redshape - Persistence - API</name>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.gwt.xml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.java</include>
+                    <include>**/*.gwt.xml</include>
+                </includes>
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -173,7 +173,7 @@ public class PackagesLoader implements IPackagesLoader {
             for ( URL classUrl : targetEntries ) {
                 String className = this.prepareClassName( classUrl );
                 try {
-                    URI classUri = classUrl.toURI();
+                    URI classUri = new URI("file:" + classUrl.toExternalForm());
 
                     ResourcesHandler handler = this.findHandler( classUri );
                     if ( handler == null ) {
@@ -188,7 +188,7 @@ public class PackagesLoader implements IPackagesLoader {
                     if ( filter == null || filter.filter(clazz) ) {
                         result.add(clazz);
                     }
-                } catch ( ClassNotFoundException e ) {
+                } catch ( PackageLoaderException e ) {
                     log.debug( "Unable to load class " + className );
                     continue;
                 } catch ( URISyntaxException e ) {

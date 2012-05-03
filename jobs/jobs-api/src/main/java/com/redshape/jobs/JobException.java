@@ -2,7 +2,7 @@ package com.redshape.jobs;
 
 import java.rmi.RemoteException;
 
-public class JobException extends RemoteException {
+public class JobException extends Exception {
 	private static final long serialVersionUID = -5891904691227534638L;
 
 	public JobException() {

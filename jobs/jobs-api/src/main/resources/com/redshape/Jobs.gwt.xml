@@ -1,0 +1,13 @@
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.0//EN"
+        "http://google-web-toolkit.googlecode.com/svn/releases/2.0/distro-source/core/src/gwt-module.dtd">
+<module>
+
+    <inherits name="com.redshape.Persistence"/>
+    <inherits name="com.redshape.Net"/>
+    <inherits name="com.googlecode.gwtx.Java"/>
+
+    <super-source path="jre"/>
+
+    <source path="jobs"/>
+
+</module>

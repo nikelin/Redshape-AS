@@ -24,6 +24,7 @@
                 </property>
             </activation>
             <modules>
+                <module>net-api</module>
                 <module>net-parent</module>
                 <module>jmx-utils</module>
                 <module>fetchers</module>
@@ -37,6 +38,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <module>net-api</module>
                 <module>net-parent</module>
                 <module>jmx-utils</module>
                 <module>fetchers</module>
@@ -51,6 +53,8 @@
                 </property>
             </activation>
             <modules>
+                <module>net-api</module>
+                <module>net-parent</module>
                 <module>net-ssh</module>
             </modules>
         </profile>
@@ -63,6 +67,8 @@
                 </property>
             </activation>
             <modules>
+                <module>net-api</module>
+                <module>net-parent</module>
                 <module>net-tomcat</module>
             </modules>
         </profile>

@@ -37,11 +37,6 @@
             <groupId>com.redshape.persistence</groupId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <artifactId>appengine-api-1.0-sdk</artifactId>
-            <groupId>com.google.appengine</groupId>
-            <version>1.6.3.1</version>
-        </dependency>
     </dependencies>
 
 </project>

@@ -1,6 +1,5 @@
 package com.redshape.servlet.resources.impl;
 
-import com.redshape.servlet.core.Constants;
 import com.redshape.servlet.resources.IWebResourceWriter;
 import com.redshape.servlet.resources.IWebResourcesCompressor;
 import com.redshape.servlet.resources.types.Link;

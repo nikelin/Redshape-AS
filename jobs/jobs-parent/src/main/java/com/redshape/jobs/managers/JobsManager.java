@@ -10,6 +10,7 @@ import com.redshape.jobs.sources.SourceEvent;
 import com.redshape.utils.events.IEventListener;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +20,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class JobsManager implements IJobsManager {
+public class JobsManager implements IJobsManager, ApplicationContextAware {
     private static final Logger log = Logger.getLogger(JobsManager.class);
 
 	private Map<Class<? extends IJob>, IJobHandler<?, ?>> handlers =

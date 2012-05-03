@@ -10,7 +10,6 @@ public abstract class AbstractJob implements IJob {
 	private UUID id;
 	private JobStatus state;
 
-
 	public AbstractJob() {
 		this( UUID.randomUUID() );
 	}

@@ -2,6 +2,7 @@ package com.redshape.utils.packages;
 
 import com.redshape.utils.Commons;
 import com.redshape.utils.IPackagesLoader;
+import com.redshape.utils.PackageLoaderException;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -42,18 +43,24 @@ public class ClassloaderBasedHandler implements IPackagesLoader.ResourcesHandler
     }
 
     @Override
-    public Class<?> handle(String className) throws ClassNotFoundException {
+    public Class<?> handle(String className) throws PackageLoaderException {
         Commons.checkNotNull(this.getClassLoader(), "Classloader not assigned");
 
-        return this.getClassLoader().loadClass(className);
+        try {
+            return this.getClassLoader().loadClass(className);
+        } catch ( ClassNotFoundException e ) {
+            throw new PackageLoaderException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public Class<?> handle(String className, URI[] uris) throws ClassNotFoundException {
+    public Class<?> handle(String className, URI[] uris) throws PackageLoaderException {
         try {
             return this.createClassLoader(uris).loadClass(className);
         } catch ( MalformedURLException e ) {
             throw new IllegalArgumentException( e.getMessage(), e );
+        } catch ( ClassNotFoundException e ) {
+            throw new PackageLoaderException( e.getMessage(), e );
         }
     }
 

@@ -2,7 +2,6 @@ package com.redshape.jobs.jpa;
 
 import com.redshape.jobs.IPersistenceJob;
 import com.redshape.jobs.JobStatus;
-import com.redshape.persistence.entities.AbstractDTO;
 import com.redshape.persistence.entities.DtoUtils;
 import com.redshape.persistence.entities.IDTO;
 import com.redshape.persistence.entities.IDtoCapable;
