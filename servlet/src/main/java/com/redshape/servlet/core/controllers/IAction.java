@@ -6,6 +6,9 @@ import com.redshape.servlet.core.controllers.registry.IControllersRegistry;
 import com.redshape.servlet.views.IView;
 import com.redshape.servlet.views.IViewsFactory;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+
 /**
  * Created by IntelliJ IDEA.
  * User: nikelin
@@ -22,6 +25,10 @@ public interface IAction {
 	public void setRegistry( IControllersRegistry registry );
 
     public void setView( IView view );
+
+    public void setServletConfig(ServletConfig context);
+
+    public ServletConfig getServletConfig();
 
     public IHttpRequest getRequest();
 

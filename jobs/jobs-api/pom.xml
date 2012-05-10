@@ -50,13 +50,13 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.google.code.gwtx</groupId>
-            <artifactId>gwtx</artifactId>
-            <version>1.5.3</version>
-        </dependency>
-        <dependency>
             <artifactId>api</artifactId>
             <groupId>com.redshape.persistence</groupId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>net-api</artifactId>
+            <groupId>com.redshape.net</groupId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

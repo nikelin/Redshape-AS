@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <properties>
-        <spring_version>3.0.5.RELEASE</spring_version>
+        <spring_version>3.1.0.RELEASE</spring_version>
     </properties>
 
     <build>

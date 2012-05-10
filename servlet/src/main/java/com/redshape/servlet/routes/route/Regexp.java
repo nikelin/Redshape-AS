@@ -53,8 +53,8 @@ public class Regexp implements IRoute {
 	@Override
 	public boolean isApplicatable(IHttpRequest request) {
 		Matcher matcher = this.pattern.matcher(
-				request.getRequestURI().startsWith(request.getServletPath()) ?
-						request.getRequestURI().substring(request.getServletPath().length())
+				request.getRequestURI().startsWith(request.getContextPath()) ?
+						request.getRequestURI().substring(request.getContextPath().length())
 						: request.getRequestURI());
 		if ( !matcher.find() ) {
 			return false;
@@ -66,8 +66,8 @@ public class Regexp implements IRoute {
 
 	@Override
 	public void applicate(IHttpRequest request) {
-		String sourcePath = request.getServletPath().startsWith( request.getServletPath() )?
-						request.getRequestURI().substring( request.getServletPath().length() )
+		String sourcePath = request.getServletPath().startsWith( request.getContextPath() )?
+						request.getRequestURI().substring( request.getContextPath().length() )
 						: request.getRequestURI();
 		Matcher matcher = this.pattern.matcher( sourcePath );
 		if ( matcher.find() ) {

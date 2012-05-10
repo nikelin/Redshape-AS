@@ -89,7 +89,7 @@ public class FrontController {
 
         this._invokePlugins( DispatchingStage.PRE_DISPATCH, routedRequest, wrappedResponse );
 
-        this.getDispatcher().dispatch( routedRequest, wrappedResponse );
+        this.getDispatcher().dispatch( servlet.getServletConfig(), routedRequest, wrappedResponse );
 
         this._invokePlugins( DispatchingStage.POST_DISPATCH, routedRequest, wrappedResponse );
     }

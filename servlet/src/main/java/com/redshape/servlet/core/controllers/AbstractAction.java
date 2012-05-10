@@ -10,6 +10,9 @@ import com.redshape.servlet.views.IViewsFactory;
 import com.redshape.utils.config.IConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+
 /**
  * Created by IntelliJ IDEA.
  * User: nikelin
@@ -28,8 +31,23 @@ public abstract class AbstractAction implements IAction {
     @Autowired( required = true )
     private IViewsFactory viewsFactory;
 
+    private ServletConfig servletConfig;
     private IHttpRequest request;
     private IHttpResponse response;
+
+    @Override
+    public ServletConfig getServletConfig() {
+        return servletConfig;
+    }
+
+    @Override
+    public void setServletConfig(ServletConfig context) {
+        if ( context == null ) {
+            throw new IllegalArgumentException("<null>");
+        }
+
+        this.servletConfig = context;
+    }
 
     protected IConfig getConfig() {
         return config;

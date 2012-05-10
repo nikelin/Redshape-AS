@@ -171,6 +171,11 @@ class Query<Z> implements IQuery<Z> {
     }
 
     @Override
+    public void setEntityClass(Class<Z> entityClass) {
+        this.entityClass = entityClass;
+    }
+
+    @Override
     public List<IStatement> select() {
         return this.fields;
     }

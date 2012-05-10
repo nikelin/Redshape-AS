@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -202,7 +203,7 @@ public class HttpDispatcher implements IHttpDispatcher {
     }
 
 	@Override
-    public void dispatch( IHttpRequest request, IHttpResponse response ) 
+    public void dispatch( ServletConfig servletContext, IHttpRequest request, IHttpResponse response )
     	throws DispatchException {
         try {
 			ViewHelper.setLocalHttpRequest(request);
@@ -248,8 +249,8 @@ public class HttpDispatcher implements IHttpDispatcher {
             String viewPath = this.getRegistry().getViewPath(action);
 
             view.setViewPath( viewPath != null ? StringUtils.escapePath(viewPath) : controllerName + File.separator + actionName );
-            log.info( view.getViewPath() );
-            action.setView(view);
+            action.setView( view );
+            action.setServletConfig(servletContext);
             action.setRequest( request );
             action.setResponse( response );
 

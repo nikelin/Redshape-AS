@@ -160,6 +160,8 @@ public interface IQuery<Z> extends Serializable {
      */
     public Class<Z> getEntityClass();
 
+    public void setEntityClass( Class<Z> entityClass );
+
     public Z entity();
 
     /**

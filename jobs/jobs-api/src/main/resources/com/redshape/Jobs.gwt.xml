@@ -4,9 +4,6 @@
 
     <inherits name="com.redshape.Persistence"/>
     <inherits name="com.redshape.Net"/>
-    <inherits name="com.googlecode.gwtx.Java"/>
-
-    <super-source path="jre"/>
 
     <source path="jobs"/>
 

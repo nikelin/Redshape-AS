@@ -52,6 +52,11 @@ public class NamedQuery<T> implements IQuery<T> {
         return this.query.where(expression);
     }
 
+    @Override
+    public void setEntityClass(Class<T> entityClass) {
+        this.query.setEntityClass(entityClass);
+    }
+
     @SuppressWarnings("unchecked")
 	@Override
     public Class<T> getEntityClass() {

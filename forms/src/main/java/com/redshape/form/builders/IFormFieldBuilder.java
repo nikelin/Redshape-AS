@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Common implementation for a form fields builder.
+ * common implementation for a form fields builder.
  *  
  * @author nikelin
  */

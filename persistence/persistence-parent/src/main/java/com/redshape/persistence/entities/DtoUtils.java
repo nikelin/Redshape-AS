@@ -268,6 +268,10 @@ public final class DtoUtils {
             if ( entityClazz == null ) {
                 throw new IllegalStateException("<null>");
             }
+
+            if ( entityClazz.isInterface() ) {
+                entityClazz = DaoContextHolder.instance().getContext().getBean( entityClazz ).getClass();
+            }
         
             if ( dto.getId() != null ) {
                 DAOFacade facade = DaoContextHolder.instance().getContext().getBean(DAOFacade.class);
