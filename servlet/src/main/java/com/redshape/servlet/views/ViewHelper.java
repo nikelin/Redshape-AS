@@ -40,7 +40,7 @@ public final class ViewHelper {
 		localRequest.set( request );
 	}
 
-	protected static IHttpRequest getLocalHttpRequest() {
+	public static IHttpRequest getLocalHttpRequest() {
 		return localRequest.get();
 	}
 
