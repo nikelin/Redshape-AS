@@ -201,7 +201,7 @@ public class JMSSource extends AbstractEventDispatcher implements IJobSource<IJo
                     log.debug("Breaking a receiving cycle with a chunk of " + result.size() + "...");
                     break;
                 }
-            } catch ( JMSException e ) {
+            } catch ( Throwable e ) {
                 log.error( e.getMessage(), e );
                 failuresCount++;
             }
