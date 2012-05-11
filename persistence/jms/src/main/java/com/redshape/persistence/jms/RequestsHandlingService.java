@@ -1,5 +1,6 @@
 package com.redshape.persistence.jms;
 
+import com.redshape.persistence.DaoContextHolder;
 import com.redshape.persistence.dao.DAOException;
 import com.redshape.persistence.dao.query.IQuery;
 import com.redshape.persistence.dao.query.IQueryBuilder;
@@ -188,6 +189,11 @@ public class RequestsHandlingService implements IRequestHandlingService {
             if ( query.entity() != null ) {
                 log.info("Hydrating DTO object from JMS query request...");
                 query.entity( DtoUtils.<T>fromDTO(query.entity()) );
+            }
+
+            if ( query.getEntityClass().isInterface() ) {
+                query.setEntityClass(
+                        (Class<T>) DaoContextHolder.instance().getContext().getBean(query.getEntityClass()).getClass() );
             }
 
             log.info("Executing income query...");
