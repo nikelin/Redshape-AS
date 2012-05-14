@@ -3,8 +3,10 @@ package com.redshape.persistence.dao;
 import com.redshape.persistence.dao.query.IQuery;
 import com.redshape.persistence.dao.query.IQueryBuilder;
 import com.redshape.persistence.dao.query.executors.IExecutionRequest;
+import com.redshape.persistence.dao.query.executors.result.IExecutorResult;
 import com.redshape.persistence.dao.query.executors.services.IQueryExecutorService;
 import com.redshape.persistence.entities.IEntity;
+import com.redshape.persistence.entities.ValueEntity;
 import com.redshape.utils.Commons;
 import com.redshape.utils.InvocationException;
 import com.redshape.utils.Lambda;
@@ -178,12 +180,12 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
 
     @Override
     public Long count() throws DAOException {
-        IExecutionRequest request = (IExecutionRequest) this.service.execute(
+        IExecutorResult<ValueEntity<Long>> result = (IExecutorResult<ValueEntity<Long>>) this.service.execute(
                 this.getBuilder()
                         .countQuery( this.getEntityClass() )
         );
 
-        return (Long) request.resultValue();
+        return result.getSingleResult().getValue();
     }
 
 

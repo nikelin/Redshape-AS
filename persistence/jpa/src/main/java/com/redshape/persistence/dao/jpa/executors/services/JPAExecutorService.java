@@ -13,6 +13,7 @@ import com.redshape.persistence.dao.query.executors.result.StandardExecutorResul
 import com.redshape.persistence.dao.query.executors.services.IQueryExecutorService;
 import com.redshape.persistence.entities.DtoUtils;
 import com.redshape.persistence.entities.IEntity;
+import com.redshape.persistence.entities.ValueEntity;
 import com.redshape.utils.Commons;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -97,10 +98,10 @@ public class JPAExecutorService extends JpaDaoSupport implements IQueryExecutorS
         return this.getResultObjectsFactory().createResult(value);
     }
     
-    protected Integer executeCountQuery( IQuery query ) throws DAOException {
+    protected IEntity executeCountQuery( IQuery query ) throws DAOException {
         this.em.flush();
         Query countQuery = this.em.createNativeQuery("select count(id) from " + this.getEntityName(query) );
-        return ( (BigInteger) countQuery.getSingleResult() ).intValue();
+        return new ValueEntity<Long>( ( (BigInteger) countQuery.getSingleResult() ).longValue() );
     }
 
     protected <T extends IEntity> List<T> executeSelect( IQuery query ) throws DAOException {

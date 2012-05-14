@@ -3,6 +3,7 @@ package com.redshape.persistence;
 import com.redshape.persistence.dao.DAOException;
 import com.redshape.utils.tests.AbstractContextAwareTest;
 import org.junit.Assert;
+import org.junit.Test;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class DAOTest extends AbstractContextAwareTest<String> {
         return this.getContext().getBean(ITestDAO.class);
     }
 
+    @Test
     public void testMain() throws DAOException {
         ITestDAO dao = this.getTestDAO();
         dao.removeAll();
