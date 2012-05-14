@@ -59,6 +59,14 @@ public final class Commons {
         }
     }
 
+    public static void checkNotNull( Object... x ) {
+        Commons.checkNotNull(x);
+
+        for ( Object item : x ) {
+            Commons.checkNotNull(item);
+        }
+    }
+
     public static void checkNotNull( Object x ) {
         checkNotNull(x, "<null>");
     }
