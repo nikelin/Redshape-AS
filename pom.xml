@@ -24,7 +24,6 @@
 		<module>search</module>
         <module>io</module>
         <module>utils</module>
-        <module>shaper</module>
         <module>plugins</module>
         <module>forker</module>
         <module>jobs</module>
