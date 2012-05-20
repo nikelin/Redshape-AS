@@ -1,13 +1,19 @@
 package com.redshape.persistence.entities;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
  * @package com.redshape.persistence.entities
  * @date 2/2/12 {11:56 AM}
  */
-public abstract class AbstractDTO implements IDTO {
+public abstract class AbstractDTO implements IDTO, IsSerializable {
     private Long id;
     private Class<? extends IEntity> entityClass;
+
+    protected AbstractDTO() {
+        this(null);
+    }
 
     protected AbstractDTO(Class<? extends IEntity> entityClass) {
         this.entityClass = entityClass;

@@ -11,50 +11,6 @@
     <groupId>com.redshape.ui</groupId>
     <artifactId>gwt</artifactId>
 
-    <profiles>
-        <profile>
-            <id>gwt-dev-windows</id>
-            <properties>
-                <platform>windows</platform>
-            </properties>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <os>
-                    <family>windows</family>
-                </os>
-            </activation>
-        </profile>
-        <profile>
-            <id>gwt-dev-mac</id>
-            <properties>
-                <platform>mac</platform>
-            </properties>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <os>
-                    <family>mac</family>
-                </os>
-            </activation>
-        </profile>
-        <profile>
-            <id>gwt-dev-linux</id>
-            <properties>
-                <platform>linux</platform>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-                <os>
-                    <name>linux</name>
-                </os>
-            </activation>
-        </profile>
-    </profiles>
-
-    <properties>
-        <gwt.version>2.4.0</gwt.version>
-        <gwt.platform>linux</gwt.platform>
-    </properties>
-
     <build>
         <resources>
             <resource>
@@ -100,11 +56,11 @@
             <artifactId>gwt-user</artifactId>
             <version>2.4.0</version>
         </dependency>
-            <dependency>
-                <artifactId>ui-parent</artifactId>
-                <groupId>com.redshape.ui</groupId>
-                <version>${project.version}</version>
-            </dependency>
+        <dependency>
+            <artifactId>ui-parent</artifactId>
+            <groupId>com.redshape.ui</groupId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
