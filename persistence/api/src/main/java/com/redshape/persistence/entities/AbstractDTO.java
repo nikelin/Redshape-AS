@@ -11,7 +11,7 @@ public abstract class AbstractDTO implements IDTO, IsSerializable {
     private Long id;
     private Class<? extends IEntity> entityClass;
 
-    protected AbstractDTO() {
+    public AbstractDTO() {
         this(null);
     }
 

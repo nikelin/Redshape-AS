@@ -70,7 +70,7 @@ public abstract class AbstractRMIDaemon<T extends IDaemonAttributes>
     private ExecutorService threadExecutor = Executors.newSingleThreadExecutor();
 
     public AbstractRMIDaemon(String context ) throws DaemonException, ConfigException {
-        this( loadContext(context) );
+        this( context != null ? loadContext(context) : null );
     }
     
 	public AbstractRMIDaemon( ApplicationContext context ) throws DaemonException, ConfigException {

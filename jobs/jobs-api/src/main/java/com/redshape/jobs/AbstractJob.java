@@ -7,6 +7,7 @@ public abstract class AbstractJob implements IJob {
 	private static final long serialVersionUID = -5210141269965829207L;
 	
 	private Date created;
+    private Date updated;
 	private UUID id;
 	private JobStatus state;
 
@@ -21,6 +22,16 @@ public abstract class AbstractJob implements IJob {
 			this.setJobId(jobId);
 		}
 	}
+
+    @Override
+    public void setUpdated(Date date) {
+        this.updated = date;
+    }
+
+    @Override
+    public Date getUpdated() {
+        return this.updated;
+    }
 
 	@Override
 	public void setState(JobStatus status) {

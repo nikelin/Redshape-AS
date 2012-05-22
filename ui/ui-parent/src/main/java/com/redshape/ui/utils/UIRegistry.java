@@ -28,6 +28,21 @@ public final class UIRegistry {
     private static IEventQueue eventsQueue;
 	private static INotificationsManager notificationsManager;
 
+    private static UIRegistry instance;
+
+    private Object lock = new Object();
+
+    public UIRegistry( IBeansProvider provider ) {
+        synchronized (lock) {
+            if ( instance != null ) {
+                return;
+            }
+
+            instance = this;
+            UIRegistry.set(UIConstants.System.APP_CONTEXT, provider);
+        }
+    }
+
     public static IEventQueue getEventQueue() {
         return getContext().getBean(IEventQueue.class);
     }

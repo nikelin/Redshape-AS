@@ -6,7 +6,7 @@ import com.redshape.ui.application.events.EventType;
 import com.redshape.ui.application.events.IEventDispatcher;
 import com.redshape.ui.application.events.IEventHandler;
 
-public abstract class AbstractWidget implements IWidget {
+public abstract class AbstractWidget<T> implements IWidget<T> {
 	private static final long serialVersionUID = 2236681842578375780L;
 	
 	private IEventDispatcher dispatcher;

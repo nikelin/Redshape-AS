@@ -153,7 +153,7 @@ public class ExpressionEvaluator implements IEvaluator {
 		this.getRootContext().exportFunctionAlias("!=", "neq");
 		this.getRootContext().exportFunction("<", new LessThanFunction(this) );
 		this.getRootContext().exportFunctionAlias("<", "lt");
-		this.getRootContext().exportFunction(">", (IFunction<?, ?> ) new GreatThanFunction(this) );
+		this.getRootContext().exportFunction(">",  new GreatThanFunction(this) );
 		this.getRootContext().exportFunctionAlias(">", "gt");
 
 		/**

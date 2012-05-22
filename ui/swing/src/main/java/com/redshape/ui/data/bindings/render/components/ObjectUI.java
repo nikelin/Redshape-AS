@@ -41,8 +41,8 @@ public class ObjectUI extends JPanel implements Cloneable {
         POSTINSTANTIATE
     }
 
-	private Map<HandlerType, Collection<IFunction<?, ?>>> handlers
-            = new HashMap<HandlerType, Collection<IFunction<?,?>>>();
+	private Map<HandlerType, Collection<ILambda<?>>> handlers
+            = new HashMap<HandlerType, Collection<ILambda<?>>>();
 
     private int lastY;
     private List<JButton> buttons = new ArrayList<JButton>();
@@ -55,18 +55,18 @@ public class ObjectUI extends JPanel implements Cloneable {
 		super();
 		this.model = model;
 
-        this.handlers.put( HandlerType.POSTINSTANTIATE, new HashSet<IFunction<?,?>>() );
-        this.handlers.put( HandlerType.PREINSTANTIATE, new HashSet<IFunction<?,?>>() );
+        this.handlers.put( HandlerType.POSTINSTANTIATE, new HashSet<ILambda<?>>() );
+        this.handlers.put( HandlerType.PREINSTANTIATE, new HashSet<ILambda<?>>() );
 		
 		this.configUI();
 		this.buildUI();
 	}
 
-    public void addPreInstantiateHandler( IFunction<?, ?> function ) {
+    public void addPreInstantiateHandler( ILambda<?> function ) {
         this.handlers.get( HandlerType.PREINSTANTIATE ).add( function );
     }
 
-    public void addPostInstantiateHandler( IFunction<?, ?> function ) {
+    public void addPostInstantiateHandler( ILambda<?> function ) {
         this.handlers.get( HandlerType.POSTINSTANTIATE ).add( function );
     }
 

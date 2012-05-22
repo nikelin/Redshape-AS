@@ -15,13 +15,9 @@ public class FunctionItem implements IEvaluationContextItem {
 	}
 
 	@Override
-	public Method getMethod(String name, int argumentsCount, Class<?>[] types )
+	public <T> ILambda<T> getMethod(String name, int argumentsCount, Class<?>[] types )
 			throws EvaluationException {
-        if ( this.function instanceof IFunction ) {
-		    return ( (IFunction) this.function).toMethod();
-        } else {
-            throw new EvaluationException("Unable to convert lambda(x) to class method");
-        }
+        return (ILambda<T>) this.function;
 	}
 
 	@Override

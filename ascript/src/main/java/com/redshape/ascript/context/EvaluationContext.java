@@ -121,13 +121,13 @@ public class EvaluationContext implements IEvaluationContext {
 	}
 
 	@Override
-	public <V, T> IFunction<V, T> resolveFunction( String name, int argumentsCount )
+	public <T> ILambda<T> resolveFunction( String name, int argumentsCount )
 		throws EvaluationException {
 		return this.resolveFunction( name, argumentsCount, new Class[] {} );
 	}
 
 	@Override
-	public <V, T> IFunction<V, T> resolveFunction(String name, int argumentsCount, Class<?>[] types )
+	public <T> ILambda<T> resolveFunction(String name, int argumentsCount, Class<?>[] types )
 		throws EvaluationException {
 		String actualName = this.functionAliases.get(name);
 		if ( actualName == null ) {
@@ -144,7 +144,7 @@ public class EvaluationContext implements IEvaluationContext {
 		return this.resolveMethod( this.get( path.poll() ), argumentsCount, path, types );
 	}
 
-	protected <V, T> IFunction<V,T> resolveMethod( IEvaluationContextItem context, 
+	protected <T> ILambda<T> resolveMethod( IEvaluationContextItem context,
 			int argumentsCount, Queue<String> path, Class<?>[] types ) throws EvaluationException {
 		log.info("Method resolving path node: " + path.peek() );
 		log.info("Context item type: " + context.getClass().getName() );
@@ -160,8 +160,8 @@ public class EvaluationContext implements IEvaluationContext {
 
 		if ( path.size() == 1) {
 			log.info("Resolving method " + path.peek() );
-            if ( context.getValue() instanceof IFunction ) {
-			    return this.wrapMethod( context.<V>getValue(), context.getMethod( path.poll(), argumentsCount, types) );
+            if ( context.getValue() instanceof ILambda ) {
+			    return context.getMethod( path.poll(), argumentsCount, types);
             } else {
                 return context.getValue();
             }
@@ -169,12 +169,6 @@ public class EvaluationContext implements IEvaluationContext {
 			return this.resolveMethod(
 					this.createContextItem(context.<Object>getValue(path.poll()), false), argumentsCount, path, types);
 		}
-	}
-
-	protected <V,T> IFunction<V, T> wrapMethod( V object, Method method ) 
-			throws EvaluationException {
-		IFunction<V, T> function = new Function<V,T>( object, method );
-		return function;
 	}
 
 	@Override

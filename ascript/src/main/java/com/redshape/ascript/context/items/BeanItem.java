@@ -2,6 +2,9 @@ package com.redshape.ascript.context.items;
 
 import com.redshape.ascript.EvaluationException;
 import com.redshape.ascript.context.IEvaluationContextItem;
+import com.redshape.utils.ILambda;
+import com.redshape.utils.InvocationException;
+import com.redshape.utils.Lambda;
 import com.redshape.utils.ReflectionUtils;
 import com.redshape.utils.beans.PropertyUtils;
 
@@ -37,12 +40,21 @@ public class BeanItem implements IEvaluationContextItem {
 	}
 
 	@Override
-	public Method getMethod(String name, int argumentsCount, Class<?>[] types ) throws EvaluationException {
+	public <T> ILambda<T> getMethod(String name, int argumentsCount, Class<?>[] types ) throws EvaluationException {
 		try {
-			for ( Method m : this.clazz.getMethods() ) {
+			for ( final Method m : this.clazz.getMethods() ) {
 				if ( m.getName().equals( name ) && m.getParameterTypes().length == argumentsCount
 						&& ReflectionUtils.compareTypeLists(m.getParameterTypes(), types) ) {
-					return m;
+					return new Lambda<T>() {
+                        @Override
+                        public T invoke(Object... object) throws InvocationException {
+                            try {
+                                return (T) m.invoke( BeanItem.this.instance );
+                            } catch ( Throwable e ) {
+                                throw new InvocationException( e.getMessage(), e );
+                            }
+                        }
+                    };
 				}
 			}
 			

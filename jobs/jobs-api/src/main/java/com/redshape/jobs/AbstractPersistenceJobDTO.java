@@ -22,6 +22,10 @@ public abstract class AbstractPersistenceJobDTO extends AbstractDTO implements I
     private Date updated;
     private Date processedDate;
 
+    protected AbstractPersistenceJobDTO() {
+        super();
+    }
+
     protected AbstractPersistenceJobDTO( Class<? extends IPersistenceJob> clazz ) {
         super(clazz);
     }

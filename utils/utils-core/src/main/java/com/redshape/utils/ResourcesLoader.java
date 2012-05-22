@@ -33,7 +33,9 @@ public class ResourcesLoader implements IResourcesLoader {
     }
 
     public ResourcesLoader( String rootDirectory, Collection<String> searchPath ) {
-        this.rootDirectory = StringUtils.escapePath(rootDirectory);
+        if ( rootDirectory != null ) {
+            this.rootDirectory = StringUtils.escapePath(rootDirectory);
+        }
 
         this.setSearchPath( System.getProperty("java.class.path").split(File.pathSeparator) );
         this.setSearchPath( searchPath );
@@ -76,7 +78,7 @@ public class ResourcesLoader implements IResourcesLoader {
             return file;
         }
 
-        file = new File( rootDirectory + File.separator + StringUtils.escapePath(path) );
+        file = new File( (rootDirectory == null ? "." : this.rootDirectory) + File.separator + StringUtils.escapePath(path) );
         if ( searchPath && !file.exists() ) {
             file = this.find(path);
         }

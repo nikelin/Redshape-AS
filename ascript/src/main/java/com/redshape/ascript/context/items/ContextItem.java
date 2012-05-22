@@ -3,6 +3,7 @@ package com.redshape.ascript.context.items;
 import com.redshape.ascript.EvaluationException;
 import com.redshape.ascript.context.IEvaluationContext;
 import com.redshape.ascript.context.IEvaluationContextItem;
+import com.redshape.utils.ILambda;
 
 import java.lang.reflect.Method;
 
@@ -25,8 +26,8 @@ public class ContextItem implements IEvaluationContextItem {
 	}
 
 	@Override
-	public Method getMethod(String name, int argumentsCount, Class<?>[] types ) throws EvaluationException {
-		return this.context.resolveFunction( name, argumentsCount, types).toMethod();
+	public <T> ILambda<T> getMethod(String name, int argumentsCount, Class<?>[] types ) throws EvaluationException {
+		return this.context.resolveFunction(name, argumentsCount, types);
 	}
 	
 }

@@ -1,7 +1,9 @@
 package com.redshape.ui.application;
 
 import com.redshape.applications.SpringApplication;
+import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
@@ -12,13 +14,17 @@ import java.io.File;
  * @package com.redshape.ui.application
  * @date 2/7/12 {8:55 PM}
  */
-public class SpringContextProvider implements IBeansProvider {
+public class SpringContextProvider implements IBeansProvider, ApplicationContextAware {
 
     private String contextPath;
     private ApplicationContext context;
     
     public SpringContextProvider() {
         this( System.getProperty(SpringApplication.SPRING_CONTEXT_PARAM) );
+    }
+
+    public SpringContextProvider( boolean autoCreate ) {
+        super();
     }
 
     public SpringContextProvider( String contextPath ) {
@@ -31,7 +37,12 @@ public class SpringContextProvider implements IBeansProvider {
         
         this.loadContext();
     }
-    
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.context = applicationContext;
+    }
+
     public void changeContextPath( String path ) {
         this.contextPath = path;
         this.loadContext();

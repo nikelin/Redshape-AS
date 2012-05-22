@@ -38,13 +38,15 @@ import java.awt.event.WindowEvent;
 public class SwingApplication extends AbstractApplication {
     private static final Logger log = Logger.getLogger(SwingApplication.class);
 
-    private JFrame context;
+    private AbstractMainWindow context;
 
     public SwingApplication( AbstractMainWindow window,
                              IBeansProvider provider ) throws ApplicationException {
         super( provider );
 
         Commons.checkNotNull(window);
+
+        UIRegistry.set( UIConstants.System.APP_CONTEXT, provider );
         
         this.context = window;
         this.context.addWindowListener( new WindowAdapter() {
@@ -123,7 +125,7 @@ public class SwingApplication extends AbstractApplication {
         if ( component.doRenderMenu() ) {
             menu = this.createMenu(component);
             if ( context == null ) {
-                UIRegistry.<Menu>get(UIConstants.System.MENUBAR).add( menu );
+                UIRegistry.<MenuBar>get(UIConstants.System.MENUBAR).add( menu );
             } else {
                 context.add( menu );
             }
@@ -205,6 +207,10 @@ public class SwingApplication extends AbstractApplication {
                 Dispatcher.get().forwardEvent( UIEvents.Core.Error, e );
             }
         };
+    }
+
+    protected AbstractMainWindow getMainWindow() {
+        return this.context;
     }
 
 }

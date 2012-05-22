@@ -79,10 +79,10 @@ public interface IEvaluationContext {
 	/**
 	 * Get function from context by name
 	 */
-	public <V, T> IFunction<V, T> resolveFunction(String name, int argumentsCount)
+	public <T> ILambda<T> resolveFunction(String name, int argumentsCount)
 			throws EvaluationException;
 
-	public <V, T> IFunction<V, T> resolveFunction(String name, int argumentsCount, Class<?>[] types)
+	public <T> ILambda<T> resolveFunction(String name, int argumentsCount, Class<?>[] types)
 			throws EvaluationException;
 
 	/**
