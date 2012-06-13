@@ -1,4 +1,4 @@
-package com.redshape.persistence;
+package com.redshape.persistence.core;
 
 import com.redshape.persistence.dao.DAOException;
 import com.redshape.persistence.dao.AbstractDao;
@@ -15,15 +15,15 @@ import java.util.List;
  * Time: 4:31 PM
  * To change this template use File | Settings | File Templates.
  */
-public class TestDao extends AbstractDao<TestEntity> implements ITestDAO {
+public class EntityDao extends AbstractDao<EntityRecord> implements IEntityDAO {
 
-    public TestDao(IQueryExecutorService executor, IQueryBuilder builder) {
-        super(TestEntity.class, executor, builder);
+    public EntityDao(IQueryExecutorService executor, IQueryBuilder builder) {
+        super(EntityRecord.class, executor, builder);
     }
 
     @Override
-    public List<TestEntity> findByIds( Long[] ids ) throws DAOException {
-        IQuery query = this.getBuilder().query(TestEntity.class);
+    public List<EntityRecord> findByIds( Long[] ids ) throws DAOException {
+        IQuery query = this.getBuilder().query(EntityRecord.class);
         query.where(
             this.getBuilder().in( this.getBuilder().reference("id"),
                     this.getBuilder().array( this.getBuilder().scalar(ids) ) )

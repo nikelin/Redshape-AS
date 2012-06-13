@@ -1,5 +1,7 @@
 package com.redshape.persistence;
 
+import com.redshape.persistence.core.EntityRecord;
+import com.redshape.persistence.core.IEntityDAO;
 import com.redshape.persistence.dao.DAOException;
 import com.redshape.utils.tests.AbstractContextAwareTest;
 import org.junit.Assert;
@@ -20,21 +22,21 @@ public class DAOTest extends AbstractContextAwareTest<String> {
         super("src/test/resources/context.xml");
     }
     
-    public ITestDAO getTestDAO() {
-        return this.getContext().getBean(ITestDAO.class);
+    public IEntityDAO getTestDAO() {
+        return this.getContext().getBean(IEntityDAO.class);
     }
 
     @Test
     public void testMain() throws DAOException {
-        ITestDAO dao = this.getTestDAO();
+        IEntityDAO dao = this.getTestDAO();
         dao.removeAll();
         Assert.assertEquals((Long) dao.count(), (Long) 0L);
-        TestEntity entity = new TestEntity();
+        EntityRecord entity = new EntityRecord();
         entity.setName("Afla!");
         entity = dao.save( entity );
         Assert.assertNotNull(entity.getId());
 
-        List<TestEntity> results = dao.findAll().list();
+        List<EntityRecord> results = dao.findAll().list();
         Assert.assertEquals( (Long) dao.count(), Long.valueOf(results.size()) );
         Assert.assertEquals( results.get(0).getName(), entity.getName() );
     }

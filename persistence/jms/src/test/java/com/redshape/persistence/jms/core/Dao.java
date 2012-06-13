@@ -1,4 +1,4 @@
-package com.redshape.persistence.jms;
+package com.redshape.persistence.jms.core;
 
 import com.redshape.persistence.dao.AbstractDao;
 import com.redshape.persistence.dao.query.IQueryBuilder;
@@ -9,9 +9,9 @@ import com.redshape.persistence.dao.query.executors.services.IQueryExecutorServi
  * @package com.redshape.persistence.jms
  * @date 1/25/12 {4:28 PM}
  */
-public class TestDao extends AbstractDao<TestEntity> implements ITestDao {
+public class Dao extends AbstractDao<EntityRecord> implements IDao {
 
-    public TestDao(IQueryExecutorService executor, IQueryBuilder builder) {
-        super(TestEntity.class, executor, builder);
+    public Dao(IQueryExecutorService executor, IQueryBuilder builder) {
+        super(EntityRecord.class, executor, builder);
     }
 }

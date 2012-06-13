@@ -1,4 +1,4 @@
-package com.redshape.persistence.jms;
+package com.redshape.persistence.jms.core;
 
 import com.redshape.persistence.dao.IDAO;
 
@@ -7,6 +7,6 @@ import com.redshape.persistence.dao.IDAO;
  * @package com.redshape.persistence.jms
  * @date 1/25/12 {4:30 PM}
  */
-public interface ITestDao extends IDAO<TestEntity> {
+public interface IDao extends IDAO<EntityRecord> {
 
 }

@@ -61,6 +61,11 @@ public class SourceFilter<T extends IJob> implements  IJobSource<T> {
     }
 
     @Override
+    public void asyncRun(T job) throws JobException {
+        targetSource.asyncRun(job);
+    }
+
+    @Override
     public List<T> fetch() throws JobException {
         List<T> result = new ArrayList<T>();
         Collection<T> filteringSet = this.targetSource.fetch();

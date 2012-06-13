@@ -16,7 +16,7 @@
     <bean id="executorService" class="com.redshape.persistence.dao.jpa.executors.services.JPAExecutorService"
             scope="singleton" p:entityManagerFactory-ref="entityManagerFactory"/>
     
-    <bean id="testDAO" class="com.redshape.persistence.TestDao">
+    <bean id="testDAO" class="com.redshape.persistence.core.EntityDao">
         <constructor-arg><ref bean="queryBuilder"/></constructor-arg>
         <constructor-arg><ref bean="executorService"/></constructor-arg>
     </bean>

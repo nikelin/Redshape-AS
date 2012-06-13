@@ -21,7 +21,9 @@ public interface IJobSource<T extends IJob> extends IEventDispatcher {
     public int getUpdateInterval();
     
     public void complete( T job, IJobResult result) throws JobException;
-    
+
+    public void asyncRun( T job ) throws JobException;
+
     public void save( T entity ) throws JobException;
 
     public List<T> fetch() throws JobException;

@@ -21,10 +21,10 @@
         <module>daemons</module>
         <module>cmd</module>
         <module>servlet</module>
-		<module>search</module>
+        <module>search</module>
         <module>io</module>
         <module>utils</module>
-            <module>plugins</module>
+        <module>plugins</module>
         <module>forker</module>
         <module>jobs</module>
         <module>renderers</module>
@@ -56,27 +56,27 @@
             <name>Maven Central Repository</name>
             <url>http://repo1.maven.org/maven2</url>
         </repository>
-        
+
         <repository>
             <id>java-net-repository</id>
             <name>Java.net Repository</name>
             <url>http://download.java.net/maven/2</url>
         </repository>
         <repository>
-			<id>sf-snashots</id>
-			<url>http://oss.sonatype.org/content/repositories/sourceforge-snapshots</url>
-		</repository>
+            <id>sf-snashots</id>
+            <url>http://oss.sonatype.org/content/repositories/sourceforge-snapshots</url>
+        </repository>
 
         <repository>
-        	<id>sf-releases</id>
-        	<url>http://oss.sonatype.org/content/repositories/sourceforge-releases/</url>
-        	<name>Sonatype SF Releases</name>
+            <id>sf-releases</id>
+            <url>http://oss.sonatype.org/content/repositories/sourceforge-releases/</url>
+            <name>Sonatype SF Releases</name>
         </repository>
-        
+
         <repository>
-        	<id>ibiblio</id>
-        	<url>http://mirrors.ibiblio.org/pub/mirrors/maven2/</url>
-        	<name>iBiblio Central</name>
+            <id>ibiblio</id>
+            <url>http://mirrors.ibiblio.org/pub/mirrors/maven2/</url>
+            <name>iBiblio Central</name>
         </repository>
 
         <repository>
@@ -96,7 +96,7 @@
             <timezone>UTF+03:00</timezone>
         </developer>
     </developers>
-    
+
     <organization>
         <name>Redshape Ltd.</name>
         <url>http://as.redshape.ru</url>
@@ -122,16 +122,16 @@
             </extension>
         </extensions>
     </build>
-    
+
     <dependencies>
-	    <dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.8.2</version>
             <type>jar</type>
             <scope>test</scope>
         </dependency>
-		<dependency>
+        <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.16</version>
@@ -165,10 +165,10 @@
     </scm>
 
     <distributionManagement>
-    	<repository>
-    		<id>redshape.central</id>
+        <repository>
+            <id>redshape.central</id>
             <name>Cloudbees Maven Repository</name>
-    	    <url>dav:https://repository-redshape-ltd.forge.cloudbees.com/snapshot/</url>
+            <url>dav:https://repository-redshape-ltd.forge.cloudbees.com/snapshot/</url>
         </repository>
     </distributionManagement>
 
