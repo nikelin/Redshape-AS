@@ -17,14 +17,13 @@
         <module>commons</module>
         <module>persistence</module>
         <module>ui</module>
-        <module>payments</module>
         <module>daemons</module>
         <module>cmd</module>
         <module>servlet</module>
 		<module>search</module>
         <module>io</module>
         <module>utils</module>
-            <module>plugins</module>
+        <module>plugins</module>
         <module>forker</module>
         <module>jobs</module>
         <module>renderers</module>

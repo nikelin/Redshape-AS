@@ -39,12 +39,7 @@ public final class Dispatcher extends EventDispatcher {
     }
     
     public void forwardToController( final IController controller, final AppEvent event ) {
-        UIRegistry.getEventQueue().invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                controller.handle(event);
-            }
-        });
+        controller.handle(event);
     }
 
     public void addController( IController controller ) {

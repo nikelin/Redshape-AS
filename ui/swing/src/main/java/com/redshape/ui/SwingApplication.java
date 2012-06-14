@@ -1,9 +1,6 @@
 package com.redshape.ui;
 
-import com.redshape.ui.application.AbstractApplication;
-import com.redshape.ui.application.ApplicationException;
-import com.redshape.ui.application.IBeansProvider;
-import com.redshape.ui.application.IController;
+import com.redshape.ui.application.*;
 import com.redshape.ui.application.events.AppEvent;
 import com.redshape.ui.application.events.EventType;
 import com.redshape.ui.application.events.IEventHandler;
@@ -119,6 +116,7 @@ public class SwingApplication extends AbstractApplication {
 
         for ( IController controller : component.getControllers() ) {
             Dispatcher.get().addController( controller );
+            this.getContext().getBean(IControllerInitializer.class).init(controller);
         }
 
         Menu menu = null;
