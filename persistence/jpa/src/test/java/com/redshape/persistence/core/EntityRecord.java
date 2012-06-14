@@ -1,4 +1,4 @@
-package com.redshape.persistence.jms;
+package com.redshape.persistence.core;
 
 import com.redshape.persistence.entities.AbstractEntity;
 import com.redshape.persistence.entities.IDTO;
@@ -7,19 +7,17 @@ import javax.persistence.Basic;
 import javax.persistence.Entity;
 
 /**
- * @author Cyril A. Karpenko <self@nikelin.ru>
- * @package com.redshape.persistence.jms
- * @date 1/25/12 {4:27 PM}
+ * Created by IntelliJ IDEA.
+ * User: nikelin
+ * Date: 1/23/12
+ * Time: 4:31 PM
+ * To change this template use File | Settings | File Templates.
  */
-@Entity( name = "test_entities" )
-public class TestEntity extends AbstractEntity {
+@javax.persistence.Entity( name = "test_entities" )
+public class EntityRecord extends AbstractEntity {
 
     @Basic
     private String name;
-
-    public TestEntity() {
-        super();
-    }
 
     public String getName() {
         return name;

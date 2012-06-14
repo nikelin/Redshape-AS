@@ -63,7 +63,7 @@
         </constructor-arg>
     </bean>
     
-    <bean id="testDAO" class="com.redshape.persistence.jms.TestDao">
+    <bean id="testDAO" class="com.redshape.persistence.jms.core.Dao">
         <constructor-arg><ref bean="queryBuilder"/></constructor-arg>
         <constructor-arg><ref bean="executorService"/></constructor-arg>
     </bean>

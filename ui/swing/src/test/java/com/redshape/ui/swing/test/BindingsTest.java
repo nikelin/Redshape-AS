@@ -18,6 +18,7 @@ import com.redshape.utils.beans.bindings.annotations.ElementType;
 import com.redshape.utils.beans.bindings.types.BindableType;
 import com.redshape.utils.beans.bindings.types.CollectionType;
 import com.redshape.utils.tests.AbstractContextAwareTest;
+import org.junit.Test;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -136,6 +137,7 @@ public class BindingsTest extends AbstractContextAwareTest<Object> {
         UIRegistry.set( UIConstants.System.APP_CONTEXT, this.getContext() );
     }
 
+    @Test
     public void testMain() throws UIException, NoSuchMethodException, BindingException, InstantiationException {
         ISwingRenderer renderer = UIRegistry.<IViewRendererBuilder<ISwingRenderer>>get(
                                 UIConstants.System.VIEW_RENDERER)

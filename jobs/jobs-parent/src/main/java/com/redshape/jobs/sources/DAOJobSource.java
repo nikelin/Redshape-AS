@@ -121,4 +121,9 @@ public class DAOJobSource extends AbstractEventDispatcher
             }
         }
     }
+
+    @Override
+    public void asyncRun(IPersistenceJob job) throws JobException {
+        throw new UnsupportedOperationException("Not supported");
+    }
 }

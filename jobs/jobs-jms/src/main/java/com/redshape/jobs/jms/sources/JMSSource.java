@@ -1,5 +1,6 @@
 package com.redshape.jobs.jms.sources;
 
+import com.redshape.jobs.AsyncJobWrapper;
 import com.redshape.jobs.IJob;
 import com.redshape.jobs.JobException;
 import com.redshape.jobs.JobStatus;
@@ -154,6 +155,11 @@ public class JMSSource extends AbstractEventDispatcher implements IJobSource<IJo
     }
 
     @Override
+    public void asyncRun(IJob job) throws JobException {
+        this.save( new AsyncJobWrapper(job) );
+    }
+
+    @Override
     public void save(IJob entity) throws JobException {
         try {
             ObjectMessage message = this.getSession().createObjectMessage();
@@ -182,9 +188,16 @@ public class JMSSource extends AbstractEventDispatcher implements IJobSource<IJo
 
                 log.info("New job received....");
 
+                boolean isAsync = false;
                 if ( message instanceof ObjectMessage ) {
                     Object object = ((ObjectMessage) message).getObject();
                     if ( IJob.class.isAssignableFrom( object.getClass() ) ) {
+                        if ( object instanceof  AsyncJobWrapper ) {
+                            isAsync = true;
+                            message.acknowledge();
+                            object = ( (AsyncJobWrapper) object ).getTargetJob();
+                        }
+
                         log.info("Adding " + object.getClass().getCanonicalName() + " job object to processing chunk...");
                         result.add( (IJob) ( object instanceof IDTO ? DtoUtils.fromDTO( (IDTO) object) : object ) );
                     }
@@ -193,8 +206,9 @@ public class JMSSource extends AbstractEventDispatcher implements IJobSource<IJo
                 }
 
                 log.info("Sending acknowledge");
-                
-                message.acknowledge();
+                if ( !isAsync ) {
+                    message.acknowledge();
+                }
 
                 if ( result.size() >= this.getWorkChunkSize() || ( this.getMaxReceivingTime() != 0 &&
                                                                     ( startReceivingTime - System.nanoTime() ) >= this.getMaxReceivingTime() ) ) {
