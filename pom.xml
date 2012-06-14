@@ -17,7 +17,6 @@
         <module>commons</module>
         <module>persistence</module>
         <module>ui</module>
-        <module>payments</module>
         <module>daemons</module>
         <module>cmd</module>
         <module>servlet</module>
