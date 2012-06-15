@@ -148,6 +148,22 @@ public final class Commons {
         return result;
     }
 
+    public static <T> T firstOrNull( Collection<T> collection ) {
+        Commons.checkNotNull(collection);
+
+        if ( collection.isEmpty() ) {
+            return null;
+        }
+
+        for ( T item : collection ) {
+            if ( item != null ) {
+                return item;
+            }
+        }
+
+        return null;
+    }
+
     public static <T> T firstOrNull( List<T> list ) {
         if ( list == null ) {
             throw new IllegalArgumentException("<null>");
