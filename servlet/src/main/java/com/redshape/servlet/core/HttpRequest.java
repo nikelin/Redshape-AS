@@ -161,7 +161,7 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
 
                     ( (List<Object> ) this.parameters.get(name) ).add( value );
                 } else {
-                    this.parameters.put( name, value != null ? StringEscapeUtils.escapeHtml( URLDecoder.decode( value, "UTF-8" ) ) : null );
+                    this.parameters.put( name, value != null ? StringEscapeUtils.escapeHtml(URLDecoder.decode(value, "UTF-8")) : null );
                 }
             }
         }

@@ -92,12 +92,6 @@
             <version>2.4.6</version>
         </dependency>
         <dependency>
-            <artifactId>json-lib</artifactId>
-            <groupId>net.sf.json-lib</groupId>
-            <version>2.4</version>
-            <classifier>jdk15</classifier>
-        </dependency>
-        <dependency>
             <artifactId>resin-quercus</artifactId>
             <groupId>com.caucho</groupId>
             <version>3.2.1</version>
@@ -154,6 +148,11 @@
             <artifactId>commons</artifactId>
             <groupId>com.redshape</groupId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>commons-lang</artifactId>
+            <groupId>commons-lang</groupId>
+            <version>2.5</version>
         </dependency>
         <dependency>
             <artifactId>mail</artifactId>
