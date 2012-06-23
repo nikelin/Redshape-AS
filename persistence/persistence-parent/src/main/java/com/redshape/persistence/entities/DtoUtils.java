@@ -299,7 +299,8 @@ public final class DtoUtils {
                     processDeferred(false);
 
                     try {
-                        closeSession();
+                        // @FIXME: Issue must be investigated
+                        // closeSession();
                     } catch ( Throwable e ) {}
 
                     resetReverseCache();
