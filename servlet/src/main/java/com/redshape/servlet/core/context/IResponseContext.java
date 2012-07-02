@@ -11,6 +11,8 @@ import com.redshape.servlet.views.IView;
  */
 public interface IResponseContext {
 
+    public ContextId getContextType();
+
     public boolean doRedirectionHandling();
 
     public boolean doExceptionsHandling();

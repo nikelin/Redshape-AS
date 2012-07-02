@@ -4,6 +4,7 @@ import com.caucho.quercus.Quercus;
 import com.caucho.vfs.Path;
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.core.IHttpResponse;
+import com.redshape.servlet.core.context.ContextId;
 import com.redshape.servlet.core.context.IResponseContext;
 import com.redshape.servlet.core.context.SupportType;
 import com.redshape.servlet.core.controllers.ProcessingException;
@@ -18,12 +19,26 @@ import com.redshape.servlet.views.IView;
  */
 public class PHPSupport implements IResponseContext {
 
+    public static class ContextType extends ContextId {
+
+        protected ContextType(String contextId) {
+            super(contextId);
+        }
+
+        public static final ContextType PHP = new ContextType("ContextId.PHP");
+    }
+
     private Quercus quercus;
 
     public PHPSupport() {
         this.quercus = new Quercus() ;
         this.quercus.setPhpVersion("5.3");
         this.quercus.setLazyCompile(true);
+    }
+
+    @Override
+    public ContextId getContextType() {
+        return ContextType.PHP;
     }
 
     @Override

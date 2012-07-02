@@ -25,7 +25,7 @@ public class SshAuthorizedKeysConfigTest extends AbstractContextAwareTest {
 
     @Test
     public void testMain() throws ConfigException {
-        SshAuthorizedKeysConfig config = new SshAuthorizedKeysConfig( new FileSource(this.file) );
+        SshAuthorizedKeysConfig config = new SshAuthorizedKeysConfig( new FileSource(this.file, null) );
         for ( IConfig commandNode : config.childs() ) {
             assertFalse( commandNode.get("user").isNull() );
             assertFalse( commandNode.get("ssh-rsa").isNull() );

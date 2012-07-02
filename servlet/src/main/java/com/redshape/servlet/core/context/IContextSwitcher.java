@@ -9,6 +9,10 @@ import com.redshape.servlet.views.IView;
  */
 public interface IContextSwitcher {
 
+    public boolean isCompitable( IHttpRequest request, ContextId contextId );
+
+    public IResponseContext chooseContext( ContextId contextId );
+
     public IResponseContext chooseContext( IHttpRequest request, IView view );
 
 }

@@ -4,18 +4,22 @@ import com.redshape.servlet.actions.exceptions.PageNotFoundException;
 import com.redshape.servlet.actions.exceptions.handling.IPageExceptionHandler;
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.core.IHttpResponse;
+import com.redshape.servlet.core.context.ContextId;
 import com.redshape.servlet.core.context.IContextSwitcher;
 import com.redshape.servlet.core.context.IResponseContext;
 import com.redshape.servlet.core.controllers.FrontController;
 import com.redshape.servlet.core.controllers.IAction;
 import com.redshape.servlet.core.controllers.ProcessingException;
 import com.redshape.servlet.core.controllers.registry.IControllersRegistry;
+import com.redshape.servlet.core.restrictions.ContextRestriction;
 import com.redshape.servlet.dispatchers.DispatchException;
 import com.redshape.servlet.dispatchers.interceptors.IDispatcherInterceptor;
 import com.redshape.servlet.views.*;
 import com.redshape.utils.Commons;
 import com.redshape.utils.ResourcesLoader;
 import com.redshape.utils.StringUtils;
+import com.redshape.utils.config.ConfigException;
+import com.redshape.utils.config.IConfig;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -47,6 +51,9 @@ public class HttpDispatcher implements IHttpDispatcher {
 
     @Autowired( required = true )
     private IViewsFactory viewFactory;
+
+    @Autowired( required = true )
+    private IConfig config;
 
 	@Autowired( required = true )
 	private IControllersRegistry registry;
@@ -202,12 +209,52 @@ public class HttpDispatcher implements IHttpDispatcher {
 		}
     }
 
+    protected void checkContextRestrictions( IAction action, IView view, IHttpRequest request, IHttpResponse response )
+        throws DispatchException, ConfigException {
+        String restrictionValue;
+        ContextRestriction restriction = action.getClass().getAnnotation(ContextRestriction.class);
+        if ( restriction != null ) {
+            restrictionValue = restriction.value();
+        } else {
+            IConfig restrictionNode = this.config.get("web.contextRestriction");
+            if ( restrictionNode == null ) {
+                return;
+            }
+
+            restrictionValue = restrictionNode.value();
+        }
+
+        ContextId contextId = ContextId.valueOf( restrictionValue );
+        if ( contextId == null ) {
+            throw new DispatchException("Context restriction references to unknown context type");
+        }
+
+        IResponseContext expected = this.getContextSwitcher().chooseContext( contextId );
+        if ( expected == null ) {
+            throw new DispatchException("Context restriction reference to unsupported context type");
+        }
+
+        IResponseContext actualContext = this.getContextSwitcher().chooseContext( request, view );
+        if ( !expected.equals(actualContext) ) {
+            throw new DispatchException("Interaction with requested method allowed only under `%s` environment");
+        }
+    }
+
+    protected void checkRestrictions( IAction action, IView view, IHttpRequest request, IHttpResponse response )
+        throws DispatchException, ConfigException {
+        this.checkContextRestrictions(action, view, request, response);
+    }
+
 	@Override
     public void dispatch( ServletConfig servletContext, IHttpRequest request, IHttpResponse response )
     	throws DispatchException {
         try {
 			ViewHelper.setLocalHttpRequest(request);
 
+            /**
+             * Move this conditional check to a context in a some
+             * way...
+             */
         	if ( request.getRequestURI().endsWith("jsp") ) {
                 return;
         	}
@@ -245,6 +292,8 @@ public class HttpDispatcher implements IHttpDispatcher {
                 this.tryRedirectToView( request, response );
                 return;
             }
+
+            this.checkRestrictions(action, view, request, response);
 
             String viewPath = this.getRegistry().getViewPath(action);
 

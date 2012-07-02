@@ -17,6 +17,19 @@ import java.io.*;
  */
 public class XMLConfig extends AbstractConfig {
 
+    protected class OnChangeCallback implements IConfigSource.OnChangeCallback {
+
+        @Override
+        public void onChanged() {
+            try {
+                init();
+            } catch ( ConfigException e ) {
+                log.error( e.getMessage(), e );
+            }
+        }
+
+    }
+
     private static final Logger log = Logger.getLogger(XMLConfig.class);
     private XMLHelper xmlHelper;
     private Element node;
@@ -24,7 +37,7 @@ public class XMLConfig extends AbstractConfig {
 	public XMLConfig( XMLHelper helper, String filePath ) throws ConfigException {
 		try {
 			this.xmlHelper = helper;
-			this.source = new FileSource( this.getXmlHelper().getLoader().loadFile(filePath) );
+			this.source = new FileSource( this.getXmlHelper().getLoader().loadFile(filePath), this.createOnChangeCallback() );
 			this.init();
 		} catch ( IOException e ) {
 			throw new ConfigException( e.getMessage(), e );
@@ -41,18 +54,23 @@ public class XMLConfig extends AbstractConfig {
 
     @Deprecated
     public XMLConfig( XMLHelper helper, File file ) throws ConfigException {
-        this(helper, new FileSource(file) );
+        this(helper, new FileSource(file, null) );
     }
     
 	public XMLConfig( XMLHelper helper, IConfigSource source) throws ConfigException {
 		this.xmlHelper = helper;
         this.source = source;
+        this.source.setCallback( this.createOnChangeCallback() );
 		this.init();
 	}
 
 	public XMLConfig(IConfigSource source) throws ConfigException {
 		super(source);
 	}
+    
+    protected IConfigSource.OnChangeCallback createOnChangeCallback() {
+        return new OnChangeCallback();
+    }
 
 	public void setXmlHelper(XMLHelper helper) {
         this.xmlHelper = helper;
@@ -65,6 +83,7 @@ public class XMLConfig extends AbstractConfig {
 	@Override
     protected void init() throws ConfigException {
 		try {
+            this.clear();
 			this.init( this, this.getXmlHelper().buildDocumentByData(this.source.read()).getDocumentElement() );
 		} catch ( Throwable e ) {
 			throw new ConfigException( e.getMessage(), e );

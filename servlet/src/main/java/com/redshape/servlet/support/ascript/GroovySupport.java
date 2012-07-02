@@ -6,6 +6,7 @@ import com.redshape.ascript.evaluation.EvaluationMode;
 import com.redshape.servlet.WebApplication;
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.core.IHttpResponse;
+import com.redshape.servlet.core.context.ContextId;
 import com.redshape.servlet.core.context.IResponseContext;
 import com.redshape.servlet.core.context.SupportType;
 import com.redshape.servlet.core.controllers.ProcessingException;
@@ -28,6 +29,20 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public class GroovySupport implements IResponseContext {
+
+    public static class ContextType extends ContextId {
+
+        protected ContextType(String contextId) {
+            super(contextId);
+        }
+
+        public static final ContextType Groovy = new ContextType("ContextId.Groovy");
+    }
+
+    @Override
+    public ContextId getContextType() {
+        return ContextType.Groovy;
+    }
 
     @Override
     public boolean doRedirectionHandling() {

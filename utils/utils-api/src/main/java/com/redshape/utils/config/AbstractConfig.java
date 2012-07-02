@@ -39,6 +39,16 @@ public abstract class AbstractConfig implements IConfig {
 
 	abstract protected void init() throws ConfigException;
 
+    protected void clear() {
+        this.value = null;
+        this.name = null;
+        this.parent = null;
+
+        this.nulled = true;
+        this.attributes.clear();
+        this.childs.clear();
+    }
+
 	@Override
 	public boolean isNull() {
 		return this.nulled;

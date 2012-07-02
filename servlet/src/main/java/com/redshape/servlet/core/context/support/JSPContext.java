@@ -3,6 +3,8 @@ package com.redshape.servlet.core.context.support;
 import com.redshape.servlet.actions.exceptions.PageNotFoundException;
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.core.IHttpResponse;
+import com.redshape.servlet.core.context.AbstractResponseContext;
+import com.redshape.servlet.core.context.ContextId;
 import com.redshape.servlet.core.context.IResponseContext;
 import com.redshape.servlet.core.context.SupportType;
 import com.redshape.servlet.core.controllers.FrontController;
@@ -19,7 +21,7 @@ import java.io.FileNotFoundException;
  * @author nikelin
  * @date 14:01
  */
-public class JSPContext implements IResponseContext {
+public class JSPContext extends AbstractResponseContext {
 	public static final String EXTENSION = "jsp";
 
     @Autowired( required = true )
@@ -28,7 +30,11 @@ public class JSPContext implements IResponseContext {
     @Autowired( required = true )
     private FrontController front;
 
-	public FrontController getFront() {
+    public JSPContext() {
+        super(ContextId.JSP );
+    }
+
+    public FrontController getFront() {
         return front;
     }
 
