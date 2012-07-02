@@ -9,6 +9,7 @@ import com.redshape.servlet.core.context.IResponseContext;
 import com.redshape.servlet.core.context.SupportType;
 import com.redshape.servlet.core.controllers.ProcessingException;
 import com.redshape.servlet.views.IView;
+import com.redshape.servlet.views.View;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletResponse;
@@ -93,7 +94,8 @@ public class AjaxContext extends AbstractResponseContext {
     @Override
     public void proceedResponse(IView view, IHttpRequest request, IHttpResponse response) throws ProcessingException {
         try {
-            this.writeResponse(this.getRenderersFactory().
+            this.writeResponse(
+                this.getRenderersFactory().
                     <IView, String>forEntity(view)
                     .render(view), response);
         } catch ( IOException e ) {

@@ -20,15 +20,15 @@ public class ContextId implements IEnum<String> {
 
     protected ContextId(String contextId) {
         this.contextId = contextId;
-        REGISTRY.put( contextId, this );
+        REGISTRY.put( contextId.toLowerCase(), this );
     }
 
     public static final ContextId AJAX = new ContextId("ContextId.AJAX");
     public static final ContextId JSP = new ContextId("ContextId.JSP");
-    public static final ContextId XSL = new ContextId("ContextId.JSP");
+    public static final ContextId XSL = new ContextId("ContextId.XSL");
 
     public static ContextId valueOf( String value ) {
-        return REGISTRY.get( value );
+        return REGISTRY.get( value.toLowerCase() );
     }
 
     public static ContextId[] values() {
@@ -56,4 +56,5 @@ public class ContextId implements IEnum<String> {
     public int hashCode() {
         return contextId != null ? contextId.hashCode() : 0;
     }
+
 }

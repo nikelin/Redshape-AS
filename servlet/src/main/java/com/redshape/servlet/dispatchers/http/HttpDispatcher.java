@@ -57,12 +57,22 @@ public class HttpDispatcher implements IHttpDispatcher {
 
 	@Autowired( required = true )
 	private IControllersRegistry registry;
-	
+
+    private IResponseContext defaultContext;
+
 	private FrontController front;
 	
 	private ApplicationContext context;
 
     public IPageExceptionHandler exceptionHandler;
+
+    public IResponseContext getDefaultContext() {
+        return defaultContext;
+    }
+
+    public void setDefaultContext(IResponseContext defaultContext) {
+        this.defaultContext = defaultContext;
+    }
 
     public List<IDispatcherInterceptor> getInterceptors() {
         return interceptors;
@@ -187,7 +197,7 @@ public class HttpDispatcher implements IHttpDispatcher {
 			try {
                 context.proceedResponse( view, request, response );
             } catch ( ProcessingException e ) {
-                this.processError( e, request, response );
+                this.processError( e, view, request, response );
             }
         } catch ( DispatchException e ) {
             throw e;
@@ -196,8 +206,25 @@ public class HttpDispatcher implements IHttpDispatcher {
         }
     }
 
-    protected void processError( ProcessingException e, IHttpRequest request, IHttpResponse response )
+    protected void processError( ProcessingException e, IView view, IHttpRequest request, IHttpResponse response )
             throws DispatchException {
+        if ( view != null ) {
+            view.setException(e);
+        } else {
+            view = new View(null, null);
+            view.setException( e );
+        }
+
+        if ( this.defaultContext != null
+                && this.defaultContext.doExceptionsHandling() ) {
+            try {
+                this.defaultContext.proceedResponse(view, request, response);
+                return;
+            } catch ( ProcessingException ex ) {
+                throw new DispatchException( ex.getMessage(), e );
+            }
+        }
+
         if ( this.getExceptionHandler() == null ) {
             throw new DispatchException( e.getMessage(), e );
         }
@@ -286,7 +313,7 @@ public class HttpDispatcher implements IHttpDispatcher {
             }
         	
         	log.info("Requested page: " + controllerName + "/" + actionName );
-        	
+
             IAction action = this.getRegistry().getInstance( controllerName, actionName );
             if ( action == null ) {
                 this.tryRedirectToView( request, response );
@@ -311,7 +338,7 @@ public class HttpDispatcher implements IHttpDispatcher {
 
             if ( view.getException() != null
                     && this.getContextSwitcher().chooseContext( request, view ).doExceptionsHandling() ) {
-                this.processError(view.getException(), request, response);
+                this.processError(view.getException(), view, request, response);
                 return;
             }
 
@@ -329,9 +356,9 @@ public class HttpDispatcher implements IHttpDispatcher {
 
             this.redirectToView( view, request, response);
         } catch ( ProcessingException e ) {
-            this.processError(e, request, response);
+            this.processError(e, null,  request, response);
         } catch ( Throwable e ) {
-        	this.processError( new ProcessingException( e.getMessage(), e ), request, response );
+        	this.processError( new ProcessingException( e.getMessage(), e ), null, request, response );
         }
     }
 
