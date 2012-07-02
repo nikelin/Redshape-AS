@@ -46,15 +46,9 @@ public class StandardViewRenderer extends AbstractJSONRenderer<IView> {
     @Override
     public String render(IView renderable) {
         StringBuilder builder = new StringBuilder();
+
         builder.append(
-            this.createObject(
-                this.createField("view",
-                    this.createObject(
-                        this.createField("attributes",
-                            this.createObject( this.renderAttributes(renderable.getAttributes()) ) )
-                    )
-                )
-            )
+            this.createObject( this.renderAttributes(renderable.getAttributes()) )
         );
         
         return builder.toString();
