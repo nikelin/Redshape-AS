@@ -63,7 +63,7 @@ public class ContextSwitcher implements IContextSwitcher {
             }
         }
 
-        if ( result == null ) {
+        if ( result == null && !variants.isEmpty() ) {
             return variants.get(0);
         }
 

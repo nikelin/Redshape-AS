@@ -29,9 +29,8 @@ public class Settings extends AbstractConfig {
 		super(source);
 	}
 
-
 	@Override
-	protected void init() throws ConfigException {
+	protected void actualInit() throws ConfigException {
 		//To change body of implemented methods use File | Settings | File Templates.
 	}
 

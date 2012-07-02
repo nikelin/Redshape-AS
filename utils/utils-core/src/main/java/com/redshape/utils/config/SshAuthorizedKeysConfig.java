@@ -29,7 +29,9 @@ public class SshAuthorizedKeysConfig extends AbstractConfig {
     }
 
     @Override
-    protected void init() throws ConfigException {
+    protected void actualInit() throws ConfigException {
+        this.lock.lock();
+
         String[] parts = this.source.read().split("\\n");
 
         for ( String part : parts ) {

@@ -27,7 +27,8 @@ public class PropertiesConfig extends AbstractConfig {
 		super(source);
     }
 
-    protected void init() throws ConfigException {
+    @Override
+    protected void actualInit() throws ConfigException {
         String data = this.source.read();
         if ( data.isEmpty() ) {
             return;

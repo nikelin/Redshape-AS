@@ -81,7 +81,7 @@ public class XMLConfig extends AbstractConfig {
     }
 
 	@Override
-    protected void init() throws ConfigException {
+    protected void actualInit() throws ConfigException {
 		try {
             this.clear();
 			this.init( this, this.getXmlHelper().buildDocumentByData(this.source.read()).getDocumentElement() );
@@ -91,31 +91,31 @@ public class XMLConfig extends AbstractConfig {
     }
 
 	protected void init( XMLConfig config, Element element ) throws ConfigException {
-		/**
-		 * Initialize attributes
-		 */
-		NamedNodeMap attributes = element.getAttributes();
-		for ( int i = 0; i < attributes.getLength(); i++ ) {
-			Node attribute = attributes.item(i);
-			config.attributes.put( attribute.getNodeName(), attribute.getNodeValue() );
-		}
+        /**
+         * Initialize attributes
+         */
+        NamedNodeMap attributes = element.getAttributes();
+        for ( int i = 0; i < attributes.getLength(); i++ ) {
+            Node attribute = attributes.item(i);
+            config.attributes.put( attribute.getNodeName(), attribute.getNodeValue() );
+        }
 
-		config.set( element.getTextContent() );
-		config.name = element.getNodeName();
+        config.set( element.getTextContent() );
+        config.name = element.getNodeName();
 
-		/**
-		 * Initialize child nodes
-		 */
-		Node child = element.getFirstChild();
-		while ( child != null ) {
-			if ( child.getNodeType() == Node.ELEMENT_NODE ) {
-				XMLConfig childConfig = (XMLConfig) this.createChild(child.getNodeName());
-				this.init( childConfig, (Element) child );
-				config.append(childConfig);
-			}
+        /**
+         * Initialize child nodes
+         */
+        Node child = element.getFirstChild();
+        while ( child != null ) {
+            if ( child.getNodeType() == Node.ELEMENT_NODE ) {
+                XMLConfig childConfig = (XMLConfig) this.createChild(child.getNodeName());
+                this.init( childConfig, (Element) child );
+                config.append(childConfig);
+            }
 
-			child = child.getNextSibling();
-		}
+            child = child.getNextSibling();
+        }
 	}
 
 	@Override
@@ -138,6 +138,8 @@ public class XMLConfig extends AbstractConfig {
     @Override
     public String serialize() throws ConfigException {
         try {
+            waitReady();
+
             return this.getXmlHelper().parseToXml(this.toDomDocument());
         } catch (Throwable e) {
             log.error(e.getMessage(), e);

@@ -178,8 +178,8 @@ public class HttpDispatcher implements IHttpDispatcher {
         try {
             IResponseContext context = this.getContextSwitcher().chooseContext( request, view );
             if ( context == null ) {
-                throw new ServletException("Unable to find " +
-                        "appropriate response context");
+                response.sendError(500);
+                return;
             }
 
             response.setCharacterEncoding("UTF-8");
