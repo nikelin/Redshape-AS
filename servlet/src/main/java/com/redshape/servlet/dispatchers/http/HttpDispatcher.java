@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -238,31 +239,39 @@ public class HttpDispatcher implements IHttpDispatcher {
 
     protected void checkContextRestrictions( IAction action, IView view, IHttpRequest request, IHttpResponse response )
         throws DispatchException, ConfigException {
-        String restrictionValue;
+        List<String> restrictionValues = new ArrayList<String>();
         ContextRestriction restriction = action.getClass().getAnnotation(ContextRestriction.class);
         if ( restriction != null ) {
-            restrictionValue = restriction.value();
+            restrictionValues.addAll( Arrays.asList(restriction.value()) );
         } else {
             IConfig restrictionNode = this.config.get("web.contextRestriction");
-            if ( restrictionNode == null ) {
+            if ( restrictionNode.isNull() ) {
                 return;
             }
 
-            restrictionValue = restrictionNode.value();
+            restrictionValues.addAll( Arrays.asList( restrictionNode.value().split(",") ) );
         }
 
-        ContextId contextId = ContextId.valueOf( restrictionValue );
-        if ( contextId == null ) {
-            throw new DispatchException("Context restriction references to unknown context type");
+        boolean found = false;
+        for ( String restrictionValue : restrictionValues ) {
+            ContextId contextId = ContextId.valueOf( restrictionValue );
+            if ( contextId == null ) {
+                throw new DispatchException("Context restriction references to unknown context type");
+            }
+
+            IResponseContext expected = this.getContextSwitcher().chooseContext( contextId );
+            if ( expected == null ) {
+                throw new DispatchException("Context restriction reference to unsupported context type");
+            }
+
+            IResponseContext actualContext = this.getContextSwitcher().chooseContext( request, view );
+            if ( expected.equals(actualContext) ) {
+                found = true;
+                break;
+            }
         }
 
-        IResponseContext expected = this.getContextSwitcher().chooseContext( contextId );
-        if ( expected == null ) {
-            throw new DispatchException("Context restriction reference to unsupported context type");
-        }
-
-        IResponseContext actualContext = this.getContextSwitcher().chooseContext( request, view );
-        if ( !expected.equals(actualContext) ) {
+        if ( !found ) {
             throw new DispatchException("Interaction with requested method allowed only under `%s` environment");
         }
     }

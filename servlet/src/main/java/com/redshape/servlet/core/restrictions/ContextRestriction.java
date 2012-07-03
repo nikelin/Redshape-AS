@@ -19,6 +19,6 @@ public @interface ContextRestriction {
      * @see com.redshape.servlet.core.context.ContextId
      * @return
      */
-    public String value() default "ContextId.AJAX";
+    public String[] value() default "ContextId.AJAX";
 
 }
