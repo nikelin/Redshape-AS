@@ -31,19 +31,24 @@ public class StandardSourceWatcher extends AbstractEventDispatcher implements IS
 
         @Override
         public void run() {
-            if ( !this.source.isChanged() ) {
-                return;
-            }
+            try {
+                if ( !this.source.isChanged() ) {
+                    return;
+                }
 
-            this.source.reload();
-            this.source.markClean();
+                this.source.reload();
+                this.source.markClean();
+            } finally {
+                synchronized (this) {
+                    notify();
+                }
+            }
         }
     }
 
     private long ticksTime;
     private long ticksDelay;
     private ScheduledExecutorService service;
-    private ExecutorService tasksService;
     private Collection<IConfigSource> source = new HashSet<IConfigSource>();
 
     public StandardSourceWatcher( long ticksDelay, long ticksTime ) {
@@ -51,17 +56,10 @@ public class StandardSourceWatcher extends AbstractEventDispatcher implements IS
     }
 
     public StandardSourceWatcher( long ticksDelay, long ticksTime, Collection<IConfigSource> sources ) {
-        this(ticksDelay, ticksTime, sources, Executors.newFixedThreadPool(DEFAULT_BACKLOG_SIZE));
-    }
-
-    public StandardSourceWatcher( long ticksDelay, long ticksTime, Collection<IConfigSource> sources, ExecutorService service) {
-        Commons.checkNotNull(service);
-
         this.source = sources;
         this.ticksTime = ticksTime;
         this.ticksDelay = ticksDelay;
         this.service = this.createScheduleService();
-        this.tasksService = service;
 
         this.start();
     }
@@ -101,11 +99,20 @@ public class StandardSourceWatcher extends AbstractEventDispatcher implements IS
 
     @Override
     public void run() {
+        Collection<Thread> threads = new ArrayList<Thread>();
         for ( IConfigSource source : this.getWatchableList() ) {
-            this.tasksService.submit( new RefreshTask(source) );
+            Thread thread = new Thread(new RefreshTask(source));
+            thread.start();
+            threads.add(thread);
         }
 
-        this.schedule();
+        for ( Thread thread : threads ) {
+            try {
+                thread.join( this.ticksDelay );
+            } catch ( InterruptedException e ) {
+                throw new IllegalStateException( e.getMessage(), e );
+            }
+        }
     }
 
     @Override
