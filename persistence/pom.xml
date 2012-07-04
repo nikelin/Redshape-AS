@@ -25,6 +25,7 @@
                 <module>hbase</module>
                 <module>jms</module>
                 <module>gae</module>
+                <module>shards</module>
             </modules>
         </profile>
         <profile>
@@ -37,6 +38,7 @@
             </activation>
             <modules>
                 <module>jpa</module>
+                <module>shards</module>
             </modules>
         </profile>
         <profile>
@@ -76,6 +78,7 @@
             </modules>
         </profile>
     </profiles>
+
     <modules>
         <module>migration-toolkit</module>
         <module>api</module>
