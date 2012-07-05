@@ -20,8 +20,6 @@ public abstract class AbstractConfig implements IConfig {
 
     protected boolean initialized;
 
-    transient static protected ThreadLocal<Boolean> initializingThread = new ThreadLocal<Boolean>();
-
     protected AbstractConfig() {
         this(null, null, null);
     }
