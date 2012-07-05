@@ -10,7 +10,7 @@ import com.redshape.utils.config.sources.IConfigSource;
  * Time: 1:20 PM
  * To change this template use File | Settings | File Templates.
  */
-public class SshAuthorizedKeysConfig extends AbstractConfig {
+public class SshAuthorizedKeysConfig extends AbstractTSConfig {
 
     public SshAuthorizedKeysConfig() {
         this(null, null);

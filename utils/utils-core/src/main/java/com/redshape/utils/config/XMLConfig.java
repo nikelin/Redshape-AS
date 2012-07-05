@@ -15,7 +15,7 @@ import java.io.*;
  *
  * @author nikelin
  */
-public class XMLConfig extends AbstractConfig {
+public class XMLConfig extends AbstractTSConfig {
 
     protected class OnChangeCallback implements IConfigSource.OnChangeCallback {
 
