@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -261,7 +260,7 @@ public class HttpDispatcher implements IHttpDispatcher {
 
             IResponseContext expected = this.getContextSwitcher().chooseContext( contextId );
             if ( expected == null ) {
-                throw new DispatchException("Context restriction reference to unsupported context type");
+                continue;
             }
 
             IResponseContext actualContext = this.getContextSwitcher().chooseContext( request, view );
