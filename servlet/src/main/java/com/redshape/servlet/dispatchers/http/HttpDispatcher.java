@@ -262,7 +262,7 @@ public class HttpDispatcher implements IHttpDispatcher {
 
             IResponseContext expected = this.getContextSwitcher().chooseContext( contextId );
             if ( expected == null ) {
-                throw new DispatchException("Context restriction reference to unsupported context type");
+               continue;
             }
 
             IResponseContext actualContext = this.getContextSwitcher().chooseContext( request, view );
