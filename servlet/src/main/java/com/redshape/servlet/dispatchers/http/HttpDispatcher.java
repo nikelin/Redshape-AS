@@ -11,6 +11,7 @@ import com.redshape.servlet.core.controllers.FrontController;
 import com.redshape.servlet.core.controllers.IAction;
 import com.redshape.servlet.core.controllers.ProcessingException;
 import com.redshape.servlet.core.controllers.registry.IControllersRegistry;
+import com.redshape.servlet.core.format.IRequestFormatProcessor;
 import com.redshape.servlet.core.restrictions.ContextRestriction;
 import com.redshape.servlet.dispatchers.DispatchException;
 import com.redshape.servlet.dispatchers.interceptors.IDispatcherInterceptor;
@@ -285,6 +286,7 @@ public class HttpDispatcher implements IHttpDispatcher {
     public void dispatch( ServletConfig servletContext, IHttpRequest request, IHttpResponse response )
     	throws DispatchException {
         try {
+
 			ViewHelper.setLocalHttpRequest(request);
 
             /**

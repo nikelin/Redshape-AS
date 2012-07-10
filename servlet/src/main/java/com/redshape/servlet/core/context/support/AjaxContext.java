@@ -5,11 +5,9 @@ import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.core.IHttpResponse;
 import com.redshape.servlet.core.context.AbstractResponseContext;
 import com.redshape.servlet.core.context.ContextId;
-import com.redshape.servlet.core.context.IResponseContext;
-import com.redshape.servlet.core.context.SupportType;
+import com.redshape.servlet.core.SupportType;
 import com.redshape.servlet.core.controllers.ProcessingException;
 import com.redshape.servlet.views.IView;
-import com.redshape.servlet.views.View;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletResponse;

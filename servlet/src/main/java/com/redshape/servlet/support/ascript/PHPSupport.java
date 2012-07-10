@@ -1,12 +1,11 @@
 package com.redshape.servlet.support.ascript;
 
 import com.caucho.quercus.Quercus;
-import com.caucho.vfs.Path;
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.core.IHttpResponse;
 import com.redshape.servlet.core.context.ContextId;
 import com.redshape.servlet.core.context.IResponseContext;
-import com.redshape.servlet.core.context.SupportType;
+import com.redshape.servlet.core.SupportType;
 import com.redshape.servlet.core.controllers.ProcessingException;
 import com.redshape.servlet.views.IView;
 

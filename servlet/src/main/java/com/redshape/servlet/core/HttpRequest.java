@@ -25,7 +25,6 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
 
 	public static final String MULTIPART_TYPE = "multipart/form-data";
 
-    private boolean initialized;
     private String controller;
     private String action;
     private String requestData;
@@ -47,6 +46,8 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
 			if ( this.isMultiPart() ) {
 				this.multipart = new MultipartRequest(this);
 			}
+
+            this.copyBaseParams();
 		} catch ( Throwable e ) {
 			throw new IllegalStateException( e.getMessage(), e);
 		}
@@ -62,21 +63,6 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
         }
     }
 
-    protected JSONObject readJSONRequest( HttpServletRequest request )
-            throws IOException {
-        String requestData = this.readRequest();
-
-        if ( requestData.isEmpty() ) {
-            throw new IllegalArgumentException("Request is empty");
-        }
-
-        return this.readJSONRequest( requestData );
-    }
-
-    protected JSONObject readJSONRequest(String data) {
-        return JSONObject.fromObject(data);
-    }
-
 	@Override
 	public void setParameter(String name, Object value) {
 		this.parameters.put( name, value );
@@ -84,25 +70,12 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
 
 	@Override
     public boolean hasParameter(String name) {
-        try {
-            this.initParameters();
-        } catch ( IOException e ) {
-            log.error( e.getMessage(), e );
-        }
-
         return this.parameters.containsKey(name);
     }
 
+    @Override
 	public boolean isMultiPart() {
 		return this.getContentType() != null && this.getContentType().contains( MULTIPART_TYPE );
-	}
-
-	private void initMultipartParameters() {
-		Iterator parameterNames = this.getMultipart().getParameterNames();
-		while ( parameterNames.hasNext() ) {
-			String parameterName = (String) parameterNames.next();
-			this.parameters.put( parameterName, this.getMultipart().getParameter(parameterName) );
-		}
 	}
 
 	protected void copyBaseParams() {
@@ -117,57 +90,6 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
 			}
 		}
 	}
-
-    protected void initParameters() throws IOException {
-        if ( this.initialized ) {
-            return;
-        }
-
-		this.copyBaseParams();
-
-		if ( this.isMultiPart() ) {
-			this.initMultipartParameters();
-			return;
-		}
-
-        String data = this.readRequest();
-        if ( data == null || data.isEmpty() ) {
-            data = this.getQueryString();
-			if ( data == null || data.isEmpty() ) {
-				return;
-			}
-        }
-
-        if ( data.startsWith("{") && data.endsWith("}") ) {
-            JSONObject object = this.readJSONRequest( data );
-            for ( Object key : object.keySet() ) {
-                this.parameters.put( String.valueOf( key ), object.get(key) );
-            }
-        } else {
-            if ( this.parameters == null ) {
-                this.parameters = new HashMap<String, Object>();
-            }
-
-            for (String param : data.split("&")) {
-                String[] paramParts = param.split("=");
-
-                String value = paramParts.length > 1 ? paramParts[1] : null;
-                String name = URLDecoder.decode( paramParts[0] );
-                if ( name.endsWith("[]") ) {
-                    name = name.replace("[]", "");
-                    if ( !this.parameters.containsKey(name) ) {
-                        this.parameters.put( name, new ArrayList<Object>() );
-                    }
-
-                    ( (List<Object> ) this.parameters.get(name) ).add( value );
-                } else {
-                    this.parameters.put( name, value != null ? StringEscapeUtils.escapeHtml(URLDecoder.decode(value, "UTF-8")) : null );
-                }
-            }
-        }
-
-        this.initialized = true;
-    }
 
 	@Override
 	public Long getLongParameter(String name) {
@@ -187,7 +109,12 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
         }
 	}
 
-	@Override
+    @Override
+    public <T> List<T> getListParameter(String name) {
+        return (List<T>) this.parameters.get(name);
+    }
+
+    @Override
 	public Boolean getBooleanParameter(String name) {
         return Boolean.valueOf( this.getRequest().getParameter(name) );
 	}
@@ -203,7 +130,7 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
 	}
 
 	@Override
-    public <T> T getObjectParameter( String name ) throws IOException {
+    public <T> T getObjectParameter( String name ) {
 		if ( name == null ) {
 			throw new IllegalArgumentException("<null>");
 		}
@@ -215,18 +142,12 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
 			}
 		}
 
-        this.initParameters();
-
         return (T) this.parameters.get( name );
     }
 
     @Override
     public String getParameter(String name ) {
-        try {
-            return String.valueOf( this.<Object>getObjectParameter(name) );
-        } catch ( IOException e ) {
-            throw new IllegalArgumentException( "Unable to grab parameter value", e );
-        }
+        return String.valueOf( this.<Object>getObjectParameter(name) );
     }
 
     @Override
@@ -307,15 +228,10 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
     @Override
     public void setParameters(Map<String, Object> parameters) {
         this.parameters = parameters;
-        this.initialized = true;
     }
 
     @Override
     public Map<String, Object> getParameters() {
-        try {
-            this.initParameters();
-        } catch ( IOException e ) {}
-
         return this.parameters;
     }
 

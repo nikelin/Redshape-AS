@@ -1,10 +1,10 @@
 package com.redshape.servlet.core.controllers;
 
 import com.redshape.servlet.core.controllers.plugins.IPlugin;
-import com.redshape.servlet.core.HttpRequest;
 import com.redshape.servlet.core.HttpResponse;
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.core.IHttpResponse;
+import com.redshape.servlet.core.format.IRequestFormatProcessor;
 import com.redshape.servlet.dispatchers.DispatchException;
 import com.redshape.servlet.dispatchers.http.IHttpDispatcher;
 import com.redshape.servlet.routes.IHttpRouter;
@@ -30,6 +30,8 @@ public class FrontController {
 
     @Autowired( required = true )
     private ILayout layout;
+
+    private IRequestFormatProcessor formatProcessor;
     
     private IHttpDispatcher dispatcher;
 
@@ -45,7 +47,15 @@ public class FrontController {
     public FrontController( IHttpRouter router ) {
     	this.router = router;
     }
-  
+
+    public IRequestFormatProcessor getFormatProcessor() {
+        return formatProcessor;
+    }
+
+    public void setFormatProcessor(IRequestFormatProcessor formatProcessor) {
+        this.formatProcessor = formatProcessor;
+    }
+
     public void setLayout( ILayout layout ) {
         this.layout = layout;
     }
@@ -84,8 +94,16 @@ public class FrontController {
 
     public void dispatch( HttpServlet servlet, HttpServletRequest request, HttpServletResponse response )
                                                 throws DispatchException{
-        HttpRequest routedRequest = this.getRouter().route(request);
-        HttpResponse wrappedResponse = new HttpResponse( response );
+
+        IHttpRequest routedRequest = this.getRouter().route(request);
+
+        try {
+            this.getFormatProcessor().process(routedRequest);
+        } catch ( ProcessingException e ) {
+            throw new DispatchException( "Request format processing failed", e );
+        }
+
+        IHttpResponse wrappedResponse = new HttpResponse( response );
 
         this._invokePlugins( DispatchingStage.PRE_DISPATCH, routedRequest, wrappedResponse );
 

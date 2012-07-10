@@ -1,6 +1,7 @@
 package com.redshape.servlet.core.context;
 
 import com.redshape.servlet.core.IHttpRequest;
+import com.redshape.servlet.core.SupportType;
 import com.redshape.servlet.views.IView;
 
 import java.util.*;

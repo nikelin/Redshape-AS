@@ -4,6 +4,7 @@ import com.redshape.form.IUserRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,6 +15,8 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public interface IHttpRequest extends HttpServletRequest, IUserRequest {
+
+    public boolean isMultiPart();
 
     public boolean isPost();
 
@@ -34,6 +37,8 @@ public interface IHttpRequest extends HttpServletRequest, IUserRequest {
 	public Boolean getBooleanParameter( String name );
 
 	public Boolean getCheckboxParameter( String name );
+
+    public <T> List<T> getListParameter( String name );
 
 	public Float getFloatParameter( String name );
 

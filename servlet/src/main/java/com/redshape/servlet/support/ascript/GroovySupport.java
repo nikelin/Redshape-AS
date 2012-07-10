@@ -1,24 +1,16 @@
 package com.redshape.servlet.support.ascript;
 
-import com.redshape.ascript.EvaluationException;
-import com.redshape.ascript.context.IEvaluationContext;
-import com.redshape.ascript.evaluation.EvaluationMode;
 import com.redshape.servlet.WebApplication;
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.core.IHttpResponse;
 import com.redshape.servlet.core.context.ContextId;
 import com.redshape.servlet.core.context.IResponseContext;
-import com.redshape.servlet.core.context.SupportType;
+import com.redshape.servlet.core.SupportType;
 import com.redshape.servlet.core.controllers.ProcessingException;
 import com.redshape.servlet.views.IView;
-import com.redshape.utils.config.IConfig;
 import groovy.lang.Binding;
-import groovy.lang.GroovyClassLoader;
-import groovy.lang.GroovyObject;
 import groovy.util.GroovyScriptEngine;
-import org.springframework.context.ApplicationContext;
 
-import java.io.File;
 import java.io.IOException;
 
 /**
