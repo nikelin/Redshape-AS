@@ -1,5 +1,6 @@
 package com.redshape.persistence.dao.jpa.executors.services;
 
+import com.redshape.persistence.DaoContextHolder;
 import com.redshape.persistence.dao.DAOException;
 import com.redshape.persistence.dao.annotations.QueryHolder;
 import com.redshape.persistence.dao.jpa.executors.CriteriaExecutor;
@@ -82,6 +83,16 @@ public class JPAExecutorService extends JpaDaoSupport implements IQueryExecutorS
     @Transactional
     public <T extends IEntity> IExecutorResult<T> execute(IQuery<T> query) throws DAOException {
         Object value;
+
+        if ( query.entity() != null ) {
+            query.entity( DtoUtils.<T>fromDTO(query.entity() ) );
+        }
+
+
+        if ( query.getEntityClass().isInterface() ) {
+            query.setEntityClass(  (Class<T>) DaoContextHolder.instance().getContext().getBean(query.getEntityClass()).getClass() );
+        }
+
         if ( this.isUpdateQuery(query) ) {
             value = this.executeUpdate(query);
         } else if ( query.isNative() ) {
