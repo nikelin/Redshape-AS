@@ -8,6 +8,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -21,6 +22,10 @@ public class StringUtils extends SimpleStringUtils {
     public static List<String> camelCaseDelimiters = Arrays.asList( "_", "-" );
     private static final String RANDOM_STRING_SOURCE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final String ESCAPE_SYMBOL = "\\";
+
+    public static final Date parseDate( String dateFormat, String dateString ) throws ParseException {
+        return new SimpleDateFormat(dateFormat).parse(dateString);
+    }
 
     public static final String escapePath( String path ) {
         return path.replaceAll("(\\/|\\\\)", "\\" + File.separator );
