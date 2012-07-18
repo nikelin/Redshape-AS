@@ -84,11 +84,11 @@ public class ShardedConfiguration extends AnnotationConfiguration {
         this.shardStrategyFactory = shardStrategyFactory;
         
         if (!virtualShardToShardMap.isEmpty()) {
-            // build the map from shard to set of virtual shards
+            // build the map from shard to set of virtual org.hibernate.shards
             shardToVirtualShardIdMap = Maps.newHashMap();
             for(Map.Entry<Integer, Integer> entry : virtualShardToShardMap.entrySet()) {
                 Set<ShardId> set = shardToVirtualShardIdMap.get(entry.getValue());
-                // see if we already have a set of virtual shards
+                // see if we already have a set of virtual org.hibernate.shards
                 if (set == null) {
                     // we don't, so create it and add it to the map
                     set = Sets.newHashSet();

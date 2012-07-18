@@ -26,6 +26,24 @@ public class StreamingSource implements IConfigSource {
     }
 
     @Override
+    public void setCallback(OnChangeCallback callback) {
+    }
+
+    @Override
+    public void markClean() {
+    }
+
+    @Override
+    public void reload() {
+        throw new IllegalStateException("Must be overridden");
+    }
+
+    @Override
+    public boolean isChanged() {
+        throw new IllegalStateException("Must be overridden");
+    }
+
+    @Override
     public String read() throws ConfigException {
         try {
             if ( !this.isReadable() ) {

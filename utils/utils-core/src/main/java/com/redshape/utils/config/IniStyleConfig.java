@@ -7,7 +7,7 @@ import com.redshape.utils.config.sources.IConfigSource;
  * @user cyril
  * @date 6/22/11 4:43 PM
  */
-public class IniStyleConfig extends AbstractConfig {
+public class IniStyleConfig extends AbstractTSConfig {
     private static final long serialVersionUID = 3682806047106538553L;
 
     protected IniStyleConfig(IConfig parent, String name, String value) {
@@ -22,7 +22,8 @@ public class IniStyleConfig extends AbstractConfig {
 		super(source);
     }
 
-    protected void init() throws ConfigException {
+    @Override
+    protected void actualInit() throws ConfigException {
         String data = this.source.read();
         if ( data.isEmpty() ) {
             return;

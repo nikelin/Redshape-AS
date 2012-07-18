@@ -2,8 +2,11 @@ package com.redshape.servlet.routes.route;
 
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.routes.IRoute;
+import com.redshape.utils.config.ConfigException;
+import com.redshape.utils.config.IConfig;
 import com.redshape.utils.range.IRange;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +15,9 @@ import java.util.regex.Pattern;
 
 public class Regexp implements IRoute {
 	private static final Logger log = Logger.getLogger( Regexp.class );
+
+    @Autowired( required = true )
+    private IConfig config;
 
 	private Pattern pattern;
 	private IRange<Integer> controllerGroup;
@@ -66,8 +72,10 @@ public class Regexp implements IRoute {
 
 	@Override
 	public void applicate(IHttpRequest request) {
-		String sourcePath = request.getServletPath().startsWith( request.getContextPath() )?
-						request.getRequestURI().substring( request.getContextPath().length() )
+        String contextPath = this.getContextPath(request);
+
+		String sourcePath = request.getServletPath().startsWith( contextPath )?
+						request.getRequestURI().substring( contextPath.length() )
 						: request.getRequestURI();
 		Matcher matcher = this.pattern.matcher( sourcePath );
 		if ( matcher.find() ) {
@@ -110,6 +118,24 @@ public class Regexp implements IRoute {
 			request.setController( this.normalize( this.removeContextPart( request, controllerPath.toString() ) ) );
 		}
 	}
+
+    protected String getContextPath( IHttpRequest request ) {
+        try {
+            String contextPath = request.getContextPath();
+            if ( !contextPath.isEmpty() ) {
+                return contextPath;
+            }
+
+            IConfig contextPathNode = this.config.get("web.servletPath");
+            if ( !contextPathNode.isNull() ) {
+                contextPath = contextPathNode.value();
+            }
+
+            return contextPath;
+        } catch ( ConfigException e ) {
+            return "";
+        }
+    }
 
 	protected String removeContextPart( IHttpRequest request, String sourcePath ) {
 		while ( sourcePath.startsWith( request.getServletPath() ) ) {

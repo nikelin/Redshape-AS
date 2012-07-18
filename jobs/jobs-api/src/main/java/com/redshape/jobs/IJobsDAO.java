@@ -10,7 +10,7 @@ import com.redshape.persistence.entities.IEntity;
  * @user cyril
  * @date 6/21/11 10:14 PM
  */
-public interface IJobsDAO<T extends IJob & IEntity> extends IDAO<T> {
+public interface IJobsDAO<T extends IPersistenceJob> extends IDAO<T> {
 
     public IExecutionRequest<T> findByStatus( JobStatus status ) throws DAOException;
 

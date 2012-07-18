@@ -3,8 +3,9 @@ package com.redshape.servlet.core.context.support;
 import com.redshape.renderer.IRenderersFactory;
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.core.IHttpResponse;
-import com.redshape.servlet.core.context.IResponseContext;
-import com.redshape.servlet.core.context.SupportType;
+import com.redshape.servlet.core.context.AbstractResponseContext;
+import com.redshape.servlet.core.context.ContextId;
+import com.redshape.servlet.core.SupportType;
 import com.redshape.servlet.core.controllers.ProcessingException;
 import com.redshape.servlet.views.IView;
 import org.apache.log4j.Logger;
@@ -20,7 +21,7 @@ import java.util.Map;
  * @author nikelin
  * @date 14:01
  */
-public class AjaxContext implements IResponseContext {
+public class AjaxContext extends AbstractResponseContext {
     private static final Logger log = Logger.getLogger( AjaxContext.class );
     private static final String MARKER_HEADER = "XMLHttpRequest";
     private static final String DISABLE_PARAM = "Disable";
@@ -29,6 +30,8 @@ public class AjaxContext implements IResponseContext {
     private IRenderersFactory renderersFactory;
 
     public AjaxContext( IRenderersFactory renderersFactory ) {
+        super( ContextId.AJAX );
+
         this.renderersFactory = renderersFactory;
     }
 
@@ -89,7 +92,8 @@ public class AjaxContext implements IResponseContext {
     @Override
     public void proceedResponse(IView view, IHttpRequest request, IHttpResponse response) throws ProcessingException {
         try {
-            this.writeResponse(this.getRenderersFactory().
+            this.writeResponse(
+                this.getRenderersFactory().
                     <IView, String>forEntity(view)
                     .render(view), response);
         } catch ( IOException e ) {

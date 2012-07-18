@@ -8,7 +8,7 @@ import com.redshape.utils.config.sources.IConfigSource;
  * @package com.redshape.utils.config
  * @date 10/20/11 1:05 PM
  */
-public class PropertiesConfig extends AbstractConfig {
+public class PropertiesConfig extends AbstractTSConfig {
 	public static final String[] STANDARD_LINE_DELIMITERS = new String[] { "\n", "\r", ";" };
 
 	private IConfig parent;
@@ -27,7 +27,8 @@ public class PropertiesConfig extends AbstractConfig {
 		super(source);
     }
 
-    protected void init() throws ConfigException {
+    @Override
+    protected void actualInit() throws ConfigException {
         String data = this.source.read();
         if ( data.isEmpty() ) {
             return;

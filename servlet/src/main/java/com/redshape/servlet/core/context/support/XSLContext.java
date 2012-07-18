@@ -2,8 +2,9 @@ package com.redshape.servlet.core.context.support;
 
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.core.IHttpResponse;
-import com.redshape.servlet.core.context.IResponseContext;
-import com.redshape.servlet.core.context.SupportType;
+import com.redshape.servlet.core.context.AbstractResponseContext;
+import com.redshape.servlet.core.context.ContextId;
+import com.redshape.servlet.core.SupportType;
 import com.redshape.servlet.core.controllers.ProcessingException;
 import com.redshape.servlet.views.ILayout;
 import com.redshape.servlet.views.IView;
@@ -35,7 +36,7 @@ import java.io.StringWriter;
  * @package com.redshape.servlet.core.context.support
  * @date 11/4/11 2:53 PM
  */
-public class XSLContext implements IResponseContext {
+public class XSLContext extends AbstractResponseContext {
     private static final Logger log = Logger.getLogger( XSLContext.class );
 
     @Autowired( required = true )
@@ -43,6 +44,10 @@ public class XSLContext implements IResponseContext {
 
     @Autowired( required = true )
     private ResourcesLoader loader;
+
+    public XSLContext() {
+        super(ContextId.XSL);
+    }
 
     public ResourcesLoader getLoader() {
         return loader;

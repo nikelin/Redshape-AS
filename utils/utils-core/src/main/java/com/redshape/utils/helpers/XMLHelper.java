@@ -21,41 +21,10 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 
 /**
- *
  * @author nikelin
- *
  */
 public final class XMLHelper {
     private static final Logger log = Logger.getLogger( XMLHelper.class );
-
-    private static DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    private static DocumentBuilder domBuilder;
-    static {
-        try {
-            factory.setValidating(false);
-            factory.setNamespaceAware(true);
-
-            domBuilder = createBuilder();
-            domBuilder.setErrorHandler( new ErrorHandler() {
-                @Override
-                public void warning(SAXParseException exception) throws SAXException {
-                    log.error( exception.getMessage(), exception );
-                }
-
-                @Override
-                public void error(SAXParseException exception) throws SAXException {
-                    log.error( exception.getException(), exception );
-                }
-
-                @Override
-                public void fatalError(SAXParseException exception) throws SAXException {
-                    log.error( exception.getMessage(), exception );
-                }
-            });
-        } catch ( Throwable e ) {
-            log.error( e.getMessage(), e );
-        }
-    }
 
     private static TransformerFactory transformersFactory = TransformerFactory.newInstance();
     private static Transformer transformer;
@@ -119,28 +88,24 @@ public final class XMLHelper {
         return buildDocument( this.getLoader().loadResource(path) );
     }
 
-    @Deprecated
-    /**
-     * @todo: for versions compitability ( currently exists method buildDocument( String filePath ) )
-     */
     public Document buildDocumentByData( String data ) throws IOException, SAXException, ParserConfigurationException {
-        return _buildDocument( domBuilder, data );
+        return _buildDocument( data );
     }
 
     public Document buildDocument( Reader reader ) throws IOException, SAXException, ParserConfigurationException {
-        return _buildDocument( domBuilder, reader );
+        return _buildDocument( reader );
     }
 
     public Document buildDocument( InputStream stream ) throws IOException, SAXException, ParserConfigurationException {
-        return _buildDocument( domBuilder, stream );
+        return _buildDocument( stream );
     }
 
     public Document buildDocument( File file ) throws IOException, SAXException, ParserConfigurationException {
-        return _buildDocument( domBuilder, file );
+        return _buildDocument(  file );
     }
 
     public Document buildEmptyDocument() throws ParserConfigurationException {
-        return domBuilder.newDocument();
+        return createBuilder().newDocument();
     }
 
     public String parseToXml( Document document ) throws TransformerException {
@@ -160,18 +125,23 @@ public final class XMLHelper {
         return result.getWriter().toString();
     }
 
-    protected static DocumentBuilder createBuilder() throws ParserConfigurationException {
-        DocumentBuilder builder = factory.newDocumentBuilder();
+    protected DocumentBuilderFactory createFactory() {
+        return DocumentBuilderFactory.newInstance();
+    }
+
+    protected DocumentBuilder createBuilder() throws ParserConfigurationException {
+        DocumentBuilder builder = createFactory().newDocumentBuilder();
         builder.setErrorHandler(null);
 
         return builder;
     }
 
-    @SuppressWarnings("deprecation")
-    protected Document _buildDocument( DocumentBuilder builder, Object source ) throws IOException, SAXException, ParserConfigurationException {
+    protected Document _buildDocument( Object source ) throws IOException, SAXException, ParserConfigurationException {
         if ( source == null ) {
             throw new IllegalArgumentException("Source must not be null");
         }
+
+        DocumentBuilder builder = createBuilder();
 
         Document doc = null;
         if ( File.class.isAssignableFrom( source.getClass() ) ) {

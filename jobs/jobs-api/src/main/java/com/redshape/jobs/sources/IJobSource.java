@@ -24,7 +24,7 @@ public interface IJobSource<T extends IJob> extends IEventDispatcher {
 
     public void asyncRun( T job ) throws JobException;
 
-    public void save( T entity ) throws JobException;
+    public T save( T entity ) throws JobException;
 
     public List<T> fetch() throws JobException;
 

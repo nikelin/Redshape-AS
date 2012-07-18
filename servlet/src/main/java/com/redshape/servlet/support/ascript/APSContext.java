@@ -7,8 +7,9 @@ import com.redshape.ascript.evaluation.EvaluationMode;
 import com.redshape.servlet.WebApplication;
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.core.IHttpResponse;
+import com.redshape.servlet.core.context.ContextId;
 import com.redshape.servlet.core.context.IResponseContext;
-import com.redshape.servlet.core.context.SupportType;
+import com.redshape.servlet.core.SupportType;
 import com.redshape.servlet.core.controllers.ProcessingException;
 import com.redshape.servlet.views.IView;
 import com.redshape.utils.config.IConfig;
@@ -25,8 +26,22 @@ import java.io.IOException;
 public class APSContext implements IResponseContext {
     public static final String EXTENSION = "aps";
 
+    public static class ContextType extends ContextId {
+
+        protected ContextType(String contextId) {
+            super(contextId);
+        }
+
+        public static final ContextType APS = new ContextType("ContextId.APS");
+    }
+
     @Autowired( required = true )
     private IEvaluator evaluator;
+
+    @Override
+    public ContextId getContextType() {
+        return ContextType.APS;
+    }
 
     public IEvaluator getEvaluator() {
         return evaluator;

@@ -15,7 +15,20 @@ import java.io.*;
  *
  * @author nikelin
  */
-public class XMLConfig extends AbstractConfig {
+public class XMLConfig extends AbstractTSConfig {
+
+    protected class OnChangeCallback implements IConfigSource.OnChangeCallback {
+
+        @Override
+        public void onChanged() {
+            try {
+                init();
+            } catch ( ConfigException e ) {
+                log.error( e.getMessage(), e );
+            }
+        }
+
+    }
 
     private static final Logger log = Logger.getLogger(XMLConfig.class);
     private XMLHelper xmlHelper;
@@ -24,7 +37,7 @@ public class XMLConfig extends AbstractConfig {
 	public XMLConfig( XMLHelper helper, String filePath ) throws ConfigException {
 		try {
 			this.xmlHelper = helper;
-			this.source = new FileSource( this.getXmlHelper().getLoader().loadFile(filePath) );
+			this.source = new FileSource( this.getXmlHelper().getLoader().loadFile(filePath), this.createOnChangeCallback() );
 			this.init();
 		} catch ( IOException e ) {
 			throw new ConfigException( e.getMessage(), e );
@@ -41,18 +54,23 @@ public class XMLConfig extends AbstractConfig {
 
     @Deprecated
     public XMLConfig( XMLHelper helper, File file ) throws ConfigException {
-        this(helper, new FileSource(file) );
+        this(helper, new FileSource(file, null) );
     }
     
 	public XMLConfig( XMLHelper helper, IConfigSource source) throws ConfigException {
 		this.xmlHelper = helper;
         this.source = source;
+        this.source.setCallback( this.createOnChangeCallback() );
 		this.init();
 	}
 
 	public XMLConfig(IConfigSource source) throws ConfigException {
 		super(source);
 	}
+    
+    protected IConfigSource.OnChangeCallback createOnChangeCallback() {
+        return new OnChangeCallback();
+    }
 
 	public void setXmlHelper(XMLHelper helper) {
         this.xmlHelper = helper;
@@ -63,8 +81,9 @@ public class XMLConfig extends AbstractConfig {
     }
 
 	@Override
-    protected void init() throws ConfigException {
+    protected void actualInit() throws ConfigException {
 		try {
+            this.clear();
 			this.init( this, this.getXmlHelper().buildDocumentByData(this.source.read()).getDocumentElement() );
 		} catch ( Throwable e ) {
 			throw new ConfigException( e.getMessage(), e );
@@ -72,31 +91,31 @@ public class XMLConfig extends AbstractConfig {
     }
 
 	protected void init( XMLConfig config, Element element ) throws ConfigException {
-		/**
-		 * Initialize attributes
-		 */
-		NamedNodeMap attributes = element.getAttributes();
-		for ( int i = 0; i < attributes.getLength(); i++ ) {
-			Node attribute = attributes.item(i);
-			config.attributes.put( attribute.getNodeName(), attribute.getNodeValue() );
-		}
+        /**
+         * Initialize attributes
+         */
+        NamedNodeMap attributes = element.getAttributes();
+        for ( int i = 0; i < attributes.getLength(); i++ ) {
+            Node attribute = attributes.item(i);
+            config.attributes.put( attribute.getNodeName(), attribute.getNodeValue() );
+        }
 
-		config.set( element.getTextContent() );
-		config.name = element.getNodeName();
+        config.set( element.getTextContent() );
+        config.name = element.getNodeName();
 
-		/**
-		 * Initialize child nodes
-		 */
-		Node child = element.getFirstChild();
-		while ( child != null ) {
-			if ( child.getNodeType() == Node.ELEMENT_NODE ) {
-				XMLConfig childConfig = (XMLConfig) this.createChild(child.getNodeName());
-				this.init( childConfig, (Element) child );
-				config.append(childConfig);
-			}
+        /**
+         * Initialize child nodes
+         */
+        Node child = element.getFirstChild();
+        while ( child != null ) {
+            if ( child.getNodeType() == Node.ELEMENT_NODE ) {
+                XMLConfig childConfig = (XMLConfig) this.createChild(child.getNodeName());
+                this.init( childConfig, (Element) child );
+                config.append(childConfig);
+            }
 
-			child = child.getNextSibling();
-		}
+            child = child.getNextSibling();
+        }
 	}
 
 	@Override
@@ -119,6 +138,8 @@ public class XMLConfig extends AbstractConfig {
     @Override
     public String serialize() throws ConfigException {
         try {
+            waitReady();
+
             return this.getXmlHelper().parseToXml(this.toDomDocument());
         } catch (Throwable e) {
             log.error(e.getMessage(), e);

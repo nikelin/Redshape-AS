@@ -60,7 +60,9 @@ public final class Commons {
     }
 
     public static void checkNotNull( Object... x ) {
-        Commons.checkNotNull(x);
+        if ( x == null ) {
+            throw new IllegalArgumentException("<null>");
+        }
 
         for ( Object item : x ) {
             Commons.checkNotNull(item);

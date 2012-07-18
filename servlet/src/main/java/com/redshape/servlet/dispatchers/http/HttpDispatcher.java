@@ -4,18 +4,23 @@ import com.redshape.servlet.actions.exceptions.PageNotFoundException;
 import com.redshape.servlet.actions.exceptions.handling.IPageExceptionHandler;
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.core.IHttpResponse;
+import com.redshape.servlet.core.context.ContextId;
 import com.redshape.servlet.core.context.IContextSwitcher;
 import com.redshape.servlet.core.context.IResponseContext;
 import com.redshape.servlet.core.controllers.FrontController;
 import com.redshape.servlet.core.controllers.IAction;
 import com.redshape.servlet.core.controllers.ProcessingException;
 import com.redshape.servlet.core.controllers.registry.IControllersRegistry;
+import com.redshape.servlet.core.format.IRequestFormatProcessor;
+import com.redshape.servlet.core.restrictions.ContextRestriction;
 import com.redshape.servlet.dispatchers.DispatchException;
 import com.redshape.servlet.dispatchers.interceptors.IDispatcherInterceptor;
 import com.redshape.servlet.views.*;
 import com.redshape.utils.Commons;
 import com.redshape.utils.ResourcesLoader;
 import com.redshape.utils.StringUtils;
+import com.redshape.utils.config.ConfigException;
+import com.redshape.utils.config.IConfig;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -26,6 +31,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -48,14 +54,27 @@ public class HttpDispatcher implements IHttpDispatcher {
     @Autowired( required = true )
     private IViewsFactory viewFactory;
 
+    @Autowired( required = true )
+    private IConfig config;
+
 	@Autowired( required = true )
 	private IControllersRegistry registry;
-	
+
+    private IResponseContext defaultContext;
+
 	private FrontController front;
 	
 	private ApplicationContext context;
 
     public IPageExceptionHandler exceptionHandler;
+
+    public IResponseContext getDefaultContext() {
+        return defaultContext;
+    }
+
+    public void setDefaultContext(IResponseContext defaultContext) {
+        this.defaultContext = defaultContext;
+    }
 
     public List<IDispatcherInterceptor> getInterceptors() {
         return interceptors;
@@ -171,8 +190,8 @@ public class HttpDispatcher implements IHttpDispatcher {
         try {
             IResponseContext context = this.getContextSwitcher().chooseContext( request, view );
             if ( context == null ) {
-                throw new ServletException("Unable to find " +
-                        "appropriate response context");
+                response.sendError(500);
+                return;
             }
 
             response.setCharacterEncoding("UTF-8");
@@ -180,7 +199,7 @@ public class HttpDispatcher implements IHttpDispatcher {
 			try {
                 context.proceedResponse( view, request, response );
             } catch ( ProcessingException e ) {
-                this.processError( e, request, response );
+                this.processError( e, view, request, response );
             }
         } catch ( DispatchException e ) {
             throw e;
@@ -189,8 +208,25 @@ public class HttpDispatcher implements IHttpDispatcher {
         }
     }
 
-    protected void processError( ProcessingException e, IHttpRequest request, IHttpResponse response )
+    protected void processError( ProcessingException e, IView view, IHttpRequest request, IHttpResponse response )
             throws DispatchException {
+        if ( view != null ) {
+            view.setException(e);
+        } else {
+            view = new View(null, null);
+            view.setException( e );
+        }
+
+        if ( this.defaultContext != null
+                && this.defaultContext.doExceptionsHandling() ) {
+            try {
+                this.defaultContext.proceedResponse(view, request, response);
+                return;
+            } catch ( ProcessingException ex ) {
+                throw new DispatchException( ex.getMessage(), e );
+            }
+        }
+
         if ( this.getExceptionHandler() == null ) {
             throw new DispatchException( e.getMessage(), e );
         }
@@ -202,12 +238,61 @@ public class HttpDispatcher implements IHttpDispatcher {
 		}
     }
 
+    protected void checkContextRestrictions( IAction action, IView view, IHttpRequest request, IHttpResponse response )
+        throws DispatchException, ConfigException {
+        List<String> restrictionValues = new ArrayList<String>();
+        ContextRestriction restriction = action.getClass().getAnnotation(ContextRestriction.class);
+        if ( restriction != null ) {
+            restrictionValues.addAll( Arrays.asList(restriction.value()) );
+        } else {
+            IConfig restrictionNode = this.config.get("web.contextRestriction");
+            if ( restrictionNode.isNull() ) {
+                return;
+            }
+
+            restrictionValues.addAll( Arrays.asList( restrictionNode.value().split(",") ) );
+        }
+
+        boolean found = false;
+        for ( String restrictionValue : restrictionValues ) {
+            ContextId contextId = ContextId.valueOf( restrictionValue );
+            if ( contextId == null ) {
+                throw new DispatchException("Context restriction references to unknown context type");
+            }
+
+            IResponseContext expected = this.getContextSwitcher().chooseContext( contextId );
+            if ( expected == null ) {
+               continue;
+            }
+
+            IResponseContext actualContext = this.getContextSwitcher().chooseContext( request, view );
+            if ( expected.equals(actualContext) ) {
+                found = true;
+                break;
+            }
+        }
+
+        if ( !found ) {
+            throw new DispatchException("Interaction with requested method allowed only under `%s` environment");
+        }
+    }
+
+    protected void checkRestrictions( IAction action, IView view, IHttpRequest request, IHttpResponse response )
+        throws DispatchException, ConfigException {
+        this.checkContextRestrictions(action, view, request, response);
+    }
+
 	@Override
     public void dispatch( ServletConfig servletContext, IHttpRequest request, IHttpResponse response )
     	throws DispatchException {
         try {
+
 			ViewHelper.setLocalHttpRequest(request);
 
+            /**
+             * Move this conditional check to a context in a some
+             * way...
+             */
         	if ( request.getRequestURI().endsWith("jsp") ) {
                 return;
         	}
@@ -239,12 +324,14 @@ public class HttpDispatcher implements IHttpDispatcher {
             }
         	
         	log.info("Requested page: " + controllerName + "/" + actionName );
-        	
+
             IAction action = this.getRegistry().getInstance( controllerName, actionName );
             if ( action == null ) {
                 this.tryRedirectToView( request, response );
                 return;
             }
+
+            this.checkRestrictions(action, view, request, response);
 
             String viewPath = this.getRegistry().getViewPath(action);
 
@@ -262,7 +349,7 @@ public class HttpDispatcher implements IHttpDispatcher {
 
             if ( view.getException() != null
                     && this.getContextSwitcher().chooseContext( request, view ).doExceptionsHandling() ) {
-                this.processError(view.getException(), request, response);
+                this.processError(view.getException(), view, request, response);
                 return;
             }
 
@@ -280,9 +367,9 @@ public class HttpDispatcher implements IHttpDispatcher {
 
             this.redirectToView( view, request, response);
         } catch ( ProcessingException e ) {
-            this.processError(e, request, response);
+            this.processError(e, null,  request, response);
         } catch ( Throwable e ) {
-        	this.processError( new ProcessingException( e.getMessage(), e ), request, response );
+        	this.processError( new ProcessingException( e.getMessage(), e ), null, request, response );
         }
     }
 

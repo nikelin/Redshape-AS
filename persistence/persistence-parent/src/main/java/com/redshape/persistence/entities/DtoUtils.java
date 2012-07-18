@@ -447,7 +447,9 @@ public final class DtoUtils {
                 }
             }
 
-            entity = (V) getSessionManager().refresh( (IEntity) entity);
+            if ( ((IEntity) entity).getId() != null ) {
+                entity = (V) getSessionManager().refresh( (IEntity) entity);
+            }
 
             T dto = entity.createDTO();
             cache().put(entity, dto);
@@ -466,7 +468,7 @@ public final class DtoUtils {
                         }
 
                         if ( value != null ) {
-                            if ( value != null && value instanceof IDtoCapable ) {
+                            if ( value instanceof IDtoCapable ) {
                                 if ( !processing().contains(value) ) {
                                     processing().add( value );
                                 } else {
@@ -494,10 +496,6 @@ public final class DtoUtils {
                 toCounter().leave();
                 if ( toCounter().isBalanced() ) {
                     processDeferred(true);
-                    try {
-                        closeSession();
-                    } catch ( Throwable e ) {}
-
                     resetCache();
                 }
             }

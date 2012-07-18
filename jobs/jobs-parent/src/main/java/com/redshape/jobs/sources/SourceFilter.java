@@ -56,8 +56,8 @@ public class SourceFilter<T extends IJob> implements  IJobSource<T> {
     }
 
     @Override
-    public void save(T entity) throws JobException {
-        targetSource.save(entity);
+    public T save(T entity) throws JobException {
+        return targetSource.save(entity);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.redshape.servlet.core.context;
 
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.core.IHttpResponse;
+import com.redshape.servlet.core.SupportType;
 import com.redshape.servlet.core.controllers.ProcessingException;
 import com.redshape.servlet.views.IView;
 
@@ -10,6 +11,8 @@ import com.redshape.servlet.views.IView;
  * @date 13:52
  */
 public interface IResponseContext {
+
+    public ContextId getContextType();
 
     public boolean doRedirectionHandling();
 

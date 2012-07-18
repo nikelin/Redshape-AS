@@ -1,5 +1,6 @@
 package com.redshape.utils.config.sources;
 
+import com.redshape.utils.Commons;
 import com.redshape.utils.config.ConfigException;
 
 import java.io.*;
@@ -14,9 +15,40 @@ import java.util.Arrays;
  */
 public class FileSource implements IConfigSource {
     private File file;
+    private OnChangeCallback onChangeCallback;
+    private long initialMTime;
 
     public FileSource( File file ) {
+        this(file, null);
+    }
+
+    public FileSource( File file, OnChangeCallback callback ) {
+        Commons.checkNotNull(file);
+
         this.file = file;
+        this.onChangeCallback = callback;
+
+        this.markClean();
+    }
+
+    @Override
+    public void setCallback(OnChangeCallback callback) {
+        this.onChangeCallback = callback;
+    }
+
+    @Override
+    public void markClean() {
+        this.initialMTime = this.file.lastModified();
+    }
+
+    @Override
+    public void reload() {
+        this.onChangeCallback.onChanged();
+    }
+
+    @Override
+    public boolean isChanged() {
+        return this.file.lastModified() != this.initialMTime;
     }
 
     @Override

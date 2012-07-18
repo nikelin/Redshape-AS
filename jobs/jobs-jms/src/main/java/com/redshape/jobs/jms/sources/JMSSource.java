@@ -160,13 +160,15 @@ public class JMSSource extends AbstractEventDispatcher implements IJobSource<IJo
     }
 
     @Override
-    public void save(IJob entity) throws JobException {
+    public IJob save(IJob entity) throws JobException {
         try {
             ObjectMessage message = this.getSession().createObjectMessage();
             message.setJMSDestination( this.producingQueueAddr );
             message.setObject(entity);
             
             this.getProducer().send(message);
+
+            return entity;
         } catch ( JMSException e ) {
             throw new JobException( e.getMessage(), e );
         }
