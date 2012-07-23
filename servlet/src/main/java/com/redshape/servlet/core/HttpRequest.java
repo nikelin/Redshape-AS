@@ -82,7 +82,7 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
 		while ( parameterNames.hasMoreElements() ) {
 			String parameterName = parameterNames.nextElement();
 			String[] values = super.getParameterValues(parameterName);
-			if ( values.length == 1 && !parameterName.endsWith("[]") ) {
+			if ( !parameterName.isEmpty() && !parameterName.endsWith("[]") ) {
 				this.parameters.put( parameterName, values[0] );
 			} else {
 				this.parameters.put( parameterName, Arrays.asList(values) );

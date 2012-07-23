@@ -46,7 +46,7 @@ public abstract class AbstractJSONRenderer<T> implements IRenderer<T, String> {
         for ( Map.Entry<String, Object> field : fields.entrySet() ) {
             builder.append( this.createField(field.getKey(), field.getValue() ) );
             
-            if ( i++ != fields.size() ) {
+            if ( i++ != fields.size() - 1 ) {
                 builder.append(",");
             }
         }

@@ -21,6 +21,8 @@ import java.util.*;
  */
 public class JSONRenderersFactory extends AbstractRenderersFactory {
 
+    private boolean reflectiveRenderEnabled;
+
     public JSONRenderersFactory() {
         this( new HashMap<Class<?>, IRenderer<?, ?>>() );
     }
@@ -30,6 +32,14 @@ public class JSONRenderersFactory extends AbstractRenderersFactory {
 
         this.init();
         this.addRenderers((Map) customRenderers);
+    }
+
+    public boolean isReflectiveRenderEnabled() {
+        return reflectiveRenderEnabled;
+    }
+
+    public void setReflectiveRenderEnabled(boolean reflectiveRenderEnabled) {
+        this.reflectiveRenderEnabled = reflectiveRenderEnabled;
     }
 
     @Override
@@ -53,6 +63,12 @@ public class JSONRenderersFactory extends AbstractRenderersFactory {
         }
 
         IRenderer<T, V> renderer = (IRenderer<T, V>) this.renderers.get(rendererClazz);
+        if ( renderer instanceof StandardJSONRenderer ) {
+            if ( this.isReflectiveRenderEnabled() ) {
+                ((StandardJSONRenderer) renderer).setReflectiveEnabled(this.isReflectiveRenderEnabled());
+            }
+        }
+
         if ( renderer != null ) {
             return renderer;
         }
