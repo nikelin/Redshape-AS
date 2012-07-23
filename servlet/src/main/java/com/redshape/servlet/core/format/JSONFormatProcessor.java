@@ -21,7 +21,7 @@ public class JSONFormatProcessor implements IRequestFormatProcessor {
     @Override
     public SupportType check(IHttpRequest request) throws ProcessingException {
         try {
-            if ( !request.isPost() ) {
+            if ( !request.isPost() || request.getBody().isEmpty() ) {
                 return  SupportType.NO;
             }
 
