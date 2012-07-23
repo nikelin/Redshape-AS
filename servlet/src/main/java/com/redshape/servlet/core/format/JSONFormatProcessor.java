@@ -25,7 +25,8 @@ public class JSONFormatProcessor implements IRequestFormatProcessor {
                 return  SupportType.NO;
             }
 
-            if ( request.getHeader(MARKER_HEADER) != null ) {
+            String requestedWith = request.getHeader("X-Requested-With");
+            if ( requestedWith != null && requestedWith.equals( MARKER_HEADER) ) {
                 return SupportType.SHOULD;
             }
 
