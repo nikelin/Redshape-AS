@@ -1,15 +1,14 @@
 package com.redshape.servlet.core;
 
 import com.redshape.utils.Commons;
-import net.sf.json.JSONObject;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import java.io.*;
-import java.net.URLDecoder;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
 /**
@@ -175,8 +174,7 @@ public class HttpRequest extends HttpServletRequestWrapper implements IHttpReque
             data.append(buff);
         }
 
-		this.requestData = data.toString();
-		return this.requestData = this.requestData.isEmpty() ? this.getBody() : this.requestData;
+		return this.requestData = data.toString();
     }
 
     @Override
