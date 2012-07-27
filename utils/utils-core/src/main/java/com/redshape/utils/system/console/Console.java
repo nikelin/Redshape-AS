@@ -33,18 +33,31 @@ public class Console implements IConsole {
 
     @Override
     public void mkdir(String path) throws IOException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        if ( checkExists(path) )
+            return;
+
+        String command = "mkdir -p " + path;
+
+        // todo: synchronize on path?
+        executeCommand(path, command);
+
+
     }
 
     @Override
 	public void deleteFile(String path) throws IOException {
-		File file = this.<File>provideFile(path, false);
-		if ( !file.exists() ) {
-			return;
-		}
+        if ( !checkExists(path) )
+            return;
 
-		file.delete();
-	}
+        String command = "rm -r " + path;
+
+        // todo: synchronize on path?
+        executeCommand(path, command);
+    }
+
+    private String executeCommand(Object context, String command) throws IOException {
+        return createExecutor(context, command).execute();
+    }
 
 	@Override
 	public boolean checkExists(String path) throws IOException {
