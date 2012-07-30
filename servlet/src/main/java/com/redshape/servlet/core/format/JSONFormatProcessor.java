@@ -25,12 +25,15 @@ public class JSONFormatProcessor implements IRequestFormatProcessor {
                 return  SupportType.NO;
             }
 
-            if ( request.getHeader(MARKER_HEADER) != null ) {
+            String body = this.getBody(request);
+
+            String requestedWith = request.getHeader("X-Requested-With");
+            if ( requestedWith != null && requestedWith.equals( MARKER_HEADER) ) {
                 return SupportType.SHOULD;
             }
 
-            if ( request.getBody().startsWith("{")
-                    && request.getBody().endsWith("}") ) {
+            if ( body.startsWith("{")
+                    && body.endsWith("}") ) {
                 return SupportType.MAY;
             }
 
@@ -40,9 +43,35 @@ public class JSONFormatProcessor implements IRequestFormatProcessor {
         }
     }
 
+    protected String getBody( IHttpRequest request ) throws IOException {
+        String body = request.getBody();
+        if ( body == null || body.isEmpty() ) {
+            if ( request.getParameters().isEmpty() ) {
+                return "";
+            }
+
+            for ( String key : request.getParameters().keySet() ) {
+                if ( key == null ) {
+                    continue;
+                }
+
+                if ( key.startsWith("{") && key.endsWith("}") ) {
+                    body = key;
+                    break;
+                }
+            }
+
+            if ( body == null || body.isEmpty() ) {
+                return "";
+            }
+        }
+
+        return body;
+    }
+
     protected JSONObject readJSONRequest( IHttpRequest request )
             throws IOException {
-        String requestData = request.getBody();
+        String requestData = this.getBody(request);
 
         if ( requestData.isEmpty() ) {
             throw new IllegalArgumentException("Request is empty");

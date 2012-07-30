@@ -3,11 +3,15 @@ package com.redshape.renderer.json.renderers;
 import com.redshape.renderer.IRenderer;
 import com.redshape.renderer.IRenderersFactory;
 import com.redshape.utils.Commons;
+import com.redshape.utils.beans.Property;
+import com.redshape.utils.beans.PropertyUtils;
 
+import java.beans.IntrospectionException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
@@ -17,12 +21,21 @@ import java.util.Map;
 public class StandardJSONRenderer extends AbstractJSONRenderer<Object> {
 
     private IRenderersFactory renderersFactory;
+    private boolean reflectiveEnabled;
     private Map<Class<?>, Method> handlers = new HashMap();
 
     public StandardJSONRenderer( IRenderersFactory renderersFactory ) {
         this.renderersFactory = renderersFactory;
 
         this.init();
+    }
+
+    public boolean isReflectiveEnabled() {
+        return reflectiveEnabled;
+    }
+
+    public void setReflectiveEnabled(boolean reflectiveEnabled) {
+        this.reflectiveEnabled = reflectiveEnabled;
     }
 
     protected IRenderersFactory getRenderersFactory() {
@@ -36,6 +49,10 @@ public class StandardJSONRenderer extends AbstractJSONRenderer<Object> {
 
     @Override
     public String render(Object renderable) {
+        if ( renderable == null ) {
+            return null;
+        }
+
         if ( renderable.getClass().isArray() ) {
             return this.renderArray( (Object[]) renderable);
         }
@@ -52,8 +69,18 @@ public class StandardJSONRenderer extends AbstractJSONRenderer<Object> {
         if ( method == null ) {
             IRenderer<Object, String> renderer =  this.getRenderersFactory()
                         .<Object, String>forEntity(renderable);
-            if ( renderer != null && renderer != this ) {
-                return renderer.render(renderable);
+            if ( renderer != null ) {
+                if ( renderer == this ) {
+                    if ( this.isReflectiveEnabled() ) {
+                        try {
+                            return this.reflectiveRender(renderable);
+                        } catch ( Throwable e ) {
+                            return this.render("<ERROR>");
+                        }
+                    }
+                } else {
+                    return renderer.render(renderable);
+                }
             }
 
             return this.render("<FILTERED>");
@@ -64,6 +91,17 @@ public class StandardJSONRenderer extends AbstractJSONRenderer<Object> {
         } catch ( Throwable e ) {
             return "null";
         }
+    }
+
+    public String reflectiveRender( Object renderable ) throws IntrospectionException {
+        Set<Property> properties = PropertyUtils.getInstance().getProperties(renderable.getClass());
+        Map<String, String> result = new HashMap<String, String>( properties.size() );
+        int i = 0;
+        for ( Property property : properties ) {
+            result.put( property.getName(), this.render( property.get(renderable) ) );
+        }
+
+        return this.render(result);
     }
 
     public String renderArray( Object[] renderable ) {

@@ -9,7 +9,6 @@ import org.apache.commons.lang.StringEscapeUtils;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -44,6 +43,9 @@ public class DefaultFormatProcessor implements IRequestFormatProcessor {
 
             String value = paramParts.length > 1 ? paramParts[1] : null;
             String name = URLDecoder.decode(paramParts[0]);
+            if ( name.isEmpty() ) {
+                continue;
+            }
             if ( name.endsWith("[]") ) {
                 name = name.replace("[]", "");
                 if ( !request.hasParameter(name) ) {
