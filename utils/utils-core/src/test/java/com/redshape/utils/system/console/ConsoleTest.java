@@ -1,10 +1,12 @@
 package com.redshape.utils.system.console;
 
-import static junit.framework.Assert.*;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 
 /**
  * User: serge
@@ -49,8 +51,8 @@ public class ConsoleTest {
 
         assertTrue( new File(SUBDIR_2_PATH).exists() );
 
-        console.deleteFile(SUBDIR_2_PATH);
+        console.deleteFile(SUBDIR_1_PATH);
 
-        assertFalse( new File(SUBDIR_2_PATH).exists() );
+        assertFalse( new File(SUBDIR_1_PATH).exists() );
     }
 }
