@@ -1,18 +1,18 @@
-package com.redshape.jobs.sources;
+package com.redshape.jobs.jpa.sources;
 
 import com.redshape.jobs.IJobsDAO;
 import com.redshape.jobs.IPersistenceJob;
 import com.redshape.jobs.JobException;
 import com.redshape.jobs.JobStatus;
 import com.redshape.jobs.result.IJobResult;
+import com.redshape.jobs.sources.IJobSource;
 import com.redshape.persistence.dao.DAOException;
 import com.redshape.persistence.dao.DAOFacade;
 import com.redshape.persistence.utils.ISessionManager;
 import com.redshape.utils.Commons;
 import com.redshape.utils.events.AbstractEventDispatcher;
 import org.apache.log4j.Logger;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,10 @@ public class DAOJobSource extends AbstractEventDispatcher
     private static final Logger log = Logger.getLogger(IJobSource.class);
 
     private String name;
+
+    @Autowired( required = true )
     private DAOFacade facade;
+
     private ISessionManager sessionManager;
     private List<? extends IJobsDAO<?>> sources = new ArrayList<IJobsDAO<?>>();
     private int chunkSize;
