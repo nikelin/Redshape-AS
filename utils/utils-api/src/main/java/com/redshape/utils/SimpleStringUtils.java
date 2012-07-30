@@ -207,16 +207,18 @@ public class SimpleStringUtils {
         StringBuilder builder = new StringBuilder();
         int i = 0;
         for ( Object joinItem : join ) {
-            String value = null;
+            String value;
             if ( filter != null ) {
                 try {
                     value = filter.invoke( joinItem );
                 } catch ( InvocationException e ) {
                     throw new IllegalArgumentException("Filtering exception", e );
                 }
+            } else {
+                value = String.valueOf(joinItem);
             }
 
-            builder.append( String.valueOf(value) );
+            builder.append(value);
 
             if ( i++ != join.length - 1 ) {
                 builder.append( separator );
