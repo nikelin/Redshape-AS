@@ -157,7 +157,7 @@ public class StandardQueryBuilder implements IQueryBuilder {
     public <T> IStatement[] scalar(T... values) {
         IStatement[] statements = new IStatement[values.length];
         for ( int i = 0; i < values.length; i++ ) {
-            statements[i++] = this.scalar(values[i]);
+            statements[i] = this.scalar(values[i]);
         }
 
         return statements;

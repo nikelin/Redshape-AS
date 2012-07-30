@@ -156,6 +156,10 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
 
     @Override
     public void remove(Collection<T> object) throws DAOException {
+        if ( object.isEmpty() ) {
+            return;
+        }
+
         this.service.<T>execute(
                 this.getBuilder().<T>removeQuery(this.getEntityClass())
                         .where(
