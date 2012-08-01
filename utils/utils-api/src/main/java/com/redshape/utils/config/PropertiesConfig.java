@@ -8,14 +8,14 @@ import com.redshape.utils.config.sources.IConfigSource;
  * @package com.redshape.utils.config
  * @date 10/20/11 1:05 PM
  */
-public class PropertiesConfig extends AbstractTSConfig {
+public class PropertiesConfig extends AbstractConfig {
 	public static final String[] STANDARD_LINE_DELIMITERS = new String[] { "\n", "\r", ";" };
 
-	private IConfig parent;
-	private String name;
-	private String value;
+    public PropertiesConfig() {
+        this(null, null, null);
+    }
 
-	protected PropertiesConfig(PropertiesConfig parent, String name, String value) {
+    protected PropertiesConfig(PropertiesConfig parent, String name, String value) {
         super(parent, name, value);
     }
 
@@ -69,4 +69,17 @@ public class PropertiesConfig extends AbstractTSConfig {
 	public IConfig createChild(String name) {
 		return new PropertiesConfig(this, name, null);
 	}
+
+    public static IConfig fromSource( IConfig config ) throws ConfigException {
+        IConfig result = new PropertiesConfig( config.name(), config.value() );
+        for ( IConfig child : config.childs() ) {
+            result.append( fromSource(child) );
+        }
+
+        for ( String name : config.attributeNames() ) {
+            result.attribute(name, config.attribute(name) );
+        }
+
+        return result;
+    }
 }
