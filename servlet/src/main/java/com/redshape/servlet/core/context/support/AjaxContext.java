@@ -9,6 +9,8 @@ import com.redshape.servlet.core.context.ContextId;
 import com.redshape.servlet.core.controllers.ProcessingException;
 import com.redshape.servlet.views.IView;
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
+import net.sf.json.util.CycleDetectionStrategy;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletResponse;
@@ -97,12 +99,15 @@ public class AjaxContext extends AbstractResponseContext {
     @Override
     public void proceedResponse(IView view, IHttpRequest request, IHttpResponse response) throws ProcessingException {
         try {
-            JSONObject object = new JSONObject();
-            object.put("response", view);
+            JsonConfig config = new JsonConfig();
+            config.setCycleDetectionStrategy(CycleDetectionStrategy.LENIENT);
+
+            JSONObject result = new JSONObject();
+            result.put("response", JSONObject.fromObject(view, config) );
 
             this.writeResponse(
                 this.getRenderersFactory() == null ?
-                    object.toString() :
+                    result.toString() :
                     this.getRenderersFactory().
                         <IView, String>forEntity(view)
                         .render(view), response);
