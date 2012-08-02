@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class Console implements IConsole {
 	private Map<Object, Collection<IScriptExecutor>> executors = new HashMap<Object, Collection<IScriptExecutor>>();
-
+    private ConsoleCommandGenerator consoleCommandGenerator = ConsoleCommandGeneratorFactory.createConsoleCommandGenerator();
 	/**
 	 * For testability purpouses
 	 * @param command
@@ -36,7 +36,7 @@ public class Console implements IConsole {
         if ( checkExists(path) )
             return;
 
-        String command = "mkdir -p " + path;
+        String command = consoleCommandGenerator.generateCreateDirCommand(path);
 
         // todo: synchronize on path?
         executeCommand(path, command);
@@ -49,7 +49,7 @@ public class Console implements IConsole {
         if ( !checkExists(path) )
             return;
 
-        String command = "rm -r " + path;
+        String command = consoleCommandGenerator.generateDeleteDirCommand(path);
 
         // todo: synchronize on path?
         executeCommand(path, command);
