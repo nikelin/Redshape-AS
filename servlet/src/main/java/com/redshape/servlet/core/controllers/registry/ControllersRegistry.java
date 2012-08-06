@@ -168,7 +168,7 @@ public class ControllersRegistry implements IControllersRegistry, ApplicationCon
 
 			return actionInstance;
         } catch ( InstantiationException e ) {
-        	throw new InstantiationException("Unable to craete action instance");
+        	throw new InstantiationException("Unable to create action instance");
         } catch ( IllegalAccessException e ) {
             throw new InstantiationException("Action constructor not available");
         }

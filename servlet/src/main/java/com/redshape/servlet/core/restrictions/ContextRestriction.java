@@ -1,7 +1,5 @@
 package com.redshape.servlet.core.restrictions;
 
-import com.redshape.servlet.core.context.ContextId;
-
 import java.lang.annotation.*;
 
 /**
@@ -13,6 +11,7 @@ import java.lang.annotation.*;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
+@Inherited
 public @interface ContextRestriction {
 
     /**

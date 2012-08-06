@@ -273,7 +273,9 @@ public class HttpDispatcher implements IHttpDispatcher {
         }
 
         if ( !found ) {
-            throw new DispatchException("Interaction with requested method allowed only under `%s` environment");
+            throw new DispatchException("Interaction with requested method allowed only under `"
+                    + StringUtils.join(restrictionValues, " ")
+                    + "`  environment");
         }
     }
 
