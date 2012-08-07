@@ -4,6 +4,8 @@ import com.redshape.jobs.IJob;
 import com.redshape.jobs.JobException;
 import com.redshape.jobs.result.IJobResult;
 import com.redshape.utils.events.AbstractEventDispatcher;
+import com.redshape.utils.events.IEvent;
+import com.redshape.utils.events.IEventListener;
 
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -15,13 +17,13 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Time: 3:56 PM
  * To change this template use File | Settings | File Templates.
  */
-public class DummySource<T extends IJob> extends AbstractEventDispatcher implements IJobSource<T> {
+public class DummySource<T extends IJob> implements IJobSource<T> {
 
     private String name;
     private int updateInterval;
     private int workChunkSize;
 
-    private Queue<T> scheduled = new LinkedBlockingQueue<T>();
+    private Stack<T> scheduled = new Stack<T>();
     private Map<T, IJobResult> completed = new HashMap<T, IJobResult>();
 
     public DummySource(String name, int updateInterval, int workChunkSize) {
@@ -60,10 +62,19 @@ public class DummySource<T extends IJob> extends AbstractEventDispatcher impleme
     public List<T> fetch() throws JobException {
         List<T> deque = new ArrayList<T>();
         for ( int i = 0; i < workChunkSize; i++ ) {
-            deque.add( this.scheduled.poll() );
+            deque.add( this.scheduled.pop() );
         }
 
         return deque;
     }
 
+    @Override
+    public <T extends IEvent> void removeEventListener(Class<T> type, IEventListener<? extends T> listener) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <T extends IEvent> void addEventListener(Class<T> type, IEventListener<? extends T> listener) {
+        throw new UnsupportedOperationException();
+    }
 }
