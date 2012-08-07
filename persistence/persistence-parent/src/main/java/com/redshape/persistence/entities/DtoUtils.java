@@ -536,7 +536,7 @@ public final class DtoUtils {
         } finally {
             if ( !toCounter().isBalanced() ) {
                 toCounter().leave();
-            } else if ( toCounter().isBalanced() ) {
+            } else {
                 processDeferred(true);
                 resetCache();
             }
