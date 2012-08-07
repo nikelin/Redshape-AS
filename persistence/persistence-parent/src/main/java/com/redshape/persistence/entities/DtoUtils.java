@@ -77,9 +77,9 @@ public final class DtoUtils {
         @Override
         public String toString() {
             return String.format("%s { %s = %s }",
-                this.target.getClass().getCanonicalName(),
-                this.property.getName(),
-                this.object.toString() );
+                    this.target.getClass().getCanonicalName(),
+                    this.property.getName(),
+                    this.object.toString() );
         }
 
         @Override
@@ -300,10 +300,10 @@ public final class DtoUtils {
             if ( entityClazz.isInterface() ) {
                 entityClazz = DaoContextHolder.instance().getContext().getBean( entityClazz ).getClass();
             }
-        
+
             if ( dto.getId() != null ) {
                 DAOFacade facade = DaoContextHolder.instance().getContext().getBean(DAOFacade.class);
-        
+
                 IDAO<? extends IEntity> dao = facade.getDAO(entityClazz);
                 Commons.checkNotNull(dao, "DAO for " + entityClazz.getCanonicalName() + " is not registered");
                 result = dao.findById( dto.getId() );
@@ -323,19 +323,20 @@ public final class DtoUtils {
         } finally {
             if ( !fromCounter().isBalanced() ) {
                 fromCounter().leave();
-                if ( fromCounter().isBalanced() ) {
-                    processDeferred(false);
-
-                    try {
-                        // @FIXME: Issue must be investigated
-                        // closeSession();
-                    } catch ( Throwable e ) {}
-
-                    resetReverseCache();
-                }
             }
-        }
+
+            if ( fromCounter().isBalanced() ) {
+                processDeferred(false);
+
+                try {
+                    // @FIXME: Issue must be investigated
+                    // closeSession();
+                } catch ( Throwable e ) {}
+
+                resetReverseCache();
+            }
     }
+}
 
     private static boolean isProcessing( Object object ) {
         for ( Object processing : processing() ) {
@@ -346,7 +347,7 @@ public final class DtoUtils {
 
         return false;
     }
-    
+
     protected static IEntity fromDTO( IEntity entity, IEntity dto ) throws DAOException {
         try {
             Collection<Property> entityProperties = PropertyUtils.getInstance().getProperties(entity.getClass());
@@ -357,7 +358,7 @@ public final class DtoUtils {
                         if ( !dtoProperty.getName().equals( property.getName() ) ) {
                             continue;
                         }
-    
+
                         Object value = dtoProperty.get(dto);
                         if ( value == entity ) {
                             value = null;
@@ -382,7 +383,7 @@ public final class DtoUtils {
                         if ( originalValue != null ) {
                             processing().remove(originalValue);
                         }
-    
+
                         property.set( entity, value );
                         break;
                     } catch ( Throwable e ) {
@@ -390,13 +391,13 @@ public final class DtoUtils {
                     }
                 }
             }
-    
+
             return entity;
         } catch ( IntrospectionException e ) {
             throw new DAOException( e.getMessage(), e );
         }
     }
-    
+
     protected static Collection<?> processList( Object value, boolean fromDTO ) throws DAOException {
         Collection result;
 
@@ -450,12 +451,12 @@ public final class DtoUtils {
         }
 
         return result;
-    } 
-    
+    }
+
     protected static boolean isListType( Object value ) {
         return Collection.class.isAssignableFrom(value.getClass());
     }
-    
+
     public static <T extends IDTO, V extends IDtoCapable<T>> T toDTO( V entity ) {
         try {
             if ( toCounter().isBalanced() ) {
@@ -530,14 +531,14 @@ public final class DtoUtils {
             }
             return dto;
         } catch ( Throwable e ) {
+            cache().remove(entity);
             throw new IllegalStateException( e.getMessage(), e );
         } finally {
             if ( !toCounter().isBalanced() ) {
                 toCounter().leave();
-                if ( toCounter().isBalanced() ) {
-                    processDeferred(true);
-                    resetCache();
-                }
+            } else if ( toCounter().isBalanced() ) {
+                processDeferred(true);
+                resetCache();
             }
         }
     }
