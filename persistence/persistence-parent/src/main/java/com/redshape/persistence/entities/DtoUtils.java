@@ -492,6 +492,10 @@ public final class DtoUtils {
             Commons.checkNotNull(dto);
 
             for ( Property property : PropertyUtils.getInstance().getProperties(entity.getClass()) ) {
+                if ( null != property.getAnnotation(DtoIgnore.class) ) {
+                    continue;
+                }
+
                 for ( Property dtoProperty : PropertyUtils.getInstance().getProperties(dto.getClass()) ) {
                     try {
                         if ( !dtoProperty.getName().equals( property.getName() ) ) {
