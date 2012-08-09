@@ -538,12 +538,12 @@ public final class DtoUtils {
             cache().remove(entity);
             throw new IllegalStateException( e.getMessage(), e );
         } finally {
-            if ( !toCounter().isBalanced() ) {
-                toCounter().leave();
-            } else {
+            if ( toCounter().isBalanced() ) {
                 processDeferred(true);
                 resetCache();
             }
+
+            toCounter().leave();
         }
     }
 

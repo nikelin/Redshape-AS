@@ -28,28 +28,25 @@ public abstract class AbstractEntity<T extends IDTO> implements IEntity, IDtoCap
 
     @Override
     public int hashCode() {
-        if ( this.getId() != null ) {
-            return this.getId().hashCode();
-        }
-
-        return super.hashCode();
+        return id != null ? id.hashCode() : 0;
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( o == null ) {
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof AbstractEntity)) {
             return false;
         }
 
-        try {
-            return (Boolean) this.getClass().getMethod("equals", o.getClass() ).invoke( this, o );
-        } catch ( Throwable e ) {
-            return super.equals( o );
-        }
-    }
+        AbstractEntity that = (AbstractEntity) o;
 
-    public boolean equals( IEntity e ) {
-        return this.getId() != null && e.getId() != null && this.getId().equals( e.getId() );
+        if (id != null ? !id.equals(that.id) : that.id != null) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override
