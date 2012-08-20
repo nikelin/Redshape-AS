@@ -34,7 +34,7 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
         }
 
         @Override
-        public IQuery<Z> query() throws DAOException {
+        public IQuery<Z> query() {
             return this.query;
         }
 
@@ -78,6 +78,21 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
         public IExecutionRequest limit(int count) {
             this.limit = count;
             return this;
+        }
+
+        @Override
+        public int count() throws DAOException {
+            IQuery query = getBuilder().countQuery( query().getEntityClass() );
+
+            query.where(
+                query().getExpression()
+            );
+
+            query.setAttributes( query().getAttributes() );
+            query.setOffset( query().getOffset() > 0 ? query().getOffset() : this.offset() );
+            query.setLimit( query().getLimit() > 0 ? query().getLimit() : this.limit() );
+
+            return execute(query).resultValue();
         }
     }
 
@@ -156,6 +171,10 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
 
     @Override
     public void remove(Collection<T> object) throws DAOException {
+        if ( object.isEmpty() ) {
+            return;
+        }
+
         this.service.<T>execute(
                 this.getBuilder().<T>removeQuery(this.getEntityClass())
                         .where(

@@ -3,19 +3,32 @@ package com.redshape.utils.config;
 import com.redshape.utils.SimpleStringUtils;
 import com.redshape.utils.config.sources.IConfigSource;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
  * @package com.redshape.utils.config
  * @date 10/20/11 1:05 PM
  */
-public class PropertiesConfig extends AbstractTSConfig {
+public class PropertiesConfig extends AbstractConfig {
 	public static final String[] STANDARD_LINE_DELIMITERS = new String[] { "\n", "\r", ";" };
 
-	private IConfig parent;
-	private String name;
-	private String value;
+    protected boolean nulled;
+    protected String value;
+    protected IConfig parent;
+    protected String name;
+    protected Map<String, String> attributes = new LinkedHashMap<String, String>();
+    protected List<IConfig> childs = new ArrayList<IConfig>();
+    protected IConfigSource source;
 
-	protected PropertiesConfig(PropertiesConfig parent, String name, String value) {
+    public PropertiesConfig() {
+        this(null, null, null);
+    }
+
+    protected PropertiesConfig(PropertiesConfig parent, String name, String value) {
         super(parent, name, value);
     }
 
@@ -69,4 +82,17 @@ public class PropertiesConfig extends AbstractTSConfig {
 	public IConfig createChild(String name) {
 		return new PropertiesConfig(this, name, null);
 	}
+
+    public static PropertiesConfig fromSource( IConfig config ) throws ConfigException {
+        PropertiesConfig result = new PropertiesConfig( config.name(), config.value() );
+        for ( IConfig child : config.childs() ) {
+            result.append( fromSource(child) );
+        }
+
+        for ( String name : config.attributeNames() ) {
+            result.attribute(name, config.attribute(name) );
+        }
+
+        return result;
+    }
 }

@@ -3,11 +3,14 @@ package com.redshape.servlet.core.context.support;
 import com.redshape.renderer.IRenderersFactory;
 import com.redshape.servlet.core.IHttpRequest;
 import com.redshape.servlet.core.IHttpResponse;
+import com.redshape.servlet.core.SupportType;
 import com.redshape.servlet.core.context.AbstractResponseContext;
 import com.redshape.servlet.core.context.ContextId;
-import com.redshape.servlet.core.SupportType;
 import com.redshape.servlet.core.controllers.ProcessingException;
 import com.redshape.servlet.views.IView;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
+import net.sf.json.util.CycleDetectionStrategy;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletResponse;
@@ -28,6 +31,10 @@ public class AjaxContext extends AbstractResponseContext {
 
     private Collection<String> blackList = new HashSet<String>();
     private IRenderersFactory renderersFactory;
+
+    public AjaxContext() {
+        this(null);
+    }
 
     public AjaxContext( IRenderersFactory renderersFactory ) {
         super( ContextId.AJAX );
@@ -92,10 +99,18 @@ public class AjaxContext extends AbstractResponseContext {
     @Override
     public void proceedResponse(IView view, IHttpRequest request, IHttpResponse response) throws ProcessingException {
         try {
+            JsonConfig config = new JsonConfig();
+            config.setCycleDetectionStrategy(CycleDetectionStrategy.LENIENT);
+
+            JSONObject result = new JSONObject();
+            result.put("response", JSONObject.fromObject(view, config) );
+
             this.writeResponse(
-                this.getRenderersFactory().
-                    <IView, String>forEntity(view)
-                    .render(view), response);
+                this.getRenderersFactory() == null ?
+                    result.toString() :
+                    this.getRenderersFactory().
+                        <IView, String>forEntity(view)
+                        .render(view), response);
         } catch ( IOException e ) {
             throw new ProcessingException( e.getMessage(), e );
         }
@@ -105,6 +120,8 @@ public class AjaxContext extends AbstractResponseContext {
         response.setContentType("application/json");
         response.setHeader("Cache-Control", "no-cache");
         response.getWriter().write(responseData);
+        response.getWriter().flush();
+        response.getWriter().close();
     }
 
 }
