@@ -1,15 +1,10 @@
 package com.redshape.utils.beans.bindings;
 
+import com.redshape.utils.beans.bindings.types.IBindable;
+
 import java.util.List;
 
-import com.redshape.utils.beans.bindings.types.IBindable;
-import com.redshape.utils.validators.result.IResultsList;
-
 public interface IBeanInfo {
-
-	public boolean isValid( Object instance ) throws BindingException;
-
-	public IResultsList validate( Object instance ) throws BindingException;
 
 	public Class<?> getType();
 	

@@ -2,6 +2,8 @@ package com.redshape.utils;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Stack;
 
 /**
@@ -11,6 +13,51 @@ import java.util.Stack;
  * @author Dmitry Novikoff <dnovikoff@gmail.com>
  */
 public final class ReflectionUtils {
+
+    public static Set<Class<?>> getAncestors( Class<?> source ) {
+        Set<Class<?>> result = new HashSet<Class<?>>();
+        result.addAll( getInterfaces(source, true) );
+        result.addAll( getConcreteAncestors(source) );
+        return result;
+    }
+
+    public static Set<Class<?>> getInterfaces( Class<?> source ) {
+        return getInterfaces(source, false);
+    }
+
+    public static Set<Class<?>> getInterfaces( Class<?> source, boolean includeNested ) {
+        Set<Class<?>> result = new HashSet<Class<?>>();
+
+        for ( Class<?> sourceInterface : source.getInterfaces() ) {
+            result.add( sourceInterface );
+            if ( sourceInterface.getInterfaces().length != 0 ) {
+                result.addAll( getInterfaces(sourceInterface, includeNested) );
+            }
+        }
+
+        if ( includeNested &&
+                source.getSuperclass() != null &&
+                source.getSuperclass() != Object.class ) {
+            result.addAll( getInterfaces(source.getSuperclass()) );
+        }
+
+        return result;
+    }
+
+    public static Set<Class<?>> getConcreteAncestors( Class<?> source ) {
+        Set<Class<?>> result = new HashSet<Class<?>>();
+        Class<?> superClass = source;
+        do {
+            superClass = superClass.getSuperclass();
+             if ( superClass == Object.class ) {
+                superClass = null;
+            } else if ( superClass != null ) {
+                result.add( superClass );
+            }
+        } while ( superClass != null );
+
+        return  result;
+    }
 
 	public static boolean compareTypeLists( Class<?>[] first, Class<?>[] second ) {
 		return compareTypeLists( first, second, false );
@@ -63,7 +110,8 @@ public final class ReflectionUtils {
 	}
 
 	/**
-	 * Для некоторого класса определяет каким классом был параметризован один из его предков с generic-параметрами.
+	 * Для некоторого класса определяет каким классом был параметризован
+     * один из его предков с generic-параметрами.
 	 *
 	 * @param actualClass   анализируемый класс
 	 * @param genericClass  класс, для которого определяется значение параметра

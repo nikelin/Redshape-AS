@@ -1,13 +1,14 @@
 package com.redshape.utils.validators.impl.annotations;
 
+import com.redshape.utils.AnnotatedObject;
+import com.redshape.utils.beans.bindings.BeanInfo;
 import com.redshape.utils.beans.bindings.BindingException;
 import com.redshape.utils.beans.bindings.IBeanInfo;
 import com.redshape.utils.beans.bindings.accessors.AccessException;
 import com.redshape.utils.beans.bindings.types.IBindable;
-import com.redshape.utils.AnnotatedObject;
-import com.redshape.utils.validators.AbstractValidator;
 import com.redshape.utils.validators.IValidator;
-import com.redshape.utils.validators.ValidatorsFacade;
+import com.redshape.utils.validators.IValidatorsRegistry;
+import com.redshape.utils.validators.annotations.Bean;
 import com.redshape.utils.validators.impl.annotations.result.ValidationResult;
 import com.redshape.utils.validators.result.IResultsList;
 import com.redshape.utils.validators.result.IValidationResult;
@@ -20,28 +21,25 @@ import java.lang.annotation.Annotation;
  * @date 18/04/11
  * @package com.redshape.validators
  */
-public class BeansValidator extends AbstractValidator<Object, IResultsList> {
-	private IBeanInfo beanInfo;
+public class BeansValidator extends AbstractAnnotationValidator<AnnotatedObject, IResultsList> {
 
-	public BeansValidator( IBeanInfo info ) {
-		this.beanInfo = info;
-	}
+    public BeansValidator( IValidatorsRegistry registry) {
+        super(Bean.class, registry);
+    }
 
-	protected IBeanInfo getBeanInfo() {
-		return this.beanInfo;
-	}
-
-	@Override
-	public boolean isValid(Object value) {
+    @Override
+	public boolean isValid(AnnotatedObject value) {
 		return this.validate( value ).isValid();
 	}
 
 	@Override
-	public IResultsList validate(Object value) {
+	public IResultsList validate(AnnotatedObject annotated) {
 		try {
+            Object value = annotated.getContext();
+            IBeanInfo beanInfo = new BeanInfo(value.getClass());
 			ResultsList result = new ResultsList();
 
-			for ( IBindable bindable : this.getBeanInfo().getBindables() ) {
+			for ( IBindable bindable : beanInfo.getBindables() ) {
 			   result.add( this.proccessMember( value, bindable) );
 			}
 
@@ -62,7 +60,7 @@ public class BeansValidator extends AbstractValidator<Object, IResultsList> {
 	}
 
 	protected boolean isValid( Object value, IBindable bindable, Annotation annotation ) throws AccessException {
-		IValidator<AnnotatedObject,?> validator = ValidatorsFacade.getInstance().getAnnotationValidator( annotation.annotationType() );
+		IValidator<AnnotatedObject,?> validator = this.getRegistry().getAnnotationValidator( annotation.annotationType() );
 		if ( validator == null ) {
 			return true;
 		}
