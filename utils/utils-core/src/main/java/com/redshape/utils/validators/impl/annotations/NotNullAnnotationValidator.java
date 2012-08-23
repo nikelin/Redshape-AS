@@ -17,7 +17,7 @@ public class NotNullAnnotationValidator extends AbstractAnnotationValidator<Anno
 
     @Override
 	public boolean isValid(AnnotatedObject value) {
-		return value != null;
+		return value.getContext() != null;
 	}
 
 	@Override

@@ -17,8 +17,6 @@ public class AnnotatedObject {
 	private Annotation[] annotations;
 
 	public AnnotatedObject( Object context, Annotation... annotations ) {
-        Commons.checkNotNull(context);
-
 		this.context = context;
 		this.annotations = annotations;
 	}

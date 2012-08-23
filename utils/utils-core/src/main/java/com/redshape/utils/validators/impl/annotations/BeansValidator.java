@@ -65,6 +65,8 @@ public class BeansValidator extends AbstractAnnotationValidator<AnnotatedObject,
 			return true;
 		}
 
-		return validator.isValid( new AnnotatedObject( bindable.<Object>read(value), annotation ) );
+        Object context = bindable.<Object>read(value);
+
+		return validator.isValid( new AnnotatedObject( context, annotation ) );
 	}
 }
