@@ -15,7 +15,7 @@ public class ResultsList extends HashSet<IValidationResult>
 	private boolean success;
 
 	public ResultsList() {
-		this(false);
+		this(true);
 	}
 
 	public ResultsList( boolean success ) {
