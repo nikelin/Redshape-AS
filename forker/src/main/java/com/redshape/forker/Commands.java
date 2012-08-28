@@ -3,6 +3,7 @@ package com.redshape.forker;
 import com.redshape.forker.commands.*;
 import com.redshape.utils.Commons;
 
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +29,8 @@ public final class Commands {
     public static final long SHUTDOWN_RSP = 0x10006L;
     public static final long GET_RUNNING_STATE = 0x00007L;
     public static final long GET_RUNNING_STATE_RSP = 0x10007L;
+    public static final long ERROR_RSP = 0x11007L;
+    public static final long INIT_RSP = 0x22008L;
     
     public static final Map<Long, Class<?>> REGISTRY = new HashMap<Long, Class<?>>();
     static {
@@ -41,23 +44,37 @@ public final class Commands {
         REGISTRY.put( FIND_RESOURCE_RSP, FindResourceCommand.Response.class );
         REGISTRY.put( FIND_RESOURCES, FindResourcesCommand.Request.class );
         REGISTRY.put( FIND_RESOURCES_RSP, FindResourcesCommand.Response.class );
+        REGISTRY.put( INIT_RSP, InitResponse.class );
+        REGISTRY.put( ERROR_RSP, ErrorResponse.class );
+    }
 
+    public static <T extends IForkCommandResponse> T createResponse( Long commandId )
+            throws InstantiationException {
+        return createResponse(commandId, null);
     }
     
     public static <T extends IForkCommandResponse> T createResponse( Long commandId, IForkCommandResponse.Status status )
         throws InstantiationException {
         try {
             Commons.checkNotNull(commandId);
-            Commons.checkNotNull(status);
-            
+
             Class<?> clazz = REGISTRY.get( commandId );
             if ( !( IForkCommandResponse.class.isAssignableFrom(clazz) ) ) {
                 throw new IllegalArgumentException("Given commandId must point to the " +
                             IForkCommandResponse.class.getCanonicalName() + " type");
             }
 
-            return  (T) clazz.getConstructor( Long.class, IForkCommandResponse.Status.class )
-                    .newInstance( commandId, status );
+            for ( Constructor<?> constructor : clazz.getConstructors() ) {
+                if ( constructor.getParameterTypes().length == 1 ) {
+                    return (T) constructor.newInstance( status );
+                } else if ( constructor.getParameterTypes().length == 2 ) {
+                    return (T) constructor.newInstance( commandId, status );
+                } else if ( constructor.getParameterTypes().length == 0 ) {
+                    return (T) constructor.newInstance();
+                }
+            }
+
+            throw new IllegalStateException("Unable to instantiate response object");
         } catch ( Throwable e ) {
             throw new InstantiationException( e.getMessage() );
         }

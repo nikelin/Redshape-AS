@@ -3,6 +3,7 @@ package com.redshape.utils.system.scripts;
 import com.redshape.utils.system.processes.ISystemProcess;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
 
 /**
  * @author nikelin
@@ -24,6 +25,8 @@ public interface IScriptExecutor {
 	public String execute() throws IOException;
 
     public ISystemProcess spawn() throws IOException;
+
+    public ISystemProcess spawn( ExecutorService service ) throws IOException;
 
 	public String getExecCommand();
 

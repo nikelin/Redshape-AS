@@ -1,5 +1,8 @@
 package com.redshape.forker;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
  * @package com.redshape.forker
@@ -8,6 +11,12 @@ package com.redshape.forker;
  */
 public interface IFork {
 
+    public DataInputStream getInput();
+
+    public DataOutputStream getOutput();
+
+    public int getPID();
+
     public boolean isPaused() throws ProcessException;
 
     public void resume() throws ProcessException;
@@ -15,8 +24,5 @@ public interface IFork {
     public void shutdown() throws ProcessException;
 
     public void pause() throws ProcessException;
-
-    public <T extends IForkCommandResponse> T submit(IForkCommand command)
-            throws ProcessException;
 
 }

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 public class BashScriptExecutor implements IScriptExecutor {
 	private static final Logger log = Logger.getLogger( BashScriptExecutor.class );
@@ -55,12 +56,30 @@ public class BashScriptExecutor implements IScriptExecutor {
 
     @Override
     public ISystemProcess spawn() throws IOException {
+        return this.spawn(null);
+    }
+
+    @Override
+    public ISystemProcess spawn( ExecutorService service ) throws IOException {
         this.process = new SystemProcess(
             Runtime.getRuntime().exec( this.getExecCommand().toString() )
         );
 
         try {
-            this.process.waitFor();
+            if ( service == null ) {
+                this.process.waitFor();
+            } else {
+                service.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            process.waitFor();
+                        } catch ( InterruptedException e ) {
+                            throw new IllegalStateException( e.getMessage(), e );
+                        }
+                    }
+                });
+            }
         } catch (InterruptedException e) {
             log.error( e.getMessage(), e );
         }

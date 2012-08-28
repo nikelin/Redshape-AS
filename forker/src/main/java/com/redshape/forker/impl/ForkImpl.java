@@ -39,8 +39,6 @@ public class ForkImpl implements IFork {
             }
 
             response.readFrom(reader);
-
-            ForkImpl.this.lastResponse = response;
         }
 
         @Override
@@ -48,34 +46,42 @@ public class ForkImpl implements IFork {
         }
     }
 
-    public static final long COMMAND_BEGIN = 0x100001L;
-    public static final long COMMAND_END = 0x200002L;
-
     private ISystemProcess process;
     private IResourcesLoader loader;
     private DataOutputStream output;
-
-    private IForkCommandResponse lastResponse;
+    private DataInputStream input;
+    private IForkManager manager;
 
     private IStreamWaiter streamWaiter;
-    
-    private Object executionLock = new Object();
 
-    public ForkImpl(IResourcesLoader loader, ISystemProcess process) {
+    public ForkImpl( IForkManager manager, IResourcesLoader loader, ISystemProcess process ) {
         super();
-
-        Commons.checkNotNull(loader);
-        this.loader = loader;
-
         Commons.checkNotNull(process);
+        Commons.checkNotNull(manager);
+        Commons.checkNotNull(loader);
+
+        this.loader = loader;
+        this.manager = manager;
         this.process = process;
+        this.input = new DataInputStream( process.getInputStream() );
         this.output = new DataOutputStream( process.getOutputStream() );
         this.streamWaiter = this.createStreamWaiter( this.process.getInputStream() );
         this.streamWaiter.addEventHandler( new ResponseReader() );
     }
 
-    protected void setLastResponse( IForkCommandResponse response ) {
-        this.lastResponse = response;
+    @Override
+    public DataInputStream getInput() {
+        return this.input;
+    }
+
+    @Override
+    public DataOutputStream getOutput() {
+        return this.output;
+    }
+
+    @Override
+    public int getPID() {
+        return this.process.getPID();
     }
 
     protected IStreamWaiter getStreamWaiter() {
@@ -96,45 +102,33 @@ public class ForkImpl implements IFork {
 
     @Override
     public boolean isPaused() throws ProcessException {
-        return this.<GetRunningStateCommand.Response>submit(
-            new GetRunningStateCommand.Request()
-        )
-        .getState();
+        GetRunningStateCommand.Response response = this.manager.getExecutor()
+                .execute(new GetRunningStateCommand.Request());
+        if ( response == null ) {
+            throw new ProcessException("<NULL>");
+        }
+
+        return response.getState();
     }
 
     @Override
     public void resume() throws ProcessException {
-        this.assertSuccess(this.submit(new ResumeCommand.Request()), "Unable to resume process");
+        IForkCommandResponse response = this.manager.getExecutor().execute( new ResumeCommand.Request() );
+        this.assertSuccess(response, "Unable to resume process");
     }
 
     @Override
     public void shutdown() throws ProcessException {
-        this.submit( new ShutdownCommand.Request() );
-        this.getProcess().destroy();
+        try {
+            this.manager.getExecutor().execute(new ShutdownCommand.Request());
+        } finally {
+            this.getProcess().destroy();
+        }
     }
 
     @Override
     public void pause() throws ProcessException {
-        this.assertSuccess(this.submit(new PauseCommand.Request()), "Failed to pause process");
-    }
-
-    @Override
-    public <T extends IForkCommandResponse> T submit(IForkCommand command) 
-            throws ProcessException {
-        try {
-            synchronized (this.executionLock) {
-                this.output.writeLong( COMMAND_BEGIN );
-                this.output.writeLong( command.getCommandId() );
-                command.writeTo(this.output);
-                this.output.writeLong( COMMAND_END );
-    
-                this.getStreamWaiter().await();
-
-                return (T) this.lastResponse;
-            }
-        } catch ( IOException e ) {
-            throw new ProcessException( e.getMessage(), e );
-        }
+        this.assertSuccess(this.manager.getExecutor().execute(new PauseCommand.Request()), "Failed to pause process");
     }
     
     private void assertSuccess( IForkCommandResponse response, String message )

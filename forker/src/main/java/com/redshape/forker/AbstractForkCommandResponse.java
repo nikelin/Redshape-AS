@@ -15,7 +15,6 @@ public abstract class AbstractForkCommandResponse implements IForkCommandRespons
 
     protected AbstractForkCommandResponse(Long id, Status status) {
         Commons.checkNotNull(id);
-        Commons.checkNotNull(status);
 
         this.id = id;
         this.status = status;

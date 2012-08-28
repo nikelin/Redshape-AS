@@ -63,16 +63,23 @@ public class StandardProtocol implements IForkProtocol {
         synchronized (readLock) {
             Commons.checkNotNull(stream);
 
-            while ( RESPONSE_BEGIN != ( stream.readLong() ) ) {
-                continue;
+            while ( stream.available() <= 0 ) {
+                try {
+                    Thread.sleep(1000);
+                } catch ( InterruptedException e ) {
+                    break;
+                }
             }
+
+            Long id;
+            do {
+                id = stream.readLong();
+            } while ( RESPONSE_BEGIN != id );
 
             IForkCommandResponse response;
             try {
-                response = Commands.createResponse(
-                    stream.readLong(),
-                    IForkCommandResponse.Status.valueOf(stream.readUTF())
-                );
+                response = Commands.createResponse(stream.readLong());
+                response.readFrom(stream);
             } catch ( InstantiationException e ) {
                 throw new IOException( "Unable to construct response object", e );
             }
@@ -90,6 +97,7 @@ public class StandardProtocol implements IForkProtocol {
             Commons.checkNotNull(response);
 
             stream.writeLong( RESPONSE_BEGIN );
+            stream.writeLong( response.getId() );
             response.writeTo(stream);
         }
     }
