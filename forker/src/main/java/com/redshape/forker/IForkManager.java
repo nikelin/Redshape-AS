@@ -1,6 +1,7 @@
 package com.redshape.forker;
 
 import com.redshape.forker.handlers.IForkCommandExecutor;
+import com.redshape.forker.protocol.processor.IForkProtocolProcessor;
 
 import java.util.List;
 
@@ -12,11 +13,11 @@ import java.util.List;
  */
 public interface IForkManager {
 
+    public IForkProtocolProcessor getForkProcessor( IFork fork );
+
     public void setDebugHost( String value );
 
     public void setDebugPort( int port );
-
-    public IForkCommandExecutor getExecutor();
 
     public void enableDebugMode( boolean value );
 

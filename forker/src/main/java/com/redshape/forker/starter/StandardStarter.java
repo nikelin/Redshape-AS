@@ -1,15 +1,28 @@
 package com.redshape.forker.starter;
 
-import com.redshape.forker.Commands;
 import com.redshape.forker.ForkClassLoader;
-import com.redshape.forker.IForkCommand;
-import com.redshape.forker.protocol.IForkProtocol;
+import com.redshape.forker.IForkCommandResponse;
+import com.redshape.forker.ProcessException;
+import com.redshape.forker.commands.InitResponse;
+import com.redshape.forker.commands.handling.PauseCommandHandler;
+import com.redshape.forker.events.CommandRequestEvent;
+import com.redshape.forker.events.CommandResponseEvent;
+import com.redshape.forker.handlers.IForkCommandExecutor;
+import com.redshape.forker.handlers.IForkCommandHandler;
+import com.redshape.forker.handlers.impl.StandardForkCommandExecutor;
 import com.redshape.forker.protocol.StandardProtocol;
+import com.redshape.forker.protocol.processor.StandardForkProtocolProcessor;
+import com.redshape.forker.protocol.queue.IProtocolQueueCreator;
+import com.redshape.forker.protocol.queue.StandardProtocolQueueCreator;
+import com.redshape.utils.Commons;
+import com.redshape.utils.StringUtils;
+import com.redshape.utils.events.IEventListener;
 
-import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,67 +33,91 @@ import java.io.IOException;
  */
 public final class StandardStarter extends ForkClassLoader {
 
-    public StandardStarter(IForkProtocol protocol, DataInputStream input, DataOutputStream output) {
-        super(protocol, input, output);
+    private File log;
+
+    public StandardStarter(IForkCommandExecutor executor) {
+        super(executor);
+
     }
-
-    private static IForkProtocol createProtocol( String className ) {
-        IForkProtocol result = null;
-        try {
-            Class<?> clazz = Class.forName(className);
-            if ( clazz.isInstance(IForkProtocol.class) ) {
-                result = (IForkProtocol) clazz.newInstance();
-            }
-        } catch ( Throwable e ) {}
-
-        return result;
-    }
-
 
     public void run() throws IOException {
-        while ( true ) {
-            IForkCommand command = this.getProtocol().readCommand( this.getInput() );
-            if ( command == null ) {
-                continue;
-            }
-
-            this.processCommand(command);
+        try {
+            this.executor.start();
+        } catch ( ProcessException e ) {
+            throw new IOException( e.getMessage(), e );
         }
     }
 
-    protected void processCommand( IForkCommand command ) {
-        switch ( command.getCommandId().intValue() ) {
-            case (int) Commands.SHUTDOWN:
-                System.exit(1);
+    private static void log( String message ) {
+        try {
+            System.err.write( message.getBytes() );
+            System.err.write( "\n".getBytes() );
+        } catch ( IOException e ) {
+            return;
         }
     }
-
 
     public static void main( String[] args ) {
-        IForkProtocol protocol = null;
-        if ( args.length > 0 ) {
-            protocol = createProtocol(args[0]);
-        }
-
-        if ( protocol == null ) {
-            protocol = new StandardProtocol();
-        }
-
-        StandardStarter starter = new StandardStarter(
-                protocol,
-                new DataInputStream(System.in),
-                new DataOutputStream(System.out)
-        );
-
-        System.setIn(new ByteArrayInputStream(new byte[0]));
-        System.setOut(System.err);
-
-        Thread.currentThread().setContextClassLoader(starter);
-
         try {
-            starter.run();
-        } catch ( IOException e ) {
-            System.exit(1);
+            log("Application " + StandardStarter.class.getCanonicalName() + " has been started at " + new Date().getTime() + "..." );
+            log("Input arguments count: " + args.length + "");
+            log("Input arguments value: " + StringUtils.join(args, ":") + "" );
+
+            DataOutputStream out = new DataOutputStream(System.out);
+            DataInputStream in = new DataInputStream(System.in);
+
+            IProtocolQueueCreator creator = new StandardProtocolQueueCreator();
+
+            StandardProtocol protocol = new StandardProtocol(in, out);
+            log( protocol.getClass().getCanonicalName() + " implementation selected...");
+
+            StandardForkProtocolProcessor processor = new StandardForkProtocolProcessor(
+                    creator.createWorkQueue(), creator.createResultsQueue(), protocol);
+
+            final IForkCommandExecutor executor = new StandardForkCommandExecutor(processor,
+                    Commons.<IForkCommandHandler>set(
+                            new PauseCommandHandler()
+                    ));
+
+            ForkClassLoader loader = new ForkClassLoader(executor);
+            log("Forked classloader initialized...");
+            Thread.currentThread().setContextClassLoader(loader);
+
+            log("Server commands executor initialized...");
+            executor.addEventListener(CommandRequestEvent.class, new IEventListener<CommandRequestEvent>() {
+                @Override
+                public void handleEvent(CommandRequestEvent event) {
+                    log("New command execution request received...");
+                }
+            });
+
+            executor.addEventListener(CommandResponseEvent.class, new IEventListener<CommandResponseEvent>() {
+                @Override
+                public void handleEvent(CommandResponseEvent event) {
+                    log("Command execution response ready to be sent...");
+                }
+            });
+
+            log("Executor event handlers bounded...");
+            Thread workerThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        executor.start();
+                    } catch ( ProcessException e ) {
+                        log(e.getMessage());
+                        throw new IllegalStateException( e.getMessage(), e );
+                    }
+                }
+            });
+
+            executor.respond( new InitResponse(IForkCommandResponse.Status.SUCCESS) );
+
+            workerThread.start();
+            workerThread.join();
+        } catch ( Throwable e ) {
+            log("Unexpected exception has been throw!");
+            log(e.getMessage());
         }
     }
 

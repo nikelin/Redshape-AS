@@ -4,10 +4,11 @@ import com.redshape.forker.Commands;
 import com.redshape.forker.IForkCommand;
 import com.redshape.forker.IForkCommandResponse;
 import com.redshape.utils.Commons;
+import org.apache.log4j.Logger;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.util.Arrays;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
@@ -16,89 +17,144 @@ import java.io.IOException;
  */
 public class StandardProtocol implements IForkProtocol {
 
+    private static final Logger log = Logger.getLogger( StandardProtocol.class );
+
     private static final Object readLock = new Object();
     private static final Object writeLock = new Object();
 
-    private static final long COMMAND_BEGIN = 0xA000F7;
-    private static final long RESPONSE_BEGIN = 0xB000F8;
+    private static final long COMMAND_BEGIN = 0xAFF0F7;
+    private static final long RESPONSE_BEGIN = 0xBFF0F8;
+
+    private DataInputStream inputStream;
+    private DataOutputStream outputStream;
+
+    private ScheduledExecutorService threadsExecutor;
+
+    public StandardProtocol(DataInputStream inputStream,
+                            DataOutputStream outputStream) {
+        Commons.checkNotNull(inputStream);
+        Commons.checkNotNull(outputStream);
+
+        this.outputStream = outputStream;
+        this.inputStream = inputStream;
+    }
+
+    protected void waitAvailability( OutputStream stream ) throws IOException {
+        boolean available = false;
+        do {
+            try {
+                stream.write(0);
+                stream.flush();
+                available = true;
+            } catch ( IOException e ) {
+                if ( !e.getMessage().equals("Stream closed") ) {
+                    break;
+                }
+            }
+        } while ( !available );
+    }
+
+    protected void waitAvailability( InputStream stream ) throws IOException {
+        while ( stream.available() <= 0 ) {
+            try {
+                log.info("Stream data not available, waiting for 1 second...");
+                Thread.sleep(1000);
+            } catch ( InterruptedException e ) {
+                break;
+            }
+        }
+    }
 
     @Override
-    public IForkCommand readCommand(DataInputStream stream) throws IOException {
+    public TokenType matchToken() throws IOException {
+        long token = this.matchStreamToken(RESPONSE_BEGIN, COMMAND_BEGIN);
+        if ( token == COMMAND_BEGIN ) {
+            return TokenType.COMMAND;
+        } else if ( token == RESPONSE_BEGIN ) {
+            return TokenType.RESPONSE;
+        } else {
+            throw new IllegalStateException( "Unsupported token matched" );
+        }
+    }
+
+    protected long matchStreamToken( long... tokenValue ) throws IOException {
+        Arrays.sort(tokenValue);
+
+        Long token;
+        do {
+            token = this.inputStream.readLong();
+            log.debug("Token received: " + token );
+        } while (Arrays.binarySearch(tokenValue, token) != 0);
+
+        return token;
+    }
+
+    @Override
+    public IForkCommand readCommand() throws IOException {
         synchronized (readLock) {
-            Commons.checkNotNull(stream);
-
-            /**
-             * Read command start
-             */
-            while ( COMMAND_BEGIN != stream.readLong() ) {
-                continue;
-            }
-
             IForkCommand command;
             try {
-                command = Commands.createCommand( stream.readLong() );
+                command = Commands.createCommand( this.inputStream.readLong() );
             } catch ( InstantiationException e ) {
                 throw new IOException("Unable to construct command object");
             }
 
-            command.readFrom( stream );
+            command.setQualifier( this.inputStream.readLong() );
+            command.readFrom( this.inputStream );
 
             return command;
         }
     }
 
     @Override
-    public void writeCommand(DataOutputStream stream, IForkCommand command) throws IOException {
+    public void writeCommand(IForkCommand command) throws IOException {
         synchronized (writeLock) {
-            Commons.checkNotNull(stream);
             Commons.checkNotNull(command);
-
-            stream.writeLong( COMMAND_BEGIN );
-            command.writeTo( stream );
+            waitAvailability(outputStream);
+            log.info("Writing command to data stream...");
+            this.outputStream.writeLong( COMMAND_BEGIN );
+            this.outputStream.writeLong( command.getCommandId() );
+            this.outputStream.writeLong( command.getQualifier() );
+            command.writeTo( this.outputStream );
+            this.outputStream.flush();
+            log.info("Data stream flushed...");
         }
     }
 
     @Override
-    public IForkCommandResponse readResponse(DataInputStream stream) throws IOException {
+    public IForkCommandResponse readResponse() throws IOException {
         synchronized (readLock) {
-            Commons.checkNotNull(stream);
-
-            while ( stream.available() <= 0 ) {
-                try {
-                    Thread.sleep(1000);
-                } catch ( InterruptedException e ) {
-                    break;
-                }
-            }
-
-            Long id;
-            do {
-                id = stream.readLong();
-            } while ( RESPONSE_BEGIN != id );
-
             IForkCommandResponse response;
             try {
-                response = Commands.createResponse(stream.readLong());
-                response.readFrom(stream);
+                response = Commands.createResponse(this.inputStream.readLong());
+                log.info("Response object " + response.getClass().getCanonicalName() + " has been created...");
             } catch ( InstantiationException e ) {
                 throw new IOException( "Unable to construct response object", e );
             }
 
-            response.readFrom(stream);
+            response.setQualifier(this.inputStream.readLong());
+            response.readFrom(this.inputStream);
+
+            log.info("Response data successfuly hydrated...");
 
             return response;
         }
     }
 
     @Override
-    public void writeResponse(DataOutputStream stream, IForkCommandResponse response) throws IOException {
+    public void writeResponse(IForkCommandResponse response) throws IOException {
         synchronized (writeLock) {
-            Commons.checkNotNull(stream);
             Commons.checkNotNull(response);
 
-            stream.writeLong( RESPONSE_BEGIN );
-            stream.writeLong( response.getId() );
-            response.writeTo(stream);
+            log.info("Writing response to a data stream...");
+            this.outputStream.writeLong( RESPONSE_BEGIN );
+            this.outputStream.writeLong( response.getId() );
+            this.outputStream.writeLong( response.getQualifier() );
+            response.writeTo(this.outputStream);
+            this.outputStream.flush();
+            log.info("Flushing data stream...");
         }
     }
+
+
 }

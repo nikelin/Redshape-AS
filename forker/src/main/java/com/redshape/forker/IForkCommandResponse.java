@@ -18,6 +18,10 @@ public interface IForkCommandResponse {
         QUEUED
     }
 
+    public Long getQualifier();
+
+    public void setQualifier( Long qualifier );
+
     public Long getId();
 
     public Status getStatus();

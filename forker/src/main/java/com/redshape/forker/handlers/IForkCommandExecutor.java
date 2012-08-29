@@ -17,15 +17,6 @@ import java.io.DataOutputStream;
  */
 public interface IForkCommandExecutor extends IEventDispatcher {
 
-    public enum Mode {
-        CLIENT,
-        SERVER
-    }
-
-    public void setMode( Mode mode );
-
-    public Mode getMode();
-
     public void addHandler( IForkCommandHandler handler );
 
     public void removeHandler( IForkCommandHandler handler );
@@ -34,16 +25,13 @@ public interface IForkCommandExecutor extends IEventDispatcher {
 
     public boolean isStarted();
 
-    public void response( IForkCommandResponse command ) throws ProcessException;
-
     public <T extends IForkCommandResponse> T execute( IForkCommand command ) throws ProcessException;
 
-    public void init( DataInputStream input, DataOutputStream output ) throws ProcessException;
+    public void respond( IForkCommandResponse response ) throws ProcessException;
 
     public void start() throws ProcessException;
 
     public void stop() throws ProcessException;
 
-    public void acceptInit() throws ProcessException;
 
 }

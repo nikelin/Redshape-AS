@@ -4,20 +4,19 @@ import com.redshape.forker.IForkCommand;
 import com.redshape.forker.IForkCommandResponse;
 import com.redshape.forker.ProcessException;
 import com.redshape.forker.commands.ErrorResponse;
-import com.redshape.forker.commands.InitResponse;
 import com.redshape.forker.events.CommandRequestEvent;
 import com.redshape.forker.events.CommandResponseEvent;
 import com.redshape.forker.handlers.IForkCommandExecutor;
 import com.redshape.forker.handlers.IForkCommandHandler;
-import com.redshape.forker.protocol.IForkProtocol;
+import com.redshape.forker.protocol.processor.IForkProtocolProcessor;
 import com.redshape.utils.Commons;
+import com.redshape.utils.IFilter;
 import com.redshape.utils.events.AbstractEventDispatcher;
+import org.apache.log4j.Logger;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,6 +27,8 @@ import java.util.Collection;
  */
 public class StandardForkCommandExecutor extends AbstractEventDispatcher implements IForkCommandExecutor {
 
+    private static final Logger log = Logger.getLogger(StandardForkCommandExecutor.class);
+
     public enum State {
         INIT,
         START,
@@ -35,31 +36,16 @@ public class StandardForkCommandExecutor extends AbstractEventDispatcher impleme
     }
 
     private State state;
-    private Mode mode;
+    private IForkProtocolProcessor processor;
     private Collection<IForkCommandHandler> handlers = new ArrayList<IForkCommandHandler>();
-    private IForkProtocol protocol;
-    private DataInputStream inputStream;
-    private DataOutputStream outputStream;
 
-    public StandardForkCommandExecutor( IForkProtocol protocol,
+    public StandardForkCommandExecutor( IForkProtocolProcessor processor,
                                         Collection<IForkCommandHandler> handlers) {
-        Commons.checkNotNull(handlers);
-        Commons.checkNotNull(protocol);
+        Commons.checkNotNull(processor);
 
-        this.mode = Mode.CLIENT;
+        this.processor = processor;
         this.state = State.STOP;
-        this.protocol = protocol;
         this.handlers = handlers;
-    }
-
-    @Override
-    public void setMode(Mode mode) {
-        this.mode = mode;
-    }
-
-    @Override
-    public Mode getMode() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -83,57 +69,25 @@ public class StandardForkCommandExecutor extends AbstractEventDispatcher impleme
     }
 
     @Override
-    public void init( DataInputStream input, DataOutputStream output ) {
-        this.state = State.INIT;
-        this.inputStream = input;
-        this.outputStream = output;
-    }
-
-    @Override
     public void start() throws ProcessException {
-        if ( !this.state.equals(State.INIT) ) {
-            throw new IllegalStateException("Illegal state exception: " + this.state );
-        }
-
         this.state = State.START;
 
-        if ( this.mode.equals(Mode.CLIENT) ) {
-            while ( this.isStarted() ) {
-                try {
-                    IForkCommand command = this.protocol.readCommand(this.inputStream);
-                    this.raiseEvent( new CommandRequestEvent(command) );
-
-                    IForkCommandResponse response = this.executeCommand(command);
-                    if ( response == null ) {
-                        response = new ErrorResponse("Unsupported command requested", IForkCommandResponse.Status.FAIL);
-                    }
-
-                    this.raiseEvent( new CommandResponseEvent(response) );
-
-                    this.protocol.writeResponse(outputStream, response);
-                } catch ( IOException e ) {
-                    continue;
-                }
+        while ( this.isStarted() ) {
+            IForkCommand command = this.processor.getResultsQueue().peekRequest();
+            if ( command == null ) {
+                continue;
             }
-        }
-    }
 
+            this.raiseEvent( new CommandRequestEvent(command) );
 
-    @Override
-    public <T extends IForkCommandResponse> T execute(IForkCommand command) throws ProcessException {
-        try {
-            Commons.checkNotNull(command);
-
-            this.raiseEvent( new CommandRequestEvent(command));
-            this.protocol.writeCommand( this.outputStream, command );
-
-            IForkCommandResponse response = this.protocol.readResponse( this.inputStream );
+            IForkCommandResponse response = this.executeCommand(command);
+            if ( response == null ) {
+                response = new ErrorResponse("Unsupported command requested", IForkCommandResponse.Status.FAIL);
+            }
 
             this.raiseEvent( new CommandResponseEvent(response) );
 
-            return (T) response;
-        } catch ( IOException e ) {
-            throw new ProcessException( e.getMessage(), e);
+            this.processor.getResultsQueue().collectResponse(response);
         }
     }
 
@@ -156,24 +110,38 @@ public class StandardForkCommandExecutor extends AbstractEventDispatcher impleme
     }
 
     @Override
-    public void response(IForkCommandResponse command) throws ProcessException {
-        try {
-            this.protocol.writeResponse(this.outputStream, command);
-        } catch ( IOException e ) {
-            throw new ProcessException( e.getMessage(), e );
-        }
+    public void respond(IForkCommandResponse response) throws ProcessException {
+        this.processor.getWorkQueue().collectResponse(response);
     }
 
     @Override
-    public void acceptInit() throws ProcessException {
-        try {
-            InitResponse response = this.protocol.readResponse(this.inputStream);
-            if ( response == null ) {
-                throw new IllegalStateException("<NULL>");
-            }
-        } catch ( IOException e ) {
-            throw new ProcessException( e.getMessage(), e);
+    public <T extends IForkCommandResponse> T execute(final IForkCommand command) throws ProcessException {
+        if ( command.getQualifier() == null ) {
+            command.setQualifier( new Date().getTime() );
         }
+
+        this.processor.getWorkQueue().collectRequest(command);
+
+        T result;
+        do {
+            result = (T) this.processor.getWorkQueue().peekResponse(new IFilter<IForkCommandResponse>() {
+                @Override
+                public boolean filter(IForkCommandResponse filterable) {
+                    return filterable.getQualifier().equals(command.getQualifier());
+                }
+            });
+
+            if ( result == null ) {
+                log.info("Waiting for response...");
+                try {
+                    Thread.sleep(250);
+                } catch ( InterruptedException e ) {}
+            }
+        } while ( result == null );
+
+        log.info("Response received: " + result.getClass().getCanonicalName() );
+
+        return result;
     }
 
     @Override

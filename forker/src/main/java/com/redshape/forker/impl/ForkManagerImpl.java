@@ -3,7 +3,11 @@ package com.redshape.forker.impl;
 import com.redshape.forker.IFork;
 import com.redshape.forker.IForkManager;
 import com.redshape.forker.ProcessException;
-import com.redshape.forker.handlers.IForkCommandExecutor;
+import com.redshape.forker.protocol.IForkProtocol;
+import com.redshape.forker.protocol.StandardProtocol;
+import com.redshape.forker.protocol.processor.IForkProtocolProcessor;
+import com.redshape.forker.protocol.processor.StandardForkProtocolProcessor;
+import com.redshape.forker.protocol.queue.IProtocolQueueCreator;
 import com.redshape.utils.Commons;
 import com.redshape.utils.IResourcesLoader;
 import com.redshape.utils.SimpleStringUtils;
@@ -13,12 +17,12 @@ import com.redshape.utils.system.processes.ISystemProcess;
 import com.redshape.utils.system.scripts.IScriptExecutor;
 import org.apache.log4j.Logger;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -31,9 +35,6 @@ import java.util.concurrent.Executors;
 public class ForkManagerImpl implements IForkManager {
     private static final Logger log = Logger.getLogger( ForkManagerImpl.class );
 
-    public static final long COMMAND_BEGIN = 0x100001L;
-    public static final long COMMAND_END = 0x200002L;
-
     private static final String MEMORY_LIMIT_PARAM = "-Xmx%sM";
     private static final String MEMORY_INITIAL_PARAM = "-Xms%sM";
     private static final String CLASSPATH_PARAM = "-cp %s";
@@ -41,13 +42,12 @@ public class ForkManagerImpl implements IForkManager {
 
     private IResourcesLoader loader;
     private ISystemFacade facade;
-    private IForkCommandExecutor executor;
 
+    private IProtocolQueueCreator protocolQueueCreator;
+
+    private Map<IFork, IForkProtocolProcessor> processors = new HashMap<IFork, IForkProtocolProcessor>();
     private List<IFork> registry = new ArrayList<IFork>();
     private List<String> classPath = new ArrayList<String>();
-
-    private Object executionLock = new Object();
-    private Object receiveLock = new Object();
 
     private ExecutorService service;
 
@@ -60,13 +60,13 @@ public class ForkManagerImpl implements IForkManager {
     private int memoryInitial;
     private int cpuLimit;
 
-    public ForkManagerImpl( IForkCommandExecutor executor, ISystemFacade facade, IResourcesLoader loader) {
-        Commons.checkNotNull(executor);
+    public ForkManagerImpl( IProtocolQueueCreator queueCreator, ISystemFacade facade, IResourcesLoader loader) {
+        Commons.checkNotNull(queueCreator);
         Commons.checkNotNull(facade);
         Commons.checkNotNull(loader);
 
         this.service = Executors.newFixedThreadPool(100);
-        this.executor = executor;
+        this.protocolQueueCreator = queueCreator;
         this.facade = facade;
         this.loader = loader;
     }
@@ -74,10 +74,6 @@ public class ForkManagerImpl implements IForkManager {
     public void setService(ExecutorService service) {
         Commons.checkNotNull(service);
         this.service = service;
-    }
-
-    public IForkCommandExecutor getExecutor() {
-        return executor;
     }
 
     @Override
@@ -244,13 +240,32 @@ public class ForkManagerImpl implements IForkManager {
             throw new ProcessException( e.getMessage(), e );
         }
 
-        this.getExecutor().init( new DataInputStream(process.getInputStream()), new DataOutputStream(process.getOutputStream()) );
-        this.getExecutor().acceptInit();
-
         IFork result;
+
         this.registry.add( result = new ForkImpl( this, this.getLoader(), process ) );
 
+        IForkProtocolProcessor processor;
+        this.processors.put( result, processor = this.createForkProcessor(result) );
+        this.service.execute(processor);
+
         return result;
+    }
+
+    @Override
+    public IForkProtocolProcessor getForkProcessor(IFork fork) {
+        return this.processors.get(fork);
+    }
+
+    protected IForkProtocol createProtocol( IFork fork ) {
+        return new StandardProtocol(fork.getInput(), fork.getOutput());
+    }
+
+    protected IForkProtocolProcessor createForkProcessor( IFork fork ) {
+        return new StandardForkProtocolProcessor(
+            this.protocolQueueCreator.createWorkQueue(),
+            this.protocolQueueCreator.createResultsQueue(),
+            this.createProtocol(fork)
+        );
     }
 
     @Override

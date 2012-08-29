@@ -1,10 +1,6 @@
 package com.redshape.forker.impl;
 
 import com.redshape.forker.*;
-import com.redshape.forker.commands.GetRunningStateCommand;
-import com.redshape.forker.commands.PauseCommand;
-import com.redshape.forker.commands.ResumeCommand;
-import com.redshape.forker.commands.ShutdownCommand;
 import com.redshape.utils.Commons;
 import com.redshape.utils.IResourcesLoader;
 import com.redshape.utils.streams.IStreamEventHandler;
@@ -102,33 +98,22 @@ public class ForkImpl implements IFork {
 
     @Override
     public boolean isPaused() throws ProcessException {
-        GetRunningStateCommand.Response response = this.manager.getExecutor()
-                .execute(new GetRunningStateCommand.Request());
-        if ( response == null ) {
-            throw new ProcessException("<NULL>");
-        }
-
-        return response.getState();
+        throw new UnsupportedOperationException("Not supported now");
     }
 
     @Override
     public void resume() throws ProcessException {
-        IForkCommandResponse response = this.manager.getExecutor().execute( new ResumeCommand.Request() );
-        this.assertSuccess(response, "Unable to resume process");
+        throw new UnsupportedOperationException("Not supported now");
     }
 
     @Override
     public void shutdown() throws ProcessException {
-        try {
-            this.manager.getExecutor().execute(new ShutdownCommand.Request());
-        } finally {
-            this.getProcess().destroy();
-        }
+        this.process.destroy();
     }
 
     @Override
     public void pause() throws ProcessException {
-        this.assertSuccess(this.manager.getExecutor().execute(new PauseCommand.Request()), "Failed to pause process");
+        throw new UnsupportedOperationException("Not supported now");
     }
     
     private void assertSuccess( IForkCommandResponse response, String message )
