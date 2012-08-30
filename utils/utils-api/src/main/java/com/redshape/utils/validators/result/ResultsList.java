@@ -25,6 +25,7 @@ public class ResultsList extends HashSet<IValidationResult>
 	public ResultsList( String name, boolean success ) {
 		super();
 
+        this.success = success;
 		this.name = name;
 	}
 
