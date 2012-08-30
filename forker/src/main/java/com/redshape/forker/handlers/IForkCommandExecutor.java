@@ -5,9 +5,6 @@ import com.redshape.forker.IForkCommandResponse;
 import com.redshape.forker.ProcessException;
 import com.redshape.utils.events.IEventDispatcher;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-
 /**
  * Created with IntelliJ IDEA.
  * User: cyril
@@ -15,7 +12,7 @@ import java.io.DataOutputStream;
  * Time: 1:43 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface IForkCommandExecutor extends IEventDispatcher {
+public interface IForkCommandExecutor extends IEventDispatcher, Runnable {
 
     public void addHandler( IForkCommandHandler handler );
 

@@ -6,6 +6,7 @@ import com.redshape.forker.ProcessException;
 import com.redshape.forker.commands.ErrorResponse;
 import com.redshape.forker.events.CommandRequestEvent;
 import com.redshape.forker.events.CommandResponseEvent;
+import com.redshape.forker.events.ExecutorStartedEvent;
 import com.redshape.forker.handlers.IForkCommandExecutor;
 import com.redshape.forker.handlers.IForkCommandHandler;
 import com.redshape.forker.protocol.processor.IForkProtocolProcessor;
@@ -25,7 +26,7 @@ import java.util.Date;
  * Time: 1:45 PM
  * To change this template use File | Settings | File Templates.
  */
-public class StandardForkCommandExecutor extends AbstractEventDispatcher implements IForkCommandExecutor {
+public class StandardForkCommandExecutor extends AbstractEventDispatcher implements IForkCommandExecutor, Runnable {
 
     private static final Logger log = Logger.getLogger(StandardForkCommandExecutor.class);
 
@@ -69,8 +70,19 @@ public class StandardForkCommandExecutor extends AbstractEventDispatcher impleme
     }
 
     @Override
+    public void run() {
+        try {
+            this.start();
+        } catch ( ProcessException e ) {
+            throw new IllegalStateException( e.getMessage(), e );
+        }
+    }
+
+    @Override
     public void start() throws ProcessException {
         this.state = State.START;
+
+        this.raiseEvent( new ExecutorStartedEvent() );
 
         while ( this.isStarted() ) {
             IForkCommand command = this.processor.getResultsQueue().peekRequest();

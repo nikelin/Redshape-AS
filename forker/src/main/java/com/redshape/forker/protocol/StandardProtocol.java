@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.util.Arrays;
-import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
@@ -28,7 +27,6 @@ public class StandardProtocol implements IForkProtocol {
     private DataInputStream inputStream;
     private DataOutputStream outputStream;
 
-    private ScheduledExecutorService threadsExecutor;
 
     public StandardProtocol(DataInputStream inputStream,
                             DataOutputStream outputStream) {

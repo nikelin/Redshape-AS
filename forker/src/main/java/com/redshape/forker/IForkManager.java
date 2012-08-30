@@ -13,6 +13,10 @@ import java.util.List;
  */
 public interface IForkManager {
 
+    public IForkCommandExecutor getCommandsExecutor( IFork fork );
+
+    public IForkCommandExecutor getCommandsExecutor( IFork fork, boolean forceStart );
+
     public IForkProtocolProcessor getForkProcessor( IFork fork );
 
     public void setDebugHost( String value );

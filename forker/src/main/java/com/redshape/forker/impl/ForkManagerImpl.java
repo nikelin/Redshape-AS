@@ -3,6 +3,9 @@ package com.redshape.forker.impl;
 import com.redshape.forker.IFork;
 import com.redshape.forker.IForkManager;
 import com.redshape.forker.ProcessException;
+import com.redshape.forker.handlers.IForkCommandExecutor;
+import com.redshape.forker.handlers.IForkCommandHandler;
+import com.redshape.forker.handlers.impl.StandardForkCommandExecutor;
 import com.redshape.forker.protocol.IForkProtocol;
 import com.redshape.forker.protocol.StandardProtocol;
 import com.redshape.forker.protocol.processor.IForkProtocolProcessor;
@@ -45,6 +48,7 @@ public class ForkManagerImpl implements IForkManager {
 
     private IProtocolQueueCreator protocolQueueCreator;
 
+    private Map<IFork, IForkCommandExecutor> executors = new HashMap<IFork, IForkCommandExecutor>();
     private Map<IFork, IForkProtocolProcessor> processors = new HashMap<IFork, IForkProtocolProcessor>();
     private List<IFork> registry = new ArrayList<IFork>();
     private List<String> classPath = new ArrayList<String>();
@@ -74,6 +78,27 @@ public class ForkManagerImpl implements IForkManager {
     public void setService(ExecutorService service) {
         Commons.checkNotNull(service);
         this.service = service;
+    }
+
+    @Override
+    public IForkCommandExecutor getCommandsExecutor(IFork fork, boolean forceStart) {
+        IForkCommandExecutor executor;
+        this.executors.put( fork, executor = this.createCommandsExecutor(fork) );
+
+        if ( forceStart ) {
+            this.service.execute( executor );
+        }
+
+        return executor;
+    }
+
+    @Override
+    public IForkCommandExecutor getCommandsExecutor(IFork fork) {
+        return this.getCommandsExecutor(fork, true);
+    }
+
+    protected IForkCommandExecutor createCommandsExecutor( IFork fork ) {
+        return new StandardForkCommandExecutor( this.getForkProcessor(fork), Commons.<IForkCommandHandler>set() );
     }
 
     @Override
@@ -280,6 +305,8 @@ public class ForkManagerImpl implements IForkManager {
         }
 
         this.getClientsList().clear();
+        this.executors.clear();
+        this.processors.clear();
     }
 
     public void resumeAll() throws ProcessException {
