@@ -2,6 +2,7 @@ package com.redshape.forker;
 
 import com.redshape.forker.commands.*;
 import com.redshape.utils.Commons;
+import org.apache.log4j.Logger;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
@@ -14,6 +15,8 @@ import java.util.Map;
  * @date 1/31/12 {4:39 PM}
  */
 public final class Commands {
+
+    private static final Logger log = Logger.getLogger(Commands.class);
     
     public static final long PAUSE = 0x00001L;
     public static final long PAUSE_RSP = 0x10001L;
@@ -102,6 +105,7 @@ public final class Commands {
         Commons.checkNotNull(commandId);
 
         REGISTRY.put( commandId, commandClazz );
+        log.info("Fork command class " + commandClazz.getCanonicalName() + " registered as ID#" + commandId);
     }
     
 }

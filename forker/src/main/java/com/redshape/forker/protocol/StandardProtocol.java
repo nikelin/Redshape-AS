@@ -41,12 +41,11 @@ public class StandardProtocol implements IForkProtocol {
         boolean available = false;
         do {
             try {
-                stream.write(0);
                 stream.flush();
                 available = true;
             } catch ( IOException e ) {
-                if ( !e.getMessage().equals("Stream closed") ) {
-                    break;
+                if ( !e.getMessage().equals("Stream closed") && !e.getMessage().equals("Stream Closed") ) {
+                    throw e;
                 }
             }
         } while ( !available );
@@ -78,11 +77,13 @@ public class StandardProtocol implements IForkProtocol {
     protected long matchStreamToken( long... tokenValue ) throws IOException {
         Arrays.sort(tokenValue);
 
+        this.waitAvailability(this.inputStream);
+
         Long token;
         do {
             token = this.inputStream.readLong();
             log.debug("Token received: " + token );
-        } while (Arrays.binarySearch(tokenValue, token) != 0);
+        } while (Arrays.binarySearch(tokenValue, token) < 0);
 
         return token;
     }
@@ -112,7 +113,7 @@ public class StandardProtocol implements IForkProtocol {
             log.info("Writing command to data stream...");
             this.outputStream.writeLong( COMMAND_BEGIN );
             this.outputStream.writeLong( command.getCommandId() );
-            this.outputStream.writeLong( command.getQualifier() );
+            this.outputStream.writeLong( Commons.select( command.getQualifier(), 0L) );
             command.writeTo( this.outputStream );
             this.outputStream.flush();
             log.info("Data stream flushed...");
@@ -144,10 +145,12 @@ public class StandardProtocol implements IForkProtocol {
         synchronized (writeLock) {
             Commons.checkNotNull(response);
 
+            waitAvailability(outputStream);
+
             log.info("Writing response to a data stream...");
             this.outputStream.writeLong( RESPONSE_BEGIN );
             this.outputStream.writeLong( response.getId() );
-            this.outputStream.writeLong( response.getQualifier() );
+            this.outputStream.writeLong( Commons.select( response.getQualifier(), 0L ) );
             response.writeTo(this.outputStream);
             this.outputStream.flush();
             log.info("Flushing data stream...");

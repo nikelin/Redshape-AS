@@ -300,13 +300,35 @@ public class ForkManagerImpl implements IForkManager {
 
     @Override
     public void shutdownAll() throws ProcessException {
-        for ( IFork fork : this.getClientsList() ) {
-            fork.shutdown();
+        for ( int i = 0; i < this.processors.size(); i++ ) {
+            IForkProtocolProcessor processor = this.processors.get(i);
+            if ( processor == null ) {
+                continue;
+            }
+
+            processor.stop();
+            this.processors.remove(processor);
         }
 
-        this.getClientsList().clear();
-        this.executors.clear();
-        this.processors.clear();
+        for ( int i = 0; i < this.executors.size(); i++ ) {
+            IForkCommandExecutor executor = this.executors.get(i);
+            if ( executor == null ) {
+                continue;
+            }
+
+            executor.stop();
+            this.executors.remove(executor);
+        }
+
+        for ( int i = 0; i < this.getClientsList().size(); i++ ) {
+            IFork fork = this.getClientsList().get(i);
+            if ( fork == null ) {
+                continue;
+            }
+
+            fork.shutdown();
+            this.getClientsList().remove(fork);
+        }
     }
 
     public void resumeAll() throws ProcessException {

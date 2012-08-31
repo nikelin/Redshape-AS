@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.concurrent.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,6 +31,109 @@ public class StandardForkCommandExecutor extends AbstractEventDispatcher impleme
 
     private static final Logger log = Logger.getLogger(StandardForkCommandExecutor.class);
 
+    protected class ResponsesListenerThread implements Callable<Void> {
+
+        @Override
+        public Void call() {
+            while ( isStarted() ) {
+                IForkCommandResponse response = processor.getResultsQueue().peekResponse();
+                /**
+                 * @TODO: add some kind of I/O wait to optimize CPU loadage
+                 */
+                if ( response == null ) {
+                    continue;
+                }
+
+                raiseEvent( new CommandResponseEvent(response) );
+            }
+
+            return null;
+        }
+    }
+
+    protected class CommandsListenerThread implements Callable<Void> {
+
+        @Override
+        public Void call() {
+            try {
+                while ( isStarted() ) {
+                    IForkCommand command = processor.getResultsQueue().peekRequest();
+                    /**
+                     * @TODO: add some kind of I/O wait to optimize CPU loadage
+                     */
+                    if ( command == null ) {
+                        continue;
+                    }
+
+                    raiseEvent( new CommandRequestEvent(command) );
+
+                    IForkCommandResponse response = executeCommand(command);
+                    if ( response == null ) {
+                        response = new ErrorResponse("Unsupported command requested", IForkCommandResponse.Status.FAIL);
+                    }
+
+                    processor.getWorkQueue().collectResponse(response);
+                }
+
+                return null;
+            } catch ( ProcessException e ) {
+                throw new IllegalStateException( e.getMessage(), e );
+            }
+        }
+    }
+
+    public class CommandExecutionCallable<T extends IForkCommandResponse> implements Callable<T> {
+
+        private IForkCommand command;
+        private IForkProtocolProcessor processor;
+        private boolean waitResponse;
+
+        public CommandExecutionCallable(IForkCommand command,
+                                        IForkProtocolProcessor processor,
+                                        boolean waitResponse) {
+            Commons.checkNotNull(command);
+            Commons.checkNotNull(processor);
+
+            this.waitResponse = waitResponse;
+            this.command = command;
+            this.processor = processor;
+        }
+
+        @Override
+        public T call() throws Exception {
+            if ( command.getQualifier() == null ) {
+                command.setQualifier( new Date().getTime() );
+            }
+
+            this.processor.getWorkQueue().collectRequest(command);
+
+            if ( !waitResponse ) {
+                return null;
+            }
+
+            T result;
+            do {
+                result = (T) this.processor.getWorkQueue().peekResponse(new IFilter<IForkCommandResponse>() {
+                    @Override
+                    public boolean filter(IForkCommandResponse filterable) {
+                        return filterable.getQualifier().equals(command.getQualifier());
+                    }
+                });
+
+                if ( result == null ) {
+                    log.info("Waiting for response...");
+                    try {
+                        Thread.sleep(250);
+                    } catch ( InterruptedException e ) {}
+                }
+            } while ( result == null );
+
+            log.info("Response received: " + result.getClass().getCanonicalName() );
+
+            return result;
+        }
+    }
+
     public enum State {
         INIT,
         START,
@@ -38,15 +142,21 @@ public class StandardForkCommandExecutor extends AbstractEventDispatcher impleme
 
     private State state;
     private IForkProtocolProcessor processor;
+    private ExecutorService service;
     private Collection<IForkCommandHandler> handlers = new ArrayList<IForkCommandHandler>();
 
     public StandardForkCommandExecutor( IForkProtocolProcessor processor,
                                         Collection<IForkCommandHandler> handlers) {
         Commons.checkNotNull(processor);
 
+        this.service = this.createExecutorService();
         this.processor = processor;
         this.state = State.STOP;
         this.handlers = handlers;
+    }
+
+    protected ExecutorService createExecutorService() {
+        return Executors.newFixedThreadPool(10);
     }
 
     @Override
@@ -84,22 +194,18 @@ public class StandardForkCommandExecutor extends AbstractEventDispatcher impleme
 
         this.raiseEvent( new ExecutorStartedEvent() );
 
-        while ( this.isStarted() ) {
-            IForkCommand command = this.processor.getResultsQueue().peekRequest();
-            if ( command == null ) {
-                continue;
+        try {
+            Collection<Future<Void>> listeners = this.service.invokeAll(
+                    Commons.set( new CommandsListenerThread(), new ResponsesListenerThread() )
+            );
+
+            for ( Future<?> future : listeners ) {
+                future.get();
             }
-
-            this.raiseEvent( new CommandRequestEvent(command) );
-
-            IForkCommandResponse response = this.executeCommand(command);
-            if ( response == null ) {
-                response = new ErrorResponse("Unsupported command requested", IForkCommandResponse.Status.FAIL);
-            }
-
-            this.raiseEvent( new CommandResponseEvent(response) );
-
-            this.processor.getResultsQueue().collectResponse(response);
+        } catch ( ExecutionException e ) {
+             throw new ProcessException( e.getMessage(), e );
+        } catch ( InterruptedException e ) {
+            throw new ProcessException( "Interrupted", e );
         }
     }
 
@@ -126,34 +232,32 @@ public class StandardForkCommandExecutor extends AbstractEventDispatcher impleme
         this.processor.getWorkQueue().collectResponse(response);
     }
 
+    protected <T extends IForkCommandResponse> Callable<T> createExecuteCallable( IForkCommand command,
+                                                                                  boolean waitResponse ) {
+        return new CommandExecutionCallable(command, this.processor, waitResponse);
+    }
+
     @Override
-    public <T extends IForkCommandResponse> T execute(final IForkCommand command) throws ProcessException {
-        if ( command.getQualifier() == null ) {
-            command.setQualifier( new Date().getTime() );
+    public void executeAsync(IForkCommand command) throws ProcessException {
+        try {
+            this.service.submit( this.createExecuteCallable(command, false) ).get();
+        } catch ( ExecutionException e ) {
+            throw new ProcessException( e.getMessage(), e );
+        } catch ( InterruptedException e ) {
+            throw new ProcessException( "Interrupted", e );
         }
+    }
 
-        this.processor.getWorkQueue().collectRequest(command);
-
-        T result;
-        do {
-            result = (T) this.processor.getWorkQueue().peekResponse(new IFilter<IForkCommandResponse>() {
-                @Override
-                public boolean filter(IForkCommandResponse filterable) {
-                    return filterable.getQualifier().equals(command.getQualifier());
-                }
-            });
-
-            if ( result == null ) {
-                log.info("Waiting for response...");
-                try {
-                    Thread.sleep(250);
-                } catch ( InterruptedException e ) {}
-            }
-        } while ( result == null );
-
-        log.info("Response received: " + result.getClass().getCanonicalName() );
-
-        return result;
+    @Override
+    public <T extends IForkCommandResponse> T execute(IForkCommand command) throws ProcessException {
+        try {
+            Future<T> result = this.service.submit( this.<T>createExecuteCallable(command, true) );
+            return result.get();
+        } catch ( ExecutionException e ) {
+            throw new ProcessException( e.getMessage(), e );
+        } catch ( InterruptedException e ) {
+            throw new ProcessException("Interrupted", e );
+        }
     }
 
     @Override

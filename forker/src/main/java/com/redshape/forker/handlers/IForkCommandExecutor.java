@@ -22,13 +22,15 @@ public interface IForkCommandExecutor extends IEventDispatcher, Runnable {
 
     public boolean isStarted();
 
+    public void executeAsync(final IForkCommand command) throws ProcessException;
+
     public <T extends IForkCommandResponse> T execute( IForkCommand command ) throws ProcessException;
 
     public void respond( IForkCommandResponse response ) throws ProcessException;
 
     public void start() throws ProcessException;
 
-    public void stop() throws ProcessException;
+    public void stop();
 
 
 }

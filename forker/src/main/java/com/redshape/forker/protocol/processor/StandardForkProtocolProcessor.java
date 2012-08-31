@@ -32,6 +32,7 @@ public class StandardForkProtocolProcessor implements IForkProtocolProcessor {
     private int commandWriterDelay;
     private int responseWriterDelay;
     private int writerWorkChunk;
+    private boolean running;
 
     private static final int DEFAULT_WRITER_DELAY = 250;
     private static final int DEFAULT_WORK_CHUNK = 50;
@@ -98,23 +99,22 @@ public class StandardForkProtocolProcessor implements IForkProtocolProcessor {
         return new Runnable() {
             @Override
             public void run() {
-                while (true) {
-                    try {
-                        IForkProtocol.TokenType type = getProtocol().matchToken();
-                        switch ( type ) {
-                            case COMMAND:
-                                onCommand();
-                                break;
-                            case RESPONSE:
-                                onResponse();
-                                break;
-                        }
-
-                        Thread.sleep(100);
-                    } catch ( InterruptedException e ) {
-                    } catch ( IOException e ) {
-                        throw new IllegalStateException( e.getMessage(), e );
+                try {
+                    IForkProtocol.TokenType type = getProtocol().matchToken();
+                    if ( type == null ) {
+                        return;
                     }
+
+                    switch ( type ) {
+                        case COMMAND:
+                            onCommand();
+                            break;
+                        case RESPONSE:
+                            onResponse();
+                            break;
+                    }
+                } catch ( IOException e ) {
+                    throw new IllegalStateException( e.getMessage(), e );
                 }
             }
         };
@@ -165,6 +165,17 @@ public class StandardForkProtocolProcessor implements IForkProtocolProcessor {
                 }
             }
         };
+    }
+
+    @Override
+    public boolean isStarted() {
+        return this.running;
+    }
+
+    @Override
+    public void stop() {
+        this.running = false;
+        this.threadsExecutor.shutdown();
     }
 
     @Override

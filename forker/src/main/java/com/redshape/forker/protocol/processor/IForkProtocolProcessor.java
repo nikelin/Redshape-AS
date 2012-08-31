@@ -11,6 +11,10 @@ import com.redshape.forker.protocol.queue.IProtocolQueue;
  */
 public interface IForkProtocolProcessor extends Runnable {
 
+    public void stop();
+
+    public boolean isStarted();
+
     public IProtocolQueue getResultsQueue();
 
     public IProtocolQueue getWorkQueue();
