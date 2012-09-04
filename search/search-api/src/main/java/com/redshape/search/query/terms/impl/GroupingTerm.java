@@ -1,4 +1,8 @@
-package com.redshape.search.query.terms;
+package com.redshape.search.query.terms.impl;
+
+import com.redshape.search.query.terms.IGroupingTerm;
+import com.redshape.search.query.terms.ISearchTerm;
+import com.redshape.search.query.terms.Operation;
 
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
@@ -9,7 +13,11 @@ public class GroupingTerm implements IGroupingTerm {
 	private ISearchTerm[] terms;
 	private Operation operation;
 
-	public GroupingTerm( ISearchTerm[] terms, Operation operation ) {
+    public GroupingTerm() {
+        this(null, null);
+    }
+
+    public GroupingTerm( ISearchTerm[] terms, Operation operation ) {
 		this.terms = terms;
 		this.operation = operation;
 	}

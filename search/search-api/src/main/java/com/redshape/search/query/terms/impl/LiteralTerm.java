@@ -1,4 +1,6 @@
-package com.redshape.search.query.terms;
+package com.redshape.search.query.terms.impl;
+
+import com.redshape.search.query.terms.IScalarTerm;
 
 /**
  * Created by IntelliJ IDEA.
@@ -9,6 +11,10 @@ package com.redshape.search.query.terms;
  */
 public class LiteralTerm implements IScalarTerm {
     private Object value;
+
+    public LiteralTerm() {
+        this(null);
+    }
 
     public LiteralTerm( Object value ) {
         this.value = value;

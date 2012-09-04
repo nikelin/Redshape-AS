@@ -1,4 +1,8 @@
-package com.redshape.search.query.terms;
+package com.redshape.search.query.terms.impl;
+
+import com.redshape.search.query.terms.IBinaryTerm;
+import com.redshape.search.query.terms.IUnaryTerm;
+import com.redshape.search.query.terms.Operation;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,6 +14,10 @@ package com.redshape.search.query.terms;
 public class EqTerm implements IBinaryTerm {
     private IUnaryTerm term;
     private IUnaryTerm value;
+
+    public EqTerm() {
+        this(null, null);
+    }
 
     public EqTerm( IUnaryTerm term, IUnaryTerm value ) {
         this.term = term;

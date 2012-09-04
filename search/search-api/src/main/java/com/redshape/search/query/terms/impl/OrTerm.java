@@ -1,4 +1,8 @@
-package com.redshape.search.query.terms;
+package com.redshape.search.query.terms.impl;
+
+import com.redshape.search.query.terms.IBinaryTerm;
+import com.redshape.search.query.terms.ISearchTerm;
+import com.redshape.search.query.terms.Operation;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,6 +14,10 @@ package com.redshape.search.query.terms;
 public class OrTerm implements IBinaryTerm {
     private ISearchTerm first;
     private ISearchTerm second;
+
+    public OrTerm() {
+        this(null, null);
+    }
 
     public OrTerm( ISearchTerm first, ISearchTerm second ) {
         this.first = first;

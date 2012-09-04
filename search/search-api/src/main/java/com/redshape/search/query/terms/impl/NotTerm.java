@@ -1,4 +1,8 @@
-package com.redshape.search.query.terms;
+package com.redshape.search.query.terms.impl;
+
+import com.redshape.search.query.terms.ISearchTerm;
+import com.redshape.search.query.terms.IUnaryTerm;
+import com.redshape.search.query.terms.Operation;
 
 /**
  * Created by IntelliJ IDEA.
@@ -9,6 +13,10 @@ package com.redshape.search.query.terms;
  */
 public class NotTerm implements IUnaryTerm {
     private ISearchTerm term;
+
+    public NotTerm() {
+        this(null);
+    }
 
     public NotTerm( ISearchTerm term ) {
         this.term = term;

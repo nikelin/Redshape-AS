@@ -1,4 +1,9 @@
-package com.redshape.search.query.terms;
+package com.redshape.search.query.terms.impl;
+
+import com.redshape.search.query.terms.IBinaryTerm;
+import com.redshape.search.query.terms.ISearchTerm;
+import com.redshape.search.query.terms.Operation;
+import com.redshape.search.query.terms.RangeType;
 
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
@@ -10,7 +15,11 @@ public class ToTerm implements IBinaryTerm {
 	private ISearchTerm to;
 	private RangeType rangeType;
 
-	public ToTerm( ISearchTerm from, ISearchTerm to, RangeType constraint ) {
+    public ToTerm() {
+        this(null, null, null);
+    }
+
+    public ToTerm( ISearchTerm from, ISearchTerm to, RangeType constraint ) {
 		this.from = from;
 		this.to = to;
 		this.rangeType = constraint;
