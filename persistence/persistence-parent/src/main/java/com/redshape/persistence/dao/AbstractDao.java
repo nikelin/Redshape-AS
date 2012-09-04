@@ -92,7 +92,7 @@ public class AbstractDao<T extends IEntity> implements IDAO<T> {
             query.setOffset( query().getOffset() > 0 ? query().getOffset() : this.offset() );
             query.setLimit( query().getLimit() > 0 ? query().getLimit() : this.limit() );
 
-            return execute(query).resultValue();
+            return ( (ValueEntity<Long>) execute(query).resultValue() ).getValue().intValue();
         }
     }
 
