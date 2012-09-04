@@ -1,4 +1,7 @@
-package com.redshape.search.query.terms;
+package com.redshape.search.query.terms.impl;
+
+import com.redshape.search.query.terms.IFieldTerm;
+import com.redshape.search.query.terms.ISearchTerm;
 
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
@@ -9,7 +12,11 @@ public class FieldTerm implements IFieldTerm {
 	private String fieldName;
 	private ISearchTerm term;
 
-	public FieldTerm( String fieldName, ISearchTerm term ) {
+    public FieldTerm() {
+        this(null, null);
+    }
+
+    public FieldTerm( String fieldName, ISearchTerm term ) {
 		this.fieldName = fieldName;
 		this.term = term;
 	}

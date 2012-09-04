@@ -1,6 +1,8 @@
-package com.redshape.search.query;
+package com.redshape.search.query.impl;
 
+import com.redshape.search.query.ISearchTermBuilder;
 import com.redshape.search.query.terms.*;
+import com.redshape.search.query.terms.impl.*;
 
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
