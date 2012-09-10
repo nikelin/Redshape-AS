@@ -17,24 +17,26 @@ import java.util.Map;
 public final class Commands {
 
     private static final Logger log = Logger.getLogger(Commands.class);
-    
-    public static final long PAUSE = 0x00001L;
-    public static final long PAUSE_RSP = 0x10001L;
-    public static final long RESUME = 0x00002L;
-    public static final long RESUME_RSP = 0x10002L;
-    public static final long FIND_RESOURCE = 0x00003L;
-    public static final long FIND_RESOURCE_RSP = 0x10003L;
-    public static final long FIND_RESOURCES = 0x00004L;
-    public static final long FIND_RESOURCES_RSP = 0x10004L;
-    public static final long RESOLVE_CLASS = 0x00005L;
-    public static final long RESOLVE_CLASS_RSP = 0x10005L;
-    public static final long SHUTDOWN = 0x00006L;
-    public static final long SHUTDOWN_RSP = 0x10006L;
-    public static final long GET_RUNNING_STATE = 0x00007L;
-    public static final long GET_RUNNING_STATE_RSP = 0x10007L;
-    public static final long ERROR_RSP = 0x11007L;
-    public static final long INIT_RSP = 0x22008L;
-    
+
+    private static long LAST_USED_ID = 0;
+
+    public static final long PAUSE = nextID(0x00001);
+    public static final long PAUSE_RSP = nextID();
+    public static final long RESUME = nextID();
+    public static final long RESUME_RSP = nextID();
+    public static final long FIND_RESOURCE = nextID();
+    public static final long FIND_RESOURCE_RSP = nextID();
+    public static final long FIND_RESOURCES = nextID();
+    public static final long FIND_RESOURCES_RSP = nextID();
+    public static final long RESOLVE_CLASS = nextID();
+    public static final long RESOLVE_CLASS_RSP = nextID();
+    public static final long SHUTDOWN = nextID();
+    public static final long SHUTDOWN_RSP = nextID();
+    public static final long GET_RUNNING_STATE = nextID();
+    public static final long GET_RUNNING_STATE_RSP = nextID();
+    public static final long ERROR_RSP = nextID();
+    public static final long INIT_RSP = nextID();
+
     public static final Map<Long, Class<?>> REGISTRY = new HashMap<Long, Class<?>>();
     static {
         REGISTRY.put( PAUSE, PauseCommand.Request.class );
@@ -49,6 +51,14 @@ public final class Commands {
         REGISTRY.put( FIND_RESOURCES_RSP, FindResourcesCommand.Response.class );
         REGISTRY.put( INIT_RSP, InitResponse.class );
         REGISTRY.put( ERROR_RSP, ErrorResponse.class );
+    }
+
+    private static long nextID( long prev ) {
+        return prev++;
+    }
+
+    public static long nextID() {
+        return nextID(LAST_USED_ID);
     }
 
     public static <T extends IForkCommandResponse> T createResponse( Long commandId )
@@ -103,6 +113,11 @@ public final class Commands {
     public static void register( Long commandId, Class<?> commandClazz ) {
         Commons.checkNotNull(commandClazz);
         Commons.checkNotNull(commandId);
+
+        if ( REGISTRY.containsKey(commandId) ) {
+            throw new IllegalArgumentException("Requested command ID already reserved by a "
+                    + commandClazz.getCanonicalName() + " implementation");
+        }
 
         REGISTRY.put( commandId, commandClazz );
         log.info("Fork command class " + commandClazz.getCanonicalName() + " registered as ID#" + commandId);

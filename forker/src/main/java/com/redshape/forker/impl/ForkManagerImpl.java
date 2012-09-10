@@ -11,10 +11,7 @@ import com.redshape.forker.protocol.StandardProtocol;
 import com.redshape.forker.protocol.processor.IForkProtocolProcessor;
 import com.redshape.forker.protocol.processor.StandardForkProtocolProcessor;
 import com.redshape.forker.protocol.queue.IProtocolQueueCreator;
-import com.redshape.utils.Commons;
-import com.redshape.utils.IResourcesLoader;
-import com.redshape.utils.SimpleStringUtils;
-import com.redshape.utils.StringUtils;
+import com.redshape.utils.*;
 import com.redshape.utils.system.ISystemFacade;
 import com.redshape.utils.system.processes.ISystemProcess;
 import com.redshape.utils.system.scripts.IScriptExecutor;
@@ -38,10 +35,11 @@ import java.util.concurrent.Executors;
 public class ForkManagerImpl implements IForkManager {
     private static final Logger log = Logger.getLogger( ForkManagerImpl.class );
 
-    private static final String MEMORY_LIMIT_PARAM = "-Xmx%sM";
-    private static final String MEMORY_INITIAL_PARAM = "-Xms%sM";
-    private static final String CLASSPATH_PARAM = "-cp %s";
-    private static final String DEBUG_STRING = "-agentlib:jdwp=transport=dt_socket,server=n,address=%s:%d,suspend=y";
+    public static final String DEFAULT_JVM_PATH = "/usr/bin/java";
+    public static final String MEMORY_LIMIT_PARAM = "-Xmx%sM";
+    public static final String MEMORY_INITIAL_PARAM = "-Xms%sM";
+    public static final String CLASSPATH_PARAM = "-cp %s";
+    public static final String DEBUG_STRING = "-agentlib:jdwp=transport=dt_socket,server=n,address=%s:%d,suspend=y";
 
     private IResourcesLoader loader;
     private ISystemFacade facade;
@@ -50,13 +48,13 @@ public class ForkManagerImpl implements IForkManager {
 
     private Map<IFork, IForkCommandExecutor> executors = new HashMap<IFork, IForkCommandExecutor>();
     private Map<IFork, IForkProtocolProcessor> processors = new HashMap<IFork, IForkProtocolProcessor>();
-    private List<IFork> registry = new ArrayList<IFork>();
+    private Map<ISystemProcess, IFork> registry = new HashMap<ISystemProcess, IFork>();
     private List<String> classPath = new ArrayList<String>();
 
     private ExecutorService service;
 
     private String rootPath;
-    private String jvmPath = "/usr/bin/java";
+    private String jvmPath;
     private boolean debugMode;
     private int debugPort;
     private String debugHost;
@@ -64,11 +62,21 @@ public class ForkManagerImpl implements IForkManager {
     private int memoryInitial;
     private int cpuLimit;
 
+
     public ForkManagerImpl( IProtocolQueueCreator queueCreator, ISystemFacade facade, IResourcesLoader loader) {
+        this(DEFAULT_JVM_PATH, queueCreator, facade, loader);
+    }
+
+    public ForkManagerImpl( String jvmExecutablePath, IProtocolQueueCreator queueCreator, ISystemFacade facade, IResourcesLoader loader) {
         Commons.checkNotNull(queueCreator);
         Commons.checkNotNull(facade);
         Commons.checkNotNull(loader);
+        Commons.checkNotNull(jvmExecutablePath);
 
+        this.memoryInitial = 64;
+        this.memoryLimit = 64;
+        this.cpuLimit = 20;
+        this.jvmPath = jvmExecutablePath;
         this.service = Executors.newFixedThreadPool(100);
         this.protocolQueueCreator = queueCreator;
         this.facade = facade;
@@ -260,20 +268,44 @@ public class ForkManagerImpl implements IForkManager {
 
         final ISystemProcess process;
         try {
-            process = executor.spawn(this.service);
+            process = executor.spawn(this.service, new Lambda<Object>() {
+                @Override
+                public Object invoke(Object... objects) throws InvocationException {
+                    Integer exitCode = (Integer) objects[0];
+
+                    ISystemProcess process = (ISystemProcess) objects[1];
+                    if ( exitCode != 0 ) {
+                        shutdownProcess(process);
+                    }
+
+                    return null;
+                }
+            });
         } catch ( IOException e ) {
             throw new ProcessException( e.getMessage(), e );
         }
 
         IFork result;
-
-        this.registry.add( result = new ForkImpl( this, this.getLoader(), process ) );
+        this.registry.put( process, result = new ForkImpl( this, this.getLoader(), process ) );
 
         IForkProtocolProcessor processor;
         this.processors.put( result, processor = this.createForkProcessor(result) );
         this.service.execute(processor);
 
         return result;
+    }
+
+    protected void shutdownProcess( ISystemProcess process ) {
+        IFork fork = this.registry.get(process);
+        if ( fork == null ) {
+            return;
+        }
+
+        this.getCommandsExecutor(fork).stop();
+        this.getForkProcessor(fork).stop();
+        this.registry.remove(process);
+
+        process.destroy();
     }
 
     @Override
@@ -295,7 +327,7 @@ public class ForkManagerImpl implements IForkManager {
 
     @Override
     public List<IFork> getClientsList() {
-        return this.registry;
+        return new ArrayList<IFork>( this.registry.values() );
     }
 
     @Override

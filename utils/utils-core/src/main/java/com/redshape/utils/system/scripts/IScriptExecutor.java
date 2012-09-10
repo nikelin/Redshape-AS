@@ -1,5 +1,6 @@
 package com.redshape.utils.system.scripts;
 
+import com.redshape.utils.ILambda;
 import com.redshape.utils.system.processes.ISystemProcess;
 
 import java.io.IOException;
@@ -25,6 +26,8 @@ public interface IScriptExecutor {
 	public String execute() throws IOException;
 
     public ISystemProcess spawn() throws IOException;
+
+    public ISystemProcess spawn( ExecutorService service, ILambda<?> callback ) throws IOException;
 
     public ISystemProcess spawn( ExecutorService service ) throws IOException;
 

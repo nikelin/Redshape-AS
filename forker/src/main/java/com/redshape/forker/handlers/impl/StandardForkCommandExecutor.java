@@ -12,6 +12,7 @@ import com.redshape.forker.handlers.IForkCommandHandler;
 import com.redshape.forker.protocol.processor.IForkProtocolProcessor;
 import com.redshape.utils.Commons;
 import com.redshape.utils.IFilter;
+import com.redshape.utils.TimeSpan;
 import com.redshape.utils.events.AbstractEventDispatcher;
 import org.apache.log4j.Logger;
 
@@ -30,6 +31,8 @@ import java.util.concurrent.*;
 public class StandardForkCommandExecutor extends AbstractEventDispatcher implements IForkCommandExecutor, Runnable {
 
     private static final Logger log = Logger.getLogger(StandardForkCommandExecutor.class);
+
+    public static final TimeSpan DEFAULT_RESPONSE_AWAIT = new TimeSpan(3, TimeUnit.SECONDS);
 
     protected class ResponsesListenerThread implements Callable<Void> {
 
@@ -111,6 +114,8 @@ public class StandardForkCommandExecutor extends AbstractEventDispatcher impleme
                 return null;
             }
 
+            Date awaitStarted = new Date();
+
             T result;
             do {
                 result = (T) this.processor.getWorkQueue().peekResponse(new IFilter<IForkCommandResponse>() {
@@ -126,7 +131,7 @@ public class StandardForkCommandExecutor extends AbstractEventDispatcher impleme
                         Thread.sleep(250);
                     } catch ( InterruptedException e ) {}
                 }
-            } while ( result == null );
+            } while ( result == null && !StandardForkCommandExecutor.this.isResponseExpired(awaitStarted) );
 
             log.info("Response received: " + result.getClass().getCanonicalName() );
 
@@ -144,19 +149,34 @@ public class StandardForkCommandExecutor extends AbstractEventDispatcher impleme
     private IForkProtocolProcessor processor;
     private ExecutorService service;
     private Collection<IForkCommandHandler> handlers = new ArrayList<IForkCommandHandler>();
+    private TimeSpan responseAwait;
 
     public StandardForkCommandExecutor( IForkProtocolProcessor processor,
-                                        Collection<IForkCommandHandler> handlers) {
+                                        Collection<IForkCommandHandler> handlers ) {
+        this(processor, handlers, DEFAULT_RESPONSE_AWAIT);
+    }
+
+    public StandardForkCommandExecutor( IForkProtocolProcessor processor,
+                                        Collection<IForkCommandHandler> handlers,
+                                        TimeSpan responseAwait ) {
         Commons.checkNotNull(processor);
+        Commons.checkNotNull(responseAwait);
+
+        this.processor = processor;
+        this.handlers = handlers;
+        this.responseAwait = responseAwait;
 
         this.service = this.createExecutorService();
-        this.processor = processor;
         this.state = State.STOP;
-        this.handlers = handlers;
     }
 
     protected ExecutorService createExecutorService() {
         return Executors.newFixedThreadPool(10);
+    }
+
+    protected boolean isResponseExpired( Date started ) {
+        Date expireDate = new Date( started.getTime() + this.responseAwait.getType().toMillis(this.responseAwait.getValue()) );
+        return expireDate.before(started);
     }
 
     @Override

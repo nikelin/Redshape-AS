@@ -34,8 +34,6 @@ import java.util.concurrent.Executors;
  */
 public final class Forked {
 
-    private static BufferedWriter writer;
-
     private static void initLogs() {
         try {
             DOMConfigurator.configure("src/test/resources/forked.log4j.xml");
