@@ -54,10 +54,11 @@ public final class Commands {
     }
 
     private static long nextID( long prev ) {
-        return prev++;
+        LAST_USED_ID = prev + 1;
+        return LAST_USED_ID;
     }
 
-    public static long nextID() {
+    public static synchronized long nextID() {
         return nextID(LAST_USED_ID);
     }
 
@@ -116,10 +117,11 @@ public final class Commands {
 
         if ( REGISTRY.containsKey(commandId) ) {
             throw new IllegalArgumentException("Requested command ID already reserved by a "
-                    + commandClazz.getCanonicalName() + " implementation");
+                    + REGISTRY.get(commandId).getCanonicalName() + " implementation");
         }
 
         REGISTRY.put( commandId, commandClazz );
+
         log.info("Fork command class " + commandClazz.getCanonicalName() + " registered as ID#" + commandId);
     }
     
