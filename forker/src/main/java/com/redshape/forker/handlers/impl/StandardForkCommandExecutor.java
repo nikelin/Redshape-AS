@@ -38,17 +38,21 @@ public class StandardForkCommandExecutor extends AbstractEventDispatcher impleme
 
         @Override
         public Void call() {
-            while ( isStarted() ) {
+            do {
                 IForkCommandResponse response = processor.getResultsQueue().peekResponse();
                 /**
                  * @TODO: add some kind of I/O wait to optimize CPU loadage
                  */
                 if ( response == null ) {
-                    continue;
+                    try {
+                        Thread.sleep(100);
+                    } catch ( InterruptedException e ) {
+                        break;
+                    }
+                } else {
+                    raiseEvent( new CommandResponseEvent(response) );
                 }
-
-                raiseEvent( new CommandResponseEvent(response) );
-            }
+            } while ( isStarted() );
 
             return null;
         }
@@ -59,24 +63,28 @@ public class StandardForkCommandExecutor extends AbstractEventDispatcher impleme
         @Override
         public Void call() {
             try {
-                while ( isStarted() ) {
+                do {
                     IForkCommand command = processor.getResultsQueue().peekRequest();
                     /**
                      * @TODO: add some kind of I/O wait to optimize CPU loadage
                      */
                     if ( command == null ) {
-                        continue;
+                        try {
+                            Thread.sleep(100);
+                        } catch ( InterruptedException e ) {
+                            break;
+                        }
+                    } else {
+                        raiseEvent( new CommandRequestEvent(command) );
+
+                        IForkCommandResponse response = executeCommand(command);
+                        if ( response == null ) {
+                            response = new ErrorResponse("Unsupported command requested", IForkCommandResponse.Status.FAIL);
+                        }
+
+                        processor.getWorkQueue().collectResponse(response);
                     }
-
-                    raiseEvent( new CommandRequestEvent(command) );
-
-                    IForkCommandResponse response = executeCommand(command);
-                    if ( response == null ) {
-                        response = new ErrorResponse("Unsupported command requested", IForkCommandResponse.Status.FAIL);
-                    }
-
-                    processor.getWorkQueue().collectResponse(response);
-                }
+                } while ( isStarted() );
 
                 return null;
             } catch ( ProcessException e ) {

@@ -15,8 +15,8 @@ import java.io.IOException;
  */
 public class SimpleCommandObject {
 
-    public static final long SIMPLE_COMMAND_ID = 0x0001;
-    public static final long SIMPLE_COMMAND_RESP_ID = 0x1001;
+    public static final long SIMPLE_COMMAND_ID = Commands.nextID();
+    public static final long SIMPLE_COMMAND_RESP_ID = Commands.nextID();
 
     public static class Handler implements IForkCommandHandler {
 
