@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
@@ -18,9 +19,9 @@ public final class Commands {
 
     private static final Logger log = Logger.getLogger(Commands.class);
 
-    private static long LAST_USED_ID = 0;
+    private static AtomicLong LAST_USED_ID = new AtomicLong(0x0001);
 
-    public static final long PAUSE = nextID(0x00001);
+    public static final long PAUSE = nextID();
     public static final long PAUSE_RSP = nextID();
     public static final long RESUME = nextID();
     public static final long RESUME_RSP = nextID();
@@ -53,13 +54,8 @@ public final class Commands {
         REGISTRY.put( ERROR_RSP, ErrorResponse.class );
     }
 
-    private static long nextID( long prev ) {
-        LAST_USED_ID = prev + 1;
-        return LAST_USED_ID;
-    }
-
-    public static synchronized long nextID() {
-        return nextID(LAST_USED_ID);
+    public static long nextID() {
+        return LAST_USED_ID.getAndIncrement();
     }
 
     public static <T extends IForkCommandResponse> T createResponse( Long commandId )

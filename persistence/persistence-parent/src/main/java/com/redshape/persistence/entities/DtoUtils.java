@@ -327,12 +327,6 @@ public final class DtoUtils {
 
             if ( fromCounter().isBalanced() ) {
                 processDeferred(false);
-
-                try {
-                    // @FIXME: Issue must be investigated
-                    // closeSession();
-                } catch ( Throwable e ) {}
-
                 resetReverseCache();
             }
     }

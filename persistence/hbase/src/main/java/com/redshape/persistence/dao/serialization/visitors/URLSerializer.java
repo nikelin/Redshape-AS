@@ -20,7 +20,6 @@ public class URLSerializer extends AbstractSerializerVisitor<URL> {
 	    try {
 	        return new URL(val);
         } catch (MalformedURLException e) {
-        	//TODO: this should newer happen in real life, but maybe do something more meaningful
             throw new RuntimeException("Malformed URL in database found, cannot deserialize", e);
         }
     }

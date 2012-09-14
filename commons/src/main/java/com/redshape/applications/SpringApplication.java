@@ -3,6 +3,7 @@ package com.redshape.applications;
 import com.redshape.applications.bootstrap.IBootstrap;
 import com.redshape.utils.PackagesLoader;
 import com.redshape.utils.ResourcesLoader;
+import com.redshape.utils.StringUtils;
 import com.redshape.utils.config.IConfig;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
@@ -35,10 +36,7 @@ public class SpringApplication extends AbstractApplication {
 	}
 	
 	protected ApplicationContext loadContext( String contextPath ) {
-        /**
-         * @TODO: Add system path normalizing
-         */
-        File file = new File(contextPath);
+        File file = new File(StringUtils.escapePath(contextPath) );
         if (file.exists()) {
             return new FileSystemXmlApplicationContext(contextPath);
         } else {

@@ -51,6 +51,8 @@ public class ForkManagerImpl implements IForkManager {
     private Map<ISystemProcess, IFork> registry = new HashMap<ISystemProcess, IFork>();
     private List<String> classPath = new ArrayList<String>();
 
+    private Map<String, String> jvmArguments = new HashMap<String, String>();
+
     private ExecutorService service;
 
     private String rootPath;
@@ -81,6 +83,30 @@ public class ForkManagerImpl implements IForkManager {
         this.protocolQueueCreator = queueCreator;
         this.facade = facade;
         this.loader = loader;
+    }
+
+    @Override
+    public void setJVMArgument(String name, String value) {
+        this.jvmArguments.put( name, value );
+    }
+
+    @Override
+    public String getJVMArgument(String name) {
+        return this.jvmArguments.get(name);
+    }
+
+    @Override
+    public Map<String, String> getJVMArguments() {
+        return this.jvmArguments;
+    }
+
+    @Override
+    public void setJVMArguments(Map<String, String> arguments) {
+        this.jvmArguments.clear();
+
+        for ( Map.Entry<String, String> entry : arguments.entrySet() ) {
+            this.setJVMArgument(entry.getKey(), entry.getValue());
+        }
     }
 
     public void setService(ExecutorService service) {
@@ -215,15 +241,30 @@ public class ForkManagerImpl implements IForkManager {
             .addUnnamedParameter( String.format( CLASSPATH_PARAM, StringUtils.join(
                 new String[] {
                     codeSource,
-                    this.getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm(),
-                    StringUtils.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm(),
-                    SimpleStringUtils.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm()
+                    this.getClass().getProtectionDomain().getCodeSource()
+                            .getLocation().toExternalForm(),
+                    StringUtils.class.getProtectionDomain().getCodeSource()
+                            .getLocation().toExternalForm(),
+                    SimpleStringUtils.class.getProtectionDomain().getCodeSource()
+                            .getLocation().toExternalForm()
                 } , File.pathSeparator)
             ) )
             .addUnnamedParameter( String.format( MEMORY_INITIAL_PARAM, this.getMemoryInitial() ) )
-            .addUnnamedParameter( String.format( MEMORY_LIMIT_PARAM, this.getMemoryLimit() ) )
-            .addUnnamedParameter(path)
-            .addUnnamedParameter( StringUtils.join(args, " ") );
+            .addUnnamedParameter( String.format( MEMORY_LIMIT_PARAM, this.getMemoryLimit() ) );
+
+        for ( Map.Entry<String, String> jvmArgumentEntry : this.jvmArguments.entrySet() ) {
+            String executorParameter = jvmArgumentEntry.getKey();
+
+            if ( jvmArgumentEntry.getValue() != null
+                    && !jvmArgumentEntry.getValue().isEmpty() ) {
+                executorParameter = executorParameter + "=" + jvmArgumentEntry.getValue();
+            }
+
+            executor.addUnnamedParameter(executorParameter);
+        }
+
+        executor.addUnnamedParameter(path)
+                .addUnnamedParameter( StringUtils.join(args, " ") );
 
         return executor;
     }

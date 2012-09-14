@@ -134,14 +134,14 @@ public class StandardForkCommandExecutor extends AbstractEventDispatcher impleme
                 });
 
                 if ( result == null ) {
-                    log.info("Waiting for response...");
+                    log.debug("Waiting for response...");
                     try {
                         Thread.sleep(250);
                     } catch ( InterruptedException e ) {}
                 }
             } while ( result == null && !StandardForkCommandExecutor.this.isResponseExpired(awaitStarted) );
 
-            log.info("Response received: " + result.getClass().getCanonicalName() );
+            log.debug("Response received: " + result.getClass().getCanonicalName() );
 
             return result;
         }

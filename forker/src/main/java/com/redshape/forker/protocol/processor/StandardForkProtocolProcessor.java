@@ -81,7 +81,7 @@ public class StandardForkProtocolProcessor implements IForkProtocolProcessor {
     }
 
     protected ScheduledExecutorService createExecutor() {
-        return Executors.newScheduledThreadPool(100);
+        return Executors.newScheduledThreadPool(5);
     }
 
     protected IForkProtocol getProtocol() {
