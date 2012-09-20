@@ -11,6 +11,12 @@
         </layout>
     </appender>
 
+    <appender name="console" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{ABSOLUTE} [%t] %-5p %c{1} - %m%n"/>
+        </layout>
+    </appender>
+
     <logger name="com.redshape.persistence">
         <level value="error"/>
     </logger>
@@ -61,6 +67,7 @@
 
     <root>
         <priority value="debug"/>
+        <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </root>
 </log4j:configuration>

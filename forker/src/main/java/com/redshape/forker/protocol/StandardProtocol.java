@@ -7,7 +7,6 @@ import com.redshape.utils.Commons;
 import org.apache.log4j.Logger;
 
 import java.io.*;
-import java.util.Arrays;
 
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
@@ -74,16 +73,24 @@ public class StandardProtocol implements IForkProtocol {
         }
     }
 
-    protected long matchStreamToken( long... tokenValue ) throws IOException {
-        Arrays.sort(tokenValue);
+    protected boolean isMatch( long token, long... tokens ) {
+        for ( long tokenItem : tokens ) {
+            if ( token == tokenItem ) {
+                return true;
+            }
+        }
 
+        return false;
+    }
+
+    protected long matchStreamToken( long... tokenValue ) throws IOException {
         this.waitAvailability(this.inputStream);
 
         Long token;
         do {
             token = this.inputStream.readLong();
             log.debug("Token received: " + token );
-        } while (Arrays.binarySearch(tokenValue, token) < 0);
+        } while (!isMatch(token, tokenValue));
 
         return token;
     }
@@ -110,6 +117,7 @@ public class StandardProtocol implements IForkProtocol {
         synchronized (writeLock) {
             Commons.checkNotNull(command);
             waitAvailability(outputStream);
+            outputStream.flush();
             log.info("Writing command to data stream...");
             this.outputStream.writeLong( COMMAND_BEGIN );
             this.outputStream.writeLong( command.getCommandId() );

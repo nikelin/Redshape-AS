@@ -38,7 +38,7 @@ public class StandardProtocolQueue implements IProtocolQueue {
 
     @Override
     public IForkCommand peekRequest() {
-        return this.commandsQueue.poll();
+        return this.commandsQueue.peek();
     }
 
     @Override
@@ -51,7 +51,7 @@ public class StandardProtocolQueue implements IProtocolQueue {
                 continue;
             }
 
-            this.commandsQueue.remove(result = command);
+            result = command;
             break;
         }
 
@@ -65,7 +65,7 @@ public class StandardProtocolQueue implements IProtocolQueue {
 
     @Override
     public IForkCommandResponse peekResponse() {
-        return this.responsesQueue.poll();
+        return this.responsesQueue.peek();
     }
 
     @Override
@@ -78,10 +78,20 @@ public class StandardProtocolQueue implements IProtocolQueue {
                 continue;
             }
 
-            this.responsesQueue.remove( targetResponse = response );
+            targetResponse = response;
             break;
         }
 
         return targetResponse;
+    }
+
+    @Override
+    public IForkCommand pollRequest() {
+        return this.commandsQueue.poll();
+    }
+
+    @Override
+    public IForkCommandResponse pollResponse() {
+        return this.responsesQueue.poll();
     }
 }

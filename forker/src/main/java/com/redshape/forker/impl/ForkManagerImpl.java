@@ -116,7 +116,11 @@ public class ForkManagerImpl implements IForkManager {
 
     @Override
     public IForkCommandExecutor getCommandsExecutor(IFork fork, boolean forceStart) {
-        IForkCommandExecutor executor;
+        IForkCommandExecutor executor = this.executors.get(fork);
+        if ( executor != null ) {
+            return executor;
+        }
+
         this.executors.put( fork, executor = this.createCommandsExecutor(fork) );
 
         if ( forceStart ) {

@@ -11,7 +11,6 @@ import com.redshape.forker.handlers.IForkCommandExecutor;
 import com.redshape.forker.handlers.IForkCommandHandler;
 import com.redshape.forker.protocol.processor.IForkProtocolProcessor;
 import com.redshape.utils.Commons;
-import com.redshape.utils.IFilter;
 import com.redshape.utils.TimeSpan;
 import com.redshape.utils.events.AbstractEventDispatcher;
 import org.apache.log4j.Logger;
@@ -39,7 +38,7 @@ public class StandardForkCommandExecutor extends AbstractEventDispatcher impleme
         @Override
         public Void call() {
             do {
-                IForkCommandResponse response = processor.getResultsQueue().peekResponse();
+                IForkCommandResponse response = processor.getResultsQueue().pollResponse();
                 /**
                  * @TODO: add some kind of I/O wait to optimize CPU loadage
                  */
@@ -64,7 +63,7 @@ public class StandardForkCommandExecutor extends AbstractEventDispatcher impleme
         public Void call() {
             try {
                 do {
-                    IForkCommand command = processor.getResultsQueue().peekRequest();
+                    IForkCommand command = processor.getResultsQueue().pollRequest();
                     /**
                      * @TODO: add some kind of I/O wait to optimize CPU loadage
                      */
@@ -126,15 +125,9 @@ public class StandardForkCommandExecutor extends AbstractEventDispatcher impleme
 
             T result;
             do {
-                result = (T) this.processor.getWorkQueue().peekResponse(new IFilter<IForkCommandResponse>() {
-                    @Override
-                    public boolean filter(IForkCommandResponse filterable) {
-                        return filterable.getQualifier().equals(command.getQualifier());
-                    }
-                });
+                result = (T) this.processor.getResultsQueue().pollResponse();
 
                 if ( result == null ) {
-                    log.debug("Waiting for response...");
                     try {
                         Thread.sleep(250);
                     } catch ( InterruptedException e ) {}

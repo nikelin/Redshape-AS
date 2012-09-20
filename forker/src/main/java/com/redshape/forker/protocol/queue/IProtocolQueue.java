@@ -19,11 +19,15 @@ public interface IProtocolQueue {
 
     public void collectRequest( IForkCommand command );
 
+    public IForkCommand pollRequest();
+
     public IForkCommand peekRequest();
 
     public IForkCommand peekRequest( IFilter<IForkCommand> filter );
 
     public void collectResponse( IForkCommandResponse response );
+
+    public IForkCommandResponse pollResponse();
 
     public IForkCommandResponse peekResponse();
 

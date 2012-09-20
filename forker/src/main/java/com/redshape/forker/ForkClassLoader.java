@@ -3,7 +3,9 @@ package com.redshape.forker;
 import com.redshape.forker.commands.FindResourceCommand;
 import com.redshape.forker.commands.FindResourcesCommand;
 import com.redshape.forker.commands.ResolveClassCommand;
+import com.redshape.forker.events.CommandResponseEvent;
 import com.redshape.forker.handlers.IForkCommandExecutor;
+import com.redshape.utils.events.IEventListener;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -22,8 +24,6 @@ import java.util.List;
  */
 public class ForkClassLoader extends ClassLoader {
 
-    private static final Logger log = Logger.getLogger(ForkClassLoader.class);
-
     private int resourcesCount = 0;
 
     protected IForkCommandExecutor executor;
@@ -40,6 +40,22 @@ public class ForkClassLoader extends ClassLoader {
 
     public void setExecutor(IForkCommandExecutor executor) {
         this.executor = executor;
+        this.executor.addEventListener(CommandResponseEvent.class, new IEventListener<CommandResponseEvent>() {
+            @Override
+            public void handleEvent(CommandResponseEvent event) {
+                Logger.getRootLogger().info("ForkClassLoader received response: " +
+                        event.getResponse().getClass().getCanonicalName() );
+                if ( event.getResponse() instanceof ResolveClassCommand.Response ) {
+                    ForkClassLoader.this.onResolveResponse((ResolveClassCommand.Response) event.getResponse());
+                }
+            }
+        });
+    }
+
+    protected void onResolveResponse( ResolveClassCommand.Response response ) {
+        Logger.getRootLogger().error( "Class body loaded from ResolveClassCommand.Response:"
+                + response.getCanonicalName() );
+        this.defineClass( response.getCanonicalName(), response.getClazzData(), 0, response.getClazzData().length );
     }
 
     public int getResourcesCount() {
@@ -49,8 +65,6 @@ public class ForkClassLoader extends ClassLoader {
     @Override
     protected URL findResource(String name)  {
         try {
-            log.info("Requesting resource " + name );
-
             if ( this.executor == null ) {
                 return super.findResource(name);
             }
@@ -104,12 +118,14 @@ public class ForkClassLoader extends ClassLoader {
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
         try {
-            log.info("Requesting class " + name );
             if ( this.executor == null ) {
                 return super.findClass(name);
             }
 
-            ResolveClassCommand.Response response = this.executor.execute(new ResolveClassCommand.Request(name));
+            ResolveClassCommand.Request request = new ResolveClassCommand.Request();
+            request.setCanonicalName(name);
+
+            ResolveClassCommand.Response response = this.executor.execute(request);
             return this.defineClass(name, response.getClazzData(), 0, response.getClazzData().length);
         } catch ( ProcessException e ) {
             throw new ClassNotFoundException( e.getMessage(), e );
