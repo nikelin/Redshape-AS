@@ -16,9 +16,10 @@ import java.io.IOException;
 public final class ShutdownCommand {
 
     public static class Request extends AbstractForkCommand {
+        public static final long ID = Request.class.getCanonicalName().hashCode();
 
         public Request() {
-            super(Commands.SHUTDOWN, Commands.SHUTDOWN_RSP);
+            super(ShutdownCommand.Request.ID, ShutdownCommand.Response.ID);
         }
 
         @Override
@@ -31,6 +32,7 @@ public final class ShutdownCommand {
     }
 
     public static class Response extends AbstractForkCommandResponse {
+        public static final long ID = Response.class.getCanonicalName().hashCode();
 
         public Response(Long id, Status status) {
             super(id, status);

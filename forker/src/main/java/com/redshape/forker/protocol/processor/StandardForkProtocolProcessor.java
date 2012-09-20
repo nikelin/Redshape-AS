@@ -10,7 +10,6 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -132,7 +131,7 @@ public class StandardForkProtocolProcessor implements IForkProtocolProcessor {
                 }
 
                 while ( count < writerWorkChunk ) {
-                    IForkCommand command = workQueue.peekRequest();
+                    IForkCommand command = workQueue.pollRequest();
                     if ( command == null ) {
                         continue;
                     }
@@ -160,7 +159,7 @@ public class StandardForkProtocolProcessor implements IForkProtocolProcessor {
                 }
 
                 while ( count < writerWorkChunk ) {
-                    IForkCommandResponse response = workQueue.peekResponse();
+                    IForkCommandResponse response = workQueue.pollResponse();
                     if ( response == null ) {
                         continue;
                     }

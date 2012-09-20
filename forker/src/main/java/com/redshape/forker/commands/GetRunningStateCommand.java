@@ -2,7 +2,6 @@ package com.redshape.forker.commands;
 
 import com.redshape.forker.AbstractForkCommand;
 import com.redshape.forker.AbstractForkCommandResponse;
-import com.redshape.forker.Commands;
 import com.redshape.forker.IForkCommandResponse;
 
 import java.io.DataInputStream;
@@ -17,9 +16,10 @@ import java.io.IOException;
 public final class GetRunningStateCommand {
     
     public static class Request extends AbstractForkCommand {
+        public static final long ID = Request.class.getCanonicalName().hashCode();
 
         public Request() {
-            super(Commands.GET_RUNNING_STATE, Commands.GET_RUNNING_STATE_RSP );
+            super(Request.ID, Response.ID);
         }
 
         @Override
@@ -32,11 +32,12 @@ public final class GetRunningStateCommand {
     }
     
     public static class Response extends AbstractForkCommandResponse {
+        public static final long ID = Response.class.getCanonicalName().hashCode();
 
         private boolean state;
 
-        public Response( Long id, IForkCommandResponse.Status status ) {
-            super(id, status);
+        public Response( IForkCommandResponse.Status status ) {
+            super(Response.ID, status);
         }
 
         public boolean getState() {

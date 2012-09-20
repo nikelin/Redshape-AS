@@ -22,6 +22,6 @@ public class PauseCommandHandler implements IForkCommandHandler {
 
     @Override
     public IForkCommandResponse execute(IForkCommand command) throws ProcessException {
-        return new PauseCommand.Response(command.getCommandId(), IForkCommandResponse.Status.SUCCESS);
+        return new PauseCommand.Response(IForkCommandResponse.Status.SUCCESS);
     }
 }

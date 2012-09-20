@@ -1,7 +1,6 @@
 package com.redshape.forker.commands;
 
 import com.redshape.forker.AbstractForkCommand;
-import com.redshape.forker.Commands;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -15,9 +14,10 @@ import java.io.IOException;
 public final class ResumeCommand  {
 
     public static class Request extends AbstractForkCommand {
+        public static final long ID = Request.class.getCanonicalName().hashCode();
 
         public Request() {
-            super( Commands.RESUME, Commands.RESUME_RSP );
+            super( Request.ID, Response.ID);
         }
 
         @Override
@@ -28,9 +28,10 @@ public final class ResumeCommand  {
     }
 
     public static class Response extends AbstractForkCommand {
+        public static final long ID = Response.class.getCanonicalName().hashCode();
 
-        public Response(Long id, Long responseId) {
-            super(id, responseId);
+        public Response() {
+            super(Request.ID, Response.ID);
         }
 
         @Override

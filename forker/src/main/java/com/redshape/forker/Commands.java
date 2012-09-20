@@ -7,7 +7,6 @@ import org.apache.log4j.Logger;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
@@ -19,48 +18,25 @@ public final class Commands {
 
     private static final Logger log = Logger.getLogger(Commands.class);
 
-    private static AtomicLong LAST_USED_ID = new AtomicLong(0x0001);
-
-    public static final long PAUSE = nextID();
-    public static final long PAUSE_RSP = nextID();
-    public static final long RESUME = nextID();
-    public static final long RESUME_RSP = nextID();
-    public static final long FIND_RESOURCE = nextID();
-    public static final long FIND_RESOURCE_RSP = nextID();
-    public static final long FIND_RESOURCES = nextID();
-    public static final long FIND_RESOURCES_RSP = nextID();
-    public static final long RESOLVE_CLASS = nextID();
-    public static final long RESOLVE_CLASS_RSP = nextID();
-    public static final long SHUTDOWN = nextID();
-    public static final long SHUTDOWN_RSP = nextID();
-    public static final long GET_RUNNING_STATE = nextID();
-    public static final long GET_RUNNING_STATE_RSP = nextID();
-    public static final long ERROR_RSP = nextID();
-    public static final long INIT_RSP = nextID();
-
     public static final Map<Long, Class<?>> REGISTRY = new HashMap<Long, Class<?>>();
     static {
-        REGISTRY.put( PAUSE, PauseCommand.Request.class );
-        REGISTRY.put( PAUSE_RSP, PauseCommand.Response.class );
-        REGISTRY.put( RESUME, ResumeCommand.Request.class );
-        REGISTRY.put( RESUME_RSP, ResumeCommand.Response.class );
-        REGISTRY.put( SHUTDOWN, ShutdownCommand.Request.class );
-        REGISTRY.put( SHUTDOWN_RSP, ShutdownCommand.Response.class );
-        REGISTRY.put( FIND_RESOURCE, FindResourceCommand.Request.class );
-        REGISTRY.put( FIND_RESOURCE_RSP, FindResourceCommand.Response.class );
-        REGISTRY.put( FIND_RESOURCES, FindResourcesCommand.Request.class );
-        REGISTRY.put( FIND_RESOURCES_RSP, FindResourcesCommand.Response.class );
-        REGISTRY.put( INIT_RSP, InitResponse.class );
-        REGISTRY.put( ERROR_RSP, ErrorResponse.class );
-    }
-
-    public static long nextID() {
-        return LAST_USED_ID.getAndIncrement();
+        REGISTRY.put( PauseCommand.Request.ID, PauseCommand.Request.class );
+        REGISTRY.put( PauseCommand.Response.ID, PauseCommand.Response.class );
+        REGISTRY.put( ResumeCommand.Request.ID, ResumeCommand.Request.class );
+        REGISTRY.put( ResumeCommand.Response.ID, ResumeCommand.Response.class );
+        REGISTRY.put( ShutdownCommand.Request.ID, ShutdownCommand.Request.class );
+        REGISTRY.put( ShutdownCommand.Response.ID, ShutdownCommand.Response.class );
+        REGISTRY.put( FindResourceCommand.Request.ID, FindResourceCommand.Request.class );
+        REGISTRY.put( FindResourceCommand.Response.ID, FindResourceCommand.Response.class );
+        REGISTRY.put( FindResourcesCommand.Request.ID, FindResourcesCommand.Request.class );
+        REGISTRY.put( FindResourcesCommand.Response.ID, FindResourcesCommand.Response.class );
+        REGISTRY.put( InitResponse.ID, InitResponse.class );
+        REGISTRY.put( ErrorResponse.ID, ErrorResponse.class );
     }
 
     public static <T extends IForkCommandResponse> T createResponse( Long commandId )
             throws InstantiationException {
-        return createResponse(commandId, null);
+        return createResponse(commandId, IForkCommandResponse.Status.SUCCESS);
     }
     
     public static <T extends IForkCommandResponse> T createResponse( Long commandId, IForkCommandResponse.Status status )
@@ -96,6 +72,7 @@ public final class Commands {
             Commons.checkNotNull(commandId);
             
             Class<?> clazz = REGISTRY.get( commandId );
+
             if ( !( IForkCommand.class.isAssignableFrom(clazz) ) ) {
                 throw new IllegalArgumentException("Given commandId must point to the " +
                         IForkCommand.class.getCanonicalName() + " type");

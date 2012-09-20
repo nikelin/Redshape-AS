@@ -15,9 +15,6 @@ import java.io.IOException;
  */
 public class SimpleCommandObject {
 
-    public static final long SIMPLE_COMMAND_ID = Commands.nextID();
-    public static final long SIMPLE_COMMAND_RESP_ID = Commands.nextID();
-
     public static class Handler implements IForkCommandHandler {
 
         @Override
@@ -32,9 +29,10 @@ public class SimpleCommandObject {
     }
 
     public static class Command extends AbstractForkCommand {
+        public static final long ID = Command.class.getCanonicalName().hashCode();
 
         public Command() {
-            super(SIMPLE_COMMAND_ID, SIMPLE_COMMAND_RESP_ID);
+            super(Command.ID, Response.ID);
         }
 
         @Override
@@ -49,9 +47,10 @@ public class SimpleCommandObject {
     }
 
     public static class Response extends AbstractForkCommandResponse {
+        public static final long ID = Response.class.getCanonicalName().hashCode();
 
         public Response(Status status) {
-            super(SIMPLE_COMMAND_RESP_ID, status);
+            super(Response.ID, status);
         }
 
         @Override

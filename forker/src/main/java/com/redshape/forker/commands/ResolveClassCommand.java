@@ -2,7 +2,6 @@ package com.redshape.forker.commands;
 
 import com.redshape.forker.AbstractForkCommand;
 import com.redshape.forker.AbstractForkCommandResponse;
-import com.redshape.forker.Commands;
 import com.redshape.utils.Commons;
 
 import java.io.DataInputStream;
@@ -17,11 +16,13 @@ import java.io.IOException;
 public final class ResolveClassCommand {
 
     public static class Response extends AbstractForkCommandResponse {
+        public static final long ID = Response.class.getCanonicalName().hashCode();
+
         private String canonicalName;
         private byte[] clazzData;
 
         public Response(Status status) {
-            super(Commands.RESOLVE_CLASS_RSP, status);
+            super(ID, status);
         }
 
         public String getCanonicalName() {
@@ -57,11 +58,12 @@ public final class ResolveClassCommand {
     }
 
     public static class Request extends AbstractForkCommand {
+        public static final long ID = Request.class.getCanonicalName().hashCode();
 
         private String canonicalName;
 
         public Request() {
-            super( Commands.RESOLVE_CLASS, Commands.RESOLVE_CLASS_RSP );
+            super( Request.ID, Response.ID );
         }
 
         public void setCanonicalName(String canonicalName) {

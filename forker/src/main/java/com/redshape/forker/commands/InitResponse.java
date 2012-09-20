@@ -15,9 +15,10 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public class InitResponse extends AbstractForkCommandResponse {
+    public static final long ID = InitResponse.class.getCanonicalName().hashCode();
 
     public InitResponse(Status status) {
-        super(Commands.INIT_RSP, status);
+        super(ID, status);
     }
 
     @Override

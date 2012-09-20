@@ -17,7 +17,6 @@ import com.redshape.utils.StringUtils;
 import com.redshape.utils.events.IEventListener;
 import org.apache.log4j.xml.DOMConfigurator;
 
-import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -46,8 +45,8 @@ public final class Forked {
         try {
             initLogs();
 
-            Commands.register(SimpleCommandObject.SIMPLE_COMMAND_ID, SimpleCommandObject.Command.class);
-            Commands.register( SimpleCommandObject.SIMPLE_COMMAND_RESP_ID, SimpleCommandObject.Response.class );
+            Commands.register(SimpleCommandObject.Command.ID, SimpleCommandObject.Command.class);
+            Commands.register( SimpleCommandObject.Response.ID, SimpleCommandObject.Response.class );
 
             ExecutorService service = Executors.newFixedThreadPool(2);
 
@@ -65,7 +64,7 @@ public final class Forked {
             log(protocol.getClass().getCanonicalName() + " implementation selected...");
 
             log("Attempt to execute " + SimpleCommandObject.Command.class.getCanonicalName()
-                    + "(" + SimpleCommandObject.SIMPLE_COMMAND_ID + ") command...");
+                    + "(" + SimpleCommandObject.Command.ID + ") command...");
 
             log("Command executed successfully...");
 

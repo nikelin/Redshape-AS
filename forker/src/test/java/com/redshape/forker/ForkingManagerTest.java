@@ -44,8 +44,8 @@ public class ForkingManagerTest extends AbstractContextAwareTest<Object> {
 
     @Test
     public void testMain() throws Exception {
-        Commands.register( SimpleCommandObject.SIMPLE_COMMAND_ID, SimpleCommandObject.Command.class );
-        Commands.register( SimpleCommandObject.SIMPLE_COMMAND_RESP_ID, SimpleCommandObject.Response.class );
+        Commands.register( SimpleCommandObject.Command.ID, SimpleCommandObject.Command.class );
+        Commands.register( SimpleCommandObject.Response.ID, SimpleCommandObject.Response.class );
 
         final IForkManager manager = this.getForkManager();
         manager.addClassPath( Logger.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm() );

@@ -64,18 +64,19 @@ public class ForkClassLoader extends ClassLoader {
 
     @Override
     protected URL findResource(String name)  {
-        try {
-            if ( this.executor == null ) {
-                return super.findResource(name);
-            }
-
-            FindResourceCommand.Response response = this.executor.execute(new FindResourceCommand.Request(name));
-            return this.saveFile( response.getData() ).toURI().toURL();
-        } catch ( IOException e ) {
-            throw new IOError(e);
-        } catch ( ProcessException e ) {
-            throw new IOError( e );
-        }
+//        try {
+//            if ( this.executor == null ) {
+//                return super.findResource(name);
+//            }
+//
+//            FindResourceCommand.Response response = this.executor.execute(new FindResourceCommand.Request(name));
+//            return this.saveFile( response.getData() ).toURI().toURL();
+//        } catch ( IOException e ) {
+//            throw new IOError(e);
+//        } catch ( ProcessException e ) {
+//            throw new IOError( e );
+//        }
+        return super.findResource(name);
     }
 
     protected File saveFile( byte[] data ) throws IOException {
@@ -97,39 +98,46 @@ public class ForkClassLoader extends ClassLoader {
 
     @Override
     protected Enumeration<URL> findResources(String name) throws IOException {
-        try {
-            if ( this.executor == null ) {
-                return super.findResources(name);
-            }
+//        try {
+//            if ( this.executor == null ) {
+//                return super.findResources(name);
+//            }
+//
+//            FindResourcesCommand.Response response = this.executor.execute(new FindResourcesCommand.Request(name));
+//
+//            List<URL> resources = new ArrayList<URL>();
+//            for (URI uri : response.getResources() ) {
+//                resources.add( this.findResource(uri.toString()) );
+//            }
+//
+//            return Collections.enumeration(resources);
+//        } catch ( ProcessException e ) {
+//            throw new IOException( e.getMessage(), e );
+//        }
+        return super.findResources(name);
+    }
 
-            FindResourcesCommand.Response response = this.executor.execute(new FindResourcesCommand.Request(name));
-
-            List<URL> resources = new ArrayList<URL>();
-            for (URI uri : response.getResources() ) {
-                resources.add( this.findResource(uri.toString()) );
-            }
-
-            return Collections.enumeration(resources);
-        } catch ( ProcessException e ) {
-            throw new IOException( e.getMessage(), e );
-        }
+    @Override
+    public Class<?> loadClass(String name) throws ClassNotFoundException {
+        return super.loadClass(name);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
-        try {
-            if ( this.executor == null ) {
-                return super.findClass(name);
-            }
-
-            ResolveClassCommand.Request request = new ResolveClassCommand.Request();
-            request.setCanonicalName(name);
-
-            ResolveClassCommand.Response response = this.executor.execute(request);
-            return this.defineClass(name, response.getClazzData(), 0, response.getClazzData().length);
-        } catch ( ProcessException e ) {
-            throw new ClassNotFoundException( e.getMessage(), e );
-        }
+        return super.findClass(name);
+//        try {
+//            if ( this.executor == null ) {
+//                return super.findClass(name);
+//            }
+//
+//            ResolveClassCommand.Request request = new ResolveClassCommand.Request();
+//            request.setCanonicalName(name);
+//
+//            ResolveClassCommand.Response response = this.executor.execute(request);
+//            return this.defineClass(name, response.getClazzData(), 0, response.getClazzData().length);
+//        } catch ( ProcessException e ) {
+//            throw new ClassNotFoundException( e.getMessage(), e );
+//        }
     }
 
 }
