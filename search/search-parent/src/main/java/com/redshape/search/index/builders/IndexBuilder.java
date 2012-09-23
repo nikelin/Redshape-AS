@@ -64,7 +64,7 @@ public class IndexBuilder extends AbstractIndexBuilder {
 
         for ( Field field : searchable.getDeclaredFields() ) {
             try {
-                this.getFieldVisitor().visitField( index, searchable, field );
+                this.getFieldVisitor().visitField( index, searchable, field.getName() );
             } catch ( VisitorException e ) {
                 log.error("Index builder exception", e );
                 throw new BuilderException( e.getMessage(), e );
