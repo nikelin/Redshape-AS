@@ -35,11 +35,16 @@ public class StandardFieldVisitor implements IFieldVisitor {
 	}
 
 	@Override
-    public void visitField( IIndex index, Class<?> entityClass, Field field ) throws VisitorException {
-        if ( field.getAnnotation(AggregatedEntity.class) != null ) {
-            this.visitAggregatedField( index, entityClass, field );
-        } else {
-            this.visitSimpleField( index, entityClass, field );
+    public void visitField( IIndex index, Class<?> entityClass, String field ) throws VisitorException {
+        try {
+            Field classField = entityClass.getField(field);
+            if ( classField.getAnnotation(AggregatedEntity.class) != null ) {
+                this.visitAggregatedField( index, entityClass, classField );
+            } else {
+                this.visitSimpleField( index, entityClass, classField );
+            }
+        } catch ( Throwable e ) {
+            throw new VisitorException();
         }
     }
 

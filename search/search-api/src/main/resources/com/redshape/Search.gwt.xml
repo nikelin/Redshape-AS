@@ -4,6 +4,6 @@
 
     <inherits name="com.redshape.Utils"/>
 
-    <source path="../search"/>
+    <source path="search"/>
 
 </module>

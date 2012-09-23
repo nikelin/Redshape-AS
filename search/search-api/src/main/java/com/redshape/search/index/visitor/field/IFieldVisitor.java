@@ -3,8 +3,6 @@ package com.redshape.search.index.visitor.field;
 import com.redshape.search.index.IIndex;
 import com.redshape.search.index.visitor.VisitorException;
 
-import java.lang.reflect.Field;
-
 /**
  * Created by IntelliJ IDEA.
  * User: nikelin
@@ -14,7 +12,7 @@ import java.lang.reflect.Field;
  */
 public interface IFieldVisitor {
 
-    public void visitField( IIndex index, Class<?> entityClass, Field field )
+    public void visitField( IIndex index, Class<?> entityClass, String field )
 			throws VisitorException;
 
 }
