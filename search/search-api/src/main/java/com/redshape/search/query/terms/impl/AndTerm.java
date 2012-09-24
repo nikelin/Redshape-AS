@@ -36,4 +36,13 @@ public class AndTerm implements IBinaryTerm {
         return Operation.AND;
     }
 
+    public void setLeft(ISearchTerm first) {
+        this.first = first;
+    }
+
+    public void setRight(ISearchTerm second) {
+        this.second = second;
+    }
+
+
 }

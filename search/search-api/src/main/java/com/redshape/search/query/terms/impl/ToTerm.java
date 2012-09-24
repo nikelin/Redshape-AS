@@ -43,4 +43,17 @@ public class ToTerm implements IBinaryTerm {
 	public RangeType getType() {
 		return this.rangeType;
 	}
+
+    public void setLeft(ISearchTerm left) {
+        this.from = left;
+    }
+
+
+    public void setRight(ISearchTerm right) {
+        this.to = right;
+    }
+
+    public void setType(RangeType type) {
+        this.rangeType = type;
+    }
 }

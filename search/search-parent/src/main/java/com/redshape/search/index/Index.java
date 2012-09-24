@@ -58,8 +58,8 @@ public class Index implements IIndex {
     }
 
     @Override
-    public IIndexField createField() {
-        return new IndexField();
+    public IIndexField createField( String fieldName ) {
+        return new IndexField( fieldName );
     }
 
 }

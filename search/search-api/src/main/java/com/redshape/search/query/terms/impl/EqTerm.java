@@ -32,6 +32,14 @@ public class EqTerm implements IBinaryTerm {
         return this.value;
     }
 
+    public void setLeft(IUnaryTerm first) {
+        this.term = first;
+    }
+
+    public void setRight(IUnaryTerm second) {
+        this.value = second;
+    }
+
     public Operation getOperation() {
         return Operation.EQUALS;
     }

@@ -54,7 +54,7 @@ public class LuceneEngine implements ISearchEngine {
 								};
 
 	@Autowired( required = true )
-	private ITransformersBuilder transformersBuilder;
+    private ITransformersBuilder transformersBuilder;
 
 	@Autowired( required = true )
 	private IIndexBuilder indexBuilder;
@@ -305,7 +305,7 @@ public class LuceneEngine implements ISearchEngine {
             for ( IIndexField field : index.getFields() ) {
                 Object fieldValue = PropertyUtils.getInstance()
 												.getProperty(
-												 	searchable.getClass(), field.getName()
+												 	searchable.getClass(), field.getFieldName()
 												).get(searchable);
 
                 Field docField;

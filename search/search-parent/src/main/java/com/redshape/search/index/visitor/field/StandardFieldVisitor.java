@@ -8,6 +8,8 @@ import com.redshape.search.index.IIndexField;
 import com.redshape.search.index.IndexingType;
 import com.redshape.search.index.builders.IIndexBuilder;
 import com.redshape.search.index.visitor.VisitorException;
+import com.redshape.utils.beans.Property;
+import com.redshape.utils.beans.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Field;
@@ -37,18 +39,18 @@ public class StandardFieldVisitor implements IFieldVisitor {
 	@Override
     public void visitField( IIndex index, Class<?> entityClass, String field ) throws VisitorException {
         try {
-            Field classField = entityClass.getField(field);
+            Property classField = PropertyUtils.getInstance().getProperty(entityClass, field);
             if ( classField.getAnnotation(AggregatedEntity.class) != null ) {
                 this.visitAggregatedField( index, entityClass, classField );
             } else {
                 this.visitSimpleField( index, entityClass, classField );
             }
         } catch ( Throwable e ) {
-            throw new VisitorException();
+            throw new VisitorException(e.getMessage(), e);
         }
     }
 
-    protected void visitAggregatedField( IIndex index, Class<?> entityClass, Field field ) throws VisitorException {
+    protected void visitAggregatedField( IIndex index, Class<?> entityClass, Property field ) throws VisitorException {
         try {
             AggregatedEntity annotation = field.getAnnotation( AggregatedEntity.class );
 
@@ -65,7 +67,7 @@ public class StandardFieldVisitor implements IFieldVisitor {
         }
     }
 
-    private void _aggregatedComposition( IIndex index, Class<?> entity, Field field ) throws VisitorException {
+    private void _aggregatedComposition( IIndex index, Class<?> entity, Property field ) throws VisitorException {
         try {
             AggregatedEntity annotation = field.getAnnotation( AggregatedEntity.class );
 
@@ -99,8 +101,8 @@ public class StandardFieldVisitor implements IFieldVisitor {
         }
     }
 
-    private void _aggregatedById( IIndex index, Class<?> entityClass, Field field ) throws VisitorException {
-        IIndexField indexField = index.createField();
+    private void _aggregatedById( IIndex index, Class<?> entityClass, Property field ) throws VisitorException {
+        IIndexField indexField = index.createField( field.getName() );
 
         String fieldName;
         SearchableField fieldAnnotation = field.getAnnotation( SearchableField.class );
@@ -119,8 +121,8 @@ public class StandardFieldVisitor implements IFieldVisitor {
         index.addField( indexField );
     }
 
-    protected void visitSimpleField( IIndex index, Class<?> entityClass, Field field ) {
-        IIndexField indexPart = index.createField();
+    protected void visitSimpleField( IIndex index, Class<?> entityClass, Property field ) {
+        IIndexField indexPart = index.createField( field.getName() );
 
         SearchableField fieldMeta = field.getAnnotation( SearchableField.class );
 		if ( fieldMeta == null ) {

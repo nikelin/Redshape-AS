@@ -25,4 +25,8 @@ public class LiteralTerm implements IScalarTerm {
 		return (T) this.value;
 	}
 
+    public <T> void setValue(T value) {
+        this.value = value;
+    }
+
 }

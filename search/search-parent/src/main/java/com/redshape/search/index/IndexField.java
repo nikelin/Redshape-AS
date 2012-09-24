@@ -1,6 +1,7 @@
 package com.redshape.search.index;
 
 import com.redshape.search.serializers.ISerializer;
+import com.redshape.utils.Commons;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,12 +12,23 @@ import com.redshape.search.serializers.ISerializer;
  */
 public class IndexField implements IIndexField {
     private String name;
+    private String fieldName;
     private IndexingType type;
     private Class<? extends ISerializer> serializer;
     private int rank;
     private boolean binary;
     private boolean stored;
     private boolean analyzable;
+
+    public IndexField( String fieldName ) {
+        Commons.checkNotNull(fieldName);
+        this.fieldName = fieldName;
+    }
+
+    @Override
+    public String getFieldName() {
+        return this.fieldName;
+    }
 
     @Override
     public void setRank( int rank ) {

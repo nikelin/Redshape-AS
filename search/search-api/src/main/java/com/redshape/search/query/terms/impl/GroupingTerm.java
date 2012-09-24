@@ -31,4 +31,13 @@ public class GroupingTerm implements IGroupingTerm {
 	public ISearchTerm[] getList() {
 		return this.terms;
 	}
+
+    public void setOperation(Operation operation) {
+        this.operation = operation;
+    }
+
+    public void setList(ISearchTerm[] array) {
+        this.terms = array;
+    }
+
 }

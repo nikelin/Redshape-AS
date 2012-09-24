@@ -26,6 +26,10 @@ public class NotTerm implements IUnaryTerm {
         return this.term;
     }
 
+    public void setTerm(ISearchTerm term) {
+        this.term = term;
+    }
+
     public Operation getOperation() {
         return Operation.NOT;
     }

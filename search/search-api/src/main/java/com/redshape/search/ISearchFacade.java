@@ -13,21 +13,21 @@ import java.util.Collection;
  */
 public interface ISearchFacade {
 
-	/**
-	 * Create if not exists new instanceof of search engine
-	 * by a class given as engineClazz parameter
-	 *
-	 * @param engineClazz
-	 * @param <T>
-	 * @return
-	 */
-	public <T extends ISearchEngine> T getEngine( Class<T> engineClazz );
+    /**
+     * Create if not exists new instanceof of search engine
+     * by a class given as engineClazz parameter
+     *
+     * @param engineClazz
+     * @param <T>
+     * @return
+     */
+    public <T extends ISearchEngine> T getEngine( Class<T> engineClazz );
 
-	/**
-	 * Return all registered search engines instances
-	 *
-	 * @return
-	 */
-	public <T extends ISearchEngine> Collection<T> getEngines();
+    /**
+     * Return all registered search engines instances
+     *
+     * @return
+     */
+    public <T extends ISearchEngine> Collection<T> getEngines();
 
 }

@@ -30,4 +30,12 @@ public class FieldTerm implements IFieldTerm {
 	public ISearchTerm getTerm() {
 		return this.term;
 	}
+
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
+    }
+
+    public void setTerm(ISearchTerm term) {
+        this.term = term;
+    }
 }

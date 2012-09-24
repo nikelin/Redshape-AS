@@ -32,6 +32,14 @@ public class OrTerm implements IBinaryTerm {
         return this.second;
     }
 
+    public void setLeft(ISearchTerm first) {
+        this.first = first;
+    }
+
+    public void setRight(ISearchTerm second) {
+        this.second = second;
+    }
+
     public Operation getOperation() {
         return Operation.OR;
     }
