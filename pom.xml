@@ -159,8 +159,8 @@
     </dependencies>
 
     <scm>
-        <developerConnection>scm:git:https://github.com/nikelin/Redshape-AS</developerConnection>
-        <url>http://github.com/nikelin/Redshape-AS</url>
+        <developerConnection>scm:git:https://github.com/nikelin/Redshape-AS.git</developerConnection>
+        <url>https://github.com/nikelin/Redshape-AS.git</url>
     </scm>
 
     <distributionManagement>

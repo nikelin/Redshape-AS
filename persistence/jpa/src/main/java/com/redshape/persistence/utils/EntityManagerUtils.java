@@ -74,8 +74,10 @@ public final class EntityManagerUtils implements ISessionManager, ApplicationCon
         if ( !em.contains(object) ) {
             object = em.find( object.getClass(), object.getId() );
         }
-        
-        em.refresh(object);
+
+        if ( object.getId() != null ) {
+            em.refresh(object);
+        }
 
         return object;
     }

@@ -1,7 +1,7 @@
 package com.redshape.utils.validators.impl.annotations;
 
 import com.redshape.utils.AnnotatedObject;
-import com.redshape.utils.validators.AbstractValidator;
+import com.redshape.utils.validators.annotations.NotNull;
 import com.redshape.utils.validators.impl.annotations.result.ValidationResult;
 
 /**
@@ -9,11 +9,15 @@ import com.redshape.utils.validators.impl.annotations.result.ValidationResult;
  * @date 18/04/11
  * @package com.redshape.validators.impl
  */
-public class NotNullAnnotationValidator extends AbstractValidator<AnnotatedObject, ValidationResult> {
+public class NotNullAnnotationValidator extends AbstractAnnotationValidator<AnnotatedObject, ValidationResult> {
 
-	@Override
+    public NotNullAnnotationValidator() {
+        super(NotNull.class);
+    }
+
+    @Override
 	public boolean isValid(AnnotatedObject value) {
-		return value != null;
+		return value.getContext() != null;
 	}
 
 	@Override

@@ -1,7 +1,9 @@
 package com.redshape.search.serializers.test;
 
-import com.redshape.search.query.SearchTermBuilder;
+import com.redshape.search.query.impl.SearchTermBuilder;
 import com.redshape.search.query.terms.*;
+import com.redshape.search.query.terms.impl.FieldTerm;
+import com.redshape.search.query.terms.impl.ToTerm;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

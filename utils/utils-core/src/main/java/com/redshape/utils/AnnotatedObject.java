@@ -16,11 +16,7 @@ public class AnnotatedObject {
 	private Object context;
 	private Annotation[] annotations;
 
-	public AnnotatedObject( Object context, Annotation annotation ) {
-		this(context, new Annotation[] { annotation } );
-	}
-
-	public AnnotatedObject( Object context, Annotation[] annotations ) {
+	public AnnotatedObject( Object context, Annotation... annotations ) {
 		this.context = context;
 		this.annotations = annotations;
 	}

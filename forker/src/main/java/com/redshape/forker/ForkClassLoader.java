@@ -3,8 +3,10 @@ package com.redshape.forker;
 import com.redshape.forker.commands.FindResourceCommand;
 import com.redshape.forker.commands.FindResourcesCommand;
 import com.redshape.forker.commands.ResolveClassCommand;
-import com.redshape.forker.protocol.IForkProtocol;
-import com.redshape.utils.Commons;
+import com.redshape.forker.events.CommandResponseEvent;
+import com.redshape.forker.handlers.IForkCommandExecutor;
+import com.redshape.utils.events.IEventListener;
+import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.net.URI;
@@ -22,64 +24,59 @@ import java.util.List;
  */
 public class ForkClassLoader extends ClassLoader {
 
-    public interface Handler {
+    private int resourcesCount = 0;
 
-        public IForkCommandResponse handle( IForkCommand command ) throws ProcessException;
+    protected IForkCommandExecutor executor;
 
+    public ForkClassLoader(ClassLoader parent) {
+        super(parent);
     }
 
-    private int resourcesCount = 0;
-    
-    private DataInputStream input;
-    private DataOutputStream output;
-    private IForkProtocol protocol;
-
-    private List<Handler> handlers = new ArrayList<Handler>();
-
-    private Object protocolLock = new Object();
-    
-    public ForkClassLoader( IForkProtocol protocol, DataInputStream input, DataOutputStream output ) {
+    public ForkClassLoader( IForkCommandExecutor executor) {
         super();
 
-        Commons.checkNotNull(input);
-        Commons.checkNotNull(output);
-        Commons.checkNotNull(protocol);
+        this.executor = executor;
+    }
 
-        this.protocol = protocol;
-        this.input = input;
-        this.output = output;
+    public void setExecutor(IForkCommandExecutor executor) {
+        this.executor = executor;
+        this.executor.addEventListener(CommandResponseEvent.class, new IEventListener<CommandResponseEvent>() {
+            @Override
+            public void handleEvent(CommandResponseEvent event) {
+                Logger.getRootLogger().info("ForkClassLoader received response: " +
+                        event.getResponse().getClass().getCanonicalName() );
+                if ( event.getResponse() instanceof ResolveClassCommand.Response ) {
+                    ForkClassLoader.this.onResolveResponse((ResolveClassCommand.Response) event.getResponse());
+                }
+            }
+        });
+    }
+
+    protected void onResolveResponse( ResolveClassCommand.Response response ) {
+        Logger.getRootLogger().error( "Class body loaded from ResolveClassCommand.Response:"
+                + response.getCanonicalName() );
+        this.defineClass( response.getCanonicalName(), response.getClazzData(), 0, response.getClazzData().length );
     }
 
     public int getResourcesCount() {
         return resourcesCount;
     }
 
-    protected IForkProtocol getProtocol() {
-        return this.protocol;
-    }
-
-    protected DataInputStream getInput() {
-        return this.input;
-    }
-
-    protected DataOutputStream getOutput() {
-        return output;
-    }
-
     @Override
     protected URL findResource(String name)  {
-        synchronized (protocolLock) {
-            try {
-                this.getProtocol().writeCommand( this.getOutput(), new FindResourceCommand.Request(name) );
-                return this.saveFile(
-                    this.getProtocol().
-                        <FindResourceCommand.Response>readResponse(this.getInput())
-                        .getData()
-                ).toURI().toURL();
-            } catch ( IOException e ) {
-                throw new IOError(e);
-            }
-        }
+//        try {
+//            if ( this.executor == null ) {
+//                return super.findResource(name);
+//            }
+//
+//            FindResourceCommand.Response response = this.executor.execute(new FindResourceCommand.Request(name));
+//            return this.saveFile( response.getData() ).toURI().toURL();
+//        } catch ( IOException e ) {
+//            throw new IOError(e);
+//        } catch ( ProcessException e ) {
+//            throw new IOError( e );
+//        }
+        return super.findResource(name);
     }
 
     protected File saveFile( byte[] data ) throws IOException {
@@ -94,53 +91,53 @@ public class ForkClassLoader extends ClassLoader {
 
         return file;
     }
-    
+
     protected String generateFileName() {
         return "resource-" + this.getResourcesCount() + "-.bin";
     }
 
     @Override
     protected Enumeration<URL> findResources(String name) throws IOException {
-        synchronized ( this.protocolLock ) {
-            this.getProtocol().writeCommand( this.getOutput(), new FindResourcesCommand.Request(name) );
+//        try {
+//            if ( this.executor == null ) {
+//                return super.findResources(name);
+//            }
+//
+//            FindResourcesCommand.Response response = this.executor.execute(new FindResourcesCommand.Request(name));
+//
+//            List<URL> resources = new ArrayList<URL>();
+//            for (URI uri : response.getResources() ) {
+//                resources.add( this.findResource(uri.toString()) );
+//            }
+//
+//            return Collections.enumeration(resources);
+//        } catch ( ProcessException e ) {
+//            throw new IOException( e.getMessage(), e );
+//        }
+        return super.findResources(name);
+    }
 
-            FindResourcesCommand.Response response = this.getProtocol().readResponse(this.getInput());
-
-            List<URL> resources = new ArrayList<URL>();
-            for (URI uri : response.getResources() ) {
-                resources.add( this.findResource(uri.toString()) );
-            }
-            
-            return Collections.enumeration(resources);
-        }
+    @Override
+    public Class<?> loadClass(String name) throws ClassNotFoundException {
+        return super.loadClass(name);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
-        synchronized (this.protocol) {
-            try {
-                this.getProtocol().writeCommand( this.getOutput(), new ResolveClassCommand.Request(name) );
-                
-                ResolveClassCommand.Response response = this.getProtocol().readResponse( this.getInput() );
-
-                return this.defineClass(name, response.getClazzData(), 0, response.getClazzData().length);
-            } catch ( IOException e ) {
-                throw new ClassNotFoundException( e.getMessage(), e );
-            }
-        }
-    }
-
-    public void addCommandHandler( Handler handler ) {
-        this.handlers.add(handler);
-    }
-
-    public void run() throws IOException, ProcessException {
-        synchronized (this.protocol) {
-            IForkCommand command = this.getProtocol().readCommand(this.getInput());
-            for ( Handler handler : this.handlers ) {
-                handler.handle(command);
-            }
-        }
+        return super.findClass(name);
+//        try {
+//            if ( this.executor == null ) {
+//                return super.findClass(name);
+//            }
+//
+//            ResolveClassCommand.Request request = new ResolveClassCommand.Request();
+//            request.setCanonicalName(name);
+//
+//            ResolveClassCommand.Response response = this.executor.execute(request);
+//            return this.defineClass(name, response.getClazzData(), 0, response.getClazzData().length);
+//        } catch ( ProcessException e ) {
+//            throw new ClassNotFoundException( e.getMessage(), e );
+//        }
     }
 
 }

@@ -8,7 +8,7 @@ import java.lang.annotation.*;
  * @package com.redshape.bindings.annotations.validation
  */
 @Inherited
-@Target({ElementType.FIELD, ElementType.METHOD})
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NotEmpty {
 }

@@ -4,8 +4,12 @@ public class ValidationResult implements IValidationResult {
 
 	private boolean state;
 	private String message;
-	
-	public ValidationResult( boolean state, String message ) {
+
+    public ValidationResult() {
+        this(true, "");
+    }
+
+    public ValidationResult( boolean state, String message ) {
 		this.state = state;
 		this.message = message;
 	}

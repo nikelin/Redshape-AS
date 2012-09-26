@@ -21,7 +21,7 @@ public interface IExecutionRequest<T extends IEntity> {
      * @return
      * @throws DAOException
      */
-    public IQuery query() throws DAOException;
+    public IQuery query();
 
     /**
      * Allow user to use result values in a non type-safe
@@ -67,5 +67,12 @@ public interface IExecutionRequest<T extends IEntity> {
      * @return
      */
     public IExecutionRequest<T> limit( int count );
+
+    /**
+     * Calculate query evaluation result set size ( COUNT(X) )
+     * @return
+     * @throws DAOException
+     */
+    public int count() throws DAOException;
 
 }

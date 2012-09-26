@@ -1,7 +1,6 @@
 package com.redshape.utils.validators.impl.annotations;
 
 import com.redshape.utils.AnnotatedObject;
-import com.redshape.utils.validators.AbstractValidator;
 import com.redshape.utils.validators.annotations.Length;
 import com.redshape.utils.validators.impl.annotations.result.ValidationResult;
 
@@ -10,9 +9,13 @@ import com.redshape.utils.validators.impl.annotations.result.ValidationResult;
  * @date 18/04/11
  * @package com.redshape.validators.impl
  */
-public class LengthAnnotationValidator extends AbstractValidator<AnnotatedObject, ValidationResult> {
+public class LengthAnnotationValidator extends AbstractAnnotationValidator<AnnotatedObject, ValidationResult> {
 
-	@Override
+    public LengthAnnotationValidator() {
+        super(Length.class);
+    }
+
+    @Override
 	public boolean isValid(AnnotatedObject value) {
 		Length annotation = value.getAnnotation( Length.class );
 		if ( !( value.getContext() instanceof String ) ) {
@@ -20,7 +23,7 @@ public class LengthAnnotationValidator extends AbstractValidator<AnnotatedObject
 		}
 
 		return annotation.max() >= value.<String>getContext().length()
-				&& annotation.min() >= value.<String>getContext().length();
+				&& value.<String>getContext().length() >= annotation.min();
 
 	}
 	

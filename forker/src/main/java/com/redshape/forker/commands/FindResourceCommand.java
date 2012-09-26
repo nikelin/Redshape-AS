@@ -2,7 +2,6 @@ package com.redshape.forker.commands;
 
 import com.redshape.forker.AbstractForkCommand;
 import com.redshape.forker.AbstractForkCommandResponse;
-import com.redshape.forker.Commands;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -17,10 +16,12 @@ import java.io.IOException;
 public final class FindResourceCommand {
     
     public static class Request extends AbstractForkCommand {
+        public static final long ID = Request.class.getCanonicalName().hashCode();
+
         private String path;
         
         public Request( String path ) {
-            super( Commands.FIND_RESOURCE, Commands.FIND_RESOURCE_RSP );
+            super( Request.ID, Response.ID );
         }
 
         public String getPath() {
@@ -39,10 +40,12 @@ public final class FindResourceCommand {
     }
 
     public static class Response extends AbstractForkCommandResponse {
+        public static final long ID = Response.class.getCanonicalName().hashCode();
+
         private byte[] data;
 
-        public Response(Long id, Status status) {
-            super(id, status);
+        public Response(Status status) {
+            super(ID, status);
         }
 
         public byte[] getData() {

@@ -1,31 +1,20 @@
 package com.redshape.utils.beans.bindings;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.*;
-
-import com.redshape.utils.beans.bindings.annotations.*;
-import com.redshape.utils.validators.IValidator;
-import com.redshape.utils.validators.impl.annotations.BeansValidator;
-import com.redshape.utils.validators.result.IResultsList;
-
-import org.apache.commons.collections.ListUtils;
-import org.apache.log4j.Logger;
-
+import com.redshape.utils.IEnum;
+import com.redshape.utils.ReflectionUtils;
+import com.redshape.utils.SimpleStringUtils;
 import com.redshape.utils.beans.bindings.accessors.AccessException;
 import com.redshape.utils.beans.bindings.accessors.IPropertyReader;
 import com.redshape.utils.beans.bindings.accessors.IPropertyWriter;
+import com.redshape.utils.beans.bindings.annotations.*;
 import com.redshape.utils.beans.bindings.types.BindableType;
 import com.redshape.utils.beans.bindings.types.IBindable;
+import org.apache.commons.collections.ListUtils;
+import org.apache.log4j.Logger;
 
-import com.redshape.utils.IEnum;
-import com.redshape.utils.SimpleStringUtils;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.*;
+import java.util.*;
 
 /**
  * Bindables processor
@@ -45,14 +34,15 @@ public class BeanInfo implements IBeanInfo {
 	public static String READER_PART = "get";
 
 	private Class<?> beanClazz;
-	private IValidator<Object, IResultsList> beanValidator;
-
 	private Collection<AccessibleObject> members;
 
 	private Map<AccessibleObject, Map<Class<? extends Annotation>, Annotation>> annotations =
 					new HashMap<AccessibleObject, Map<Class<? extends Annotation>, Annotation>>();
 
-	private static Map<Class<?>, BindableType> TYPE_MAPPINGS = new HashMap<Class<?>, BindableType>();
+    private static final Map<Class<?>, Collection<AccessibleObject>> MEMBERS_CACHE
+            = new HashMap<Class<?>, Collection<AccessibleObject>>();
+
+	private static final Map<Class<?>, BindableType> TYPE_MAPPINGS = new HashMap<Class<?>, BindableType>();
 
 	public static BindableType getTypeMapping( Class<?> type ) {
 		return TYPE_MAPPINGS.get( type );
@@ -79,24 +69,8 @@ public class BeanInfo implements IBeanInfo {
 			throw new IllegalArgumentException("null");
 		}
 
-		this.beanValidator = new BeansValidator( this );
 		this.beanClazz = beanClazz;
 	}
-
-	protected IValidator<Object, IResultsList> getValidator() {
-		return this.beanValidator;
-	}
-
-	@Override
-	public boolean isValid(Object instance) throws BindingException {
-		return this.beanValidator.isValid(instance);
-	}
-
-	@Override
-	public IResultsList validate(Object instance) throws BindingException {
-		return this.beanValidator.validate( instance );
-	}
-
 	@Override
 	public Class<?> getType() {
 		return this.beanClazz;
@@ -449,15 +423,20 @@ public class BeanInfo implements IBeanInfo {
 	protected void processAnnotations() {
 		Class<?> contextClass = this.beanClazz;
 		do {
-			for ( AccessibleObject superClassObject : extractMembers( contextClass ) ) {
-				for ( Annotation annotation : superClassObject.getDeclaredAnnotations() ) {
-					if ( !this.isRegisteredAnnotation( superClassObject, annotation ) ) {
-						this.registerAnnotation( superClassObject, annotation );
-					}
-				}
-			}
+            if ( contextClass == Object.class ) {
+                contextClass = null;
+            } else {
+                Collection<AccessibleObject> members =  extractMembers(contextClass);
+                for ( AccessibleObject superClassObject : members ) {
+                    for ( Annotation annotation : superClassObject.getDeclaredAnnotations() ) {
+                        if ( !this.isRegisteredAnnotation( superClassObject, annotation ) ) {
+                            this.registerAnnotation( superClassObject, annotation );
+                        }
+                    }
+                }
 
-			contextClass = contextClass.getSuperclass();
+                contextClass = contextClass.getSuperclass();
+            }
 		} while ( contextClass != null );
 
 		for ( Class<?> interfaceClass : this.beanClazz.getInterfaces() ) {
@@ -489,15 +468,29 @@ public class BeanInfo implements IBeanInfo {
 
 	@SuppressWarnings("unchecked")
 	private static Collection<AccessibleObject> extractMembers( Class<?> clazz ) {
+        Collection<AccessibleObject> result = MEMBERS_CACHE.get(clazz);
+        if ( result != null ) {
+            return result;
+        }
+
+        Set<Class<?>> ancestors = ReflectionUtils.getAncestors(clazz);
+        ancestors.add(clazz);
+
 		List<AccessibleObject> members = new ArrayList<AccessibleObject>();
-		members.addAll(Arrays.asList( clazz.getMethods()) );
-		members.addAll(Arrays.asList( clazz.getFields() ) );
+        for ( Class<?> ancestorType : ancestors ) {
+            members.addAll( Arrays.asList( ancestorType.getMethods() ) );
+            members.addAll( Arrays.asList( ancestorType.getFields() ) );
+        }
 
 		List<AccessibleObject> declaredMembers = new ArrayList<AccessibleObject>();
-		declaredMembers.addAll( Arrays.asList( clazz.getDeclaredMethods() ) );
-		declaredMembers.addAll( Arrays.asList( clazz.getDeclaredFields() ) );
+        for ( Class<?> ancestorType : ancestors ) {
+            declaredMembers.addAll( Arrays.asList( ancestorType.getDeclaredMethods() ) );
+            declaredMembers.addAll( Arrays.asList( ancestorType.getDeclaredFields() ) );
+        }
 
-		return ListUtils.union( members, declaredMembers );
+		MEMBERS_CACHE.put( clazz, result = ListUtils.union( members, declaredMembers ) );
+
+        return result;
 	}
 
 	public boolean isWriterMember(Method method) {

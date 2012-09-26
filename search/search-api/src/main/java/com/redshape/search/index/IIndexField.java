@@ -34,6 +34,8 @@ public interface IIndexField {
 
     public void markAnalyzable( boolean state );
 
+    public String getFieldName();
+
     public Class<? extends ISerializer> getSerializer();
 
     public void setSerializer( Class<? extends ISerializer> serializer );

@@ -21,7 +21,7 @@ public interface IIndex {
 
     public Set<IIndexField> getFields();
 
-    public IIndexField createField();
+    public IIndexField createField( String field );
 
     public boolean hasField( String name );
 }

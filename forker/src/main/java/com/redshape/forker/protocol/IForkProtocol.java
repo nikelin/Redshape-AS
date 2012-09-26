@@ -3,8 +3,6 @@ package com.redshape.forker.protocol;
 import com.redshape.forker.IForkCommand;
 import com.redshape.forker.IForkCommandResponse;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
@@ -15,12 +13,19 @@ import java.io.IOException;
  */
 public interface IForkProtocol {
 
-    public <C extends IForkCommand> C readCommand( DataInputStream stream ) throws IOException;
+    public enum TokenType {
+        COMMAND,
+        RESPONSE;
+    }
+
+    public TokenType matchToken() throws IOException;
+
+    public <C extends IForkCommand> C readCommand() throws IOException;
     
-    public void writeCommand( DataOutputStream stream, IForkCommand command ) throws IOException;
+    public void writeCommand( IForkCommand command ) throws IOException;
     
-    public <R extends IForkCommandResponse> R readResponse( DataInputStream stream ) throws IOException;
+    public <R extends IForkCommandResponse> R readResponse() throws IOException;
     
-    public void writeResponse( DataOutputStream stream, IForkCommandResponse response ) throws IOException;
+    public void writeResponse( IForkCommandResponse response ) throws IOException;
     
 }

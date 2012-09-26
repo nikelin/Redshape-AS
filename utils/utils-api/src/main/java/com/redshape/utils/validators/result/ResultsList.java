@@ -15,7 +15,7 @@ public class ResultsList extends HashSet<IValidationResult>
 	private boolean success;
 
 	public ResultsList() {
-		this(false);
+		this(true);
 	}
 
 	public ResultsList( boolean success ) {
@@ -25,6 +25,7 @@ public class ResultsList extends HashSet<IValidationResult>
 	public ResultsList( String name, boolean success ) {
 		super();
 
+        this.success = success;
 		this.name = name;
 	}
 

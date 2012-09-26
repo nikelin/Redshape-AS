@@ -1,5 +1,7 @@
 package com.redshape.utils.system.scripts.bash;
 
+import com.redshape.utils.ILambda;
+import com.redshape.utils.InvocationException;
 import com.redshape.utils.system.processes.ISystemProcess;
 import com.redshape.utils.system.processes.SystemProcess;
 import com.redshape.utils.system.scripts.IScriptExecutionHandler;
@@ -11,6 +13,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 public class BashScriptExecutor implements IScriptExecutor {
 	private static final Logger log = Logger.getLogger( BashScriptExecutor.class );
@@ -55,12 +58,49 @@ public class BashScriptExecutor implements IScriptExecutor {
 
     @Override
     public ISystemProcess spawn() throws IOException {
+        return this.spawn(null);
+    }
+
+    @Override
+    public ISystemProcess spawn( ExecutorService service ) throws IOException {
+        return this.spawn(service, null);
+    }
+
+    @Override
+    public ISystemProcess spawn( ExecutorService service, final ILambda<?> callback ) throws IOException {
         this.process = new SystemProcess(
             Runtime.getRuntime().exec( this.getExecCommand().toString() )
         );
 
         try {
-            this.process.waitFor();
+            if ( service == null ) {
+                int exitCode = this.process.waitFor();
+                if ( callback != null ) {
+                    try {
+                        callback.invoke(exitCode, this.process);
+                    } catch ( InvocationException e ) {
+                        throw new IllegalStateException( e.getMessage(), e );
+                    }
+                }
+            } else {
+                service.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            int exitCode = process.waitFor();
+                            if ( callback != null ) {
+                                try {
+                                    callback.invoke(exitCode, process);
+                                } catch ( InvocationException e ) {
+                                    throw new IllegalStateException( e.getMessage(), e );
+                                }
+                            }
+                        } catch ( InterruptedException e ) {
+                            throw new IllegalStateException( e.getMessage(), e );
+                        }
+                    }
+                });
+            }
         } catch (InterruptedException e) {
             log.error( e.getMessage(), e );
         }

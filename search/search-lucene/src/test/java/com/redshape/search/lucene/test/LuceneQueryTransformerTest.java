@@ -1,6 +1,6 @@
 package com.redshape.search.lucene.test;
 
-import com.redshape.search.query.SearchTermBuilder;
+import com.redshape.search.query.impl.SearchTermBuilder;
 import com.redshape.search.query.terms.ISearchTerm;
 import com.redshape.search.query.terms.Operation;
 import com.redshape.search.lucene.query.transformers.LuceneQueryTransformer;

@@ -38,9 +38,11 @@ public class DAOFacade implements IDAOFacade, ApplicationContextAware {
 
 		for ( IDAO<?> daoBean : this.getApplicationContext().getBeansOfType(IDAO.class).values() ) {
             Class<?> entityClazz = daoBean.getEntityClass();
-            if ( entityClazz.getCanonicalName().equals( clazz.getCanonicalName() ) ) {
-                result = (T) daoBean;
+            if ( entityClazz.equals(clazz) ) {
+                result = (T)daoBean;
                 break;
+            } else if ( entityClazz.isAssignableFrom(clazz) ) {
+                result = (T) daoBean;
             }
         }
 

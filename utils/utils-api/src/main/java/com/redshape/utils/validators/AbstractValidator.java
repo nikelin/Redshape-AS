@@ -1,13 +1,13 @@
 package com.redshape.utils.validators;
 
+import com.redshape.utils.validators.result.IValidationResult;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import com.redshape.utils.validators.result.IValidationResult;
-
 public abstract class AbstractValidator<T, R extends IValidationResult> implements IValidator<T, R> {
 	private Map<String, Object> attributes = new HashMap<String, Object>();
-	
+    
 	@Override
 	public void setAttribute(String name, Object value) {
 		if ( name == null ) {

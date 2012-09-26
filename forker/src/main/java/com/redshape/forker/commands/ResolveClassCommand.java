@@ -2,9 +2,8 @@ package com.redshape.forker.commands;
 
 import com.redshape.forker.AbstractForkCommand;
 import com.redshape.forker.AbstractForkCommandResponse;
-import com.redshape.forker.Commands;
+import com.redshape.utils.Commons;
 
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -17,19 +16,21 @@ import java.io.IOException;
 public final class ResolveClassCommand {
 
     public static class Response extends AbstractForkCommandResponse {
-        private boolean success;
+        public static final long ID = Response.class.getCanonicalName().hashCode();
+
+        private String canonicalName;
         private byte[] clazzData;
 
-        public Response(Long id, Status status) {
-            super(id, status);
+        public Response(Status status) {
+            super(ID, status);
         }
 
-        public boolean isSuccess() {
-            return success;
+        public String getCanonicalName() {
+            return canonicalName;
         }
 
-        public void setSuccess(boolean success) {
-            this.success = success;
+        public void setCanonicalName(String canonicalName) {
+            this.canonicalName = canonicalName;
         }
 
         public byte[] getClazzData() {
@@ -42,33 +43,31 @@ public final class ResolveClassCommand {
 
         @Override
         public void readFrom(DataInputStream stream) throws IOException {
-            this.success = stream.readBoolean();
-
-            ByteArrayOutputStream result = new ByteArrayOutputStream();
-
-            int count;
-            byte[] data = new byte[0xffff];
-            while ( ( count = stream.readUnsignedShort() ) > 0 ) {
-                stream.readFully(data, 0, count);
-                result.write( data, 0, count );
-            }
-
-            this.clazzData = result.toByteArray();
+            this.canonicalName = stream.readUTF();
+            int length = stream.readInt();
+            this.clazzData = new byte[length];
+            stream.readFully(clazzData, 0, length);
         }
 
         @Override
         public void writeTo(DataOutputStream stream) throws IOException {
-            //To change body of implemented methods use File | Settings | File Templates.
+            stream.writeUTF( this.canonicalName );
+            stream.writeInt( this.clazzData.length );
+            stream.write( this.clazzData, 0, this.clazzData.length );
         }
     }
 
     public static class Request extends AbstractForkCommand {
+        public static final long ID = Request.class.getCanonicalName().hashCode();
 
         private String canonicalName;
 
-        public Request( String canonicalName ) {
-            super( Commands.RESOLVE_CLASS, Commands.RESOLVE_CLASS_RSP );
+        public Request() {
+            super( Request.ID, Response.ID );
+        }
 
+        public void setCanonicalName(String canonicalName) {
+            Commons.checkNotNull(canonicalName);
             this.canonicalName = canonicalName;
         }
 

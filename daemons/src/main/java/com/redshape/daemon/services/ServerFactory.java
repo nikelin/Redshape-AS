@@ -15,8 +15,7 @@ public class ServerFactory implements RMIServerSocketFactory, Serializable {
 	private static final long serialVersionUID = 1430493102430287284L;
 
 	private static final Logger log = Logger.getLogger( ServerFactory.class );
-	
-	//TODO
+
 	private String host;
 	private Integer maxConnections;
 	

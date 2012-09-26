@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <bean id="rootDirectory" class="java.lang.String">
+        <constructor-arg><value>./</value></constructor-arg>
+    </bean>
+
+    <bean id="resourcesLoader" class="com.redshape.utils.ResourcesLoader" scope="singleton">
+        <constructor-arg><ref bean="rootDirectory"/></constructor-arg>
+        <constructor-arg>
+            <set>
+                <value>WEB-INF</value>
+                <value>WEB-INF/spring</value>
+                <value>WEB-INF/spring/config</value>
+                <value>WEB-INF/config</value>
+                <value>src/main/resources</value>
+                <value>src/main/webapp/WEB-INF</value>
+            </set>
+        </constructor-arg>
+    </bean>
+
+    <bean id="xmlHelper" class="com.redshape.utils.helpers.XMLHelper" scope="singleton"
+          p:loader-ref="resourcesLoader"/>
+</beans>

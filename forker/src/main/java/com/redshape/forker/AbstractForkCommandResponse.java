@@ -12,13 +12,23 @@ public abstract class AbstractForkCommandResponse implements IForkCommandRespons
     
     private Long id;
     private Status status;
+    private Long qualifier;
 
     protected AbstractForkCommandResponse(Long id, Status status) {
         Commons.checkNotNull(id);
-        Commons.checkNotNull(status);
 
         this.id = id;
         this.status = status;
+    }
+
+    @Override
+    public Long getQualifier() {
+        return qualifier;
+    }
+
+    @Override
+    public void setQualifier(Long qualifier) {
+        this.qualifier = qualifier;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.redshape.utils.validators.impl.annotations;
 
 import com.redshape.utils.AnnotatedObject;
-import com.redshape.utils.validators.AbstractValidator;
 import com.redshape.utils.validators.annotations.Range;
 import com.redshape.utils.validators.impl.annotations.result.ValidationResult;
 
@@ -10,9 +9,13 @@ import com.redshape.utils.validators.impl.annotations.result.ValidationResult;
  * @date 18/04/11
  * @package com.redshape.validators.impl
  */
-public class RangeValidator extends AbstractValidator<AnnotatedObject, ValidationResult> {
+public class RangeValidator extends AbstractAnnotationValidator<AnnotatedObject, ValidationResult> {
 
-	@Override
+    public RangeValidator() {
+        super(Range.class);
+    }
+
+    @Override
 	public boolean isValid(AnnotatedObject value) {
 		Range annotation = value.getAnnotation( Range.class );
 

@@ -1,10 +1,6 @@
 package com.redshape.forker.impl;
 
 import com.redshape.forker.*;
-import com.redshape.forker.commands.GetRunningStateCommand;
-import com.redshape.forker.commands.PauseCommand;
-import com.redshape.forker.commands.ResumeCommand;
-import com.redshape.forker.commands.ShutdownCommand;
 import com.redshape.utils.Commons;
 import com.redshape.utils.IResourcesLoader;
 import com.redshape.utils.streams.IStreamEventHandler;
@@ -39,8 +35,6 @@ public class ForkImpl implements IFork {
             }
 
             response.readFrom(reader);
-
-            ForkImpl.this.lastResponse = response;
         }
 
         @Override
@@ -48,34 +42,42 @@ public class ForkImpl implements IFork {
         }
     }
 
-    public static final long COMMAND_BEGIN = 0x100001L;
-    public static final long COMMAND_END = 0x200002L;
-
     private ISystemProcess process;
     private IResourcesLoader loader;
     private DataOutputStream output;
-
-    private IForkCommandResponse lastResponse;
+    private DataInputStream input;
+    private IForkManager manager;
 
     private IStreamWaiter streamWaiter;
-    
-    private Object executionLock = new Object();
 
-    public ForkImpl(IResourcesLoader loader, ISystemProcess process) {
+    public ForkImpl( IForkManager manager, IResourcesLoader loader, ISystemProcess process ) {
         super();
-
-        Commons.checkNotNull(loader);
-        this.loader = loader;
-
         Commons.checkNotNull(process);
+        Commons.checkNotNull(manager);
+        Commons.checkNotNull(loader);
+
+        this.loader = loader;
+        this.manager = manager;
         this.process = process;
+        this.input = new DataInputStream( process.getInputStream() );
         this.output = new DataOutputStream( process.getOutputStream() );
         this.streamWaiter = this.createStreamWaiter( this.process.getInputStream() );
         this.streamWaiter.addEventHandler( new ResponseReader() );
     }
 
-    protected void setLastResponse( IForkCommandResponse response ) {
-        this.lastResponse = response;
+    @Override
+    public DataInputStream getInput() {
+        return this.input;
+    }
+
+    @Override
+    public DataOutputStream getOutput() {
+        return this.output;
+    }
+
+    @Override
+    public int getPID() {
+        return this.process.getPID();
     }
 
     protected IStreamWaiter getStreamWaiter() {
@@ -96,45 +98,22 @@ public class ForkImpl implements IFork {
 
     @Override
     public boolean isPaused() throws ProcessException {
-        return this.<GetRunningStateCommand.Response>submit(
-            new GetRunningStateCommand.Request()
-        )
-        .getState();
+        throw new UnsupportedOperationException("Not supported now");
     }
 
     @Override
     public void resume() throws ProcessException {
-        this.assertSuccess(this.submit(new ResumeCommand.Request()), "Unable to resume process");
+        throw new UnsupportedOperationException("Not supported now");
     }
 
     @Override
     public void shutdown() throws ProcessException {
-        this.submit( new ShutdownCommand.Request() );
-        this.getProcess().destroy();
+        this.process.destroy();
     }
 
     @Override
     public void pause() throws ProcessException {
-        this.assertSuccess(this.submit(new PauseCommand.Request()), "Failed to pause process");
-    }
-
-    @Override
-    public <T extends IForkCommandResponse> T submit(IForkCommand command) 
-            throws ProcessException {
-        try {
-            synchronized (this.executionLock) {
-                this.output.writeLong( COMMAND_BEGIN );
-                this.output.writeLong( command.getCommandId() );
-                command.writeTo(this.output);
-                this.output.writeLong( COMMAND_END );
-    
-                this.getStreamWaiter().await();
-
-                return (T) this.lastResponse;
-            }
-        } catch ( IOException e ) {
-            throw new ProcessException( e.getMessage(), e );
-        }
+        throw new UnsupportedOperationException("Not supported now");
     }
     
     private void assertSuccess( IForkCommandResponse response, String message )

@@ -11,7 +11,6 @@ import com.redshape.servlet.core.controllers.FrontController;
 import com.redshape.servlet.core.controllers.IAction;
 import com.redshape.servlet.core.controllers.ProcessingException;
 import com.redshape.servlet.core.controllers.registry.IControllersRegistry;
-import com.redshape.servlet.core.format.IRequestFormatProcessor;
 import com.redshape.servlet.core.restrictions.ContextRestriction;
 import com.redshape.servlet.dispatchers.DispatchException;
 import com.redshape.servlet.dispatchers.interceptors.IDispatcherInterceptor;
@@ -26,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -210,6 +208,8 @@ public class HttpDispatcher implements IHttpDispatcher {
 
     protected void processError( ProcessingException e, IView view, IHttpRequest request, IHttpResponse response )
             throws DispatchException {
+        log.error( e.getMessage(), e );
+
         if ( view != null ) {
             view.setException(e);
         } else {
@@ -273,7 +273,9 @@ public class HttpDispatcher implements IHttpDispatcher {
         }
 
         if ( !found ) {
-            throw new DispatchException("Interaction with requested method allowed only under `%s` environment");
+            throw new DispatchException("Interaction with requested method allowed only under `"
+                    + StringUtils.join(restrictionValues, " ")
+                    + "`  environment");
         }
     }
 

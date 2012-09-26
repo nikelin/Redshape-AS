@@ -64,16 +64,28 @@ public final class DtoUtils {
 
             Deferred deferred = (Deferred) o;
 
-            if (property != null ? !property.equals(deferred.property) : deferred.property != null) return false;
+            if ( this.isToDTO() != deferred.isToDTO() ) {
+                return false;
+            }
+
+            if (property != null ? !property.getName().equals(deferred.property.getName()) : deferred.property != null) return false;
             if (target != null ? !target.equals(deferred.target) : deferred.target != null) return false;
 
             return true;
         }
 
         @Override
+        public String toString() {
+            return String.format("%s { %s = %s }",
+                    this.target.getClass().getCanonicalName(),
+                    this.property.getName(),
+                    this.object.toString() );
+        }
+
+        @Override
         public int hashCode() {
             int result = target != null ? target.hashCode() : 0;
-            result = 31 * result + (property != null ? property.hashCode() : 0);
+            result = 31 * result + (property.getName() != null ? property.getName().hashCode() : 0);
             return result;
         }
     }
@@ -81,6 +93,10 @@ public final class DtoUtils {
     private static class Counter {
         private static final int MAX_STACK_SIZE = 100;
         private int entranceCounter;
+
+        public int value() {
+            return entranceCounter;
+        }
 
         public void reset() {
             this.entranceCounter = 0;
@@ -105,13 +121,32 @@ public final class DtoUtils {
 
     private static final Logger log = Logger.getLogger(DtoUtils.class);
 
+    private static final ThreadLocal<Object> notInitializedValue = new ThreadLocal<Object>();
     private static final ThreadLocal<Counter> fromCounter = new ThreadLocal<Counter>();
     private static final ThreadLocal<Counter> toCounter = new ThreadLocal<Counter>();
+
+    private static final ThreadLocal<Integer> maxDepth = new ThreadLocal<Integer>();
 
     private static final ThreadLocal<Collection<Deferred>> deferred = new ThreadLocal<Collection<Deferred>>();
     private static final ThreadLocal<Collection<Object>> processing = new ThreadLocal<Collection<Object>>();
     private static final ThreadLocal<Map<IDtoCapable, IDTO>> cache = new ThreadLocal<Map<IDtoCapable, IDTO>>();
     private static final ThreadLocal<Map<IEntity, IEntity>> reverseCache = new ThreadLocal<Map<IEntity, IEntity>>();
+
+    public static final void notInitializedValue( Object value ) {
+        notInitializedValue.set(value);
+    }
+
+    private static final Object notInitializedValue() {
+        return notInitializedValue.get();
+    }
+
+    public static final void maxDepth( Integer value ) {
+        maxDepth.set(value);
+    }
+
+    private static final Integer maxDepth() {
+        return Commons.select( maxDepth.get(), 2 );
+    }
 
     private static final Counter toCounter() {
         if ( toCounter.get() == null ) {
@@ -169,32 +204,21 @@ public final class DtoUtils {
         cache().clear();
     }
 
-    protected synchronized static void processDeferred( boolean toDto ) {
-        Collection<Deferred> toRemove = new HashSet<Deferred>();
+    protected static void processDeferred( boolean toDto ) {
         for ( Deferred deferred : deferred() ) {
-            boolean processed = false;
             try {
                 if ( deferred.isToDTO() && toDto ) {
                     deferred.initialize( cache().get(deferred.getObject()) );
-                    processed = true;
                 } else if ( !toDto ) {
                     deferred.initialize( reverseCache().get(deferred.getObject()) );
-                    processed = true;
                 }
             } catch ( IntrospectionException e ) {
-                log.error("Unable to process deferred initialization on property " + deferred.getName() );
-            }
-
-            if ( processed ) {
-                toRemove.add( deferred );
+                log.error("Unable to process deferred initialization on property " + deferred.getName(), e );
             }
         }
 
 
-        for (Deferred deferred : toRemove ) {
-            processing().remove( deferred.getObject() );
-            deferred().remove(deferred);
-        }
+        processing().clear();
     }
 
     protected static void saveDeferred( Deferred def ) {
@@ -214,6 +238,10 @@ public final class DtoUtils {
         }
 
         if ( entity.isDto() ) {
+            return false;
+        }
+
+        if ( toCounter().value() > maxDepth() ) {
             return false;
         }
 
@@ -272,10 +300,10 @@ public final class DtoUtils {
             if ( entityClazz.isInterface() ) {
                 entityClazz = DaoContextHolder.instance().getContext().getBean( entityClazz ).getClass();
             }
-        
+
             if ( dto.getId() != null ) {
                 DAOFacade facade = DaoContextHolder.instance().getContext().getBean(DAOFacade.class);
-        
+
                 IDAO<? extends IEntity> dao = facade.getDAO(entityClazz);
                 Commons.checkNotNull(dao, "DAO for " + entityClazz.getCanonicalName() + " is not registered");
                 result = dao.findById( dto.getId() );
@@ -295,19 +323,14 @@ public final class DtoUtils {
         } finally {
             if ( !fromCounter().isBalanced() ) {
                 fromCounter().leave();
-                if ( fromCounter().isBalanced() ) {
-                    processDeferred(false);
-
-                    try {
-                        // @FIXME: Issue must be investigated
-                        // closeSession();
-                    } catch ( Throwable e ) {}
-
-                    resetReverseCache();
-                }
             }
-        }
+
+            if ( fromCounter().isBalanced() ) {
+                processDeferred(false);
+                resetReverseCache();
+            }
     }
+}
 
     private static boolean isProcessing( Object object ) {
         for ( Object processing : processing() ) {
@@ -318,7 +341,7 @@ public final class DtoUtils {
 
         return false;
     }
-    
+
     protected static IEntity fromDTO( IEntity entity, IEntity dto ) throws DAOException {
         try {
             Collection<Property> entityProperties = PropertyUtils.getInstance().getProperties(entity.getClass());
@@ -329,16 +352,17 @@ public final class DtoUtils {
                         if ( !dtoProperty.getName().equals( property.getName() ) ) {
                             continue;
                         }
-    
+
                         Object value = dtoProperty.get(dto);
                         if ( value == entity ) {
                             value = null;
                         }
 
+                        Object originalValue = null;
                         if ( value != null ) {
                             if ( value instanceof IDTO ) {
                                 if ( !isProcessing(value) ) {
-                                    processing().add(value);
+                                    processing().add( originalValue = value);
                                 } else {
                                     saveDeferred( new Deferred(entity, property, value, false ) );
                                     continue;
@@ -349,7 +373,11 @@ public final class DtoUtils {
                                 value = processList(value, true);
                             }
                         }
-    
+
+                        if ( originalValue != null ) {
+                            processing().remove(originalValue);
+                        }
+
                         property.set( entity, value );
                         break;
                     } catch ( Throwable e ) {
@@ -357,13 +385,13 @@ public final class DtoUtils {
                     }
                 }
             }
-    
+
             return entity;
         } catch ( IntrospectionException e ) {
             throw new DAOException( e.getMessage(), e );
         }
     }
-    
+
     protected static Collection<?> processList( Object value, boolean fromDTO ) throws DAOException {
         Collection result;
 
@@ -380,9 +408,11 @@ public final class DtoUtils {
             result = new HashSet();
         }
 
-        boolean entitiesCollection = true;
+        if ( !fromDTO && toCounter().value() >= maxDepth() ) {
+            return result;
+        }
 
-        Object[] collection = new Object[ ( (Collection) value ).size() ];
+        boolean entitiesCollection = true;
         for ( Object part : (Collection) value ) {
             if ( part == null ) {
                 continue;
@@ -415,12 +445,12 @@ public final class DtoUtils {
         }
 
         return result;
-    } 
-    
+    }
+
     protected static boolean isListType( Object value ) {
         return Collection.class.isAssignableFrom(value.getClass());
     }
-    
+
     public static <T extends IDTO, V extends IDtoCapable<T>> T toDTO( V entity ) {
         try {
             if ( toCounter().isBalanced() ) {
@@ -439,10 +469,10 @@ public final class DtoUtils {
             } else {
                 toCounter().enter();
                 if ( !toPreCheck( (IEntity) entity) ) {
-                    if ( entity == null ) {
-                        return null;
-                    } else if ( entity instanceof IDTO ) {
+                    if ( entity instanceof IDTO ) {
                         return (T) entity;
+                    } else {
+                        return (T) notInitializedValue();
                     }
                 }
             }
@@ -456,6 +486,10 @@ public final class DtoUtils {
             Commons.checkNotNull(dto);
 
             for ( Property property : PropertyUtils.getInstance().getProperties(entity.getClass()) ) {
+                if ( null != property.getAnnotation(DtoIgnore.class) ) {
+                    continue;
+                }
+
                 for ( Property dtoProperty : PropertyUtils.getInstance().getProperties(dto.getClass()) ) {
                     try {
                         if ( !dtoProperty.getName().equals( property.getName() ) ) {
@@ -467,10 +501,11 @@ public final class DtoUtils {
                             value = null;
                         }
 
+                        Object originalValue = null;
                         if ( value != null ) {
                             if ( value instanceof IDtoCapable ) {
                                 if ( !processing().contains(value) ) {
-                                    processing().add( value );
+                                    processing().add( originalValue = value );
                                 } else {
                                     saveDeferred( new Deferred(dto, dtoProperty, value, true) );
                                     continue;
@@ -482,6 +517,10 @@ public final class DtoUtils {
                             }
                         }
 
+                        if ( originalValue != null ) {
+                            processing().remove(originalValue);
+                        }
+
                         dtoProperty.set( dto, value );
                     } catch ( Throwable e ) {
                         log.error( e.getMessage(), e );
@@ -490,15 +529,15 @@ public final class DtoUtils {
             }
             return dto;
         } catch ( Throwable e ) {
+            cache().remove(entity);
             throw new IllegalStateException( e.getMessage(), e );
         } finally {
-            if ( !toCounter().isBalanced() ) {
-                toCounter().leave();
-                if ( toCounter().isBalanced() ) {
-                    processDeferred(true);
-                    resetCache();
-                }
+            if ( toCounter().isBalanced() ) {
+                processDeferred(true);
+                resetCache();
             }
+
+            toCounter().leave();
         }
     }
 

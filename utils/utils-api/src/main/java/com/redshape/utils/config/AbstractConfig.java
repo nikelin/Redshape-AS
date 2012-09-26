@@ -20,7 +20,7 @@ public abstract class AbstractConfig implements IConfig {
 
     protected boolean initialized;
 
-    protected AbstractConfig() {
+    public AbstractConfig() {
         this(null, null, null);
     }
 

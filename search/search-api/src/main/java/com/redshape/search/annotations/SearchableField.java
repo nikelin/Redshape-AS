@@ -2,10 +2,7 @@ package com.redshape.search.annotations;
 
 import com.redshape.search.index.IndexingType;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,7 +12,8 @@ import java.lang.annotation.Target;
  * To change this template use File | Settings | File Templates.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target({ElementType.FIELD, ElementType.METHOD})
+@Inherited
 public @interface SearchableField {
     /**
      * Name of field in index

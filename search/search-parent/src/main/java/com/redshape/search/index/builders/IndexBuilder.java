@@ -4,8 +4,11 @@ import com.redshape.search.annotations.Searchable;
 import com.redshape.search.index.IIndex;
 import com.redshape.search.index.Index;
 import com.redshape.search.index.visitor.VisitorException;
+import com.redshape.utils.beans.Property;
+import com.redshape.utils.beans.PropertyUtils;
 import org.apache.log4j.Logger;
 
+import java.beans.IntrospectionException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,25 +56,29 @@ public class IndexBuilder extends AbstractIndexBuilder {
     }
 
     protected IIndex buildIndex( Class<?> searchable ) throws BuilderException {
-        IIndex index = new Index();
+        try {
+            IIndex index = new Index();
 
-        Searchable meta = searchable.getAnnotation( Searchable.class );
-        if ( meta == null ) {
-            return null;
-        }
-
-        index.setName( meta.name() );
-
-        for ( Field field : searchable.getDeclaredFields() ) {
-            try {
-                this.getFieldVisitor().visitField( index, searchable, field );
-            } catch ( VisitorException e ) {
-                log.error("Index builder exception", e );
-                throw new BuilderException( e.getMessage(), e );
+            Searchable meta = searchable.getAnnotation( Searchable.class );
+            if ( meta == null ) {
+                return null;
             }
-        }
 
-        return index;
+            index.setName( meta.name() );
+
+            for ( Property property : PropertyUtils.getInstance().getProperties(searchable) ) {
+                try {
+                    this.getFieldVisitor().visitField( index, searchable, property.getName() );
+                } catch ( VisitorException e ) {
+                    log.error("Index builder exception", e );
+                    throw new BuilderException( e.getMessage(), e );
+                }
+            }
+
+            return index;
+        } catch ( IntrospectionException e ) {
+            throw new BuilderException( e.getMessage(), e);
+        }
     }
 
 }

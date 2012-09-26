@@ -2,6 +2,7 @@ package com.redshape.search.lucene.query.transformers;
 
 import com.redshape.search.lucene.engines.lucene.LuceneEngine;
 import com.redshape.search.query.terms.*;
+import com.redshape.search.query.terms.impl.ToTerm;
 import com.redshape.search.query.transformers.IQueryTransformer;
 import com.redshape.search.query.transformers.QueryTransformationException;
 import com.redshape.utils.SimpleStringUtils;

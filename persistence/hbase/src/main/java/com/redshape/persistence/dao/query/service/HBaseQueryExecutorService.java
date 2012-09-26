@@ -404,10 +404,6 @@ public class HBaseQueryExecutorService implements IQueryExecutorService {
                     if (offset > 0 && currentOffset++ < offset) continue;
                     if (limit > 0 && currentRecords++ >= limit) break;
 
-
-                    /**
-                     * @FIXME: What the fucking shit is this?
-                     */
                     byte[] value = result.getValue(
                             this.columnsFamily,
                             this.getFieldsSerializer().serialize("serialized_object")

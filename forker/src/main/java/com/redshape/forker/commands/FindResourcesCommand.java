@@ -2,7 +2,6 @@ package com.redshape.forker.commands;
 
 import com.redshape.forker.AbstractForkCommand;
 import com.redshape.forker.AbstractForkCommandResponse;
-import com.redshape.forker.Commands;
 import org.apache.log4j.Logger;
 
 import java.io.DataInputStream;
@@ -23,10 +22,12 @@ public final class FindResourcesCommand {
     private static final Logger log = Logger.getLogger(FindResourcesCommand.class);
     
     public static class Request extends AbstractForkCommand {
+        public static final long ID = Request.class.getCanonicalName().hashCode();
+
         private String path;
         
         public Request( String path ) {
-            super( Commands.FIND_RESOURCES, Commands.FIND_RESOURCES_RSP );
+            super( Request.ID, Response.ID);
         }
         
         protected String getPath() {
@@ -45,10 +46,12 @@ public final class FindResourcesCommand {
     }
 
     public static class Response extends AbstractForkCommandResponse {
+        public static final long ID = Response.class.getCanonicalName().hashCode();
+
         private List<URI> resources = new ArrayList<URI>();
         
-        public Response(Long id, Status status) {
-            super(id, status);
+        public Response(Status status) {
+            super(Response.ID, status);
         }
 
         public List<URI> getResources() {

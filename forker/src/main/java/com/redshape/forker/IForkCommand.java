@@ -12,6 +12,10 @@ import java.io.IOException;
  */
 public interface IForkCommand {
 
+    public void setQualifier( Long value );
+
+    public Long getQualifier();
+
     /**
      * Return identifier which will be used by a protocol serializer
      * to indicates command response object in process output stream.

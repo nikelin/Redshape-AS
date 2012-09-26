@@ -2,7 +2,6 @@ package com.redshape.forker.commands;
 
 import com.redshape.forker.AbstractForkCommand;
 import com.redshape.forker.AbstractForkCommandResponse;
-import com.redshape.forker.Commands;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -16,9 +15,10 @@ import java.io.IOException;
 public final class PauseCommand  {
 
     public static class Response extends AbstractForkCommandResponse {
+        public static final long ID = Response.class.getCanonicalName().hashCode();
 
-        public Response(Long id, Status status) {
-            super(id, status);
+        public Response(Status status) {
+            super(ID, status);
         }
 
         @Override
@@ -31,9 +31,10 @@ public final class PauseCommand  {
     }
 
     public static class Request extends AbstractForkCommand {
+        public static final long ID = Request.class.getCanonicalName().hashCode();
 
         public Request() {
-            super( Commands.PAUSE, Commands.PAUSE_RSP );
+            super( Request.ID, Response.ID );
         }
 
         @Override

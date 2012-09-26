@@ -56,7 +56,7 @@ public interface ShardConfiguration {
 
   /**
    * @see org.hibernate.cfg.Environment#DATASOURCE
-   * @return the datasource for the shard
+   * @return the datasources for the shard
    */
   String getShardDatasource();
 
