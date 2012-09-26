@@ -15,6 +15,7 @@ import com.redshape.search.lucene.query.transformers.LuceneQueryTransformer;
 import com.redshape.search.serializers.ISerializer;
 import com.redshape.search.serializers.ISerializersFacade;
 import com.redshape.search.serializers.SerializerException;
+import com.redshape.utils.Commons;
 import com.redshape.utils.beans.PropertyUtils;
 import com.redshape.utils.config.ConfigException;
 import com.redshape.utils.config.IConfig;
@@ -53,25 +54,35 @@ public class LuceneEngine implements ISearchEngine {
 									"{", "}", "[", "]", "^", "\"", "~", "*", "?", ":", "\\"
 								};
 
-	@Autowired( required = true )
-    private ITransformersBuilder transformersBuilder;
-
-	@Autowired( required = true )
+	private ITransformersBuilder transformersBuilder;
 	private IIndexBuilder indexBuilder;
-
-	@Autowired( required = true )
 	private ISerializersFacade serializersFacade;
-
-	@Autowired( required = true )
 	private IIndexObjectIdGenerator idGenerator;
-
-	@Autowired( required = true )
 	private ICollectorsBuilder collectorBuilder;
-
-	@Autowired( required = true )
 	private IConfig config;
 
-	public ITransformersBuilder getTransformersBuilder() {
+    public LuceneEngine( ISerializersFacade serializersFacade,
+                         IIndexBuilder builder,
+                         IIndexObjectIdGenerator indexObjectIdGenerator,
+                         ICollectorsBuilder collectorBuilder,
+                         ITransformersBuilder transformersBuilder,
+                         IConfig config ) {
+        Commons.checkNotNull(serializersFacade);
+        Commons.checkNotNull(builder);
+        Commons.checkNotNull(indexObjectIdGenerator);
+        Commons.checkNotNull(collectorBuilder);
+        Commons.checkNotNull(transformersBuilder);
+        Commons.checkNotNull(config);
+
+        this.serializersFacade = serializersFacade;
+        this.indexBuilder = builder;
+        this.idGenerator = indexObjectIdGenerator;
+        this.collectorBuilder = collectorBuilder;
+        this.transformersBuilder = transformersBuilder;
+        this.config = config;
+    }
+
+    public ITransformersBuilder getTransformersBuilder() {
 		return transformersBuilder;
 	}
 
