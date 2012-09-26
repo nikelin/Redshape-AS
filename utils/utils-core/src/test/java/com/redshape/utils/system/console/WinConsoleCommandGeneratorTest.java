@@ -13,11 +13,11 @@ public class WinConsoleCommandGeneratorTest {
 
     @Test
     public void testCreateDirCommand() {
-        Assert.assertEquals("mkdir " + DEFAULT_PATH, new WinConsoleCommandGenerator().generateCreateDirCommand(DEFAULT_PATH));
+        Assert.assertEquals(WinConsoleCommandGenerator.COMMAND_INTERPRETER + "mkdir " + DEFAULT_PATH, new WinConsoleCommandGenerator().generateCreateDirCommand(DEFAULT_PATH));
     }
 
     @Test
     public void testDeleteDirCommand() {
-        Assert.assertEquals("rmdir /S /Q " + DEFAULT_PATH, new WinConsoleCommandGenerator().generateDeleteDirCommand(DEFAULT_PATH));
+        Assert.assertEquals(WinConsoleCommandGenerator.COMMAND_INTERPRETER + "rmdir /S /Q " + DEFAULT_PATH, new WinConsoleCommandGenerator().generateDeleteDirCommand(DEFAULT_PATH));
     }
 }

@@ -8,12 +8,15 @@ package com.redshape.utils.system.console;
  * Time: 1:16 PM
  */
 public class WinConsoleCommandGenerator implements ConsoleCommandGenerator {
+
+    public static final String COMMAND_INTERPRETER = "cmd /c ";
+
     @Override
     public String generateCreateDirCommand(String path) {
-        return "mkdir " + path;    }
+        return COMMAND_INTERPRETER + "mkdir " + path;    }
 
     @Override
     public String generateDeleteDirCommand(String path) {
-        return "rmdir /S /Q " + path;
+        return COMMAND_INTERPRETER + "rmdir /S /Q " + path;
     }
 }

@@ -1,5 +1,6 @@
 package com.redshape.utils.system.console;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
@@ -19,6 +20,18 @@ public class ConsoleTest {
     public static final String SUBDIR_1_PATH = USER_HOME_DIR + File.separator + "subdir.1";
     public static final String SUBDIR_2_PATH = SUBDIR_1_PATH + File.separator + "subdir.2";
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @Before
+    public void setUp() {
+        File subdir = new File(SUBDIR_2_PATH);
+        if ( subdir.exists() )
+            subdir.delete();
+
+        subdir = new File(SUBDIR_1_PATH);
+        if ( subdir.exists() )
+            subdir.delete();
+    }
+
     @Test
     public void testCheckExists() throws IOException {
         IConsole console = new Console();
@@ -31,7 +44,7 @@ public class ConsoleTest {
     public void testMkdir() throws IOException {
         IConsole console = new Console();
 
-        assertFalse( new File(SUBDIR_2_PATH).exists() );
+        assertFalse(new File(SUBDIR_2_PATH).exists());
 
         console.mkdir(SUBDIR_2_PATH);
 
