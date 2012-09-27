@@ -1,12 +1,11 @@
 package com.redshape.applications;
 
-import com.redshape.applications.bootstrap.IBootstrap;
-import com.redshape.utils.IPackagesLoader;
-import com.redshape.utils.ResourcesLoader;
 import com.redshape.utils.config.IConfig;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,21 +18,9 @@ public abstract class AbstractApplication implements IApplication {
 	private static final Logger log = Logger.getLogger( AbstractApplication.class );
     public static Map<String, String> env = new HashMap<String, String>();
 
-	@Autowired( required = true )
+    private static int PID = -1;
+
     private IConfig config;
-
-	@Autowired( required = true )
-    private ResourcesLoader resourcesLoader;
-
-	@Autowired( required = true )
-    private IPackagesLoader packagesLoader;
-
-    private boolean pidCheckup;
-    
-    private Integer version;
-
-	@Autowired( required = true )
-    private IBootstrap boot;
 
     private String[] envArgs;
 
@@ -41,22 +28,6 @@ public abstract class AbstractApplication implements IApplication {
         this.envArgs = args;
 
         this.initEnv(this.envArgs);
-    }
-    
-    public void setPackagesLoader( IPackagesLoader loader ) {
-    	this.packagesLoader = loader;
-    }
-    
-    protected IPackagesLoader getPackagesLoader() {
-    	return this.packagesLoader;
-    }
-    
-    public void setResourcesLoader( ResourcesLoader loader ) {
-    	this.resourcesLoader = loader;
-    }
-    
-    public ResourcesLoader getResourcesLoader() {
-    	return this.resourcesLoader;
     }
 
     protected void initEnv( String[] args ) throws ApplicationException {
@@ -89,18 +60,39 @@ public abstract class AbstractApplication implements IApplication {
     public IConfig getConfig() {
     	return this.config;
     }
-    
-    public void setBootstrap( IBootstrap bootstrap ) {
-    	this.boot = bootstrap;
-    }
-    
-    protected IBootstrap getBootstrap() {
-        return this.boot;
-    }
 
 	@Override
     public void stop() {
     	log.info("Application going to be stopped");
+    }
+
+    private static int requestPid() throws IOException {
+        int result;
+
+        Process process = Runtime.getRuntime().exec( new String[] { "bash", "-c", "echo $PPID"} );
+
+        try {
+            process.waitFor();
+        } catch ( InterruptedException e ) {
+            throw new IllegalStateException( e.getMessage(), e );
+        }
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        result = Integer.parseInt( reader.readLine() );
+        process.destroy();
+        return result;
+    }
+
+    public static int pid() {
+        try {
+            if ( PID < 0 ) {
+                PID = requestPid();
+            }
+
+            return PID;
+        } catch ( IOException e ) {
+            throw new IllegalStateException( e.getMessage(), e );
+        }
     }
 
 }

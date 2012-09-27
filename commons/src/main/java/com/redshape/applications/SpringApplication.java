@@ -1,8 +1,6 @@
 package com.redshape.applications;
 
 import com.redshape.applications.bootstrap.IBootstrap;
-import com.redshape.utils.PackagesLoader;
-import com.redshape.utils.ResourcesLoader;
 import com.redshape.utils.StringUtils;
 import com.redshape.utils.config.IConfig;
 import org.apache.log4j.Logger;
@@ -29,10 +27,7 @@ public class SpringApplication extends AbstractApplication {
 	}
 	
 	protected void init() {
-		this.setBootstrap( getContext().getBean(IBootstrap.class) );
 		this.setConfig( getContext().getBean( IConfig.class ) );
-		this.setResourcesLoader( getContext().getBean( ResourcesLoader.class ) );
-		this.setPackagesLoader( getContext().getBean( PackagesLoader.class ) );
 	}
 	
 	protected ApplicationContext loadContext( String contextPath ) {
@@ -51,7 +46,7 @@ public class SpringApplication extends AbstractApplication {
 	@Override
 	public void start() throws ApplicationException {
 		try {
-			this.getBootstrap().init();
+			context.getBean(IBootstrap.class).init();
 		} catch ( Throwable e ) {
 			log.error( e.getMessage(), e );
 			throw new ApplicationException( e.getMessage(), e );
