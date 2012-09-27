@@ -8,11 +8,10 @@ import com.redshape.search.index.IIndexField;
 import com.redshape.search.index.IndexingType;
 import com.redshape.search.index.builders.IIndexBuilder;
 import com.redshape.search.index.visitor.VisitorException;
+import com.redshape.utils.Commons;
 import com.redshape.utils.beans.Property;
 import com.redshape.utils.beans.PropertyUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 
@@ -25,18 +24,15 @@ import java.util.Arrays;
  */
 public class StandardFieldVisitor implements IFieldVisitor {
 
-	@Autowired( required = true )
 	private IIndexBuilder indexBuilder;
 
-	public IIndexBuilder getIndexBuilder() {
-		return indexBuilder;
-	}
+    public StandardFieldVisitor(IIndexBuilder indexBuilder) {
+        Commons.checkNotNull(indexBuilder);
 
-	public void setIndexBuilder(IIndexBuilder indexBuilder) {
-		this.indexBuilder = indexBuilder;
-	}
+        this.indexBuilder = indexBuilder;
+    }
 
-	@Override
+    @Override
     public void visitField( IIndex index, Class<?> entityClass, String field ) throws VisitorException {
         try {
             Property classField = PropertyUtils.getInstance().getProperty(entityClass, field);
@@ -83,7 +79,7 @@ public class StandardFieldVisitor implements IFieldVisitor {
                 aggregatedType = (Class<?>) fieldType;
             }
 
-            for ( IIndexField aggregatedField : this.getIndexBuilder().getIndex( aggregatedType ).getFields() ) {
+            for ( IIndexField aggregatedField : indexBuilder.getIndex( aggregatedType ).getFields() ) {
                 if ( annotation.exclude().length > 0 &&
                         Arrays.binarySearch( annotation.exclude(), aggregatedField ) != -1 ){
                     continue;

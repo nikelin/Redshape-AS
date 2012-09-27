@@ -13,24 +13,13 @@ import org.springframework.context.ApplicationContextAware;
  * Time: 3:18:51 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class AbstractIndexBuilder implements IIndexBuilder, ApplicationContextAware {
+public abstract class AbstractIndexBuilder implements IIndexBuilder {
     private IFieldVisitor fieldVisitor;
-    private ApplicationContext applicationContext;
-
-    protected ApplicationContext getApplicationContext() {
-        return applicationContext;
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
 
     @Override
     public IFieldVisitor getFieldVisitor() {
         if ( this.fieldVisitor == null ) {
-            this.fieldVisitor = new StandardFieldVisitor();
-            this.getApplicationContext().getAutowireCapableBeanFactory().autowireBean(this.fieldVisitor);
+            this.fieldVisitor = new StandardFieldVisitor(this);
         }
 
         return this.fieldVisitor;

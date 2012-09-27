@@ -41,6 +41,11 @@ public class SourceFilter<T extends IJob> implements  IJobSource<T> {
     }
 
     @Override
+    public int getResultAwaitDelay() {
+        return this.targetSource.getResultAwaitDelay();
+    }
+
+    @Override
     public String getName() {
         return this.name;
     }
@@ -77,7 +82,7 @@ public class SourceFilter<T extends IJob> implements  IJobSource<T> {
 
             if ( item instanceof IDTO) {
                 log.info("Hydrating DTO object with a type of " + item.getClass().getCanonicalName() + "...");
-                item = (T) DtoUtils.fromDTO( (IEntity) item);
+                item = (T) DtoUtils.fromDTO( (IEntity) item );
             }
 
             result.add(item);

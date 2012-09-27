@@ -53,7 +53,6 @@ public class StandardProtocol implements IForkProtocol {
     protected void waitAvailability( InputStream stream ) throws IOException {
         while ( stream.available() <= 0 ) {
             try {
-                log.info("Stream data not available, waiting for 1 second...");
                 Thread.sleep(1000);
             } catch ( InterruptedException e ) {
                 break;
