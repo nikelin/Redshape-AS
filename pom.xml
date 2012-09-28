@@ -112,6 +112,14 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.2.2</version>
+                <configuration>
+                    <tagNameFormat>v@{project.version}</tagNameFormat>
+                </configuration>
+            </plugin>
         </plugins>
         <extensions>
             <extension>
@@ -159,15 +167,15 @@
     </dependencies>
 
     <scm>
-        <developerConnection>scm:git:https://github.com/nikelin/Redshape-AS.git</developerConnection>
-        <url>https://github.com/nikelin/Redshape-AS.git</url>
+        <developerConnection>scm:git:gitosis@80.82.81.234:framework.git</developerConnection>
+        <url>gitotis@80.82.81.234:framework.git</url>
     </scm>
 
     <distributionManagement>
         <repository>
             <id>redshape.central</id>
             <name>Cloudbees Maven Repository</name>
-            <url>dav:https://repository-redshape-ltd.forge.cloudbees.com/snapshot/</url>
+            <url>dav:http://80.82.81.234:8082/snapshot</url>
         </repository>
     </distributionManagement>
 
