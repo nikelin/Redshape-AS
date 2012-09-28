@@ -19,6 +19,8 @@ public interface IJobSource<T extends IJob> extends IEventDispatcher {
     public String getName();
     
     public int getUpdateInterval();
+
+    public int getResultAwaitDelay();
     
     public void complete( T job, IJobResult result) throws JobException;
 

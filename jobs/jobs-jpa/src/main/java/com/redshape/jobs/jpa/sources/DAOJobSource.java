@@ -12,7 +12,6 @@ import com.redshape.persistence.utils.ISessionManager;
 import com.redshape.utils.Commons;
 import com.redshape.utils.events.AbstractEventDispatcher;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,18 +27,20 @@ public class DAOJobSource extends AbstractEventDispatcher
 
     private String name;
 
-    @Autowired( required = true )
-    private DAOFacade facade;
-
+    private DAOFacade daoFacade;
     private ISessionManager sessionManager;
     private List<? extends IJobsDAO<?>> sources = new ArrayList<IJobsDAO<?>>();
+
     private int chunkSize;
     private int updateInterval;
+    private int resultAwaitDelay;
 
-    public DAOJobSource( String name,
+    public DAOJobSource( DAOFacade daoFacade,
+                         String name,
                          ISessionManager sessionManager,
                          List<? extends IJobsDAO<?>> sources,
                          int workChunkSize,
+                         int resultAwaitDelay,
                          int updateInterval ) {
         super();
 
@@ -47,23 +48,24 @@ public class DAOJobSource extends AbstractEventDispatcher
         Commons.checkNotNull(sessionManager);
         Commons.checkNotNull(sources);
 
+        this.daoFacade = daoFacade;
+
         this.name = name;
         this.updateInterval = updateInterval;
+        this.resultAwaitDelay = resultAwaitDelay;
         this.chunkSize = workChunkSize;
         this.sessionManager = sessionManager;
         this.sources = sources;
     }
 
+    @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
-    protected ISessionManager getSessionManager() {
-        return this.sessionManager;
-    }
-
-    protected int getChunkSize() {
-        return chunkSize;
+    @Override
+    public int getResultAwaitDelay() {
+        return this.resultAwaitDelay;
     }
 
     @Override
@@ -79,8 +81,8 @@ public class DAOJobSource extends AbstractEventDispatcher
     @Override
     public IPersistenceJob save( IPersistenceJob entity) throws JobException {
         try {
-			this.getSessionManager().open();
-            return this.facade.<IPersistenceJob, IJobsDAO<IPersistenceJob>>getDAO(entity.getClass())
+			this.sessionManager.open();
+            return this.daoFacade.<IPersistenceJob, IJobsDAO<IPersistenceJob>>getDAO(entity.getClass())
                     .save(entity);
         } catch ( DAOException e ) {
             throw new JobException( e.getMessage(), e );
@@ -92,7 +94,7 @@ public class DAOJobSource extends AbstractEventDispatcher
 		try {
             List<IPersistenceJob> jobs = new ArrayList<IPersistenceJob>();
             for ( IJobsDAO<?> source : this.sources ) {
-                this.getSessionManager().open();
+                this.sessionManager.open();
                 List<? extends IPersistenceJob> result = source
                                 .findByStatus( JobStatus.WAITING )
                                     .offset(0)

@@ -28,6 +28,7 @@ public class JMSSource extends AbstractEventDispatcher implements IJobSource<IJo
     private int maxFailuresCount;
     private int receiveTimeout;
     private int updateInterval;
+    private int resultAwaitDelay;
     private int maxReceivingTime;
     
     private QueueConnection connection;
@@ -47,6 +48,7 @@ public class JMSSource extends AbstractEventDispatcher implements IJobSource<IJo
                       String consumingQueue,
                       String producingQueue,
                       int updateInterval,
+                      int resultAwaitDelay,
                       int receiveTimeout,
                       int workChunkSize,
                       int maxFailuresCount )
@@ -58,6 +60,7 @@ public class JMSSource extends AbstractEventDispatcher implements IJobSource<IJo
         
         this.name = name;
         this.updateInterval = updateInterval;
+        this.resultAwaitDelay = resultAwaitDelay;
         this.receiveTimeout = receiveTimeout;
         this.workChunkSize = workChunkSize;
         this.maxFailuresCount = maxFailuresCount;
@@ -67,6 +70,11 @@ public class JMSSource extends AbstractEventDispatcher implements IJobSource<IJo
         this.connection = connection;
 
         this.init();
+    }
+
+    @Override
+    public int getResultAwaitDelay() {
+        return this.resultAwaitDelay;
     }
 
     @Override

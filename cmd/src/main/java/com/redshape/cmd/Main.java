@@ -2,6 +2,7 @@ package com.redshape.cmd;
 
 import com.redshape.applications.ApplicationException;
 import com.redshape.applications.SpringApplication;
+import com.redshape.applications.bootstrap.IBootstrap;
 import com.redshape.applications.bootstrap.IBootstrapAction;
 import com.redshape.applications.bootstrap.LoggingStarter;
 import com.redshape.cmd.commands.HelpCommand;
@@ -44,7 +45,7 @@ public final class Main extends SpringApplication {
 		}
 
 		for ( IBootstrapAction action : this.actualTask.getBootstrapRequirements() ) {
-			this.getBootstrap().addAction( action );
+			getContext().getBean(IBootstrap.class).addAction(action);
 		}
 
 		super.start();

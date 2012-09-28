@@ -3,12 +3,10 @@ package com.redshape.jobs.sources;
 import com.redshape.jobs.IJob;
 import com.redshape.jobs.JobException;
 import com.redshape.jobs.result.IJobResult;
-import com.redshape.utils.events.AbstractEventDispatcher;
 import com.redshape.utils.events.IEvent;
 import com.redshape.utils.events.IEventListener;
 
 import java.util.*;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,14 +20,22 @@ public class DummySource<T extends IJob> implements IJobSource<T> {
     private String name;
     private int updateInterval;
     private int workChunkSize;
+    private int resultAwaitDelay;
 
     private Stack<T> scheduled = new Stack<T>();
     private Map<T, IJobResult> completed = new HashMap<T, IJobResult>();
 
-    public DummySource(String name, int updateInterval, int workChunkSize) {
+    public DummySource(String name, int updateInterval, int resultAwaitDelay, int workChunkSize) {
         this.name = name;
+
         this.workChunkSize = workChunkSize;
+        this.resultAwaitDelay = resultAwaitDelay;
         this.updateInterval = updateInterval;
+    }
+
+    @Override
+    public int getResultAwaitDelay() {
+        return this.resultAwaitDelay;
     }
 
     @Override
