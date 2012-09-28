@@ -1,4 +1,6 @@
-.idea/
+*/.idea/
+**/pom.xml.tag
+**/pom.xml.releaseBackup
 .settings/
 .classpath
 .project

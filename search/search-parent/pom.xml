@@ -15,6 +15,11 @@
 
     <dependencies>
         <dependency>
+            <artifactId>utils-core</artifactId>
+            <groupId>com.redshape.utils</groupId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <artifactId>search-api</artifactId>
             <groupId>com.redshape.search</groupId>
             <version>${project.version}</version>
