@@ -9,7 +9,7 @@
     <parent>
         <artifactId>as</artifactId>
         <groupId>com.redshape</groupId>
-        <version>3.1.3-SNAPSHOT</version>
+        <version>3.1.3</version>
     </parent>
     
     <properties>
