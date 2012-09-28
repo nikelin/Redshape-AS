@@ -4,9 +4,12 @@ import com.redshape.search.ISearchFacade;
 import com.redshape.search.index.IIndexField;
 import com.redshape.search.index.builders.IIndexBuilder;
 import com.redshape.search.serializers.ISerializersFacade;
+import com.redshape.utils.beans.Property;
 import com.redshape.utils.beans.PropertyUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.beans.IntrospectionException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -20,6 +23,8 @@ import java.util.Set;
  * To change this template use File | Settings | File Templates.
  */
 public class StandardCollector implements IResultsCollector {
+    private static final Logger log = Logger.getLogger( StandardCollector.class );
+
 	@Autowired( required = true )
 	private ISerializersFacade serializersFacade;
 
@@ -65,9 +70,18 @@ public class StandardCollector implements IResultsCollector {
             for ( CollectedItem item : this.collected ) {
                 Class<T> searchableClass = (Class<T>) item.getSearchable();
                 T searchable = searchableClass.newInstance();
+                if ( !item.getId().equals("null") ) {
+                    try {
+                        Property property = PropertyUtils.getInstance().getProperty(searchableClass, "id");
+                        property.set( searchable, Long.valueOf( item.getId() ) );
+                    } catch ( IntrospectionException e ) {
+                        log.error( e.getMessage(), e );
+                    }
+                }
+
 				Map<IIndexField, Object> fields = item.getFields();
                 for ( IIndexField field : fields.keySet() ) {
-                    PropertyUtils.getInstance().getProperty(searchable.getClass(), field.getName())
+                    PropertyUtils.getInstance().getProperty(searchable.getClass(), field.getFieldName())
 											   .set( searchable, fields.get(field));
                 }
 
