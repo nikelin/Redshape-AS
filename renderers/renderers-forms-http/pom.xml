@@ -3,7 +3,7 @@
     <parent>
         <artifactId>renderers</artifactId>
         <groupId>com.redshape</groupId>
-        <version>3.1.4</version>
+        <version>3.1.5-SNAPSHOT</version>
     </parent>
 
     <packaging>jar</packaging>
