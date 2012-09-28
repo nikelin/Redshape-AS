@@ -3,7 +3,7 @@
     <groupId>com.redshape</groupId>
     <artifactId>as</artifactId>
     <name>Redshape AS</name>
-    <version>3.1.4-SNAPSHOT</version>
+    <version>3.1.4</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -174,7 +174,8 @@
     <scm>
         <developerConnection>scm:git:gitosis@80.82.81.234:framework.git</developerConnection>
         <url>gitotis@80.82.81.234:framework.git</url>
-    </scm>
+      <tag>3.1.4</tag>
+  </scm>
 
     <distributionManagement>
         <repository>
