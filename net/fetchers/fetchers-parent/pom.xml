@@ -5,12 +5,12 @@
     <parent>
         <artifactId>fetchers</artifactId>
         <groupId>com.redshape.net</groupId>
-        <version>3.1.5</version>
+        <version>3.1.5-SNAPSHOT</version>
     </parent>
 
     <groupId>com.redshape.net.fetchers</groupId>
     <artifactId>fetchers-parent</artifactId>
-    <version>3.1.5</version>
+    <version>3.1.5-SNAPSHOT</version>
     <name>Redshape - Net - Fetchers - Parent</name>
 
     <build>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
+    <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ascript" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cmd" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/commons" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/daemons" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/forker" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/forms" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/io" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/jobs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/jobs/jobs-parent" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/net" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/net/fetchers" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/net/fetchers/fetchers-http" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/net/fetchers/fetchers-parent" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/net/net-api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/net/net-parent" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/persistence" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/persistence/api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/persistence/migration-toolkit" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/persistence/persistence-parent" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/plugins" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/renderers" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/renderers/renderers-base" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/renderers/renderers-forms-http" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/search" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/search/search-api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/search/search-lucene" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/search/search-parent" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/servlet" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ui" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ui/ui-bindings" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ui/ui-parent" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/utils" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/utils/utils-api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/utils/utils-core" charset="UTF-8" />
+  </component>
+</project>
+
