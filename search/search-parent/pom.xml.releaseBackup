@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>search</artifactId>
+        <groupId>com.redshape</groupId>
+        <version>3.1.2-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.redshape.search</groupId>
+    <artifactId>search-parent</artifactId>
+    <name>Redshape - Framework - Search - Parent</name>
+
+    <dependencies>
+        <dependency>
+            <artifactId>utils-core</artifactId>
+            <groupId>com.redshape.utils</groupId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>persistence-parent</artifactId>
+            <groupId>com.redshape.persistence</groupId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>search-api</artifactId>
+            <groupId>com.redshape.search</groupId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>
