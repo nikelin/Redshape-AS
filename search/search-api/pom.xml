@@ -33,6 +33,11 @@
 
     <dependencies>
         <dependency>
+            <artifactId>api</artifactId>
+            <groupId>com.redshape.persistence</groupId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <artifactId>utils-api</artifactId>
             <groupId>com.redshape.utils</groupId>
             <version>${project.version}</version>
