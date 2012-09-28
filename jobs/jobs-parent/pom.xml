@@ -38,7 +38,7 @@
         <dependency>
             <artifactId>jobs-api</artifactId>
             <groupId>com.redshape.jobs</groupId>
-            <version>${project.version}</version>
+            <version>3.1.5</version>
         </dependency>
         <dependency>
             <artifactId>persistence-parent</artifactId>
