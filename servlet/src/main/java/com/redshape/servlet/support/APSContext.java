@@ -1,4 +1,4 @@
-package com.redshape.servlet.support.ascript;
+package com.redshape.servlet.support;
 
 import com.redshape.ascript.EvaluationException;
 import com.redshape.ascript.IEvaluator;

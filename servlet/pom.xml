@@ -4,7 +4,7 @@
     <parent>
         <artifactId>as</artifactId>
         <groupId>com.redshape</groupId>
-        <version>3.1.0</version>
+        <version>3.1.1-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -34,49 +34,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>groovy</groupId>
-            <artifactId>groovy-all-1.0-jsr</artifactId>
-            <version>05</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-collections</groupId>
-                    <artifactId>commons-collections</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>mx4j</groupId>
-                    <artifactId>mx4j</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>openejb</groupId>
-                    <artifactId>openejb-loader</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>axion</groupId>
-                    <artifactId>axion</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>servletapi</groupId>
-                    <artifactId>servletapi</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>ant</groupId>
-                    <artifactId>ant-launcher</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>ant</groupId>
-                    <artifactId>ant-junit</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>ant</groupId>
-                    <artifactId>ant</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>xerces</groupId>
-                    <artifactId>xerces</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <artifactId>forms</artifactId>
             <groupId>com.redshape</groupId>
             <version>${project.version}</version>
@@ -92,22 +49,6 @@
             <version>2.4.6</version>
         </dependency>
         <dependency>
-            <artifactId>resin-quercus</artifactId>
-            <groupId>com.caucho</groupId>
-            <version>3.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.tuckey</groupId>
-            <artifactId>urlrewritefilter</artifactId>
-            <version>3.2.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>servlet-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
             <version>2.8.1</version>
@@ -117,11 +58,6 @@
             <groupId>net.iharder</groupId>
             <artifactId>base64</artifactId>
             <version>2.3.8</version>
-        </dependency>
-        <dependency>
-            <groupId>saxon</groupId>
-            <artifactId>saxon-dom</artifactId>
-            <version>9</version>
         </dependency>
         <dependency>
             <groupId>saxon</groupId>
