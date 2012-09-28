@@ -36,23 +36,5 @@
             </plugin>
         </plugins>
     </build>
-
-    <dependencies>
-       <dependency>
-           <artifactId>utils-core</artifactId>
-           <groupId>com.redshape.utils</groupId>
-           <version>${project.version}</version>
-       </dependency>
-        <dependency>
-            <artifactId>jpa</artifactId>
-            <groupId>com.redshape.persistence</groupId>
-            <version>${project.version}</version>
-        </dependency>
-       <dependency>
-           <artifactId>lucene-core</artifactId>
-           <groupId>org.apache.lucene</groupId>
-           <version>3.0.2</version>
-       </dependency>
-    </dependencies>
     
 </project>
