@@ -22,11 +22,6 @@
             <groupId>org.apache.lucene</groupId>
             <version>${lucene.version}</version>
         </dependency>
-        <dependency>
-            <artifactId>jpa</artifactId>
-            <groupId>com.redshape.persistence</groupId>
-            <version>${project.version}</version>
-        </dependency>
     </dependencies>
 
 </project>
