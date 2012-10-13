@@ -17,7 +17,7 @@ public class StandardFormsRenderers extends AbstractJSONRenderer<IForm> {
     private IRenderersFactory renderersFactory;
     
     public StandardFormsRenderers( IRenderersFactory factory ) {
-        this.renderersFactory = factory;
+        super(factory);
     }
 
     protected IRenderersFactory getRenderersFactory() {

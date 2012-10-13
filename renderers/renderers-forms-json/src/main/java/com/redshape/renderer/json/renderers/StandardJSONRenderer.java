@@ -25,8 +25,7 @@ public class StandardJSONRenderer extends AbstractJSONRenderer<Object> {
     private Map<Class<?>, Method> handlers = new HashMap();
 
     public StandardJSONRenderer( IRenderersFactory renderersFactory ) {
-        this.renderersFactory = renderersFactory;
-
+        super(renderersFactory);
         this.init();
     }
 

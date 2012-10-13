@@ -1,6 +1,8 @@
 package com.redshape.renderer.json.renderers;
 
 import com.redshape.renderer.IRenderer;
+import com.redshape.renderer.IRenderersFactory;
+import com.redshape.utils.Commons;
 
 import java.util.Map;
 
@@ -10,6 +12,17 @@ import java.util.Map;
  * @date 3/1/12 {3:10 PM}
  */
 public abstract class AbstractJSONRenderer<T> implements IRenderer<T, String> {
+
+    private IRenderersFactory renderersFactory;
+
+    protected AbstractJSONRenderer(IRenderersFactory renderersFactory) {
+        Commons.checkNotNull(renderersFactory);
+        this.renderersFactory = renderersFactory;
+    }
+
+    protected IRenderersFactory getRenderersFactory() {
+        return renderersFactory;
+    }
 
     protected String createObject( String... fields ) {
         StringBuilder builder = new StringBuilder();
@@ -44,7 +57,13 @@ public abstract class AbstractJSONRenderer<T> implements IRenderer<T, String> {
         
         int i = 0;
         for ( Map.Entry<String, Object> field : fields.entrySet() ) {
-            builder.append( this.createField(field.getKey(), field.getValue() ) );
+            builder.append(
+                this.createField(field.getKey(),
+                    this.renderersFactory
+                        .forEntity(field.getValue())
+                    .render(field.getValue())
+                )
+            );
             
             if ( i++ != fields.size() - 1 ) {
                 builder.append(",");

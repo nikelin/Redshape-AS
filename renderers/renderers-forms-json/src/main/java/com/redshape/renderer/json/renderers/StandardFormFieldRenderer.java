@@ -12,10 +12,8 @@ import java.util.Collection;
  */
 public class StandardFormFieldRenderer extends AbstractJSONRenderer<IFormField> {
 
-    private IRenderersFactory renderersFactory;
-
     public StandardFormFieldRenderer( IRenderersFactory renderersFactory ) {
-        this.renderersFactory = renderersFactory;
+        super(renderersFactory);
     }
 
     @Override
@@ -38,9 +36,5 @@ public class StandardFormFieldRenderer extends AbstractJSONRenderer<IFormField> 
         );
 
         return builder.toString();
-    }
-
-    protected IRenderersFactory getRenderersFactory() {
-        return renderersFactory;
     }
 }

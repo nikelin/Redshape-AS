@@ -13,10 +13,8 @@ import java.util.Map;
  */
 public class StandardViewRenderer extends AbstractJSONRenderer<IView> {
 
-    private IRenderersFactory renderderesFactory;
-
     public StandardViewRenderer( IRenderersFactory renderersFactory ) {
-        this.renderderesFactory = renderersFactory;
+        super(renderersFactory);
     }
 
     @Override
@@ -32,7 +30,7 @@ public class StandardViewRenderer extends AbstractJSONRenderer<IView> {
             result[i++] =
                 this.createField(attribute.getKey(),
                     attribute.getValue() != null ?
-                       Commons.select(this.getRenderderesFactory()
+                       Commons.select(this.getRenderersFactory()
                                .<Object, String>forEntity(attribute.getValue())
                                .render(attribute.getValue()),
                        "")
@@ -52,9 +50,5 @@ public class StandardViewRenderer extends AbstractJSONRenderer<IView> {
         );
         
         return builder.toString();
-    }
-
-    protected IRenderersFactory getRenderderesFactory() {
-        return renderderesFactory;
     }
 }
