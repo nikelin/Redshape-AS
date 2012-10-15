@@ -20,7 +20,6 @@ import java.util.Set;
  */
 public class StandardJSONRenderer extends AbstractJSONRenderer<Object> {
 
-    private IRenderersFactory renderersFactory;
     private boolean reflectiveEnabled;
     private Map<Class<?>, Method> handlers = new HashMap();
 
@@ -35,10 +34,6 @@ public class StandardJSONRenderer extends AbstractJSONRenderer<Object> {
 
     public void setReflectiveEnabled(boolean reflectiveEnabled) {
         this.reflectiveEnabled = reflectiveEnabled;
-    }
-
-    protected IRenderersFactory getRenderersFactory() {
-        return this.renderersFactory;
     }
 
     @Override
