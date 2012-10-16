@@ -25,13 +25,12 @@ public class JSONFormatProcessor implements IRequestFormatProcessor {
                 return  SupportType.NO;
             }
 
-            String body = this.getBody(request);
-
             String requestedWith = request.getHeader("X-Requested-With");
             if ( requestedWith != null && requestedWith.equals( MARKER_HEADER) ) {
                 return SupportType.SHOULD;
             }
 
+            String body = this.getBody(request);
             if ( body.startsWith("{")
                     && body.endsWith("}") ) {
                 return SupportType.MAY;

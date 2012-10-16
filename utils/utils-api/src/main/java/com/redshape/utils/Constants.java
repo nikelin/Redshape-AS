@@ -16,7 +16,7 @@ public class Constants {
     public static final long TIME_WEEK = TIME_DAY * 7;
     public static final long TIME_MONTH = TIME_DAY * 30;
     public static final long TIME_YEAR = TIME_MONTH * 12;
-    public static final long TIME_WE_ALL_DEATH = TIME_YEAR * 2039; // ;-)
+    public static final long TIME_WE_ALL_DIE = TIME_YEAR * 2039; // ;-)
     public static final char EOL = '\n';
     public static final char EOF_CHAR = '\0';
     
@@ -28,7 +28,7 @@ public class Constants {
     public static final long TB = GB * 1000;
     public static final long PB = TB * 1000;
 
-    public static final int KiB = 2 ^ 10;
+    public static final int KiB = (int) Math.pow(2, 10);
     public static final int MiB = KiB * KiB;
     public static final int GiB = MiB * KiB;
     public static final int TiB = GiB * KiB;

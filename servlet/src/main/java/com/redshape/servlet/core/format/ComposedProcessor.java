@@ -17,6 +17,9 @@ import java.util.List;
  */
 public class ComposedProcessor implements IRequestFormatProcessor {
 
+    public static final String SKIP_ADDITIONAL_PROCESSING =
+            "__requestFormatProcessor_SKIP_ADDITIONAL_PROCESSING";
+
     private List<IRequestFormatProcessor> processors = new ArrayList<IRequestFormatProcessor>();
 
     public ComposedProcessor(List<IRequestFormatProcessor> processors) {
@@ -49,6 +52,12 @@ public class ComposedProcessor implements IRequestFormatProcessor {
                 case SHOULD:
                     targetList.add(processor);
                 default:
+            }
+
+            if ( request.getAttribute(SKIP_ADDITIONAL_PROCESSING) != null
+                    && request.getAttribute(SKIP_ADDITIONAL_PROCESSING)
+                              .equals(Boolean.TRUE) ) {
+                break;
             }
         }
 
