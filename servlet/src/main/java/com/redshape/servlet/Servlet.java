@@ -2,7 +2,6 @@ package com.redshape.servlet;
 
 import com.redshape.applications.SpringApplication;
 import com.redshape.servlet.core.controllers.FrontController;
-import com.redshape.servlet.dispatchers.DispatchException;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletConfig;
@@ -74,8 +73,12 @@ public class Servlet extends HttpServlet {
     @Override
     public void service( HttpServletRequest request, HttpServletResponse response ) throws ServletException {
         try {
+            if ( this.getFront() == null ) {
+                this.init( getServletConfig() );
+            }
+
         	this.getFront().dispatch( this, request, response );
-        } catch ( DispatchException e ) {
+        } catch ( Throwable e ) {
         	log.error( e.getMessage(), e );
             throw new ServletException( e.getMessage(), e );
         }
