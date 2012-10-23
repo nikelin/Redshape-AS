@@ -17,6 +17,7 @@
 package com.redshape.utils.beans;
 
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 
 public abstract class Property implements Comparable<Property> {
 
@@ -45,6 +46,14 @@ public abstract class Property implements Comparable<Property> {
 
     public int compareTo(Property o) {
         return name.compareTo(o.name);
+    }
+
+    public boolean isCollection() {
+        return Collection.class.isAssignableFrom(this.type);
+    }
+
+    public boolean isArray() {
+        return this.type.isArray();
     }
 
     public boolean isWritable() {
