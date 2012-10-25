@@ -27,7 +27,7 @@ public class Bootstrap implements IBootstrap {
     
     private boolean initialized;
     
-    @Autowired( required = true )
+    @Autowired
     private IConfig config;
     
     @Autowired( required = true )

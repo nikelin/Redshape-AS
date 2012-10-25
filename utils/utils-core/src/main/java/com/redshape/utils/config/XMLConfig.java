@@ -84,7 +84,16 @@ public class XMLConfig extends AbstractTSConfig {
     protected void actualInit() throws ConfigException {
 		try {
             this.clear();
-			this.init( this, this.getXmlHelper().buildDocumentByData(this.source.read()).getDocumentElement() );
+
+            String data = this.source.read();
+            if ( data.isEmpty() ) {
+                return;
+            }
+
+			this.init( this,
+                this.getXmlHelper().buildDocumentByData(data)
+                    .getDocumentElement()
+            );
 		} catch ( Throwable e ) {
 			throw new ConfigException( e.getMessage(), e );
 		}

@@ -1,5 +1,6 @@
 package com.redshape.commands;
 
+import java.io.Writer;
 import java.util.Collection;
 
 /**
@@ -8,6 +9,8 @@ import java.util.Collection;
  * @date 7/22/11 1:35 PM
  */
 public interface ICommandsFactory {
+
+    public void setWriter( Writer writer );
 
     public Collection<ICommand> getTasks();
 

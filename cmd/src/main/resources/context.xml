@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+		http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <!-- Scans within the base package of the application for @Components to
+         configure as beans -->
+    <context:component-scan base-package="com.redshape"/>
+
+    <bean id="resourcesLoader" class="com.redshape.utils.ResourcesLoader" scope="singleton">
+        <constructor-arg><value>./</value></constructor-arg>
+    </bean>
+
+    <bean id="hasher" class="com.redshape.utils.hashers.MD5" scope="singleton"/>
+
+    <bean id="packagesLoader" class="com.redshape.utils.PackagesLoader" scope="singleton">
+        <constructor-arg>
+            <list>
+                <value>target/classes</value>
+                <value>lib</value>
+                <value>libs</value>
+            </list>
+        </constructor-arg>
+        <property name="resourcesLoader">
+            <ref bean="resourcesLoader"/>
+        </property>
+    </bean>
+
+    <bean id="baseConfigSource" class="com.redshape.utils.config.sources.StringConfigSource"/>
+
+    <bean id="xmlHelper" class="com.redshape.utils.helpers.XMLHelper" scope="singleton"
+          p:loader-ref="resourcesLoader"/>
+
+    <bean id="webappConfig" class="com.redshape.utils.config.XMLConfig" scope="singleton">
+        <constructor-arg><ref bean="xmlHelper"/></constructor-arg>
+        <constructor-arg>
+            <ref bean="baseConfigSource"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="commandsFactory" class="com.redshape.commands.CommandsFactory">
+        <constructor-arg>
+            <list/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="bootstrap" class="com.redshape.applications.bootstrap.Bootstrap"
+          scope="singleton"/>
+</beans>

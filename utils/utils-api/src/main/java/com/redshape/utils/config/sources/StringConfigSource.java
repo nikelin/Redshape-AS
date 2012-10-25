@@ -24,6 +24,8 @@ public class StringConfigSource implements IConfigSource {
         }
     }
 
+    private static final String EMPTY = "";
+
     private OnChangeCallback callback;
     private boolean clean;
     private String[] data;
@@ -65,6 +67,10 @@ public class StringConfigSource implements IConfigSource {
 
     @Override
     public String read() throws ConfigException {
+        if ( this.data.length == 0  ) {
+            return EMPTY;
+        }
+
         checkOffset();
         return this.data[this.offset++];
     }

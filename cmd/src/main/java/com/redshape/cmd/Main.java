@@ -70,24 +70,29 @@ public final class Main extends SpringApplication {
 		try {
 			String module = null;
 			ICommand task = null;
-			int i = 0;
+            boolean first = true;
 			for ( String arg : this.getEnvArgs() ) {
-				if ( i++ == 0 ) {
-					continue;
-				}
+                if ( first && arg.endsWith(".jar") ) {
+                    first = false;
+                    continue;
+                }
 
 				if ( !arg.startsWith("-") ) {
 					if ( module != null) {
 						if ( task != null ) {
 							this.processTask(task);
-							task = null;
 						}
 
 						task = this.getCommandsFactory().createTask(module, arg);
 					} else {
 						module = arg;
 					}
-				} else if ( arg.startsWith("-") && task != null  ) {
+				} else if ( arg.startsWith("-")  ) {
+                    if ( task == null ) {
+                        throw new IllegalArgumentException("Arguments must be defined " +
+                                "after module and task name parts");
+                    }
+
 					String[] propertyParts = arg.split("=");
 					if ( propertyParts.length < 2 ) {
 						continue;

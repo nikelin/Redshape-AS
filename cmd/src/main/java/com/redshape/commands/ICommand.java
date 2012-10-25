@@ -2,6 +2,7 @@ package com.redshape.commands;
 
 import com.redshape.applications.bootstrap.IBootstrapAction;
 
+import java.io.Writer;
 import java.util.Collection;
 import java.util.Map;
 
@@ -13,6 +14,8 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public interface ICommand {
+
+    public void setWriter( Writer writer );
 
     public void process() throws ExecutionException;
 
