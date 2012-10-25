@@ -89,10 +89,10 @@ public class StandardJSONRenderer extends AbstractJSONRenderer<Object> {
 
     public String reflectiveRender( Object renderable ) throws IntrospectionException {
         Set<Property> properties = PropertyUtils.getInstance().getProperties(renderable.getClass());
-        Map<String, String> result = new HashMap<String, String>( properties.size() );
+        Map<String, Object> result = new HashMap<String, Object>( properties.size() );
         int i = 0;
         for ( Property property : properties ) {
-            result.put( property.getName(), this.render( property.get(renderable) ) );
+            result.put( property.getName(),  property.get(renderable) );
         }
 
         return this.render(result);

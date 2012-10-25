@@ -3,6 +3,7 @@ package com.redshape.servlet;
 import com.redshape.applications.SpringApplication;
 import com.redshape.servlet.core.controllers.FrontController;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -25,20 +26,14 @@ public class Servlet extends HttpServlet {
     private static final Logger log = Logger.getLogger( Servlet.class );
     private WebApplication application;
 
+    @Autowired( required = true )
     private FrontController front;
+
     private ServletConfig servletConfig;
 
     @Override
     public ServletConfig getServletConfig() {
         return this.servletConfig;
-    }
-
-    public void setFront( FrontController front ) {
-    	this.front = front;
-    }
-    
-    protected FrontController getFront() {
-    	return this.front;
     }
 
     public void init(javax.servlet.ServletConfig config) throws javax.servlet.ServletException {
@@ -59,11 +54,11 @@ public class Servlet extends HttpServlet {
                 log.info( "Path to config: " + config.getInitParameter("resources-path") );
                 this.application.setEnvArg("dataPath", config.getInitParameter("resources-path") );
                 this.application.start();
-            
-                this.setFront( this.application.getContext().getBean( FrontController.class ) );
             } else {
                 log.info("Context already started...");
             }
+
+            this.application.getContext().getAutowireCapableBeanFactory().autowireBean(this);
         } catch ( Throwable e ) {
             log.error( e.getMessage(), e );
             throw new ServletException( e.getMessage(), e );
@@ -73,11 +68,11 @@ public class Servlet extends HttpServlet {
     @Override
     public void service( HttpServletRequest request, HttpServletResponse response ) throws ServletException {
         try {
-            if ( this.getFront() == null ) {
+            if ( this.front == null ) {
                 this.init( getServletConfig() );
             }
 
-        	this.getFront().dispatch( this, request, response );
+        	this.front.dispatch( this, request, response );
         } catch ( Throwable e ) {
         	log.error( e.getMessage(), e );
             throw new ServletException( e.getMessage(), e );

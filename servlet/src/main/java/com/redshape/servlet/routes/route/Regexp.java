@@ -79,7 +79,7 @@ public class Regexp implements IRoute {
 						: request.getRequestURI();
 		Matcher matcher = this.pattern.matcher( sourcePath );
 		if ( matcher.find() ) {
-			log.info( "Groups founded:" + matcher.groupCount() );
+			log.debug( "Groups founded:" + matcher.groupCount() );
 
 			StringBuilder actionPath = new StringBuilder();
 			StringBuilder controllerPath = new StringBuilder();
