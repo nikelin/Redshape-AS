@@ -71,7 +71,15 @@ public abstract class AbstractCommand implements ICommand {
 
     @Override
     public boolean isSupports(String name) {
-        return Arrays.binarySearch( this.getSupported(), name ) > 0;
+        boolean found = false;
+        for ( String property : this.getSupported() ) {
+            if ( property.equals(name) ) {
+                found = true;
+                break;
+            }
+        }
+
+        return found;
     }
 
 }
