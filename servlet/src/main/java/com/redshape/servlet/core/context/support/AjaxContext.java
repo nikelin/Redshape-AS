@@ -113,6 +113,8 @@ public class AjaxContext extends AbstractResponseContext {
                     .render(view);
             }
 
+            log.info("Response: " + responseContent);
+
             this.writeResponse( responseContent, response);
         } catch ( IOException e ) {
             throw new ProcessingException( e.getMessage(), e );
