@@ -16,6 +16,9 @@ import java.util.Map;
  */
 public interface IHttpRequest extends HttpServletRequest, IUserRequest {
 
+    public static final String FAILED_TO_PROCESS = "__requestProcessingFailed";
+    public static final String CONTEXT_TYPE_SELECTED = "__contextTypeSelected";
+
     public boolean isMultiPart();
 
     public boolean isPost();

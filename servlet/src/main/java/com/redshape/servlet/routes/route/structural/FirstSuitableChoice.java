@@ -22,9 +22,9 @@ public class FirstSuitableChoice implements IRoute {
 	}
 
 	@Override
-	public boolean isApplicatable(IHttpRequest request) {
+	public boolean isApplicable(IHttpRequest request) {
 		for ( IRoute route : routes ) {
-			if ( route.isApplicatable(request) ) {
+			if ( route.isApplicable(request) ) {
 				return true;
 			}
 		}
@@ -33,10 +33,10 @@ public class FirstSuitableChoice implements IRoute {
 	}
 
 	@Override
-	public void applicate(IHttpRequest request) {
+	public void apply(IHttpRequest request) {
 		for ( IRoute route : routes ) {
-			if ( route.isApplicatable(request) ) {
-				route.applicate(request);
+			if ( route.isApplicable(request) ) {
+				route.apply(request);
 				return;
 			}
 		}

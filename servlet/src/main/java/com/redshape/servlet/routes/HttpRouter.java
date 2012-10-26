@@ -18,8 +18,8 @@ public class HttpRouter extends AbstractHttpRouter {
         HttpRequest routedRequest = new HttpRequest( request );
 
         for ( IRoute route : this.getRoutes() ) {
-            if ( route.isApplicatable( routedRequest ) ) {
-                route.applicate( routedRequest );
+            if ( route.isApplicable(routedRequest) ) {
+                route.apply(routedRequest);
             }
         }
 

@@ -26,11 +26,11 @@ public class Simple implements IRoute {
         this.parameters = parameters;
     }
 
-    public boolean isApplicatable( IHttpRequest request ) {
+    public boolean isApplicable(IHttpRequest request) {
         return this.inputURI.equals( request.getRequestURI() );
     }
 
-    public void applicate( IHttpRequest request ) {
+    public void apply(IHttpRequest request) {
         request.setController( this.controller );
         request.setAction( this.action );
         request.setParameters( this.parameters );

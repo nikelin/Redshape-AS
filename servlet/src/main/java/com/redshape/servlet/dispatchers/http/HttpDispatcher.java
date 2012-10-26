@@ -192,6 +192,8 @@ public class HttpDispatcher implements IHttpDispatcher {
                 return;
             }
 
+            request.setAttribute( IHttpRequest.CONTEXT_TYPE_SELECTED, context.getContextType() );
+
             response.setCharacterEncoding("UTF-8");
 
 			try {
@@ -209,6 +211,8 @@ public class HttpDispatcher implements IHttpDispatcher {
     protected void processError( ProcessingException e, IView view, IHttpRequest request, IHttpResponse response )
             throws DispatchException {
         log.error( e.getMessage(), e );
+
+        request.setAttribute( IHttpRequest.FAILED_TO_PROCESS, true );
 
         if ( view != null ) {
             view.setException(e);

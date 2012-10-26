@@ -11,8 +11,8 @@ import com.redshape.servlet.core.IHttpRequest;
  */
 public interface IRoute {
 
-    public boolean isApplicatable( IHttpRequest request );
+    public boolean isApplicable(IHttpRequest request);
 
-    public void applicate( IHttpRequest request );
+    public void apply(IHttpRequest request);
 
 }

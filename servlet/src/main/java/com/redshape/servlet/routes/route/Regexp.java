@@ -57,7 +57,7 @@ public class Regexp implements IRoute {
 	}
 
 	@Override
-	public boolean isApplicatable(IHttpRequest request) {
+	public boolean isApplicable(IHttpRequest request) {
 		Matcher matcher = this.pattern.matcher(
 				request.getRequestURI().startsWith(request.getContextPath()) ?
 						request.getRequestURI().substring(request.getContextPath().length())
@@ -71,12 +71,16 @@ public class Regexp implements IRoute {
 	}
 
 	@Override
-	public void applicate(IHttpRequest request) {
+	public void apply(IHttpRequest request) {
         String contextPath = this.getContextPath(request);
 
 		String sourcePath = request.getServletPath().startsWith( contextPath )?
 						request.getRequestURI().substring( contextPath.length() )
 						: request.getRequestURI();
+        if ( sourcePath.contains(";") ) {
+            sourcePath = sourcePath.substring( 0, sourcePath.indexOf(";") );
+        }
+
 		Matcher matcher = this.pattern.matcher( sourcePath );
 		if ( matcher.find() ) {
 			log.debug( "Groups founded:" + matcher.groupCount() );

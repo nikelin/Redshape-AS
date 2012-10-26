@@ -102,15 +102,18 @@ public class AjaxContext extends AbstractResponseContext {
             JsonConfig config = new JsonConfig();
             config.setCycleDetectionStrategy(CycleDetectionStrategy.LENIENT);
 
-            JSONObject result = new JSONObject();
-            result.put("response", JSONObject.fromObject(view, config) );
+            String responseContent = "";
+            if ( this.getRenderersFactory() == null ) {
+                JSONObject result = new JSONObject();
+                result.put("response", JSONObject.fromObject(view, config) );
+                responseContent = result.toString();
+            } else {
+                responseContent = this.getRenderersFactory().
+                    <IView, String>forEntity(view)
+                    .render(view);
+            }
 
-            this.writeResponse(
-                this.getRenderersFactory() == null ?
-                    result.toString() :
-                    this.getRenderersFactory().
-                        <IView, String>forEntity(view)
-                        .render(view), response);
+            this.writeResponse( responseContent, response);
         } catch ( IOException e ) {
             throw new ProcessingException( e.getMessage(), e );
         }
