@@ -1,5 +1,7 @@
 package com.redshape.applications.bootstrap;
 
+import com.redshape.utils.TimeSpan;
+
 import java.util.List;
 
 /**
@@ -10,6 +12,8 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface IBootstrap {
+
+    public void scheduleTask( Runnable runnable, TimeSpan delay, TimeSpan interval );
 
     public void addAction( IBootstrapAction action );
 

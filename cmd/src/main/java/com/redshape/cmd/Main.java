@@ -2,10 +2,7 @@ package com.redshape.cmd;
 
 import com.redshape.applications.ApplicationException;
 import com.redshape.applications.SpringApplication;
-import com.redshape.applications.bootstrap.IBootstrap;
-import com.redshape.applications.bootstrap.IBootstrapAction;
 import com.redshape.applications.bootstrap.LoggingStarter;
-import com.redshape.cmd.commands.HelpCommand;
 import com.redshape.commands.ExecutionException;
 import com.redshape.commands.ICommand;
 import com.redshape.commands.ICommandsFactory;
@@ -32,9 +29,7 @@ public final class Main extends SpringApplication {
     private ICommand actualTask;
 
     public Main( String[] args ) throws ApplicationException {
-        super( args);
-
-        this.processCommands();
+        super(args);
     }
 
     protected ICommandsFactory getCommandsFactory() {
@@ -43,33 +38,9 @@ public final class Main extends SpringApplication {
 
     @Override
     public void start() throws ApplicationException  {
-        if ( this.actualTask == null ) {
-            this.actualTask = new HelpCommand();
-        }
-
-        if ( !this.actualTask.isValid() ) {
-            System.out.println("Illegal arguments given");
-            this.stop();
-        }
-
-        for ( IBootstrapAction action : this.actualTask.getBootstrapRequirements() ) {
-            getContext().getBean(IBootstrap.class).addAction(action);
-        }
-
         super.start();
 
-        try {
-            this.processTask(this.actualTask);
-        } catch ( IllegalArgumentException e ) {
-            log.error("Insufficiently or illegal arguments given!", e);
-            System.exit(4);
-        } catch ( ExecutionException e )  {
-            log.error( "Command processing exception", e);
-            System.exit(2);
-        } catch ( Throwable e ) {
-            log.error("Something goes wrong...", e);
-            System.exit(1);
-        }
+        this.processCommands();
 
         System.exit(0);
     }
@@ -116,7 +87,7 @@ public final class Main extends SpringApplication {
 
             for ( String key : properties.keySet() ) {
                 String[] parts = key.split(":");
-                if ( parts.length == 0 ) {
+                if ( parts.length == 1 ) {
                     applyProperty( processQueue, parts[0], String.valueOf( properties.get(key) ) );
                 } else {
                     if ( parts.length < 3 ) {

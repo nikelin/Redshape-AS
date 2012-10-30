@@ -28,4 +28,8 @@ public interface IBootstrapAction {
 	public boolean hasMarker( ActionMarker marker );
 
 	public Collection<ActionMarker> getMarkers();
+
+    public void setBootstrap( IBootstrap bootstrap );
+
+    public IBootstrap getBootstrap();
 }

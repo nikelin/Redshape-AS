@@ -2,6 +2,7 @@ package com.redshape.applications.bootstrap;
 
 import com.redshape.utils.IPackagesLoader;
 import com.redshape.utils.config.IConfig;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +20,8 @@ import java.util.Set;
  */
 @Component
 public abstract class AbstractBootstrapAction implements IBootstrapAction {
+    protected static final Logger log = Logger.getLogger( AbstractBootstrapAction.class );
+
 	/**
 	 * Current action markers
 	 */

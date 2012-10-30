@@ -2,6 +2,7 @@ package com.redshape.applications.bootstrap;
 
 import com.redshape.utils.Commons;
 import com.redshape.utils.IPackagesLoader;
+import com.redshape.utils.TimeSpan;
 import com.redshape.utils.config.IConfig;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,6 +30,8 @@ public class Bootstrap implements IBootstrap {
     private Map<Object, Boolean> actionsStatus = new HashMap<Object, Boolean>();
     
     private boolean initialized;
+
+    private ScheduledExecutorService executorService;
     
     @Autowired
     private IConfig config;
@@ -39,8 +45,19 @@ public class Bootstrap implements IBootstrap {
 
     public Bootstrap( List<IBootstrapAction> actions ) {
         this.actions = actions;
+        this.executorService = this.createService();
 
 		this.addAction( new LoggingStarter() );
+    }
+
+    @Override
+    public void scheduleTask(Runnable runnable, TimeSpan delay, TimeSpan interval) {
+        this.executorService.scheduleAtFixedRate( runnable,
+                delay.getValue(), interval.getValue(), interval.getType() );
+    }
+
+    protected ScheduledExecutorService createService() {
+        return Executors.newScheduledThreadPool(10);
     }
 
     public IConfig getConfig() {
@@ -128,7 +145,7 @@ public class Bootstrap implements IBootstrap {
 					log.error( String.format(
 						"Failed to process action: %s (%s)",
 						action.getClass().getCanonicalName(),
-						Commons.select( action.getId(), "<unknown>" ) ) );
+						Commons.select( action.getId(), "<unknown>" ) ), e );
 				}
             }
         }
@@ -144,8 +161,15 @@ public class Bootstrap implements IBootstrap {
                 return;
             }
 
+            action.setBootstrap(this);
+
             if (  !action.hasDependencies() || this.isDependenciesResolved(action) ) {
-                this._runAction(action);
+                try {
+                    this._runAction(action);
+                } catch ( BootstrapException e ) {
+                    log.error( e.getMessage(), e );
+                }
+
                 return;
             }
 

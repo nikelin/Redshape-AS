@@ -19,9 +19,13 @@ public interface ICommand {
 
     public void process() throws ExecutionException;
 
+    public boolean hasProperty( String name );
+
     public void setProperty( String name, String value );
 
     public Map<String, String> getProperties();
+
+    public String getProperty( String name );
 
     public boolean isSupports( String name );
 
