@@ -12,6 +12,7 @@ import com.redshape.servlet.core.controllers.IAction;
 import com.redshape.servlet.core.controllers.ProcessingException;
 import com.redshape.servlet.core.controllers.registry.IControllersRegistry;
 import com.redshape.servlet.core.restrictions.ContextRestriction;
+import com.redshape.servlet.core.restrictions.MethodRestriction;
 import com.redshape.servlet.dispatchers.DispatchException;
 import com.redshape.servlet.dispatchers.interceptors.IDispatcherInterceptor;
 import com.redshape.servlet.views.*;
@@ -283,9 +284,30 @@ public class HttpDispatcher implements IHttpDispatcher {
         }
     }
 
+    protected void checkMethodRestrictions( IAction action, IView view, IHttpRequest request, IHttpResponse response )
+        throws DispatchException {
+        MethodRestriction restriction = action.getClass().getAnnotation(MethodRestriction.class);
+        if ( restriction == null ) {
+            return;
+        }
+
+        boolean found = false;
+        for ( String allowedMethod : restriction.value() ) {
+            if ( request.getMethod().equals(allowedMethod) ) {
+                found = true;
+                break;
+            }
+        }
+
+        if ( !found ) {
+            throw new DispatchException( request.getMethod() + "-method is not allowed by requested action");
+        }
+    }
+
     protected void checkRestrictions( IAction action, IView view, IHttpRequest request, IHttpResponse response )
         throws DispatchException, ConfigException {
         this.checkContextRestrictions(action, view, request, response);
+        this.checkMethodRestrictions(action, view, request, response );
     }
 
 	@Override
