@@ -72,7 +72,9 @@ public class AjaxContext extends AbstractResponseContext {
     @Override
     public SupportType isSupported(IHttpRequest request) {
         String headerValue = request.getHeader("X-Requested-With");
-        if (  headerValue != null && headerValue.equals(AjaxContext.MARKER_HEADER) ) {
+        if (  (headerValue != null && headerValue.equals(AjaxContext.MARKER_HEADER))
+                || ( request.getParameter("X-Requested-With") != null
+                        && request.getParameter("X-Requested-With").equals(AjaxContext.MARKER_HEADER) ) ) {
             if ( !request.getParameter("_servletContextParam").equals(AjaxContext.DISABLE_PARAM) ) {
                 return SupportType.SHOULD;
             } else {
