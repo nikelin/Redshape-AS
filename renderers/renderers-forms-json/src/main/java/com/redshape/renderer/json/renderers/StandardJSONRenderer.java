@@ -2,6 +2,7 @@ package com.redshape.renderer.json.renderers;
 
 import com.redshape.renderer.IRenderer;
 import com.redshape.renderer.IRenderersFactory;
+import com.redshape.renderer.Renderable;
 import com.redshape.utils.Commons;
 import com.redshape.utils.beans.Property;
 import com.redshape.utils.beans.PropertyUtils;
@@ -87,19 +88,42 @@ public class StandardJSONRenderer extends AbstractJSONRenderer<Object> {
         }
     }
 
-    public String reflectiveRender( Object renderable ) throws IntrospectionException {
-        Set<Property> properties = PropertyUtils.getInstance().getProperties(renderable.getClass());
-        Map<String, Object> result = new HashMap<String, Object>( properties.size() );
-        int i = 0;
-        for ( Property property : properties ) {
-            if ( property.isCollection() || property.isArray() ) {
-                continue;
-            }
-
-            result.put( property.getName(),  property.get(renderable) );
+    protected boolean isEntityIgnored( Class<?> type, Renderable meta ) {
+        if ( meta == null ) {
+            return false;
         }
 
-        return this.render(result);
+        if ( !meta.value() ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public String reflectiveRender(Object renderable) {
+        try {
+            Set<Property> properties = PropertyUtils.getInstance().getProperties(renderable.getClass());
+            String[] fields = new String[ properties.size() ];
+            int i = 0;
+
+            for ( Property property : properties ) {
+                Renderable meta = property.getAnnotation(Renderable.class);
+                if ( this.isEntityIgnored(property.getType(), meta) ) {
+                    continue;
+                }
+
+                if ( property.isCollection() ) {
+                    continue;
+                }
+
+                Object value = property.get(renderable);
+                fields[i++] = this.createField(property.getName(), value == null ? "\"null\"" : this.render(value) );
+            }
+
+            return this.createObject( fields );
+        } catch ( IntrospectionException e ) {
+            throw new IllegalArgumentException( e.getMessage(), e );
+        }
     }
 
     public String renderArray( Object[] renderable ) {
