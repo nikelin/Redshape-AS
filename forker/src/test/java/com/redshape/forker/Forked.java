@@ -69,30 +69,31 @@ public final class Forked {
             log("Command executed successfully...");
 
             final IForkCommandExecutor executor = new StandardForkCommandExecutor(processor,
-                    Commons.<IForkCommandHandler>set(
-                        new PauseCommandHandler(),
-                        new SimpleCommandObject.Handler()
-                    ));
+                Commons.<IForkCommandHandler>set(
+                    new PauseCommandHandler(),
+                    new SimpleCommandObject.Handler()
+                )
+            );
 
             log("Server commands executor initialized...");
             executor.addEventListener(CommandRequestEvent.class, new IEventListener<CommandRequestEvent>() {
                 @Override
                 public void handleEvent(CommandRequestEvent event) {
-                    log("New command execution request received...");
+                log("New command execution request received...");
                 }
             });
 
             executor.addEventListener(CommandResponseEvent.class, new IEventListener<CommandResponseEvent>() {
                 @Override
                 public void handleEvent(CommandResponseEvent event) {
-                    log("Command execution response ready to be sent...");
+                log("Command execution response ready to be sent...");
                 }
             });
 
             executor.addEventListener(ExecutorStartedEvent.class, new IEventListener<ExecutorStartedEvent>() {
                 @Override
                 public void handleEvent(ExecutorStartedEvent event) {
-                    onStarted(executor);
+                onStarted(executor);
                 }
             });
 

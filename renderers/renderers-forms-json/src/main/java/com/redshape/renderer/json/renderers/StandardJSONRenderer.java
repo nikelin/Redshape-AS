@@ -112,9 +112,9 @@ public class StandardJSONRenderer extends AbstractJSONRenderer<Object> {
                     continue;
                 }
 
-                if ( property.isCollection() ) {
-                    continue;
-                }
+//                if ( property.isCollection() ) {
+//                    continue;
+//                }
 
                 Object value = property.get(renderable);
                 fields[i++] = this.createField(property.getName(), value == null ? "\"null\"" : this.render(value) );

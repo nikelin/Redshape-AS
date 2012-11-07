@@ -30,6 +30,7 @@
         <module>renderers</module>
         <module>forms</module>
         <module>net</module>
+        <module>comet</module>
     </modules>
 
     <repositories>
