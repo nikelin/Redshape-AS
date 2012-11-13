@@ -179,10 +179,12 @@ public class PackagesLoader implements IPackagesLoader {
                                                 IFilter<Class<T>> filter )
             throws IOException, PackageLoaderException {
         try {
+            log.info( "Loading library by path: " + path );
+
             List<URL> targetEntries = this.filterJarEntries(
-                    new JarFile( path ),
-                    this.convertToFolderName( pkgName ),
-                    path
+                new JarFile( path ),
+                this.convertToFolderName( pkgName ),
+                path
             );
 
             List<Class<T>> result = new ArrayList<Class<T>>();
