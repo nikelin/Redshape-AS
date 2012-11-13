@@ -1,14 +1,14 @@
 Redshape AS
 
-Latest version: 3.1.0
-Stable version: 3.0.0
-Official resource: http://as.redshape.ru
+Latest version: 3.1.6-SNAPSHOT
+Stable version: 3.1.6
+
 
 Maven repository:
 https://github.com/nikelin/Redshape-Maven-Repository
 
 Authors:
-Cyril A. Karpenko <nikelin@redshape.ru>
+Cyril A. Karpenko <self@nikelin.ru>
 
-The Redshape-AS project source code and related materials are the subject of the Apache License
-version 2.0. The most actual version of the license can be found here: http://www.apache.org/licenses/
+The Redshape-AS project source code and related materials are the subject of the Apache License version 2.0.
+The most actual version of the license can be found here: http://www.apache.org/licenses/
