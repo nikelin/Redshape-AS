@@ -46,6 +46,8 @@ public interface IQueryBuilder {
     
     public IArrayStatement array( IStatement... statements );
 
+    public <T> IArrayStatement scalarArray( T... values );
+
     public <T> IStatement[] scalar( T... values );
     
     public IStatement nullScalar();

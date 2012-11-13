@@ -52,6 +52,10 @@ public abstract class Property implements Comparable<Property> {
         return Collection.class.isAssignableFrom(this.type);
     }
 
+    public boolean isNull( Object value ) {
+        return this.get(value) == null;
+    }
+
     public boolean isArray() {
         return this.type.isArray();
     }

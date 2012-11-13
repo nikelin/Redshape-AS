@@ -9,10 +9,7 @@ import com.redshape.utils.beans.PropertyUtils;
 
 import java.beans.IntrospectionException;
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Cyril A. Karpenko <self@nikelin.ru>
@@ -117,6 +114,13 @@ public class StandardJSONRenderer extends AbstractJSONRenderer<Object> {
 //                }
 
                 Object value = property.get(renderable);
+                if ( value == null ) {
+                    /**
+                     * Ignoring nulled values (can be configured later)
+                     */
+                    continue;
+                }
+
                 fields[i++] = this.createField(property.getName(), value == null ? "\"null\"" : this.render(value) );
             }
 
@@ -131,6 +135,10 @@ public class StandardJSONRenderer extends AbstractJSONRenderer<Object> {
         builder.append("[");
         int i = 0;
         for ( Object object : renderable ) {
+            if ( object == null ) {
+                continue;
+            }
+
             builder.append( this.render(object) );
             if ( i++ != renderable.length - 1 ) {
                 builder.append(",");
@@ -139,6 +147,10 @@ public class StandardJSONRenderer extends AbstractJSONRenderer<Object> {
         builder.append("]");
 
         return builder.toString();
+    }
+
+    public String render( Date date ) {
+        return String.valueOf( date.getTime() );
     }
 
     public String render(Map<String, Object> renderable) {

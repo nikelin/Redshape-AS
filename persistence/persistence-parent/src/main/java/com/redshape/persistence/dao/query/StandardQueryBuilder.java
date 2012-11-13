@@ -14,6 +14,16 @@ import com.redshape.persistence.entities.IEntity;
 public class StandardQueryBuilder implements IQueryBuilder {
 
     @Override
+    public <T> IArrayStatement scalarArray(T... values) {
+        IStatement[] statements = new IStatement[values.length];
+        for ( int i = 0; i < values.length; i++ ) {
+            statements[i] = this.scalar(values[i]);
+        }
+
+        return this.array(statements);
+    }
+
+    @Override
     public IStatement nullScalar() {
         return this.scalar( (Boolean) null );
     }
