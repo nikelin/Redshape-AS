@@ -55,7 +55,7 @@
             <groupId>org.apache.zookeeper</groupId>
 
             <artifactId>zookeeper</artifactId>
-            <version>3.3.1</version>
+            <version>3.4.14</version>
         </dependency>
     </dependencies>
 
