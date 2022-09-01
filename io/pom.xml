@@ -29,7 +29,7 @@
     </parent>
     
     <properties>
-        <jsoup.version>1.3.3</jsoup.version>
+        <jsoup.version>1.15.3</jsoup.version>
         <tika-version>0.8</tika-version>
     </properties>
 
